@@ -1,23 +1,27 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import { routes } from "./routes";
 import PrivateWrapper from "./ProtectedRoute";
 
-export default function Router() {
+export default function RouterPage() {
   return (
-    <BrowserRouter>
       <Routes>
         {routes.map(({ path, component, auth }) => (
           <Route
             path={path}
             key={path}
-            element={<PrivateWrapper auth={auth}>{component}</PrivateWrapper>}
-          />
+            element={
+                auth ? (
+                <PrivateWrapper>{component}</PrivateWrapper>
+                ) : (
+                component
+                )
+            }
+            />
         ))}
       </Routes>
-    </BrowserRouter>
   );
 }
 

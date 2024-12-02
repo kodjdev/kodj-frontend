@@ -1,25 +1,22 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ReactNode } from "react";
 import { Navigate } from "react-router-dom";
+import React from "react";
+import { useAuth } from "../context/useAuth";
 
-/*
- * soon we will grab your accessToken from your store 
- * here and manipulate your authenticated routes 
-*/
+interface ProtectedRouteProps {
+  children: React.ReactElement;
+}
 
-const PrivateWrapper = ({
-  children,
-  auth,
-}: {
-  children: JSX.Element;
-  auth?: Boolean;
-}) => {
-  const accessToken = "";
-  if (!auth) {
-    return children;
+const PrivateWrapper: React.FC<ProtectedRouteProps> = ({ children }) => {
+  const { user } = useAuth();
+
+  if (!user) {
+    return <Navigate to="/login" replace />;
   }
-  return accessToken ? children : <Navigate to="/login" replace />;
+
+  return children;
 };
+
 export default PrivateWrapper;

@@ -1,7 +1,9 @@
 import HomePage from "./Home/index";
-import LoginPage from "./Auth/Login/Login";
-import RegisterPage from "./Auth/Register/Register";
+import LoginPage from "./Login/Login";
+import RegisterPage from "./Register/Register";
+import UpcomingEvents from "./UpcomingEvents/UpcomingEvents";
+import PastEvents from "./PastEvents/PastEvents";
+import Organizers from "./Organizers/Organizers";
 
 
-
-export { HomePage, LoginPage, RegisterPage };
+export { HomePage, LoginPage, RegisterPage, UpcomingEvents, PastEvents, Organizers };

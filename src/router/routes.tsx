@@ -1,20 +1,46 @@
-import { AppRoutes } from "../utils/constant";
-import { HomePage, LoginPage, RegisterPage } from "../pages";
+import { HomePage, LoginPage, RegisterPage, UpcomingEvents, PastEvents, Organizers } from "../pages";
+import React from "react";
 
-interface route {
-  path: String;
-  component: JSX.Element;
-  auth?: Boolean | undefined | null;
+interface RouteType {
+  path: string;
+  component: React.ReactElement;
+  auth?: boolean;
 }
 
-export const routes: route[] = [
-  // unauthenticated routes
-  { path: AppRoutes.LOGIN, component: <LoginPage /> },
-  { path: AppRoutes.REGISTER, component: <RegisterPage /> },
-
-  // user routes
-  { path: AppRoutes.HOME, component: <HomePage />, auth: false },
-
-  /* You can define your own object keys and manipulate your app how you see fit */
-  // { path: AppRoutes.HOME, component: <UserAccount />, auth: true },
+export const routes: RouteType[] = [
+  {
+    path: "/",
+    component: <HomePage />,
+    auth: false, // Public route
+  },
+  {
+    path: "/login",
+    component: <LoginPage />,
+    auth: false, // Public route
+  },
+  {
+    path: "/register",
+    component: <RegisterPage />,
+    auth: false, // Public route
+  },
+  {
+    path: "/events/upcoming",
+    component: <UpcomingEvents />,
+    auth: true, // Protected route
+  },
+  {
+    path: "/events/upcoming/details/:id",
+    component: <UpcomingEvents />,
+    auth: true, // Protected route
+  },
+  {
+    path: "/events/past",
+    component: <PastEvents />,
+    auth: true, // Protected route
+  },
+  {
+    path: "/organizers",
+    component: <Organizers />,
+    auth: true, // Protected route
+  },
 ];

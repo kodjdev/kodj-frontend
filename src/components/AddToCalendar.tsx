@@ -1,4 +1,4 @@
-import { EventForServer } from '@/types';
+import { EventForServer } from '../types';
 import React from 'react';
 import { BsArrowUpRightCircle } from "react-icons/bs";
 
