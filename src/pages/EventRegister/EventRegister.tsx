@@ -88,7 +88,11 @@ export default function EventRegister() {
         console.log("Data being sent to db:", data);
 
         const idToken = await user.getIdToken();
-        const response = await fetch("/api/register-event", {
+
+        // const decodedToken = JSON.parse(atob(idToken.split('.')[1]));
+        // console.log("Decoded Token:", decodedToken);
+
+        const response = await fetch(import.meta.env.VITE_FIREBASE_FUNCTION_URL, {
             method: "POST",
             headers: {
             "Content-Type": "application/json",

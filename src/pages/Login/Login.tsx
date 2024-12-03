@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useAuth } from '../../context/useAuth';
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
 import { auth, provider } from '../../firebase/firebaseConfig';
@@ -19,9 +19,11 @@ export default function LoginPage() {
  // for sign up
   const [confirmPassword, setConfirmPassword] = useState('');
 
-  if (user) {
-    navigate('/mypage');
-  }
+  useEffect(() => {
+    if (user) {
+      navigate('/mypage');
+    }
+  }, [user, navigate]);
 
   const handleEmailAuth = async (e: React.ChangeEvent<any>) => {
     e.preventDefault();

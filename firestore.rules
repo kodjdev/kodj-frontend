@@ -7,8 +7,14 @@ service cloud.firestore {
     // we only allow read and write access to all documents (for development only)
 
     match /registrations/{registrationId} {
+      // allow read, update, delete: if request.auth.uid == resource.data.uid;
+      // allow create: if true; // Allow create operations for any request (for development only)
+      
+      // Allow read, update, delete only if the user is the owner
       allow read, update, delete: if request.auth.uid == resource.data.uid;
-      allow create: if true; // Allow create operations for any request (for development only)
+
+      // Allow create only if the user is authenticated
+      allow create: if request.auth.uid != null;
     }
 
     // Rules for 'upcomingEvent' collection

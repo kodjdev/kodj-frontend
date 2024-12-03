@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaCalendarAlt, FaParking  } from "react-icons/fa";
 import { FaLocationDot, FaNoteSticky } from "react-icons/fa6";
-import { Button } from '../../../components/ui/button';
-import { FaArrowUpRightFromSquare } from "react-icons/fa6";
+
 import Speakers, { Speaker } from '../../../components/Speakers';
 import EventSchedule, { EventSlot } from '../../../components/EventSchedule';
 import { FaBowlFood } from "react-icons/fa6";
@@ -14,9 +13,9 @@ import { doc, getDoc } from 'firebase/firestore';
 import { db, storage } from '../../../firebase/firebaseConfig';
 import { ref, getDownloadURL } from 'firebase/storage';
 import { EventForServer } from '../../../types';
-import { message } from "antd";
-import { useAuth } from '../../../context/useAuth';
-import { Link, useParams } from 'react-router-dom';
+// import { message } from "antd";
+// import { useAuth } from '../../../context/useAuth';
+import { useParams } from 'react-router-dom';
 
 
 const upcomingEventSpeakers: Speaker[] = [
@@ -124,28 +123,26 @@ const eventSchedule: EventSlot[] = [
   ];
 
 
-export default function EventDetails() {
+export default function PastEventDetails() {
 
-  const {user} = useAuth();
+  // const {user} = useAuth();
 
-  // const param = useParams();
-  // const id = param.id as string;
   const { id } = useParams<{ id: string }>();
-
+ 
   const [event, setEvent] = useState<EventForServer | null>(null);
   const [isGalleryOpen, setGalleryOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState(0);
   const [loading, setLoading] = useState(true);
-  const [messageApi, contextHolder] = message.useMessage();
+  // const [messageApi, contextHolder] = message.useMessage();
 
-  const handleProtectedLinkClick = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+  // const handleProtectedLinkClick = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
 
-    if (!user) {
-      e.preventDefault(); 
-      messageApi.error("로그인이 필요한 기능입니다.");
-      return;
-    }
-  };
+  //   if (!user) {
+  //     e.preventDefault(); 
+  //     messageApi.error("로그인이 필요한 기능입니다.");
+  //     return;
+  //   }
+  // };
 
   const fetchEventData = async () => {
 
@@ -156,7 +153,7 @@ export default function EventDetails() {
     }
 
     try {
-      const eventDocRef = doc(db, 'upcomingEvents', id);
+      const eventDocRef = doc(db, 'pastEvents', id);
       const eventDoc = await getDoc(eventDocRef);
 
       console.log('Fetching event with ID:', id);
@@ -251,7 +248,7 @@ export default function EventDetails() {
 
     return (
       <>
-      {contextHolder}
+      {/* {contextHolder} */}
         <div className="container mx-auto py-8 px-4 sm:px-8">
             {/* images grid */}
             {/* <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4 pt-5"> */}
@@ -350,20 +347,20 @@ export default function EventDetails() {
                                 View on KakaoMap
                             </a>
                         </p>
-                        <Link 
-                          to={`/events/upcoming/details/${id}/register`}
-                          state={{ 
-                            title: event.title,
-                            date: event.date.toString(),
-                            location: event.location,
-                          }}
-                          onClick={handleProtectedLinkClick}
-                        >
+                        {/* <Link 
+                            to={`/events/upcoming/details/${id}/register`}
+                            state={{ 
+                              title: event.title,
+                              date: event.date.toString(),
+                              location: event.location,
+                            }}
+                            onClick={handleProtectedLinkClick}
+                          >
                             <Button className="text-sm text-white bg-blue-700 border border-blue-700 px-3 py-1 rounded-2xl flex items-center hover:bg-white hover:text-blue-700 transition-colors duration-300 space-x-1 -mt-6">
                                 <FaArrowUpRightFromSquare className="flex-none text-xs" />
                                 <span>Register</span>
                             </Button>
-                        </Link>
+                        </Link> */}
                     </div>
                 </div>
             </div>
