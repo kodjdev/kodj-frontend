@@ -1,4 +1,6 @@
 import { Timestamp } from "firebase/firestore";
+import { Speaker } from "../components/Speakers";
+import { EventSlot } from "../components/EventSchedule";
 
 
 export interface Event {
@@ -16,7 +18,7 @@ export interface Event {
 export interface EventDetails {
     title: string;
     date: string;
-    location: string;
+    eventLocation: string;
   }
 
 export interface UpcomingEventsRegistration {

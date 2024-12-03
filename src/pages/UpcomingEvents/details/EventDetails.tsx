@@ -16,7 +16,7 @@ import { ref, getDownloadURL } from 'firebase/storage';
 import { EventForServer } from '../../../types';
 import { message } from "antd";
 import { useAuth } from '../../../context/useAuth';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 
 
 const upcomingEventSpeakers: Speaker[] = [
@@ -128,8 +128,10 @@ export default function EventDetails() {
 
   const {user} = useAuth();
 
-  const param = useParams();
-  const id = param.id as string;
+  // const param = useParams();
+  // const id = param.id as string;
+  const { id } = useParams<{ id: string }>();
+
   const [event, setEvent] = useState<EventForServer | null>(null);
   const [isGalleryOpen, setGalleryOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState(0);
@@ -146,6 +148,13 @@ export default function EventDetails() {
   };
 
   const fetchEventData = async () => {
+
+    if (!id) {
+      console.error('No event ID provided in the URL.');
+      setLoading(false);
+      return;
+    }
+
     try {
       const eventDocRef = doc(db, 'upcomingEvents', id);
       const eventDoc = await getDoc(eventDocRef);
@@ -342,16 +351,14 @@ export default function EventDetails() {
                             </a>
                         </p>
                         <Link 
-                            to ={{
-                                pathname: `/events/upcoming/details/${id}/register`,
-                                query: { 
-                                    title: event.title,
-                                    date: event.date.toString(),
-                                    location: event.location,
-                                },
-                            }}
-                            onClick={handleProtectedLinkClick}
-                          >
+                          to={`/events/upcoming/details/${id}/register`}
+                          state={{ 
+                            title: event.title,
+                            date: event.date.toString(),
+                            location: event.location,
+                          }}
+                          onClick={handleProtectedLinkClick}
+                        >
                             <Button className="text-sm text-white bg-blue-700 border border-blue-700 px-3 py-1 rounded-2xl flex items-center hover:bg-white hover:text-blue-700 transition-colors duration-300 space-x-1 -mt-6">
                                 <FaArrowUpRightFromSquare className="flex-none text-xs" />
                                 <span>Register</span>

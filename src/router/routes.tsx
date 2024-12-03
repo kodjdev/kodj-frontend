@@ -1,5 +1,7 @@
 import { HomePage, LoginPage, RegisterPage, UpcomingEvents, PastEvents, Organizers, About } from "../pages";
 import React from "react";
+import EventRegister from "../pages/EventRegister/EventRegister";
+import MyPage from "../pages/MyPage/MyPage";
 
 interface RouteType {
   path: string;
@@ -29,6 +31,11 @@ export const routes: RouteType[] = [
     auth: false, // Public route
   },
   {
+    path: "/mypage",
+    component: <MyPage />,
+    auth: true, 
+  },
+  {
     path: "/events/upcoming",
     component: <UpcomingEvents />,
     auth: false, 
@@ -36,6 +43,11 @@ export const routes: RouteType[] = [
   {
     path: "/events/upcoming/details/:id",
     component: <UpcomingEvents />,
+    auth: true, // Protected route
+  },
+  {
+    path: "/events/upcoming/details/:id/register",
+    component: <EventRegister />,
     auth: true, // Protected route
   },
   {
