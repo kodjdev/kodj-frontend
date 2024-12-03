@@ -341,14 +341,12 @@ export default function EventDetails() {
                                 View on KakaoMap
                             </a>
                         </p>
-                        <Link 
-                            to ={{
-                                pathname: `/events/upcoming/details/${id}/register`,
-                                query: { 
-                                    title: event.title,
-                                    date: event.date.toString(),
-                                    location: event.location,
-                                },
+                        {/* <Link 
+                            to={`/events/upcoming/details/${id}/register`}
+                            state={{ 
+                              title: event.title,
+                              date: event.date.toString(),
+                              location: event.location,
                             }}
                             onClick={handleProtectedLinkClick}
                           >
@@ -356,7 +354,7 @@ export default function EventDetails() {
                                 <FaArrowUpRightFromSquare className="flex-none text-xs" />
                                 <span>Register</span>
                             </Button>
-                        </Link>
+                        </Link> */}
                     </div>
                 </div>
             </div>

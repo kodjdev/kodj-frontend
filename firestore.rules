@@ -1,0 +1,28 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // rules for the registrations collection
+    // we only allow read and write access to all documents (for development only)
+
+    match /registrations/{registrationId} {
+      allow read, update, delete: if request.auth.uid == resource.data.uid;
+      allow create: if true; // Allow create operations for any request (for development only)
+    }
+
+    // Rules for 'upcomingEvent' collection
+    match /upcomingEvents/{eventId} {
+      allow read: if true; // Public read access
+      // we only allow event creation only for admins
+      allow create, update, delete: if request.auth.token.admin == true;
+    }
+
+    match /pastEvents/{eventId} {
+      allow read: if true; // Public read access
+      // we only allow event creation only for admins
+      allow create, update, delete: if request.auth.token.admin == true;
+    }
+
+  }
+}
