@@ -18,10 +18,10 @@ import { useAuth } from "../../context/useAuth";
 import Modal from "../../components/ui/modal";
 import { Button } from "../../components/ui/button";
 import { getAuth } from "firebase/auth";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export default function EventRegister() {
-    const { id } = useParams<{ id: string }>();
+    // const { id } = useParams<{ id: string }>();
     const location = useLocation();
     const navigate = useNavigate();
     const { user, loading: authLoading } = useAuth();
