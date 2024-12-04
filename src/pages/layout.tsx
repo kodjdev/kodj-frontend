@@ -4,10 +4,12 @@ import { AuthProvider } from "../context/AuthContext";
 
 export default function RootLayout({ children}: Readonly <{children: React.ReactNode }>) {
   return (
-    <AuthProvider>
-        <ConditionalLayout>
-            {children}
-        </ConditionalLayout>
-    </AuthProvider>
+    <div className="w-full h-full overflow-x-hidden">
+        <AuthProvider>
+            <ConditionalLayout>
+                {children}
+            </ConditionalLayout>
+        </AuthProvider>
+    </div>
   );
 }

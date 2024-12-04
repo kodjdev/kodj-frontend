@@ -80,12 +80,17 @@ export default function EventCard({ title, description, date, author, imageUrl, 
                 </CardFooter>
               ) : (
                 <CardFooter className="px-5 flex justify-between text-left">
-                  <button className="text-sm text-blue-600 hover:underline">More details...</button>
-                  <Button className="text-sm text-white bg-blue-700 border border-blue-700 px-3 py-1 rounded-2xl flex items-center hover:bg-white hover:text-blue-700 transition-colors duration-300 space-x-1">
-                    <FaArrowUpRightFromSquare className="flex-none text-xs" />
-                    <span>Register</span>
-                  </Button>
-                </CardFooter>
+                    <button
+                        className="text-sm text-blue-600 bg-gray-300 hover:bg-gray-100 px-3 py-1 rounded-full transition-colors duration-300"
+                        title="More details about the organizer"
+                    >
+                        More details...
+                    </button>
+                    <Button className="text-sm text-white bg-blue-700 border border-blue-700 px-3 py-1 rounded-2xl flex items-center hover:bg-white hover:text-blue-700 transition-colors duration-300 space-x-1">
+                        <FaArrowUpRightFromSquare className="flex-none text-xs" />
+                        <span>Register</span>
+                    </Button>
+              </CardFooter>
             )}
         </Card>
     </motion.div>

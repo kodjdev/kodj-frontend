@@ -13,7 +13,6 @@ const firebaseConfig = {
 }
 
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApps()[0];
-console.log('Firebase API Key:', import.meta.env.VITE_FIREBASE_API_KEY);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 const db = getFirestore(app);

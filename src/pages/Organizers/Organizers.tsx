@@ -49,9 +49,9 @@ export default function Organizers() {
                         key={index}
                         className="bg-gray-800 p-6 rounded-3xl shadow-lg hover:shadow-2xl transition-shadow duration-300  transition-shadow duration-300 flex flex-col items-start h-full cursor-pointer group"
                     >
-                        <div className="flex flex-row items-start">
-
+                        <div className="flex flex-col sm:flex-row items-start">
                             <div className="relative w-28 h-28 mr-4 rounded-full overflow-hidden bg-white flex-shrink-0">
+                            {/* <div className="relative w-28 h-28 mr-4 rounded-full overflow-hidden bg-white flex-shrink-0 sm:w-28 sm:h-28">  */}
                             <img
                                 src={organizer.imageUrl}
                                 alt={organizer.name}
@@ -72,7 +72,7 @@ export default function Organizers() {
                                 <h3 className="text-sm text-gray text-left mb-2 font-bold">{organizer.title}</h3>
                                 <div className='flex flex-wrap gap-1 mt-auto'>
                                     {/* {organizer.jobtags.map((jobag, index) => ( */}
-                                        <span key={index} className="text-left text-[10px] text-gray-300 mt-4 px-2 py-1 rounded-full bg-gray-700"> 👨🏻‍💻 {organizer.jobtags}</span>
+                                        <span key={index} className="text-left text-[10px] text-gray-300 mt-4 px-2 py-1 rounded-full bg-gray-700 break-words"> 👨🏻‍💻 {organizer.jobtags}</span>
                                     {/* ))} */}
                                 </div>
                             </div>

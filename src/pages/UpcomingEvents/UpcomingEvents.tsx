@@ -5,6 +5,7 @@ import { db, storage } from "../../firebase/firebaseConfig";
 import { ref, getDownloadURL} from 'firebase/storage';
 import { EventForServer } from '../../types';
 import { Link } from "react-router-dom";
+import { Spin } from "antd";
 
 
 export default function UpcomingEventsPage() {
@@ -59,7 +60,12 @@ export default function UpcomingEventsPage() {
   }, []);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+        <div className="flex items-center justify-center min-h-screen bg-black bg-opacity-50 text-blue-600 text-md"> 
+            <Spin tip="Wait a little bit" size="large">  
+            </Spin> 
+        </div>
+    );
   }
 
   return (

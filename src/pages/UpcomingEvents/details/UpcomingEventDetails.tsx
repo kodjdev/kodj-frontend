@@ -14,7 +14,7 @@ import { doc, getDoc } from 'firebase/firestore';
 import { db, storage } from '../../../firebase/firebaseConfig';
 import { ref, getDownloadURL } from 'firebase/storage';
 import { EventForServer } from '../../../types';
-import { message } from "antd";
+import { message, Spin } from "antd";
 import { useAuth } from '../../../context/useAuth';
 import { Link, useParams } from 'react-router-dom';
 
@@ -142,7 +142,7 @@ export default function UpcomingEventDetails() {
 
     if (!user) {
       e.preventDefault(); 
-      messageApi.error("로그인이 필요한 기능입니다.");
+      messageApi.error("Please login first to register for the event.");
       return;
     }
   };
@@ -196,7 +196,12 @@ export default function UpcomingEventDetails() {
   }, [id]);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+        <div className="flex items-center justify-center min-h-screen bg-black bg-opacity-50 text-blue-600 text-md"> 
+            <Spin tip="Wait a little bit" size="large">  
+            </Spin> 
+        </div>
+    );
   }
   // Gallery functions
   const openGallery = (index: number) => {
@@ -256,14 +261,12 @@ export default function UpcomingEventDetails() {
             {/* images grid */}
             {/* <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4 pt-5"> */}
               {event.imageUrls?.length === 1 ? (
-                <div className="col-span-2 relative h-72 sm:h-[400px] cursor-pointer" onClick={() => openGallery(0)}>
-                    <img
-                        // key={event.index[0]}
+                <div className="col-span-2 relative h-72 sm:h-[600px] cursor-pointer overflow-hidden" onClick={() => openGallery(0)}> 
+                <img
                         src={event.imageUrls[0]}
                         alt={event.title}
-                        // layout="fill"
-                        // objectFit="cover"
-                        className="rounded-lg shadow-lg"
+                        className="rounded-lg shadow-lg w-full h-full object-cover"
+
                     />
                 </div>
               ) : (
@@ -272,9 +275,7 @@ export default function UpcomingEventDetails() {
                     <img
                       src={event.imageUrls?.[0] ?? ''}
                       alt={event.title}
-                    //   layout="fill"
-                    //   objectFit="cover"
-                      className="rounded-lg shadow-lg"
+                      className="rounded-lg shadow-lg w-full h-full object-cover" 
                     />
                   </div>
                   <div className="grid grid-cols-2 gap-4">
@@ -283,9 +284,8 @@ export default function UpcomingEventDetails() {
                             <img
                                 src={image}
                                 alt={`${event.title} - ${index + 2}`}
-                                // layout="fill"
-                                // objectFit="cover"
                                 className="rounded-lg shadow-md"
+                                // className="rounded-lg shadow-md w-full h-full object-cover"
                             />
                         </div>
                     ))}
@@ -294,8 +294,7 @@ export default function UpcomingEventDetails() {
                             <img
                                 src={event.images[4]}
                                 alt={`${event.title} - 4`}
-                                // layout="fill"
-                                // objectFit="cover"
+                                // className="rounded-lg shadow-md w-full h-full object-cover"
                                 className="rounded-lg shadow-md"
                             />
                             <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center rounded-lg">
@@ -308,7 +307,7 @@ export default function UpcomingEventDetails() {
             )}
             {/* Event Title, Date, Location */}
             <div className="mb-6">
-                <h1 className="text-3xl text-blue-600 font-bold mb-5">{event.title}</h1>
+                <h1 className="text-3xl text-blue-600 font-bold mt-5 mb-5">{event.title}</h1>
                 <div className="text-blue-100 mb-1">
                     <div className="mb-2 font-bold">
                         <p className="mb-2">
@@ -316,7 +315,7 @@ export default function UpcomingEventDetails() {
                             {event.date.toString()}
                             <button
                                 onClick={handleAddToCalendar}
-                                className="inline-block ml-2 mb-1 text-lg text-blue-600 hover:text-blue-200"
+                                className="inline-block ml-2 mb-1 text-lg text-blue-600 hover:text-blue-200 py-1 px-4 rounded-full"
                                 aria-label="Add to Calendar"
                             >
                                 <BsArrowUpRightCircle />
