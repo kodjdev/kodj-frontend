@@ -158,7 +158,8 @@ export default function Tabs() {
           onClick={toggleMobileMenu}
           className="text-white focus:outline-none"
         >
-          {isMobileMenuOpen ? <FiX size={24} /> : <FiMenu size={24} />}
+          {/* {isMobileMenuOpen ? <FiX size={24} /> : <FiMenu size={24} />} */}
+          {isMobileMenuOpen ? <FiX className="text-black dark:text-white" size={24} /> : <FiMenu className="text-black dark:text-white" size={24} />}
         </button>
       </div>
 
@@ -166,7 +167,8 @@ export default function Tabs() {
       {isMobileMenuOpen && (
         <div
           ref={menuRef}
-          className="absolute top-16 right-5 bg-black bg-opacity-90 rounded-lg p-5 flex flex-col space-y-4 md:hidden"
+          // className="absolute top-16 right-5 bg-black bg-opacity-90 rounded-lg p-5 flex flex-col space-y-4 md:hidden"
+          className="absolute top-16 right-5 bg-black dark:bg-black bg-opacity-90 rounded-lg p-5 flex flex-col space-y-4 md:hidden"
         >
           {tabs
             .filter((tab) => {
@@ -184,8 +186,10 @@ export default function Tabs() {
                 }}
               >
                 <button
-                  className={`w-full text-left relative rounded-full px-3 py-1.5 text-sm font-medium text-white outline-sky-400 transition focus-visible:outline-2 ${
-                    activeTab === tab.id ? "text-black" : "text-white"
+                  className={`w-full text-left relative rounded-full px-3 py-1.5 text-sm font-medium outline-sky-400 transition focus-visible:outline-2 ${
+                    activeTab === tab.id
+                      ? "bg-gray-400 text-white dark:bg-black dark:text-white"
+                      : "text-gray-300 dark:text-white-"
                   }`}
                   style={{
                     WebkitTapHighlightColor: "transparent",
@@ -194,7 +198,10 @@ export default function Tabs() {
                   {activeTab === tab.id && (
                     <motion.span
                       layoutId="bubble"
-                      className="absolute inset-0 z-10 bg-white mix-blend-difference"
+                      // className="absolute inset-0 z-10 bg-white mix-blend-difference"
+                      className="absolute inset-0 z-10 bg-gray-300 dark:bg-black rounded-full hidden md:block"
+
+
                       style={{ borderRadius: 9999 }}
                       transition={{
                         type: "spring",
