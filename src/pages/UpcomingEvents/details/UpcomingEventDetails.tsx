@@ -411,9 +411,9 @@ export default function UpcomingEventDetails() {
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                     >
-                        <button onClick={closeGallery} className="absolute top-4 right-4 text-white text-xl">✕</button>
+                        <button onClick={closeGallery} className="absolute top-4 right-4 text-white text-lg bg-transparent">✕</button>
+                        <button onClick={prevImage} className="absolute left-4 text-white text-xl bg-transparent z-10">&#8592;</button>
 
-                        <button onClick={prevImage} className="absolute left-4 text-white text-3xl z-10">&#8592;</button>
                         <motion.div
                             key={selectedImage}
                             initial={{ opacity: 0, scale: 0.8 }}
@@ -426,13 +426,11 @@ export default function UpcomingEventDetails() {
                             <img
                                 src={event.imageUrls[selectedImage] }
                                 alt={`Gallery Image ${selectedImage + 1}`}
-                                // layout="fill"
-                                // objectFit="contain"
                                 className="rounded-lg"
                             />
                           )}
                         </motion.div>
-                        <button onClick={nextImage} className="absolute right-4 text-white text-3xl z-10">&#8594;</button>
+                        <button onClick={nextImage} className="absolute right-4 text-white text-xl bg-transparent z-10">&#8594;</button>
                     </motion.div>
                 )}
             </AnimatePresence>
