@@ -4,6 +4,7 @@ import createGlobe from "cobe";
 import { useEffect, useRef } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { FlipTitle } from "../../components/FlipTitle";
+import telegram from "../../assets/avatars/kodj_telegram.jpg"
 
 export function FeaturesSection() {
   
@@ -11,7 +12,7 @@ export function FeaturesSection() {
     {
       title: "Join our community of developers ▶",
       description:
-        "Out community members operate in telegram. Join to get latest updates",
+        "Out community members operate in telegram. Join to get latest updates and news",
       skeleton: <SkeletonThree />,
       className:
         "col-span-1 lg:col-span-3 lg:border-r  dark:border-neutral-800",
@@ -28,8 +29,8 @@ export function FeaturesSection() {
       <div className="relative z-20 py-2  max-w-9xl mx-auto">
         <div className="px-8">
      
-           <h1 className="md:text-7xl text-3xl lg:text-6xl font-bold text-center text-white relative bg-transparent mt-20 p-5 whitespace-nowrap overflow-hidden">
-             <FlipTitle />
+        <h1 className="md:text-7xl text-3xl lg:text-6xl font-bold text-center text-white relative bg-transparent mt-20 p-5 whitespace-normal sm:whitespace-nowrap overflow-hidden">
+          <FlipTitle />
           </h1>
           <h4 className="text-3xl lg:text-5xl lg:leading-tight max-w-5xl mx-auto text-center tracking-tight font-medium text-black text-white">
             We connect 👨‍💻s in South Korea.
@@ -112,22 +113,6 @@ export const SkeletonOne = () => {
   );
 };
 
-// export const SkeletonThree = () => {
-//   return (
-//       <div className="mx-auto bg-transparent dark:bg-transparent group h-full">
-//         <div className="flex flex-1 w-full h-full flex-col space-y-2  relative">
-//           <Image 
-//             src='/code/tg.jpg' 
-//             alt="header" 
-//             width={300} 
-//             height={300}
-//             className="aspect-square object-cover object-center rounded-sm blur-none group-hover/image:blur-md transition-all duration-200"
-//             />
-//         </div>
-//       </div>
-//   );
-// };
-
 export const SkeletonThree = () => {
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -145,15 +130,14 @@ export const SkeletonThree = () => {
         whileHover={{ filter: "blur(0px)" }}
       >
         <img
-          src="/code/tg.jpg"
-          alt="header"
+          src={telegram}
+          alt="telegram"
           width={280}
           height={300}
           className="aspect-square object-cover object-center rounded-sm transition-all duration-200"
         />
       </motion.div>
 
-      {/* Fullscreen image overlay */}
       <AnimatePresence>
         {isExpanded && (
           <motion.div
@@ -170,8 +154,8 @@ export const SkeletonThree = () => {
               exit={{ scale: 0.8 }}
             >
               <img
-                src="/code/tg.jpg"
-                alt="header"
+                src={telegram}
+                alt="telegram"
                 // objectFit="contain"
                 className="rounded-md"
               />

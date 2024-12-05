@@ -159,7 +159,7 @@ export default function UpcomingEventDetails() {
       const eventDocRef = doc(db, 'upcomingEvents', id);
       const eventDoc = await getDoc(eventDocRef);
 
-      console.log('Fetching event with ID:', id);
+      // console.log('Fetching event with ID:', id);
 
       if (eventDoc.exists()) {
         const eventData = eventDoc.data() as EventForServer;
@@ -254,6 +254,15 @@ export default function UpcomingEventDetails() {
     return <div>Event not found.</div>;
   }
 
+  const date = new Date(event.date.toMillis());
+
+  // we extract year, month, and day
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0'); 
+  const day = String(date.getDate()).padStart(2, '0');
+
+  const formattedDate = `${year}.${month}.${day}`;
+
     return (
       <>
       {contextHolder}
@@ -312,7 +321,7 @@ export default function UpcomingEventDetails() {
                     <div className="mb-2 font-bold">
                         <p className="mb-2">
                             <FaCalendarAlt className="inline-block mr-3 mb-1" />
-                            {event.date.toString()}
+                            {}
                             <button
                                 onClick={handleAddToCalendar}
                                 className="inline-block ml-2 mb-1 text-lg text-blue-600 hover:text-blue-200 py-1 px-4 rounded-full"
@@ -323,15 +332,15 @@ export default function UpcomingEventDetails() {
                         </p>
                         <p className="flex items-center mb-2">
                             <BsPeopleFill className="inline-block mr-3 mb-1" />
-                            <strong>20 - 60 seats</strong>
+                            <strong>{event.seats}</strong>
                         </p>
                         <p className="flex items-center mb-2">
                             <FaBowlFood className="inline-block mr-3 mb-1" />
-                            <strong>Coffee & Snacks</strong>
+                            <strong>{event.snacks}</strong>
                         </p>
                         <p className="flex items-center mb-2">
                             <FaParking className="inline-block mr-3 mb-1" />
-                            <strong>Paid parking</strong>
+                            <strong>{event.parking ? "Available" : "Not Available"}</strong>
                         </p>
                     </div>
                     

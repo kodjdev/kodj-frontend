@@ -4,6 +4,13 @@ import gsap from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
 import { FaUsers, FaChalkboardTeacher, FaNetworkWired, FaHandshake, FaLightbulb, FaRocket } from "react-icons/fa";
 import { LuGoal } from "react-icons/lu";
+import career from '../assets/icons/career.png';
+import networking from '../assets/icons/networking.png';
+import communication from '../assets/icons/communication.png';
+import collaborate from '../assets/icons/collaborate.png';
+import creativity from '../assets/icons/creativity.png';
+import workshop from '../assets/icons/workshop.png';
+
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -12,37 +19,37 @@ const benefits = [
     title: "Networking Opportunities",
     description: "Expand your professional network by connecting with like-minded individuals, industry experts, and potential collaborators.",
     icon: <FaUsers className="text-3xl text-blue-500" />,
-    imageUrl: "/pastEvents/networking.jpeg",
+    imageUrl: networking,
   },
   {
     title: "Expert Talks",
     description: "Learn directly from tech leaders and innovators as they share insights, trends, and practical knowledge and experience in the field.",
     icon: <FaChalkboardTeacher className="text-3xl text-green-500" />,
-    imageUrl: "/pastEvents/past2.jpeg",
+    imageUrl: communication,
   },
   {
     title: "Hands-on Workshops",
     description: "Participate in interactive workshops designed to provide practical, real-world experience and enhance your skills with hands-on learning.",
     icon: <FaNetworkWired className="text-3xl text-purple-500" />,
-    imageUrl: "/pastEvents/past1.jpeg",
+    imageUrl: workshop,
   },
   {
     title: "Collaboration Opportunities",
     description: "Collaborate on innovative projects with a supportive and talented community of developers.",
     icon: <FaHandshake className="text-3xl text-red-500" />,
-    imageUrl: "/pastEvents/group1.jpeg",
+    imageUrl: collaborate,
   },
   {
     title: "Inspiration and Innovation",
     description: "Discover new ideas, get inspired by success stories, and ignite your creativity to innovate.",
     icon: <FaLightbulb className="text-3xl text-yellow-500" />,
-    imageUrl: "/pastEvents/past1.jpeg",
+    imageUrl: creativity,
   },
   {
     title: "Career Growth",
     description: "Boost your career by learning in-demand skills, finding mentorship opportunities, and staying ahead in your field.",
     icon: <FaRocket className="text-3xl text-pink-500" />,
-    imageUrl: "/pastEvents/past2.jpeg",
+    imageUrl: career,
   },
 ];
 
@@ -76,7 +83,7 @@ export default function BenefitsSection() {
         {/* Section Title */}
         <div className="flex flex-col text-center mb-12">
           <h2 className=" text-left text-4xl font-bold text-blue-400 mb-6">
-            Who is <span className="text-4xl font-bold text-blue-600 mb-6 bg-gray-200">&nbsp; KO'DJ &nbsp;</span> ?
+            Who is <span className="text-4xl font-bold text-blue-600 mb-6 bg-gray-200">&nbsp;KO'DJ&nbsp;</span> ?
           </h2>
           <p className=" text-left text-gray-400 text-lg">
             At KO&apos;DJ, we are passionate about creating a thriving developer community in Uzbekistan.
@@ -117,12 +124,12 @@ export default function BenefitsSection() {
                 <h3 className="text-xl font-semibold ml-3 text-gray-200">{benefit.title}</h3>
               </div>
               <p className="text-gray-400 mb-4">{benefit.description}</p>
-              <div className="relative h-40 w-full rounded-lg overflow-hidden">
-                <img
-                  src={benefit.imageUrl}
-                  alt={benefit.title}
-                  className="object-cover h-full w-full"
-                />
+              <div className="relative w-10 h-10 rounded-lg overflow-hidden flex items-center justify-center">
+              {/* <img
+                src={benefit.imageUrl}
+                alt={benefit.title}
+                className="object-cover object-center h-10 w-10"
+              /> */}
               </div>
             </motion.div>
           ))}

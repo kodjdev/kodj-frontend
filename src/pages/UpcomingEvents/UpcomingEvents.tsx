@@ -17,7 +17,7 @@ export default function UpcomingEventsPage() {
       const eventCollectionRef = collection(db, 'upcomingEvents');
       const eventSnapshot = await getDocs(eventCollectionRef);
 
-      console.log(`Fetched ${eventSnapshot.docs.length} events from Firestore.`);
+      // console.log(`Fetched ${eventSnapshot.docs.length} events from Firestore.`);
 
       if (eventSnapshot.empty) {
         console.log('No documents found in the upcoming collection.');
@@ -39,7 +39,7 @@ export default function UpcomingEventsPage() {
               const url = await getDownloadURL(imageRef);
               // we only need the first image
               eventData.imageUrl = url;
-              console.log(`Fetched image URL for event ${eventData.id}: ${url}`);
+              // console.log(`Fetched image URL for event ${eventData.id}: ${url}`);
             } catch(imageError) {
               console.error(`Error fetching image for event ${eventData.id}:`, imageError);
               eventData.imageUrl = ''; 

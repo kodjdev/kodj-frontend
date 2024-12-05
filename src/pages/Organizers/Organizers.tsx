@@ -1,13 +1,14 @@
 import { FaPeopleGroup } from 'react-icons/fa6';
 import { GoGoal } from 'react-icons/go';
+import sardorImage from '../../assets/avatars/sardor.png';
+import behzodImage from '../../assets/avatars/bekhzod.png';
 
 const organizers = [
   {
     name: "Sardor Madaminov",
     title: "Co-Founder & Organizer",
     description: "Passionate about organizing events that bring people together to share ideas and innovate, with a focus on building a strong community.",
-    // imageUrl: "https://avatars.githubusercontent.com/u/65296404?v=4",
-    imageUrl: "/sardor.png",
+    imageUrl: sardorImage,
     githubUrl: "https://github.com/Sardor-M",
     jobtags : "Software Developer",
   },
@@ -15,8 +16,7 @@ const organizers = [
     name: "Behzod Halil",
     title: "Founder & Organizer",
     description: "Dedicated to fostering a welcoming and inclusive environment for all attendees, speakers, and sponsors. Building a community of learners and creators.",
-    // imageUrl: "https://avatars.githubusercontent.com/u/72313937?v=4",
-    imageUrl: "/bekhzod.png",
+    imageUrl: behzodImage,
     githubUrl: "https://github.com/behzodhalil",
     jobtags : "Andoroid Developer",
   },

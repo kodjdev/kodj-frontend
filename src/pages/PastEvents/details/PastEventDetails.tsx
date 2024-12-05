@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaCalendarAlt, FaParking  } from "react-icons/fa";
 import { FaLocationDot, FaNoteSticky } from "react-icons/fa6";
-
 import Speakers, { Speaker } from '../../../components/Speakers';
 import EventSchedule, { EventSlot } from '../../../components/EventSchedule';
 import { FaBowlFood } from "react-icons/fa6";
@@ -13,14 +12,13 @@ import { doc, getDoc } from 'firebase/firestore';
 import { db, storage } from '../../../firebase/firebaseConfig';
 import { ref, getDownloadURL } from 'firebase/storage';
 import { EventForServer } from '../../../types';
-// import { message } from "antd";
-// import { useAuth } from '../../../context/useAuth';
+import { Spin } from "antd";
 import { useParams } from 'react-router-dom';
 
 
 const upcomingEventSpeakers: Speaker[] = [
     {
-        name: "Dr. John Doe",
+        name: "Boltavoy Teshaboev",
         role: "Data Scientist",
         expertises: [
                 "AI & ML Workshop",
@@ -35,7 +33,7 @@ const upcomingEventSpeakers: Speaker[] = [
         author: "KO'DJ",
     },
     {
-        name: "Dr. Jane Smith",
+        name: "Boltavoy Teshaboev",
         role: "Machine Learning Engineer",
         expertises: [ 
                     "AI & ML Workshop",
@@ -50,7 +48,7 @@ const upcomingEventSpeakers: Speaker[] = [
         author: "KO'DJ",
     },
     {
-        name: "Dr. John Doe",
+        name: "Boltavoy Teshaboev",
         role: "Data Scientist",
         expertises: [
                 "AI & ML Workshop",
@@ -65,7 +63,7 @@ const upcomingEventSpeakers: Speaker[] = [
         author: "KO'DJ",
     },
     {
-        name: "Dr. Jane Smith",
+        name: "Boltavoy Teshaboev",
         role: "Machine Learning Engineer",
         expertises: [ 
                     "AI & ML Workshop",
@@ -87,9 +85,9 @@ const eventSchedule: EventSlot[] = [
         time: "14:30 ~ 15:45",
         location: "Room 201",
         presentations: [
-          { title: "AI Monetization Cases for Enterprises", company: "Moloko", presenter: "Jang Hyung-wook" },
-          { title: "The Rise of Actionable AI", company: "Makinalax", presenter: "Yoon Seong-ho" },
-          { title: "Engineering technologies for large-scale AI data centers", company: "Ravelup", presenter: "Kim Jun-ki" },
+          { title: "AI Monetization Cases for Enterprises", company: "Firma", presenter: "Boltavoy Teshaboev" },
+          { title: "The Rise of Actionable AI", company: "Firma", presenter: "Boltavoy Teshaboev" },
+          { title: "Engineering technologies for large-scale AI data centers", company: "Firma", presenter: "Boltavoy Teshaboev" },
         ],
       },
       {
@@ -97,7 +95,7 @@ const eventSchedule: EventSlot[] = [
         time: "16:00 ~ 17:15",
         location: "Room 201",
         presentations: [
-          { title: "(Panel Discussion) Together Talk by Three AI Community Operators", company: "SK Telecom, NVIDIA", presenter: "Kim Sang-ki, Kim Chan-ran, Seongtae Lee" },
+          { title: "(Panel Discussion) Together Talk by Three AI Community Operators", company: "SK Telecom, NVIDIA", presenter: "Boltavoy Teshaboev, Boltavoy Teshaboev" },
         ],
       },
       {
@@ -105,9 +103,9 @@ const eventSchedule: EventSlot[] = [
         time: "17:30 ~ 18:45",
         location: "Room 201",
         presentations: [
-          { title: "AI Monetization Cases for Enterprises", company: "Moloko", presenter: "Jang Hyung-wook" },
-          { title: "The Rise of Actionable AI", company: "Makinalax", presenter: "Yoon Seong-ho" },
-          { title: "Engineering technologies for large-scale AI data centers", company: "Ravelup", presenter: "Kim Jun-ki" },
+          { title: "AI Monetization Cases for Enterprises", company: "Firma", presenter: "Boltavoy Teshaboev" },
+          { title: "The Rise of Actionable AI", company: "Firma", presenter: "Boltavoy Teshaboev" },
+          { title: "Engineering technologies for large-scale AI data centers", company: "Firma", presenter: "Boltavoy Teshaboev" },
         ],
       },
       {
@@ -115,9 +113,9 @@ const eventSchedule: EventSlot[] = [
         time: "19:00 ~ 20:15",
         location: "Room 201",
         presentations: [
-          { title: "AI Monetization Cases for Enterprises", company: "Moloko", presenter: "Jang Hyung-wook" },
-          { title: "The Rise of Actionable AI", company: "Makinalax", presenter: "Yoon Seong-ho" },
-          { title: "Engineering technologies for large-scale AI data centers", company: "Ravelup", presenter: "Kim Jun-ki" },
+          { title: "AI Monetization Cases for Enterprises", company: "Firma", presenter: "Boltavoy Teshaboev" },
+          { title: "The Rise of Actionable AI", company: "Firma", presenter: "Boltavoy Teshaboev" },
+          { title: "Engineering technologies for large-scale AI data centers", company: "Firma", presenter: "Boltavoy Teshaboev" },
         ],
       }
   ];
@@ -127,8 +125,10 @@ export default function PastEventDetails() {
 
   // const {user} = useAuth();
 
+  // const param = useParams();
+  // const id = param.id as string;
   const { id } = useParams<{ id: string }>();
- 
+
   const [event, setEvent] = useState<EventForServer | null>(null);
   const [isGalleryOpen, setGalleryOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState(0);
@@ -139,7 +139,7 @@ export default function PastEventDetails() {
 
   //   if (!user) {
   //     e.preventDefault(); 
-  //     messageApi.error("로그인이 필요한 기능입니다.");
+  //     messageApi.error("Please login first to register for the event.");
   //     return;
   //   }
   // };
@@ -156,7 +156,7 @@ export default function PastEventDetails() {
       const eventDocRef = doc(db, 'pastEvents', id);
       const eventDoc = await getDoc(eventDocRef);
 
-      console.log('Fetching event with ID:', id);
+      // console.log('Fetching event with ID:', id);
 
       if (eventDoc.exists()) {
         const eventData = eventDoc.data() as EventForServer;
@@ -186,6 +186,7 @@ export default function PastEventDetails() {
     }
   };
 
+
   useEffect(() => {
     if(id) {
        fetchEventData();
@@ -193,7 +194,12 @@ export default function PastEventDetails() {
   }, [id]);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+        <div className="flex items-center justify-center min-h-screen bg-black bg-opacity-50 text-blue-600 text-md"> 
+            <Spin tip="Wait a little bit" size="large">  
+            </Spin> 
+        </div>
+    );
   }
   // Gallery functions
   const openGallery = (index: number) => {
@@ -239,12 +245,27 @@ export default function PastEventDetails() {
   };
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+        <div className="flex items-center justify-center min-h-screen bg-black bg-opacity-50 text-blue-600 text-md"> 
+            <Spin tip="Wait a little bit" size="large">  
+            </Spin> 
+        </div>
+    );
   }
 
   if (!event) {
     return <div>Event not found.</div>;
   }
+
+
+  const date = new Date(event.date.toMillis());
+
+  // we extract year, month, and day
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0'); 
+  const day = String(date.getDate()).padStart(2, '0');
+
+  const formattedDate = `${year}.${month}.${day}`;
 
     return (
       <>
@@ -253,14 +274,12 @@ export default function PastEventDetails() {
             {/* images grid */}
             {/* <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4 pt-5"> */}
               {event.imageUrls?.length === 1 ? (
-                <div className="col-span-2 relative h-72 sm:h-[400px] cursor-pointer" onClick={() => openGallery(0)}>
-                    <img
-                        // key={event.index[0]}
+                <div className="col-span-2 relative h-72 sm:h-[600px] cursor-pointer overflow-hidden" onClick={() => openGallery(0)}> 
+                <img
                         src={event.imageUrls[0]}
                         alt={event.title}
-                        // layout="fill"
-                        // objectFit="cover"
-                        className="rounded-lg shadow-lg"
+                        className="rounded-lg shadow-lg w-full h-full object-cover"
+
                     />
                 </div>
               ) : (
@@ -269,9 +288,7 @@ export default function PastEventDetails() {
                     <img
                       src={event.imageUrls?.[0] ?? ''}
                       alt={event.title}
-                    //   layout="fill"
-                    //   objectFit="cover"
-                      className="rounded-lg shadow-lg"
+                      className="rounded-lg shadow-lg w-full h-full object-cover" 
                     />
                   </div>
                   <div className="grid grid-cols-2 gap-4">
@@ -280,9 +297,8 @@ export default function PastEventDetails() {
                             <img
                                 src={image}
                                 alt={`${event.title} - ${index + 2}`}
-                                // layout="fill"
-                                // objectFit="cover"
-                                className="rounded-lg shadow-md"
+                                // className="rounded-lg shadow-md"
+                                className="rounded-lg shadow-md w-full h-full object-cover"
                             />
                         </div>
                     ))}
@@ -291,9 +307,8 @@ export default function PastEventDetails() {
                             <img
                                 src={event.images[4]}
                                 alt={`${event.title} - 4`}
-                                // layout="fill"
-                                // objectFit="cover"
-                                className="rounded-lg shadow-md"
+                                className="rounded-lg shadow-md w-full h-full object-cover"
+                                // className="rounded-lg shadow-md"
                             />
                             <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center rounded-lg">
                                 <p className="text-white text-md font-bold"> + {event.images.length - 5} photos</p>
@@ -305,15 +320,15 @@ export default function PastEventDetails() {
             )}
             {/* Event Title, Date, Location */}
             <div className="mb-6">
-                <h1 className="text-3xl text-blue-600 font-bold mb-5">{event.title}</h1>
+                <h1 className="text-3xl text-blue-600 font-bold mt-5 mb-5">{event.title}</h1>
                 <div className="text-blue-100 mb-1">
                     <div className="mb-2 font-bold">
                         <p className="mb-2">
                             <FaCalendarAlt className="inline-block mr-3 mb-1" />
-                            {event.date.toString()}
+                            {formattedDate}
                             <button
                                 onClick={handleAddToCalendar}
-                                className="inline-block ml-2 mb-1 text-lg text-blue-600 hover:text-blue-200"
+                                className="inline-block ml-2 mb-1 text-lg text-blue-600 hover:text-blue-200 py-1 px-4 rounded-full"
                                 aria-label="Add to Calendar"
                             >
                                 <BsArrowUpRightCircle />
@@ -321,15 +336,15 @@ export default function PastEventDetails() {
                         </p>
                         <p className="flex items-center mb-2">
                             <BsPeopleFill className="inline-block mr-3 mb-1" />
-                            <strong>20 - 60 seats</strong>
+                            <strong> {event.seats}</strong>
                         </p>
                         <p className="flex items-center mb-2">
                             <FaBowlFood className="inline-block mr-3 mb-1" />
-                            <strong>Coffee & Snacks</strong>
+                            <strong> {event.snacks}</strong>
                         </p>
                         <p className="flex items-center mb-2">
                             <FaParking className="inline-block mr-3 mb-1" />
-                            <strong>Paid parking</strong>
+                            <strong> {event.parking ? "Available" : "Not Available"}</strong>
                         </p>
                     </div>
                     
@@ -348,14 +363,14 @@ export default function PastEventDetails() {
                             </a>
                         </p>
                         {/* <Link 
-                            to={`/events/upcoming/details/${id}/register`}
-                            state={{ 
-                              title: event.title,
-                              date: event.date.toString(),
-                              location: event.location,
-                            }}
-                            onClick={handleProtectedLinkClick}
-                          >
+                          to={`/events/upcoming/details/${id}/register`}
+                          state={{ 
+                            title: event.title,
+                            date: event.date.toString(),
+                            location: event.location,
+                          }}
+                          onClick={handleProtectedLinkClick}
+                        >
                             <Button className="text-sm text-white bg-blue-700 border border-blue-700 px-3 py-1 rounded-2xl flex items-center hover:bg-white hover:text-blue-700 transition-colors duration-300 space-x-1 -mt-6">
                                 <FaArrowUpRightFromSquare className="flex-none text-xs" />
                                 <span>Register</span>

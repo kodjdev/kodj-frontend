@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useAuth } from '../../context/useAuth';
-import { signInWithEmailAndPassword, createUserWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
+import { signInWithEmailAndPassword, createUserWithEmailAndPassword, signInWithPopup, updateProfile} from 'firebase/auth';
 import { auth, provider } from '../../firebase/firebaseConfig';
 import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
@@ -33,7 +33,10 @@ export default function LoginPage() {
           alert('Passwords do not match');
           return;
         }
-        await createUserWithEmailAndPassword(auth, email, password);
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        await updateProfile(userCredential.user, {
+          displayName: email.split('@')[0],
+        });
       } else {
         await signInWithEmailAndPassword(auth, email, password);
       }
@@ -61,7 +64,7 @@ export default function LoginPage() {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black p-4">
       <div className="w-full max-w-md p-8 bg-gray-800 bg-opacity-80 rounded-lg shadow-lg">
-        <h2 className="text-3xl font-bold text-white mb-6 text-center">
+        <h2 className="text-3xl font-bold text-white mb-6 text-center"> 
           {isSignUp ? 'Create an Account' : 'Welcome Back'}
         </h2>
         <form onSubmit={handleEmailAuth} className="space-y-4">
@@ -123,7 +126,7 @@ export default function LoginPage() {
           </span>
           <button
             onClick={() => setIsSignUp(!isSignUp)}
-            className="text-blue-500 hover:underline focus:outline-none"
+            className="text-sm text-blue-500 bg-gray-300 hover:bg-blue-500 hover:text-white px-3 py-1 rounded-1xl transition-colors duration-300"
           >
             {isSignUp ? 'Login' : 'Sign Up'}
           </button>

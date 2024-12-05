@@ -66,24 +66,24 @@ export const registerEvent = functions.https.onRequest((req, res) => {
 
     try {
         const authHeader = req.headers.authorization;
-        console.log("Authorization Header:", authHeader);
+        // console.log("Authorization Header:", authHeader);
   
         if (!authHeader || !authHeader.startsWith("Bearer ")) {
-          console.log("Unauthorized: Missing or invalid Authorization header.");
+          // console.log("Unauthorized: Missing or invalid Authorization header.");
           return res.status(401).json({ message: "Unauthorized" });
         }
   
         const token = authHeader.split("Bearer ")[1];
-        console.log("Received ID Token:", token);
+        // console.log("Received ID Token:", token);
   
         const decodedToken = await admin.auth().verifyIdToken(token);
-        console.log("Decoded Token:", decodedToken);
+        // console.log("Decoded Token:", decodedToken);
   
         const uid = decodedToken.uid;
-        console.log("User ID (uid):", uid);
+        // console.log("User ID (uid):", uid);
   
         const data: RegistrationFormData = req.body;
-        console.log("Registration Data:", data);
+        // console.log("Registration Data:", data);
   
         const registrationData = {
           ...data,
@@ -96,7 +96,7 @@ export const registerEvent = functions.https.onRequest((req, res) => {
   
         // datani firestorega saqlaymiz
         const docRef = await db.collection("registrations").add(registrationDataCleaned);
-        console.log("Document saved with ID:", docRef.id);
+        // console.log("Document saved with ID:", docRef.id);
   
         res.status(201).json({ message: "Registration is successful", id: docRef.id });
         return;

@@ -98,7 +98,7 @@ export default function MyPage() {
             <FaPersonRays className="text-3xl" />
           </div>
           <div>
-            <h1 className="text-3xl font-bold text-white">{"User"}</h1>
+            <h1 className="text-3xl font-bold text-white">{user?.displayName || "User"}</h1> 
             <p className="text-gray-400">{user?.email ?? "No Email found"}</p>
           </div>
         </div>

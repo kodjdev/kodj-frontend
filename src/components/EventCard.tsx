@@ -7,6 +7,7 @@ import { FaArrowUpRightFromSquare } from "react-icons/fa6";
 import { AiOutlinePlus } from "react-icons/ai";
 import { FaPlus } from "react-icons/fa";
 import { useLocation } from "react-router-dom";
+import { Image } from "antd";
 
 type EventCardProps = {
   title?: string;
@@ -52,8 +53,14 @@ export default function EventCard({ title, description, date, author, imageUrl, 
         className="shadow-md hover:shadow-lg transition-shadow duration-300 rounded-xl overflow-hidden max-w-[90%] mx-auto sm:max-w-full"
       >
         <Card>
-          <div className="relative w-full h-48 sm:h-60">
-            <img src={imageUrl ?? ""} alt={title ?? "Image"} className="rounded-t-lg" />
+        <div className="w-70 h-70 rounded-lg overflow-hidden justify-center">
+          <Image
+              width={370}
+              height={300}
+              src={imageUrl ?? ""} 
+              alt={title ?? "Image"} 
+              className="object-center"
+            />
           </div>
           <CardContent className="p-4 sm:p-5">
             <CardTitle className="text-lg sm:text-xl font-semibold text-blue-600">{title}</CardTitle>

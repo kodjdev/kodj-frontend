@@ -73,7 +73,7 @@ export default function EventRegister() {
   });
 
   const onSubmit: SubmitHandler<RegistrationFormData> = async (data) => {
-    console.log("Form data submitted:", data);
+    // console.log("Form data submitted:", data);
     try {
         const auth = getAuth();
         const user = auth.currentUser;
@@ -85,7 +85,7 @@ export default function EventRegister() {
           return; 
         }
 
-        console.log("Data being sent to db:", data);
+        // console.log("Data being sent to db:", data);
 
         const idToken = await user.getIdToken();
 
