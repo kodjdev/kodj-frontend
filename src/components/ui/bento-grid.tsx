@@ -148,7 +148,7 @@ export const SkeletonThree = () => {
             exit={{ opacity: 0 }}
           >
             <motion.div
-              className="relative w-[90%] h-[90%] sm:w-[60%] sm:h-[60%] md:w-[50%] md:h-[50%] lg:w-[40%] lg:h-[40%]"
+              className="relative w-[90%] h-[90%] sm:w-[60%] sm:h-[60%] md:w-[50%] md:h-[50%] lg:w-[40%] lg:h-[40%] flex items-center justify-center"
               initial={{ scale: 0.8 }}
               animate={{ scale: 1 }}
               exit={{ scale: 0.8 }}

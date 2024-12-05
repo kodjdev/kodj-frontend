@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import AnimatedTitle from "./AnimatedTitle";
 import { useAuth } from "../context/useAuth";
 import { auth } from "../firebase/firebaseConfig";
-import { FiLogOut, FiMenu, FiX } from 'react-icons/fi';
+import { FiLogOut, FiMenu, FiX } from "react-icons/fi";
 import { AiOutlineLogin } from "react-icons/ai";
 import { BsFillPersonBadgeFill } from "react-icons/bs";
 import { Link, useLocation } from "react-router-dom";
@@ -19,9 +19,14 @@ const tabs = [
 
 export default function Tabs() {
   const location = useLocation();
-  const [activeTab, setActiveTab] = useState(tabs.find((tab) => location.pathname.startsWith(tab.path))?.id || "");
+  const [activeTab, setActiveTab] = useState(
+    tabs.find((tab) => location.pathname.startsWith(tab.path))?.id || ""
+  );
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const menuRef = useRef<HTMLDivElement>(null); // Reference to the mobile menu
+  const buttonRef = useRef<HTMLButtonElement>(null);
 
   const { user } = useAuth();
 
@@ -32,19 +37,42 @@ export default function Tabs() {
   }, [location.pathname]);
 
   useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        menuRef.current &&
+        !menuRef.current.contains(event.target as Node) &&
+        buttonRef.current &&
+        !buttonRef.current.contains(event.target as Node)
+      ) {
+        setIsMobileMenuOpen(false);
+      }
+    };
+
+    if (isMobileMenuOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isMobileMenuOpen]);
+
+  useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 0);
     };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   const handleLogout = async () => {
     try {
       await auth.signOut();
     } catch (error) {
-      console.error('Error logging out:', error);
-      alert('Failed to log out. Please try again.');
+      console.error("Error logging out:", error);
+      alert("Failed to log out. Please try again.");
     }
   };
 
@@ -78,7 +106,7 @@ export default function Tabs() {
               <button
                 onClick={() => setActiveTab(tab.id)}
                 className={`relative rounded-full px-3 py-1.5 text-sm font-medium text-white outline-sky-400 transition focus-visible:outline-2 ${
-                  activeTab === tab.id ? "" : "text-black"
+                  activeTab === tab.id ? "text-black" : "text-white"
                 }`}
                 style={{
                   WebkitTapHighlightColor: "transparent",
@@ -99,7 +127,7 @@ export default function Tabs() {
                   >
                     <AiOutlineLogin className="text-xl font-bold" />
                   </motion.span>
-                ) : (tab.id === "mypage" && user ? (
+                ) : tab.id === "mypage" && user ? (
                   <motion.span
                     whileHover={{ scale: 1.1, rotate: 15 }}
                     transition={{ type: "spring", stiffness: 300 }}
@@ -108,7 +136,7 @@ export default function Tabs() {
                   </motion.span>
                 ) : (
                   tab.label
-                ))}
+                )}
               </button>
             </Link>
           ))}
@@ -125,14 +153,21 @@ export default function Tabs() {
 
       {/* mobile menu button */}
       <div className="md:hidden">
-        <button onClick={toggleMobileMenu} className="text-white focus:outline-none">
+        <button
+          ref={buttonRef}
+          onClick={toggleMobileMenu}
+          className="text-white focus:outline-none"
+        >
           {isMobileMenuOpen ? <FiX size={24} /> : <FiMenu size={24} />}
         </button>
       </div>
 
-       {/* and we render the mobile  menu only when it's open */}
+      {/* and we render the mobile  menu only when it's open */}
       {isMobileMenuOpen && (
-        <div className="absolute top-16 right-5 bg-black bg-opacity-90 rounded-lg p-5 flex flex-col space-y-4 md:hidden">
+        <div
+          ref={menuRef}
+          className="absolute top-16 right-5 bg-black bg-opacity-90 rounded-lg p-5 flex flex-col space-y-4 md:hidden"
+        >
           {tabs
             .filter((tab) => {
               if (tab.id === "mypage" && !user) return false;
@@ -140,10 +175,17 @@ export default function Tabs() {
               return true;
             })
             .map((tab) => (
-              <Link to={tab.path} key={tab.id} onClick={() => { setActiveTab(tab.id); setIsMobileMenuOpen(false); }}>
+              <Link
+                to={tab.path}
+                key={tab.id}
+                onClick={() => {
+                  setActiveTab(tab.id);
+                  setIsMobileMenuOpen(false);
+                }}
+              >
                 <button
                   className={`w-full text-left relative rounded-full px-3 py-1.5 text-sm font-medium text-white outline-sky-400 transition focus-visible:outline-2 ${
-                    activeTab === tab.id ? "" : "text-black"
+                    activeTab === tab.id ? "text-black" : "text-white"
                   }`}
                   style={{
                     WebkitTapHighlightColor: "transparent",
@@ -154,7 +196,11 @@ export default function Tabs() {
                       layoutId="bubble"
                       className="absolute inset-0 z-10 bg-white mix-blend-difference"
                       style={{ borderRadius: 9999 }}
-                      transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                      transition={{
+                        type: "spring",
+                        bounce: 0.2,
+                        duration: 0.6,
+                      }}
                     />
                   )}
                   {tab.id === "login" && !user ? (
@@ -164,7 +210,7 @@ export default function Tabs() {
                     >
                       <AiOutlineLogin className="text-xl font-bold" />
                     </motion.span>
-                  ) : (tab.id === "mypage" && user ? (
+                  ) : tab.id === "mypage" && user ? (
                     <motion.span
                       whileHover={{ scale: 1.1, rotate: 15 }}
                       transition={{ type: "spring", stiffness: 300 }}
@@ -173,13 +219,16 @@ export default function Tabs() {
                     </motion.span>
                   ) : (
                     tab.label
-                  ))}
+                  )}
                 </button>
               </Link>
             ))}
           {user && (
             <button
-              onClick={() => { handleLogout(); setIsMobileMenuOpen(false); }}
+              onClick={() => {
+                handleLogout();
+                setIsMobileMenuOpen(false);
+              }}
               className="flex items-center space-x-1.5 bg-blue-600 hover:bg-red-600 hover:text-black rounded-full px-3 py-1.5 text-sm font-medium text-white "
             >
               <FiLogOut />

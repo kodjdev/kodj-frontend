@@ -5,14 +5,6 @@ import behzodImage from '../../assets/avatars/bekhzod.png';
 
 const organizers = [
   {
-    name: "Sardor Madaminov",
-    title: "Co-Founder & Organizer",
-    description: "Passionate about organizing events that bring people together to share ideas and innovate, with a focus on building a strong community.",
-    imageUrl: sardorImage,
-    githubUrl: "https://github.com/Sardor-M",
-    jobtags : "Software Developer",
-  },
-  {
     name: "Behzod Halil",
     title: "Founder & Organizer",
     description: "Dedicated to fostering a welcoming and inclusive environment for all attendees, speakers, and sponsors. Building a community of learners and creators.",
@@ -20,6 +12,14 @@ const organizers = [
     githubUrl: "https://github.com/behzodhalil",
     jobtags : "Andoroid Developer",
   },
+  {
+    name: "Sardor Madaminov",
+    title: "Co-Founder & Organizer",
+    description: "Passionate about organizing events that bring people together to share ideas and innovate, with a focus on building a strong community.",
+    imageUrl: sardorImage,
+    githubUrl: "https://github.com/Sardor-M",
+    jobtags : "Software Developer",
+  }
 ];
 
 export default function Organizers() {

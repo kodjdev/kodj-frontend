@@ -321,7 +321,7 @@ export default function UpcomingEventDetails() {
                     <div className="mb-2 font-bold">
                         <p className="mb-2">
                             <FaCalendarAlt className="inline-block mr-3 mb-1" />
-                            {}
+                            {formattedDate}
                             <button
                                 onClick={handleAddToCalendar}
                                 className="inline-block ml-2 mb-1 text-lg text-blue-600 hover:text-blue-200 py-1 px-4 rounded-full"
