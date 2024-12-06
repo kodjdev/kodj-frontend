@@ -26,13 +26,16 @@ export function FeaturesSection() {
     },
   ];
   return (    
-      <div className="relative z-20 py-2  max-w-9xl mx-auto">
+    <div className="relative z-20 py-2 max-w-7xl mx-auto">
         <div className="px-8">
      
-        <h1 className="md:text-7xl text-3xl lg:text-6xl font-bold text-center text-white relative bg-transparent mt-20 p-5 whitespace-normal sm:whitespace-nowrap overflow-hidden">
+        {/* <h1 className="md:text-7xl text-3xl lg:text-6xl font-bold text-center text-white relative bg-transparent mt-20 p-5 whitespace-normal sm:whitespace-nowrap overflow-hidden">
           <FlipTitle />
+          </h1> */}
+          <h1 className="md:text-7xl text-3xl lg:text-6xl font-bold text-center text-white relative bg-transparent mt-10 p-1 whitespace-normal overflow-hidden">
+            <FlipTitle />
           </h1>
-          <h4 className="text-3xl lg:text-5xl lg:leading-tight max-w-5xl mx-auto text-center tracking-tight font-medium text-black text-white">
+          <h4 className="text-2xl lg:text-4xl lg:leading-tight max-w-5xl mx-auto text-center tracking-tight font-medium text-black text-white">
             We connect 👨‍💻s in South Korea.
           </h4>
 

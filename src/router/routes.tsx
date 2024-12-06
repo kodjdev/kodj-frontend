@@ -1,9 +1,19 @@
-import { HomePage, LoginPage, RegisterPage, UpcomingEvents, PastEvents, Organizers, About } from "../pages";
+import {
+  HomePage,
+  LoginPage,
+  RegisterPage,
+  UpcomingEvents,
+  PastEvents,
+  Organizers,
+  About,
+} from "../pages";
 import React from "react";
 import EventRegister from "../pages/EventRegister/EventRegister";
 import MyPage from "../pages/MyPage/MyPage";
 import UpcomingEventDetails from "../pages/UpcomingEvents/details/UpcomingEventDetails";
 import PastEventDetails from "../pages/PastEvents/details/PastEventDetails";
+import News from "../pages/News/News";
+import TechNewsPage from "../pages/News/tech/TechNews";
 
 interface RouteType {
   path: string;
@@ -35,17 +45,17 @@ export const routes: RouteType[] = [
   {
     path: "/mypage",
     component: <MyPage />,
-    auth: true, 
+    auth: true,
   },
   {
     path: "/events/upcoming",
     component: <UpcomingEvents />,
-    auth: false, 
+    auth: false,
   },
   {
     path: "/events/upcoming/details/:id",
     component: <UpcomingEventDetails />,
-    auth: false, 
+    auth: false,
   },
   {
     path: "/events/upcoming/details/:id/register",
@@ -55,16 +65,24 @@ export const routes: RouteType[] = [
   {
     path: "/events/past",
     component: <PastEvents />,
-    auth: false, 
+    auth: false,
   },
   {
     path: "/events/past/details/:id",
     component: <PastEventDetails />,
-    auth: false, 
+    auth: false,
   },
   {
     path: "/organizers",
     component: <Organizers />,
-    auth: false, 
+    auth: false,
+  },
+  {
+    path: "/news",
+    component: <News />,
+  },
+  {
+    path: "/news/tech",
+    component: <TechNewsPage />,
   },
 ];

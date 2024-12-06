@@ -68,3 +68,14 @@ export interface PastEventDetailsProps {
       id: string;
     }>;
   }
+
+  export interface NewsItem {
+    id: string;
+    uniqueId: string;
+    category: string;
+    title: string;
+    author: string;
+    images: string[];
+    description: string;
+    lastEdited: Timestamp; 
+  }

@@ -246,9 +246,9 @@ export default function UpcomingEventDetails() {
     window.open(googleCalendarUrl, '_blank');
   };
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
+  // if (loading) {
+  //   return <div>Loading...</div>;
+  // }
 
   if (!event) {
     return <div>Event not found.</div>;

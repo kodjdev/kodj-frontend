@@ -5,8 +5,9 @@ export function FlipTitle() {
 //   const words = [" Jamiyati.", "Uchrashuvi.", "Yangiliklari", "Xabarlari."];
 
   return (
-    <span className="whitespace-normal sm:whitespace-nowrap">
-       Koreya O&apos;zbek Dasturchilar
+    // <span className="whitespace-nowrap overflow-hidden">
+    <span className="overflow-hidden">
+      Koreya O&apos;zbek Dasturchilar
        <FlipWords words={words}/>
     </span>
   );

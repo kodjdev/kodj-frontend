@@ -1,12 +1,16 @@
+@import 'https://fonts.googleapis.com/css2?family=Architects+Daughter&family=Black+Ops+One&family=Cabin:wght@500&family=Dosis:wght@200..800&family=Fira+Code:wght@300..700&family=Kode+Mono:wght@400..700&family=Mukta:wght@200&family=Signika:wght@300..700&display=swap';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: "Fira Code", monospace;
   line-height: 1.5;
-  font-weight: 400;
+  font-weight: 300;
+  /* font-optical-sizing: auto; */
+  font-style: normal;
 
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
@@ -19,8 +23,10 @@
 }
 
 html, body {
-  font-family: "Signika Negative", sans-serif;
+  font-family: "Fira Code", monospace;
+  /* font-optical-sizing: auto; */
   font-weight: 300;
+  font-style: normal;
   margin: 0;
   padding: 0;
 }
@@ -99,6 +105,7 @@ button:focus-visible {
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
     --radius: 0.5rem;
+      font-family: "Fira Code", monospace;
   }
   .dark {
     --background: 240 10% 3.9%;
