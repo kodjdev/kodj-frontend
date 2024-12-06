@@ -71,11 +71,11 @@ export interface PastEventDetailsProps {
 
   export interface NewsItem {
     id: string;
-    uniqueId: string;
-    category: string;
+    uniqueId?: string;
+    category?: string;
     title: string;
-    author: string;
-    images: string[];
-    description: string;
-    lastEdited: Timestamp; 
+    author?: string;
+    images?: string[];
+    description?: string;
+    lastEdited?: Timestamp; 
   }

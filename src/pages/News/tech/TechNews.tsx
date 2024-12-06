@@ -1,55 +1,66 @@
 import { useEffect, useState } from "react";
 import { db } from "../../../firebase/firebaseConfig";
-import {
-  collection,
-  getDocs,
-  query,
-  orderBy,
-  where,
-  Timestamp,
-} from "firebase/firestore";
-import { useNavigate } from "react-router-dom";
+import { doc, getDoc, Timestamp } from "firebase/firestore";
+import { useNavigate, useParams } from "react-router-dom";
 import { getDownloadURL, getStorage, ref } from "firebase/storage";
 import { NewsItem } from "../../../types";
 
 export default function TechNewsPage() {
+  const { id } = useParams<{ id: string }>();
   const [news, setNews] = useState<NewsItem[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const navigate = useNavigate();
 
-  const fetchNews = async () => {
-    try {
-      const q = query(
-        collection(db, "news"),
-        where("category", "==", "tech"), // cetegoriya orqali fitler qilamiz datani
-        orderBy("lastEdited", "desc")
-      );
-      const querySnapshot = await getDocs(q);
-      const newsData: NewsItem[] = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        uniqueId: doc.data().uniqueId,
-        title: doc.data().title,
-        category: doc.data().category,
-        author: doc.data().author,
-        images: doc.data().images,
-        description: doc.data().description,
-        lastEdited: doc.data().lastEdited,
-      }));
+  // Replace the fetchNews function body with the following code:
 
+  const fetchNews = async () => {
+    if (!id) {
+      console.error("No event ID provided in the URL.");
+      setLoading(false);
+      return;
+    }
+
+    try {
+      // Directly fetch the specific document by ID
+      const docRef = doc(db, "news", id);
+      const docSnap = await getDoc(docRef);
+
+      if (!docSnap.exists()) {
+        console.error("No such document!");
+        setLoading(false);
+        return;
+      }
+
+      const data = docSnap.data();
+      // Ensure it's of category 'tech'
+      if (data.category !== "tech") {
+        console.error("This news item does not belong to the tech category.");
+        setLoading(false);
+        return;
+      }
+
+      const item: NewsItem = {
+        id: docSnap.id,
+        uniqueId: data.uniqueId,
+        title: data.title,
+        category: data.category,
+        author: data.author,
+        images: data.images,
+        description: data.description,
+        lastEdited: data.lastEdited,
+      };
+
+      // Fetch image URLs from Firebase Storage
       const storage = getStorage();
-      const updatedNewsData = await Promise.all(
-        newsData.map(async (item) => {
-          const imageUrls = await Promise.all(
-            item.images.map(async (imagePath) => {
-              const imageRef = ref(storage, imagePath);
-              return await getDownloadURL(imageRef);
-            })
-          );
-          return { ...item, images: imageUrls };
+      const imageUrls = await Promise.all(
+        (item.images ?? []).map(async (imagePath: string) => {
+          const imageRef = ref(storage, imagePath);
+          return await getDownloadURL(imageRef);
         })
       );
+      item.images = imageUrls;
 
-      setNews(updatedNewsData);
+      setNews([item]); // Set single item in array for consistent rendering
       setLoading(false);
     } catch (error) {
       console.error("Error fetching news: ", error);
@@ -105,49 +116,50 @@ export default function TechNewsPage() {
         <div className="text-center text-gray-500 p-40"> No news found!</div>
       ) : (
         <div className="space-y-8 pt-20">
-    {news.map((item) => {
-      const sentences = item.description
-        .split(".")
-        .map((s) => s.trim())
-        .filter(Boolean);
+          {news.map((item) => {
+            const description = item.description ?? "";
+            const sentences = description
+              .split(".")
+              .map((s) => s.trim())
+              .filter(Boolean);
 
-      return (
-        <div
-          key={item.id}
-          className="p-6 border rounded-md shadow-md bg-neutral-800 text-white"
-        >
-          <h2 className="text-2xl font-semibold mb-10">{item.title}</h2>
-          
-          {/* Container to arrange text and image side-by-side on larger screens, stacked on mobile */}
-          <div className="md:flex md:items-start md:justify-between">
-            <div className="text-gray-300 space-y-4 md:flex-1">
-              {sentences.map((sentence, index) => (
-                <p key={index}>{sentence}.</p>
-              ))}
-            </div>
-            
-            {item.images && item.images.length > 0 ? (
-              <div className="mt-4 md:mt-0 md:ml-4 flex-shrink-0">
-                <img
-                  src={item.images[0]}
-                  alt={item.title}
-                  className="w-[150px] h-auto object-contain rounded"
-                />
-              </div>
-            ) : (
-              <div className="mt-4 md:mt-0 w-[50px] h-[50px] bg-gray-300 rounded md:ml-4 flex-shrink-0">
-                No Image
-              </div>
-            )}
-          </div>
+            return (
+              <div
+                key={item.id}
+                className="p-6 border rounded-md shadow-md bg-neutral-800 text-white"
+              >
+                <h2 className="text-2xl font-semibold mb-10">{item.title}</h2>
 
-          <div className="mt-4 text-sm text-gray-400 pt-40">
-            {formatDate(item.lastEdited)}
-          </div>
+                {/* Container to arrange text and image side-by-side on larger screens, stacked on mobile */}
+                <div className="md:flex md:items-start md:justify-between">
+                  <div className="text-gray-300 space-y-4 md:flex-1">
+                    {sentences.map((sentence: string, index: number) => (
+                      <p key={index}>{sentence}.</p>
+                    ))}
+                  </div>
+
+                  {item.images && item.images.length > 0 ? (
+                    <div className="mt-4 md:mt-0 md:ml-4 flex-shrink-0">
+                      <img
+                        src={item.images[0]}
+                        alt={item.title}
+                        className="w-[150px] h-auto object-contain rounded"
+                      />
+                    </div>
+                  ) : (
+                    <div className="mt-4 md:mt-0 w-[50px] h-[50px] bg-gray-300 rounded md:ml-4 flex-shrink-0">
+                      No Image
+                    </div>
+                  )}
+                </div>
+
+                <div className="mt-4 text-sm text-gray-400 pt-40">
+                  {item.lastEdited ? formatDate(item.lastEdited) : 'No date available'}
+                </div>
+              </div>
+            );
+          })}
         </div>
-      );
-    })}
-  </div>
       )}
     </div>
   );
