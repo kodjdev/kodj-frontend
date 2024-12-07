@@ -10,6 +10,7 @@ import communication from '../assets/icons/communication.png';
 import collaborate from '../assets/icons/collaborate.png';
 import creativity from '../assets/icons/creativity.png';
 import workshop from '../assets/icons/workshop.png';
+import AnimatedTitle from "./AnimatedTitle";
 
 
 gsap.registerPlugin(ScrollTrigger);
@@ -81,7 +82,10 @@ export default function BenefitsSection() {
     <div className="min-h-screen bg-gradient-to-r from-gray-800 to-gray-900 p-10 text-gray-200 rounded-lg">
       <div className="container mx-auto py-10 px-6 max-w-6xl">
         {/* Section Title */}
-        <div className="flex flex-col text-center mb-12">
+        <div className="flex flex-col text-center mb-12"> 
+        <div className="pb-5">
+          <AnimatedTitle />
+          </div>
           <h2 className=" text-left text-4xl font-bold text-blue-400 mb-6">
             Who is <span className="text-4xl font-bold text-blue-600 mb-6 bg-gray-200">&nbsp;KO'DJ&nbsp;</span> ?
           </h2>

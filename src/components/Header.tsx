@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
-import AnimatedTitle from "./AnimatedTitle";
 import { useAuth } from "../context/useAuth";
 import { auth } from "../firebase/firebaseConfig";
 import { FiLogOut, FiMenu, FiX } from "react-icons/fi";
@@ -17,6 +16,9 @@ const tabs = [
   { id: "mypage", label: "My Page", path: "/mypage" },
   { id: "login", label: "Login", path: "/login" },
 ];
+
+import logoImg from '../../src/assets/icons/kodj_new.jpg';
+
 
 export default function Tabs() {
   const location = useLocation();
@@ -88,11 +90,13 @@ export default function Tabs() {
         isScrolled ? "bg-black shadow-lg" : "bg-transparent"
       }`}
     >
-      <div className="flex-1">
+      {/* <div className="flex-1"> */}
+      <div className="relative w-28 h-28 mr-2 pt-9 pb-2 mx-2 overflow-hidden flex-shrink-3">
         <Link to="/">
-          <AnimatedTitle />
+          <img src={logoImg}></img>
         </Link>
-      </div>
+        </div>
+      {/* </div> */}
 
       {/* Bu yerda biz hide menu on small screens, show as flex on medium and larger screens  */}
       <div className="hidden md:flex space-x-1 mr-5">
