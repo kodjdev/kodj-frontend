@@ -7,7 +7,7 @@ import { NewsItem } from "../../../types";
 import { Spin } from "antd";
 
 export default function NewsDetails() {
-  const { category, id } = useParams<{category: string,  id: string }>();
+  const { category, id } = useParams<{ category: string; id: string }>();
   const [news, setNews] = useState<NewsItem[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const navigate = useNavigate();
@@ -121,7 +121,10 @@ export default function NewsDetails() {
                 key={item.id}
                 className="p-6 border rounded-md shadow-md bg-neutral-800 text-white"
               >
-                <h2 className="text-2xl font-semibold mb-10">{item.title}</h2>
+                <h2 className="text-2xl font-semibold mb-4">{item.title}</h2>
+                {item.author && (
+                  <p className="text-gray-300 text-lg mb-8">Author: {item.author}</p>
+                )}
 
                 {/* Container to arrange text and image side-by-side on larger screens, stacked on mobile */}
                 <div className="md:flex md:items-start md:justify-between">
@@ -151,6 +154,7 @@ export default function NewsDetails() {
                     ? formatDate(item.lastEdited)
                     : "No date available"}
                 </div>
+               
               </div>
             );
           })}
