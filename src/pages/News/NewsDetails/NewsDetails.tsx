@@ -4,9 +4,10 @@ import { doc, getDoc, Timestamp } from "firebase/firestore";
 import { useNavigate, useParams } from "react-router-dom";
 import { getDownloadURL, getStorage, ref } from "firebase/storage";
 import { NewsItem } from "../../../types";
+import { Spin } from "antd";
 
-export default function TechNewsPage() {
-  const { id } = useParams<{ id: string }>();
+export default function NewsDetails() {
+  const { category, id } = useParams<{category: string,  id: string }>();
   const [news, setNews] = useState<NewsItem[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const navigate = useNavigate();
@@ -32,8 +33,8 @@ export default function TechNewsPage() {
       }
 
       const data = docSnap.data();
-      // Ensure it's of category 'tech'
-      if (data.category !== "tech") {
+      // Ensure it's of category 'category'
+      if (data.category !== category) {
         console.error("This news item does not belong to the tech category.");
         setLoading(false);
         return;
@@ -70,7 +71,7 @@ export default function TechNewsPage() {
 
   useEffect(() => {
     fetchNews();
-  }, []);
+  }, [category, id]);
 
   // Timestamp datani olib format qilamiz
   const formatDate = (timestamp: Timestamp) => {
@@ -101,16 +102,8 @@ export default function TechNewsPage() {
         &#8592;
       </button>
       {loading ? (
-        <div className="space-y-4">
-          {Array.from({ length: 6 }).map((_, index) => (
-            <div key={index} className="animate-pulse flex space-x-4">
-              <div className="rounded bg-gray-300 h-12 w-12"></div>
-              <div className="flex-1 space-y-2 py-1">
-                <div className="h-4 bg-gray-300 rounded w-3/4"></div>
-                <div className="h-4 bg-gray-300 rounded"></div>
-              </div>
-            </div>
-          ))}
+        <div className="flex items-center justify-center min-h-screen bg-black bg-opacity-50 text-blue-600 text-md">
+          <Spin tip="Wait a little bit" size="large"></Spin>
         </div>
       ) : news.length === 0 ? (
         <div className="text-center text-gray-500 p-40"> No news found!</div>
@@ -154,7 +147,9 @@ export default function TechNewsPage() {
                 </div>
 
                 <div className="mt-4 text-sm text-gray-400 pt-40">
-                  {item.lastEdited ? formatDate(item.lastEdited) : 'No date available'}
+                  {item.lastEdited
+                    ? formatDate(item.lastEdited)
+                    : "No date available"}
                 </div>
               </div>
             );

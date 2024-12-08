@@ -11,7 +11,7 @@ import EventRegister from "../pages/EventRegister/EventRegister";
 import MyPage from "../pages/MyPage/MyPage";
 import UpcomingEventDetails from "../pages/UpcomingEvents/details/UpcomingEventDetails";
 import PastEventDetails from "../pages/PastEvents/details/PastEventDetails";
-import TechNewsPage from "../pages/News/tech/TechNews";
+import NewsDetails from "../pages/News/NewsDetails/NewsDetails";
 import NewsList from "../pages/News/NewsList";
 
 interface RouteType {
@@ -76,11 +76,11 @@ export const routes: RouteType[] = [
     component: <NewsList />,
   },
   {
-    path: "/news/tech",
-    component: <TechNewsPage />,
+    path: "/news/:category",
+    component: <NewsList />,
   },
   {
-    path: "/news/tech/:id",
-    component: <TechNewsPage />,
-  },
+    path: "/news/:category/:id",
+    component: <NewsDetails />,
+  }
 ];

@@ -1,7 +1,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import { routes } from "./routes";
 import PrivateWrapper from "./ProtectedRoute";
 
@@ -21,6 +21,8 @@ export default function RouterPage() {
             }
             />
         ))}
+        {/* // we catch undefined paths */}
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
   );
 }
