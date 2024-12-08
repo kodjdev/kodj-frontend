@@ -26,7 +26,7 @@ export function FeaturesSection() {
     },
   ];
   return (    
-    <div className="relative z-20 py-2 max-w-7xl mx-auto">
+    <div className="relative z-20 py-2 max-w-9xl mx-auto">
         <div className="px-8">
      
         {/* <h1 className="md:text-7xl text-3xl lg:text-6xl font-bold text-center text-white relative bg-transparent mt-20 p-5 whitespace-normal sm:whitespace-nowrap overflow-hidden">

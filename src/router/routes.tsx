@@ -4,7 +4,6 @@ import {
   RegisterPage,
   UpcomingEvents,
   PastEvents,
-  Organizers,
   About,
 } from "../pages";
 import React from "react";
@@ -70,11 +69,6 @@ export const routes: RouteType[] = [
   {
     path: "/events/past/details/:id",
     component: <PastEventDetails />,
-    auth: false,
-  },
-  {
-    path: "/organizers",
-    component: <Organizers />,
     auth: false,
   },
   {

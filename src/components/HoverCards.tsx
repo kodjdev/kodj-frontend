@@ -9,7 +9,7 @@ export function CardHoverEffect() {
 }
 export const projects = [
   {
-    title: "AI & ML Evenrts",
+    title: "AI & ML Events",
     description: "A platform for discovering and sharing AI and machine learning events in Uzbekistan and South Korea.",
     link: "https://aiandmlevents.uz",
   },

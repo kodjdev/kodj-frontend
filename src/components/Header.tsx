@@ -12,13 +12,12 @@ const tabs = [
   { id: "news", label: "News", path: "/news" },
   { id: "pastEvents", label: "Past Events", path: "/events/past" },
   { id: "upcomingEvents", label: "Upcoming Events", path: "/events/upcoming" },
-  { id: "organizers", label: "Organizers", path: "/organizers" },
   { id: "mypage", label: "My Page", path: "/mypage" },
   { id: "login", label: "Login", path: "/login" },
 ];
 
-import logoImg from '../../src/assets/icons/kodj_new.jpg';
-
+// import logoImg from "../../src/assets/icons/kodj_new.jpg";
+import FlipLogo from "./FlipLogo";
 
 export default function Tabs() {
   const location = useLocation();
@@ -90,14 +89,9 @@ export default function Tabs() {
         isScrolled ? "bg-black shadow-lg" : "bg-transparent"
       }`}
     >
-      {/* <div className="flex-1"> */}
-      <div className="relative w-28 h-28 mr-2 pt-9 pb-2 mx-2 overflow-hidden flex-shrink-3">
-        <Link to="/">
-          <img src={logoImg}></img>
-        </Link>
-        </div>
-      {/* </div> */}
-
+      <div>
+        <FlipLogo/>
+      </div>
       {/* Bu yerda biz hide menu on small screens, show as flex on medium and larger screens  */}
       <div className="hidden md:flex space-x-1 mr-5">
         {tabs
@@ -164,7 +158,11 @@ export default function Tabs() {
           className="text-white focus:outline-none"
         >
           {/* {isMobileMenuOpen ? <FiX size={24} /> : <FiMenu size={24} />} */}
-          {isMobileMenuOpen ? <FiX className="text-black dark:text-white" size={24} /> : <FiMenu className="text-black dark:text-white" size={24} />}
+          {isMobileMenuOpen ? (
+            <FiX className="text-black dark:text-white" size={24} />
+          ) : (
+            <FiMenu className="text-black dark:text-white" size={24} />
+          )}
         </button>
       </div>
 
@@ -205,8 +203,6 @@ export default function Tabs() {
                       layoutId="bubble"
                       // className="absolute inset-0 z-10 bg-white mix-blend-difference"
                       className="absolute inset-0 z-10 bg-gray-300 dark:bg-black rounded-full hidden md:block"
-
-
                       style={{ borderRadius: 9999 }}
                       transition={{
                         type: "spring",

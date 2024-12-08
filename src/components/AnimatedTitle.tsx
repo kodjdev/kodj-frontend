@@ -32,7 +32,7 @@ const AnimatedTitle: React.FC = () => {
 
   return (
     <div className="flex justify-center items-center overflow-hidden">
-      <div className="text-pink-500 font-bold text-3xl sm:text-4xl">
+      <div className="text-blue-500 font-bold text-3xl sm:text-4xl">
         {'>'}
       </div>
       <div
@@ -40,7 +40,7 @@ const AnimatedTitle: React.FC = () => {
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
         // className="cursor-pointer text-4xl md:text-4xl font-bold py-4 px-6 md:px-12 text-white"
-        className="cursor-pointer text-3xl sm:text-4xl font-bold py-2 px-4 sm:py-4 sm:px-6 text-white whitespace-nowrap"
+        className="cursor-pointer text-3xl sm:text-4xl font-bold py-2 px-4 sm:py-4 sm:px-3 text-white whitespace-nowrap"
       >
         KO&apos;DJ
       </div>
