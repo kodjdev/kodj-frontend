@@ -4,8 +4,7 @@ import { FaCalendarAlt, FaParking  } from "react-icons/fa";
 import { FaLocationDot, FaNoteSticky } from "react-icons/fa6";
 import { Button } from '../../../components/ui/button';
 import { FaArrowUpRightFromSquare } from "react-icons/fa6";
-import Speakers, { Speaker } from '../../../components/Speakers';
-import EventSchedule, { EventSlot } from '../../../components/EventSchedule';
+import Speakers from '../../../components/Speakers';
 import { FaBowlFood } from "react-icons/fa6";
 import { BsPeopleFill } from "react-icons/bs";
 import {BsArrowUpRightCircle} from "react-icons/bs";
@@ -13,116 +12,37 @@ import {BsArrowUpRightCircle} from "react-icons/bs";
 import { doc, getDoc } from 'firebase/firestore';
 import { db, storage } from '../../../firebase/firebaseConfig';
 import { ref, getDownloadURL } from 'firebase/storage';
-import { EventForServer } from '../../../types';
+import { EventForServer, Speaker } from '../../../types';
 import { message, Spin } from "antd";
 import { useAuth } from '../../../context/useAuth';
 import { Link, useParams } from 'react-router-dom';
 
-
 const upcomingEventSpeakers: Speaker[] = [
-    {
-        name: "Dr. John Doe",
-        role: "Data Scientist",
-        expertises: [
-                "AI & ML Workshop",
-                "Data Scientist",
-                "Machine Learning "
-        ],
-        imageUrl: "/pastEvents/past1.jpeg",
-        linkedIn: "https://www.linkedin.com/in/johndoe",
-        date: "February 10, 2024",
-        description: "This hands-on workshop will dive deep into AI and machine learning techniques. Learn from industry experts and enhance your skills in the world of artificial intelligence.",
-        authorImg: "/pastEvents/past1.jpeg",
-        author: "KO'DJ",
-    },
-    {
-        name: "Dr. Jane Smith",
-        role: "Machine Learning Engineer",
-        expertises: [ 
+  {         category: "past",
+            name: "Dr. John Doe",
+            position: "Data Scientist",
+            expertises: [
                     "AI & ML Workshop",
                     "Data Scientist",
                     "Machine Learning "
-        ],
-        imageUrl: "/pastEvents/past2.jpeg",
-        linkedIn: "https://www.linkedin.com/in/janesmith",
-        date: "February 10, 2024",
-        description: "This hands-on workshop will dive deep into AI and machine learning techniques. Learn from industry experts and enhance your skills in the world of artificial intelligence.",
-        authorImg: "/pastEvents/past1.jpeg",
-        author: "KO'DJ",
-    },
-    {
-        name: "Dr. John Doe",
-        role: "Data Scientist",
-        expertises: [
-                "AI & ML Workshop",
-                "Data Scientist",
-                "Machine Learning "
-        ],
-        imageUrl: "/pastEvents/past1.jpeg",
-        linkedIn: "https://www.linkedin.com/in/johndoe",
-        date: "February 10, 2024",
-        description: "This hands-on workshop will dive deep into AI and machine learning techniques. Learn from industry experts and enhance your skills in the world of artificial intelligence.",
-        authorImg: "/pastEvents/past1.jpeg",
-        author: "KO'DJ",
-    },
-    {
-        name: "Dr. Jane Smith",
-        role: "Machine Learning Engineer",
-        expertises: [ 
-                    "AI & ML Workshop",
-                    "Data Scientist",
-                    "Machine Learning "
-        ],
-        imageUrl: "/pastEvents/past2.jpeg",
-        linkedIn: "https://www.linkedin.com/in/janesmith",
-        date: "February 10, 2024",
-        description: "This hands-on workshop will dive deep into AI and machine learning techniques. Learn from industry experts and enhance your skills in the world of artificial intelligence.",
-        authorImg: "/pastEvents/past1.jpeg",
-        author: "KO'DJ",
-    }
+            ],
+            linkedinUrl: "/pastEvents/past1.jpeg",
+            speakerImg: "https://www.linkedin.com/in/johndoe",
+            speakersId: "1"
+        },
+        {         category: "past",
+          name: "Dr. John Doe",
+          position: "Data Scientist",
+          expertises: [
+                  "AI & ML Workshop",
+                  "Data Scientist",
+                  "Machine Learning "
+          ],
+          linkedinUrl: "/pastEvents/past1.jpeg",
+          speakerImg: "https://www.linkedin.com/in/johndoe",
+          speakersId: "1"
+      },
 ]
-
-const eventSchedule: EventSlot[] = [
-    {
-        subject: "K-AI Alliance AI Solutions",
-        time: "14:30 ~ 15:45",
-        location: "Room 201",
-        presentations: [
-          { title: "AI Monetization Cases for Enterprises", company: "Moloko", presenter: "Jang Hyung-wook" },
-          { title: "The Rise of Actionable AI", company: "Makinalax", presenter: "Yoon Seong-ho" },
-          { title: "Engineering technologies for large-scale AI data centers", company: "Ravelup", presenter: "Kim Jun-ki" },
-        ],
-      },
-      {
-        subject: "Growing together with AI",
-        time: "16:00 ~ 17:15",
-        location: "Room 201",
-        presentations: [
-          { title: "(Panel Discussion) Together Talk by Three AI Community Operators", company: "SK Telecom, NVIDIA", presenter: "Kim Sang-ki, Kim Chan-ran, Seongtae Lee" },
-        ],
-      },
-      {
-        subject: "AI & ML Workshop",
-        time: "17:30 ~ 18:45",
-        location: "Room 201",
-        presentations: [
-          { title: "AI Monetization Cases for Enterprises", company: "Moloko", presenter: "Jang Hyung-wook" },
-          { title: "The Rise of Actionable AI", company: "Makinalax", presenter: "Yoon Seong-ho" },
-          { title: "Engineering technologies for large-scale AI data centers", company: "Ravelup", presenter: "Kim Jun-ki" },
-        ],
-      },
-      {
-        subject: "AI & ML Workshop",
-        time: "19:00 ~ 20:15",
-        location: "Room 201",
-        presentations: [
-          { title: "AI Monetization Cases for Enterprises", company: "Moloko", presenter: "Jang Hyung-wook" },
-          { title: "The Rise of Actionable AI", company: "Makinalax", presenter: "Yoon Seong-ho" },
-          { title: "Engineering technologies for large-scale AI data centers", company: "Ravelup", presenter: "Kim Jun-ki" },
-        ],
-      }
-  ];
-
 
 export default function UpcomingEventDetails() {
 
@@ -380,7 +300,7 @@ export default function UpcomingEventDetails() {
             <div className="prose prose-lg text-white mb-8">
                 <p>{event.description}</p>
             </div>
-            <EventSchedule schedule={eventSchedule} />
+            {/* <EventSchedule schedule={eventSchedule} /> */}
             {/* <div className="bg-gray-800 p-6 rounded-lg text-gray-200 mt-8"></div> */}
             <div className='mt-10'>  </div>
             {/* speakers */}  
