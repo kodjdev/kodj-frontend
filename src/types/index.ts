@@ -31,6 +31,7 @@ export interface UpcomingEventsRegistration {
 }
 
 export interface EventForServer {
+    speakerId?: string,
     id: string;
     title: string;
     description: string;
@@ -78,4 +79,28 @@ export interface PastEventDetailsProps {
     images?: string[];
     description?: string;
     lastEdited?: Timestamp; 
+  }
+
+  export interface Speaker {
+    id: string,
+    category?: string,
+    date?: Timestamp,
+    expertises: string[],
+    linekdinUrl: string,
+    name: string,
+    position: string,
+    speakerImg: string,
+    speakersId: string
+  }
+
+  export interface EventTimeline {
+    eventId: string,
+    speakerName?: string,
+    category: string,
+    companyName: string,
+    endTime: Timestamp,
+    startTime:Timestamp,
+    location: string,
+    speakerId: number,
+    subject: string
   }
