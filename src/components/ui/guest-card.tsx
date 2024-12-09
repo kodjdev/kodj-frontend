@@ -7,7 +7,7 @@ export function SpeakerCard({
   position,
   expertises,
   speakerImg,
-  linekdinUrl,
+  linkedinUrl,
 }: Speaker) {
   return (
     <motion.div
@@ -17,17 +17,18 @@ export function SpeakerCard({
       <img
         src={speakerImg}
         alt={`${name}'s photo`}
-        width={250}
-        height={250}
-        className="rounded-lg mb-1"
+        // width={240}
+        // height={240}
+        className="w-full h-auto rounded-lg mb-1"
+
       />
       <div className="flex items-center justify-between w-full">
         <h2 className="text-lg flex-start font-semibold text-gray-800 text-left">
           {name}
         </h2>
-        {linekdinUrl && (
+        {linkedinUrl && (
           <a
-            href={linekdinUrl}
+            href={linkedinUrl}
             target="_blank"
             rel="noopener noreferrer"
             className="m-2 text-blue-500 hover:text-blue-700"

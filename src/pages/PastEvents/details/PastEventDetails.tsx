@@ -315,9 +315,6 @@ export default function PastEventDetails() {
         {/* speakers */}
         {speakers.length > 0 && (
           <div className="mt-6">
-            <h3 className="text-xl font-semibold text-gray-300 mb-2">
-              Speakers
-            </h3>
             <Speakers speakers={speakers} />
           </div>
         )}

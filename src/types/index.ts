@@ -82,11 +82,11 @@ export interface PastEventDetailsProps {
   }
 
   export interface Speaker {
-    id: string,
+    id?: string,
     category?: string,
     date?: Timestamp,
     expertises: string[],
-    linekdinUrl: string,
+    linkedinUrl: string,
     name: string,
     position: string,
     speakerImg: string,
