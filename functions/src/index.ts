@@ -7,14 +7,6 @@
  * See a full list of supported triggers at https://firebase.google.com/docs/functions
  */
 
-// Start writing functions
-// https://firebase.google.com/docs/functions/typescript
-
-// export const helloWorld = onRequest((request, response) => {
-//   logger.info("Hello logs!", {structuredData: true});
-//   response.send("Hello from Firebase!");
-// });
-
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
 import cors from 'cors';
@@ -66,24 +58,16 @@ export const registerEvent = functions.https.onRequest((req, res) => {
 
     try {
         const authHeader = req.headers.authorization;
-        // console.log("Authorization Header:", authHeader);
-  
+
         if (!authHeader || !authHeader.startsWith("Bearer ")) {
-          // console.log("Unauthorized: Missing or invalid Authorization header.");
           return res.status(401).json({ message: "Unauthorized" });
         }
   
         const token = authHeader.split("Bearer ")[1];
-        // console.log("Received ID Token:", token);
   
         const decodedToken = await admin.auth().verifyIdToken(token);
-        // console.log("Decoded Token:", decodedToken);
-  
-        const uid = decodedToken.uid;
-        // console.log("User ID (uid):", uid);
-  
+        const uid = decodedToken.uid;  
         const data: RegistrationFormData = req.body;
-        // console.log("Registration Data:", data);
   
         const registrationData = {
           ...data,
@@ -96,13 +80,11 @@ export const registerEvent = functions.https.onRequest((req, res) => {
   
         // datani firestorega saqlaymiz
         const docRef = await db.collection("registrations").add(registrationDataCleaned);
-        // console.log("Document saved with ID:", docRef.id);
-  
+
         res.status(201).json({ message: "Registration is successful", id: docRef.id });
         return;
-      } catch (error: any) {
-        console.error("Error registering user:", error.stack || error);
-        const errorMessage = error?.message || "Internal server error";
+      } catch (error) {
+        const errorMessage = (error instanceof Error) ? error.message : "Internal server error";
         res.status(500).json({ message: errorMessage });
         return;
       }
