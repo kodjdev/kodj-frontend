@@ -1,12 +1,7 @@
-import { Card, CardTitle, CardDescription, CardContent, CardFooter } from "../../src/components/ui/card";
+import { Card, CardTitle, CardDescription, CardContent } from "../../src/components/ui/card";
 import { CiCalendarDate } from "react-icons/ci";
 import { motion } from "framer-motion";
-import { Button } from "./ui/button";
-import { FaArrowUpRightFromSquare } from "react-icons/fa6";
-// import { usePathname } from "next/navigation";
-import { AiOutlinePlus } from "react-icons/ai";
 import { FaPlus } from "react-icons/fa";
-import { useLocation } from "react-router-dom";
 import { Image } from "antd";
 
 type EventCardProps = {
@@ -18,10 +13,10 @@ type EventCardProps = {
   isPlaceholder?: boolean;
 };
 
-export default function EventCard({ title, description, date, author, imageUrl, isPlaceholder }: EventCardProps) {
+export default function EventCard({ title, description, date, imageUrl, isPlaceholder }: EventCardProps) {
 
-  const location = useLocation();
-  const pathname = location.pathname;
+  // const location = useLocation();
+  // const pathname = location.pathname;
 
   if (isPlaceholder) {
     return (
@@ -50,30 +45,35 @@ export default function EventCard({ title, description, date, author, imageUrl, 
           scale: 1.05,
           transition: { duration: 0.3 }
         }}
-        className="shadow-md hover:shadow-lg transition-shadow duration-300 rounded-xl overflow-hidden max-w-[90%] mx-auto sm:max-w-full"
+        // className="shadow-md hover:shadow-lg transition-shadow duration-300 rounded-xl overflow-hidden max-w-[90%] mx-auto sm:max-w-full"
+        className="shadow-md hover:shadow-lg transition-shadow duration-300 rounded-lg overflow-hidden max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg mx-auto"
+
       >
-        <Card>
-        <div className="w-70 h-70 rounded-lg overflow-hidden justify-center">
+        <Card className="border-none">
+        {/* <div className="w-70 h-70 rounded-lg overflow-hidden justify-center"> */}
+        <div className="w-full h-48 sm:h-64 md:h-72 overflow-hidden flex justify-center">
+
           <Image
               width={370}
               height={300}
               src={imageUrl ?? ""} 
               alt={title ?? "Image"} 
               className="object-center"
+              // className="object-cover w-full h-full"
             />
           </div>
-          <CardContent className="p-4 sm:p-5">
-            <CardTitle className="text-lg sm:text-xl font-semibold text-blue-600">{title}</CardTitle>
+          <CardContent className="p-2 sm:p-4 bg-neutral-900">
+            <CardTitle className="text-lg sm:text-2xl font-semibold text-white">{title}</CardTitle>
+            <p className="text-sm sm:text-base text-gray-400 line-clamp-2 mt-2 text-left mb-3">{description}</p>
             <div className="flex items-center">
               <CiCalendarDate className="inline-block text-blue-600 mr-1" />
-              <CardDescription className="text-sm text-gray-500 text-left">{date}</CardDescription>
+              <CardDescription className="text-sm sm:text-md text-blue-600 text-left">{date}</CardDescription>
             </div>
-            <p className="text-sm sm:text-base text-gray-900 line-clamp-2 mt-2 text-left">{description}</p>
-            <div className="mt-2 text-xs text-gray-700 text-left flex items-center">
+            {/* <div className="mt-2 text-xs text-gray-700 text-left flex items-center">
               By: <p className="text-gray-800 font-bold ml-1">{author}</p>
-            </div>
+            </div> */}
           </CardContent>
-            { pathname.includes("events/past") ? (
+            {/* { pathname.includes("events/past") ? (
                 <CardFooter className="px-5 flex justify-between text-left">
                     <div className="flex flex-wrap gap-1 mt-auto">
                       <span className="flex-start text-left w text-xs text-gray-400 mt-2 px-2 py-1 rounded-full bg-gray-200">
@@ -98,7 +98,7 @@ export default function EventCard({ title, description, date, author, imageUrl, 
                         <span>Register</span>
                     </Button>
               </CardFooter>
-            )}
+            )} */}
         </Card>
     </motion.div>
   );
