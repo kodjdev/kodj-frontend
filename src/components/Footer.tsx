@@ -1,4 +1,4 @@
-import { FaInstagram, FaLinkedin, FaTelegram, FaTwitter } from "react-icons/fa6"
+import { FaGithub, FaInstagram, FaLinkedin, FaTelegram, FaTwitter } from "react-icons/fa6"
 
 export default function Footer() {
     return (
@@ -17,6 +17,9 @@ export default function Footer() {
                 </a>
                 <a href="https://www.linkedin.com/company/ko-dj/about" target="_blank" rel="noopener noreferrer">
                     <FaLinkedin className="w-6 h-6" />
+                </a>
+                <a href="https://github.com/kodjdev" target="_blank" rel="noopener noreferrer">
+                    <FaGithub className="w-6 h-6" />
                 </a>
             </div>
         </footer>
