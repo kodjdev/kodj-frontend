@@ -10,17 +10,20 @@ export function CardHoverEffect() {
 export const projects = [
   {
     title: "AI & ML Events",
-    description: "A platform for discovering and sharing AI and machine learning events in Uzbekistan and South Korea.",
+    description:
+      "A platform for discovering and sharing AI and machine learning events in Uzbekistan and South Korea.",
     link: "https://aiandmlevents.uz",
   },
   {
     title: "DevFest Seoul 2024",
-    description: " A community-led developer conference hosted by KODJ community, featuring talks, workshops, and networking opportunities.",
+    description:
+      " A community-led developer conference hosted by KODJ community, featuring talks, workshops, and networking opportunities.",
     link: "https://devfest.gdg.uz",
   },
   {
     title: "Dev Hackathon",
-    description: " A hackathon event for developers to collaborate and build projects using the latest technologies and tools.",
+    description:
+      " A hackathon event for developers to collaborate and build projects using the latest technologies and tools.",
     link: "https://gdg.uz",
   },
   {
@@ -42,4 +45,3 @@ export const projects = [
     link: "https://startupgrind.uz",
   },
 ];
-
