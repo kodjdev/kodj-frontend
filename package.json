@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@radix-ui/react-radio-group": "^1.2.1",
     "@radix-ui/react-slot": "^1.1.0",
     "@tabler/icons-react": "^3.23.0",
     "@tailwindcss/typography": "^0.5.15",

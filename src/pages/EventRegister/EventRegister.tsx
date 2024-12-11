@@ -170,7 +170,8 @@ export default function EventRegister() {
       {contextHolder}
       <form onSubmit={handleSubmit(onSubmit)}>
         {/* // aspect-square object-cover object-center rounded-sm transition-all duration-200 */}
-        <div className="flex flex-wrap md:flex-nowrap min-h-screen w-full bg-gradient-to-br from-gray-900 via-gray-800 to-black p-8 rounded-lg text-gray-300 shadow-lg">
+        {/* <div className="flex flex-wrap md:flex-nowrap min-h-screen w-full bg-gradient-to-br from-gray-900 via-gray-800 to-black p-8 rounded-lg text-gray-300 shadow-lg"> */}
+        <div className="flex flex-col md:flex-row min-h-screen w-full bg-gradient-to-br from-gray-900 via-gray-800 to-black p-4 sm:p-8 rounded-lg text-gray-300 shadow-lg space-y-4 md:space-y-0">
           {/* // left side of the page */}
           <div className="w-full md:w-1/2 p-6 bg-opacity-80">
             <div className="w-full bg-gradient-to-r from-gray-800 to-gray-900 rounded-lg shadow-lg">
@@ -204,7 +205,7 @@ export default function EventRegister() {
                           </Label>
                           <Input
                             id="firstname"
-                            placeholder="Bolta"
+                            placeholder="Boltavoy"
                             type="text"
                             className="bg-gray-800"
                             {...register("firstname", {
@@ -354,11 +355,13 @@ export default function EventRegister() {
                               {...field}
                               onValueChange={(value) => field.onChange(value)}
                               value={field.value}
+                              
                             >
                               <div className="flex items-center space-x-2">
                                 <RadioGroupItem
                                   value="first-time"
                                   id="first-time"
+                                  className="bg-gray-800 border border-gray-400 rounded-full focus:ring-0 focus:ring-offset-0 data-[state=checked]:bg-blue-500 data-[state=checked]:border-blue-500"
                                 />
                                 <Label
                                   htmlFor="first-time"
@@ -371,6 +374,7 @@ export default function EventRegister() {
                                 <RadioGroupItem
                                   value="several-times"
                                   id="several-times"
+                                  className="bg-gray-800 border border-gray-400 rounded-full focus:ring-0 focus:ring-offset-0 data-[state=checked]:bg-blue-500 data-[state=checked]:border-blue-500"
                                 />
                                 <Label
                                   htmlFor="several-times"
@@ -394,7 +398,7 @@ export default function EventRegister() {
                       >
                         Which field(s) are you interested in ?xs
                       </Label>
-                      <div className="flex flex-col space-y-2">
+                      <div className="flex flex-col space-y-2 overflow-hidden space-x-0">
                         <Controller
                           control={control}
                           name="interestedField"
@@ -504,8 +508,8 @@ export default function EventRegister() {
                               <RadioGroupItem
                                 value="networking"
                                 id="networking"
-                                className="text-white bg-transparent border-white focus:ring-0 focus:ring-offset-0 checked:bg-white checked:border-white"
-                              />
+                                className="bg-gray-800 border border-gray-400 rounded-full focus:ring-0 focus:ring-offset-0 data-[state=checked]:bg-blue-500 data-[state=checked]:border-blue-500"
+                                />
                               <label
                                 htmlFor="first-time"
                                 className="flex items-center text-gray-200"
@@ -517,8 +521,8 @@ export default function EventRegister() {
                               <RadioGroupItem
                                 value="learning"
                                 id="learning"
-                                className="text-white bg-transparent border-white focus:ring-0 focus:ring-offset-0 checked:bg-white checked:border-white"
-                              />
+                                className="bg-gray-800 border border-gray-400 rounded-full focus:ring-0 focus:ring-offset-0 data-[state=checked]:bg-blue-500 data-[state=checked]:border-blue-500"
+                                />
                               <label
                                 htmlFor="second-time"
                                 className="flex items-center text-gray-200"
@@ -530,8 +534,8 @@ export default function EventRegister() {
                               <RadioGroupItem
                                 value="jobOpportunities"
                                 id="jobOpportunities"
-                                className="text-white bg-transparent border-white focus:ring-0 focus:ring-offset-0 checked:bg-white checked:border-white"
-                              />
+                                className="bg-gray-800 border border-gray-400 rounded-full focus:ring-0 focus:ring-offset-0 data-[state=checked]:bg-blue-500 data-[state=checked]:border-blue-500"
+                                />
                               <label
                                 htmlFor="second-time"
                                 className="flex items-center text-gray-200"
@@ -545,7 +549,7 @@ export default function EventRegister() {
                               <RadioGroupItem
                                 value="others"
                                 id="others"
-                                className="text-white bg-transparent border-white focus:ring-0 focus:ring-offset-0 checked:bg-white checked:border-white"
+                                className="bg-gray-800 border border-gray-400 rounded-full focus:ring-0 focus:ring-offset-0 data-[state=checked]:bg-blue-500 data-[state=checked]:border-blue-500"
                               />
                               <label
                                 htmlFor="second-time"
@@ -581,17 +585,24 @@ export default function EventRegister() {
                         name="consent"
                         defaultValue={false}
                         rules={{ required: "You must agree to proceed" }}
-                        render={({ field }) => (
-                          <div className="flex items-start">
-                            <Checkbox
+                        // render={({ field }) => (
+                        render={() => (
+                          <div className="flex items-start bg-gray-700 p-4 border-gray-500 rounded">
+                            {/* <Checkbox
                               id="consent"
                               checked={field.value}
                               onCheckedChange={field.onChange}
-                              className="text-blue inline-block mr-2 mt-2"
+                              className="text-blue-400 inline-block mr-2 mt-2"
+                            /> */}
+                            <input
+                              type="checkbox"
+                              id="consent"
+                              className="form-checkbox h-6 w-6 text-blue-400 border-gray-300 rounded focus:ring-blue-500 text-blue-400 inline-block mr-2 mt-1"
+                              required={true}
                             />
                             <Label
                               htmlFor="consent"
-                              className="text-gray-500 ml-1 text-xs leading-tight"
+                              className="text-gray-500 ml-2 mt-1 text-ms leading-tight"
                             >
                               I understand that my information will be used for
                               event registration purposes only.
@@ -645,12 +656,14 @@ export default function EventRegister() {
               <img
                 src={imageSource}
                 alt={title}
-                className="w-full h-60 object-cover rounded-lg mb-6"
+                // className="w-full h-60 object-cover rounded-lg mb-6"
+                className="w-full h-40 sm:h-60 object-cover rounded-lg mb-4 sm:mb-6"
                 width={500}
                 height={500}
               />
               <h2 className="text-2xl font-bold text-blue-400 mb-5">{title}</h2>
-              <div className="grid grid-cols-2 gap-x-4 gap-y-4 text-lg text-gray-700">
+              {/* <div className="grid grid-cols-2 gap-x-4 gap-y-4 text-lg text-gray-700"> */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-4 text-lg text-gray-700">
                 <div className="flex flex-col">
                   <strong className="text-md text-blue-400 mb-1">Date:</strong>
                   <p className="text-sm text-gray-400">{ typeof date === "string"
