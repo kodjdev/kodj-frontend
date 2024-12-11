@@ -10,8 +10,7 @@ import { Link, useLocation } from "react-router-dom";
 const tabs = [
   { id: "about", label: "About Us", path: "/about" },
   { id: "news", label: "News", path: "/news" },
-  { id: "pastEvents", label: "Past Events", path: "/events/past" },
-  { id: "upcomingEvents", label: "Upcoming Events", path: "/events/upcoming" },
+  { id: "events", label: "Events", path: "/events" },
   { id: "mypage", label: "My Page", path: "/mypage" },
   { id: "login", label: "Login", path: "/login" },
 ];

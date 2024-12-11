@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaCalendarAlt, FaMapMarkedAlt, FaParking } from "react-icons/fa";
 import {
+  FaAlignCenter,
   FaArrowUpRightFromSquare,
   FaLocationDot,
   FaNoteSticky,
@@ -19,6 +20,7 @@ import {
   getDocs,
   orderBy,
   query,
+  Timestamp,
   where,
 } from "firebase/firestore";
 import { db, storage } from "../../../firebase/firebaseConfig";
@@ -28,16 +30,27 @@ import { message, Spin } from "antd";
 import { Link, useParams } from "react-router-dom";
 import { useAuth } from "../../../context/useAuth";
 
-export default function PastEventDetails() {
+interface EventButtonProps {
+  type: "upcoming" | "past";
+  id: string;
+  title: string;
+  date: Timestamp | string;
+  location: string;
+  handleProtectedLinkClick: (
+    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
+  ) => void;
+}
+
+export default function EventDetails() {
   const { user } = useAuth();
   // const param = useParams();
   // const id = param.id as string;
 
-  const { id } = useParams<{ id: string }>();
+  const { id, type } = useParams<{ id: string; type: string }>();
 
   const [event, setEvent] = useState<EventForServer | null>(null);
   const [speakers, setSpeakers] = useState<Speaker[]>([]);
-  const [eventShedule, setEventSchedule] = useState<EventTimeline[]>([]);
+  const [eventSchedule, setEventSchedule] = useState<EventTimeline[]>([]);
   const [isGalleryOpen, setGalleryOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -62,7 +75,9 @@ export default function PastEventDetails() {
     }
 
     try {
-      const eventDocRef = doc(db, "pastEvents", id);
+      const collectionName =
+        type === "upcoming" ? "upcomingEvents" : "pastEvents";
+      const eventDocRef = doc(db, collectionName, id);
       const eventDoc = await getDoc(eventDocRef);
 
       // console.log('Fetching event with ID:', id);
@@ -193,76 +208,27 @@ export default function PastEventDetails() {
       <div className="container mx-auto py-8 px-4 sm:px-8">
         {event.imageUrls?.length === 1 ? (
           // Only one image scenario
-          <div
-            className="relative h-72 sm:h-[600px] cursor-pointer overflow-hidden mb-4"
-            onClick={() => openGallery(0)}
-          >
-            <img
-              src={event.imageUrls[0]}
-              alt={event.title}
-              className="rounded-lg shadow-lg w-full h-full object-cover"
-            />
-          </div>
-        ) : (
-          // Multiple images scenario
+          //   <div
+          //     className="relative h-72 sm:h-[600px] cursor-pointer overflow-hidden mb-4"
+          //     onClick={() => openGallery(0)}
+          //   >
+          //     <img
+          //       src={event.imageUrls[0]}
+          //       alt={event.title}
+          //       className="rounded-lg shadow-lg w-full h-full object-cover"
+          //     />
+          //   </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
-            {/* Left side images */}
-            <div className="col-span-2 flex flex-col gap-4">
-              {/* Main large image */}
-              <div
-                className="relative h-64 sm:h-[300px] cursor-pointer overflow-hidden"
-                onClick={() => openGallery(0)}
-              >
-                <img
-                  src={event.imageUrls?.[0] ?? ""}
-                  alt={event.title}
-                  className="rounded-lg shadow-lg w-full h-full object-cover"
-                />
-              </div>
-  
-              {/* Three images (or less) below main image */}
-              <div className="grid grid-cols-3 gap-4">
-                {event.imageUrls
-                  ?.slice(1, 4)
-                  .map((image, index) => {
-                    // If we're at the last slot and there are more images than shown
-                    const actualIndex = index + 1; // because slice starts at 1
-                    const isLastSlot = index === 2; 
-                    const totalImages = event.imageUrls.length;
-                    if (isLastSlot && totalImages > 4) {
-                      // Show +more
-                      return (
-                        <div
-                          key={index}
-                          onClick={() => openGallery(actualIndex)}
-                          className="relative h-20 sm:h-40 cursor-pointer flex items-center justify-center bg-gray-700 rounded-lg shadow-md"
-                        >
-                          <span className="text-white text-md font-bold">
-                            + {totalImages - 3} photos
-                          </span>
-                        </div>
-                      );
-                    } else {
-                      // Normal image slot
-                      return (
-                        <div
-                          key={index}
-                          className="relative h-20 sm:h-40 cursor-pointer overflow-hidden"
-                          onClick={() => openGallery(actualIndex)}
-                        >
-                          <img
-                            src={image}
-                            alt={`${event.title} - ${index + 2}`}
-                            className="rounded-lg shadow-md w-full h-full object-cover"
-                          />
-                        </div>
-                      );
-                    }
-                  })}
-              </div>
+            <div
+              className="col-span-2 relative h-72 sm:h-[440px] cursor-pointer overflow-hidden"
+              onClick={() => openGallery(0)}
+            >
+              <img
+                src={event.imageUrls[0]}
+                alt={event.title}
+                className="rounded-lg shadow-lg w-full h-full object-cover"
+              />
             </div>
-  
-            {/* Right side details container */}
             <div className="col-span-1 flex flex-col items-start justify-start gap-2 p-5 sm:p-[22px] w-full h-full rounded-[8px] border border-[#505050] bg-[#141414] overflow-hidden">
               <div className="mb-4 flex-grow">
                 <h1 className="text-3xl text-blue-600 font-bold mt-1">
@@ -295,7 +261,9 @@ export default function PastEventDetails() {
                   </p>
                   <p className="flex items-center mb-2">
                     <FaParking className="inline-block mr-3 mb-1" />
-                    <strong>{event.parking ? " Available" : " Not Available"}</strong>
+                    <strong>
+                      {event.parking ? " Available" : " Not Available"}
+                    </strong>
                   </p>
                   <p className="font-bold flex items-center mb-2">
                     <FaLocationDot className="inline-block mr-3 mb-1" />
@@ -312,45 +280,176 @@ export default function PastEventDetails() {
                   >
                     View on Kakao Map
                   </a>
-  
-                  <Link
-                    to={`/events/upcoming/details/${id}/register`}
-                    state={{
-                      title: event.title,
-                      date: event.date.toString(),
-                      location: event.location,
-                    }}
-                    onClick={handleProtectedLinkClick}
-                  >
-                    <button className="mt-10 flex w-full sm:w-[322px] h-14 sm:h-[56px] p-[3px] sm:p-[20px_30px] hover:bg-gray-600 justify-center items-center gap-2 flex-shrink-0 bg-blue-600">
-                      <FaArrowUpRightFromSquare className="flex-none text-xs" />
-                      <span>Register</span>
+                  <EventButton
+                    type={
+                      event?.date
+                        ? new Date(event.date.seconds * 1000) > new Date()
+                          ? "upcoming"
+                          : "past"
+                        : "past"
+                    }
+                    id={event?.id}
+                    title={event?.title}
+                    date={event?.date}
+                    location={event?.location}
+                    handleProtectedLinkClick={handleProtectedLinkClick}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        ) : (
+          // Ko'plab rasmlar bo'lgan holatda
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
+            {/* ?? chap tomoni */}
+            <div className="col-span-2 flex flex-col gap-4">
+              {/*  Asosiy katta rasm*/}
+              <div
+                className="relative h-64 sm:h-[300px] cursor-pointer overflow-hidden"
+                onClick={() => openGallery(0)}
+              >
+                <img
+                  src={event.imageUrls?.[0] ?? ""}
+                  alt={event.title}
+                  className="rounded-lg shadow-lg w-full h-full object-cover"
+                />
+              </div>
+
+              {/* {/* uchta rasmni asosiy rasmni poasida korsatamiz */}
+              <div className="grid grid-cols-3 gap-4">
+                {event.imageUrls?.slice(1, 4).map((image, index) => {
+                  // If we're at the last slot and there are more images than show
+                  const actualIndex = index + 1;
+                  const isLastSlot = index === 2;
+                  const totalImages = event.imageUrls.length;
+                  if (isLastSlot && totalImages > 4) {
+                    // Show +more pageda esa rasmni dimmed qilib korsatamiz
+                    return (
+                      <div
+                        key={index}
+                        onClick={() => openGallery(actualIndex)}
+                        // className="relative h-20 sm:h-40 cursor-pointer flex items-center justify-center bg-gray-700 rounded-lg shadow-md"
+                        className="relative h-20 sm:h-40 cursor-pointer flex items-center justify-center rounded-lg shadow-md overflow-hidden"
+                        style={{
+                            backgroundImage: `url(${event.imageUrls[3]})`,
+                            backgroundSize: 'cover',
+                            backgroundPosition: 'center',
+                          }}
+
+                      >
+                        <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+                          {/* Dimmed overlay */}
+                          <span className="text-white text-md font-bold">
+                            + {totalImages - 3} photos
+                          </span>
+                        </div>
+                      </div>
+                    );
+                  } else {
+                    // normal rasm uchun
+                    return (
+                      <div
+                        key={index}
+                        className="relative h-20 sm:h-40 cursor-pointer overflow-hidden"
+                        onClick={() => openGallery(actualIndex)}
+                      >
+                        <img
+                          src={image}
+                          alt={`${event.title} - ${index + 2}`}
+                          className="rounded-lg shadow-md w-full h-full object-cover"
+                        />
+                      </div>
+                    );
+                  }
+                })}
+              </div>
+            </div>
+
+            {/* Ong tomon tarafi */}
+            <div className="col-span-1 flex flex-col items-start justify-start gap-2 p-5 sm:p-[22px] w-full h-full rounded-[8px] border border-[#505050] bg-[#141414] overflow-hidden">
+              <div className="mb-4 flex-grow">
+                <h1 className="text-3xl text-blue-600 font-bold mt-1">
+                  {event.title}
+                </h1>
+                <p>
+                  <strong>By: {event.author}</strong>
+                </p>
+              </div>
+              <div className="text-blue-100">
+                <div className="mb-2 font-bold">
+                  <p className="mb-2 flex items-center">
+                    <FaCalendarAlt className="inline-block mr-3 mb-1" />
+                    {formattedDate}
+                    <button
+                      onClick={handleAddToCalendar}
+                      className="inline-block ml-2 mb-1 text-lg text-blue-600 hover:text-blue-200 py-1 px-2 rounded-full"
+                      aria-label="Add to Calendar"
+                    >
+                      <BsArrowUpRightCircle />
                     </button>
-                  </Link>
+                  </p>
+                  <p className="flex items-center mb-2">
+                    <BsPeopleFill className="inline-block mr-3 mb-1" />
+                    <strong>{event.seats}</strong>
+                  </p>
+                  <p className="flex items-center mb-2">
+                    <FaBowlFood className="inline-block mr-3 mb-1" />
+                    <strong>{event.snacks}</strong>
+                  </p>
+                  <p className="flex items-center mb-2">
+                    <FaParking className="inline-block mr-3 mb-1" />
+                    <strong>
+                      {event.parking ? " Available" : " Not Available"}
+                    </strong>
+                  </p>
+                  <p className="font-bold flex items-center mb-2">
+                    <FaLocationDot className="inline-block mr-3 mb-1" />
+                    {event.location}
+                  </p>
+                  <FaMapMarkedAlt className="inline-block mr-3 mb-1" />
+                  <a
+                    href={`https://map.kakao.com/link/search/${encodeURIComponent(
+                      event.location
+                    )}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mr-3 mb-3 text-blue-500 hover:underline"
+                  >
+                    View on Kakao Map
+                  </a>
+                  <EventButton
+                    type={
+                      event?.date
+                        ? new Date(event.date.seconds * 1000) > new Date()
+                          ? "upcoming"
+                          : "past"
+                        : "past"
+                    }
+                    id={event?.id}
+                    title={event?.title}
+                    date={event?.date}
+                    location={event?.location}
+                    handleProtectedLinkClick={handleProtectedLinkClick}
+                  />
                 </div>
               </div>
             </div>
           </div>
         )}
-  
-        {/* Description */}
         <div className="prose prose-lg text-white mb-8 mt-5">
           <p>{event.description}</p>
         </div>
-  
-        {/* Event Schedule (if any) */}
-        {speakers.length > 0 && eventShedule && (
-          <EventSchedule schedule={eventShedule} />
+        {speakers.length > 0 && eventSchedule && (
+          <EventSchedule schedule={eventSchedule} />
         )}
         <div className="mt-10"></div>
-  
-        {/* Speakers (if any) */}
+
         {speakers.length > 0 && (
           <div className="mt-6">
             <Speakers speakers={speakers} />
           </div>
         )}
-  
+
         <div className="bg-gray-800 p-6 rounded-lg text-gray-200 mt-8">
           <h4 className="flex text-2xl font-bold text-blue-500 mb-2">
             <FaNoteSticky className="inline-block text-2xl mr-2 mt-1" />
@@ -358,16 +457,16 @@ export default function PastEventDetails() {
           </h4>
           <div className="overflow-x-auto">
             <p className="text-gray-500 text-left">
-              Please note that this event is for registered attendees only. If you
-              have not registered yet, please do so before the event starts. Only
-              registered attendees will be allowed to enter the event venue as we
-              have limited seats. Thank you for your cooperation.
+              Please note that this event is for registered attendees only. If
+              you have not registered yet, please do so before the event starts.
+              Only registered attendees will be allowed to enter the event venue
+              as we have limited seats. Thank you for your cooperation.
             </p>
           </div>
         </div>
         <div className="mt-10 flex justify-between"></div>
-  
-        {/* Full screen gallery view */}
+
+        {/* GAllery View mode bu yerda */}
         <AnimatePresence>
           {isGalleryOpen && (
             <motion.div
@@ -388,7 +487,7 @@ export default function PastEventDetails() {
               >
                 &#8592;
               </button>
-  
+
               <motion.div
                 key={selectedImage}
                 initial={{ opacity: 0, scale: 0.8 }}
@@ -415,5 +514,36 @@ export default function PastEventDetails() {
         </AnimatePresence>
       </div>
     </>
-  );     
+  );
 }
+
+const EventButton = ({
+  type,
+  id,
+  title,
+  date,
+  location,
+  handleProtectedLinkClick,
+}: EventButtonProps) => {
+  return type === "upcoming" ? (
+    <Link
+      to={`/events/upcoming/details/${id}/register`}
+      state={{
+        title: title,
+        date: date.toString(),
+        location: location,
+      }}
+      onClick={handleProtectedLinkClick}
+    >
+      <button className="mt-10 flex w-full sm:w-[322px] h-14 sm:h-[56px] p-[3px] sm:p-[20px_30px] hover:bg-gray-600 justify-center items-center gap-2 flex-shrink-0 bg-blue-600">
+        <FaArrowUpRightFromSquare className="flex-none text-xs" />
+        <span>Register</span>
+      </button>
+    </Link>
+  ) : (
+    <button className="mt-10 flex w-full sm:w-[322px] h-14 sm:h-[56px] p-[3px] sm:p-[20px_30px] justify-center items-center gap-2 flex-shrink-0 bg-gray-600">
+      <FaAlignCenter className="flex-none text-xs" />
+      <span>Event has ended</span>
+    </button>
+  );
+};
