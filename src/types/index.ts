@@ -47,6 +47,7 @@ export interface EventForServer {
 }
 
 export interface RegistrationFormData {
+    id?: string;
     firstname: string;
     lastname: string;
     email: string;

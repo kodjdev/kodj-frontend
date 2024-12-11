@@ -19,32 +19,39 @@ import Modal from "../../components/ui/modal";
 import { Button } from "../../components/ui/button";
 import { getAuth } from "firebase/auth";
 import { useLocation, useNavigate } from "react-router-dom";
+import { collection, getDocs, query, where } from "firebase/firestore";
+import { db } from "../../firebase/firebaseConfig";
+import { message } from "antd";
+import { FaArrowUpRightFromSquare } from "react-icons/fa6";
 
 export default function EventRegister() {
-    // const { id } = useParams<{ id: string }>();
-    const location = useLocation();
-    const navigate = useNavigate();
-    const { user, loading: authLoading } = useAuth();
-    const state = location.state as {
-      title: string;
-      date: string;
-      location: string;
-      imageUrl: string;
-      author: string;
-      time: string;
-      eventRoom: string;
-    } | undefined;
-  
-    const title = state?.title || "Event";
-    const date = state?.date || "N/A";
-    const eventRoom = state?.eventRoom;
-    const eventLocation = state?.location || "Unknown";
-    const imageSource = state?.imageUrl || "/pastEvents/past1.jpeg";
-    const organizer = state?.author || "KO'DJ";
-    const time = state?.time || "1:00 PM - 5:00 PM";
-  
-    const [step, setStep] = useState(1);
-    const [isModalOpen, setIsModalOpen] = useState(false);
+  // const { id } = useParams<{ id: string }>();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const [messageApi, contextHolder] = message.useMessage();
+  const { user, loading: authLoading } = useAuth();
+  const state = location.state as
+    | {
+        title: string;
+        date: string;
+        location: string;
+        imageUrl: string;
+        author: string;
+        time: string;
+        eventRoom: string;
+      }
+    | undefined;
+
+  const title = state?.title || "Event";
+  const date = state?.date || "N/A";
+  const eventRoom = state?.eventRoom;
+  const eventLocation = state?.location || "Unknown";
+  const imageSource = state?.imageUrl || "/pastEvents/past1.jpeg";
+  const organizer = state?.author || "KO'DJ";
+  const time = state?.time || "1:00 PM - 5:00 PM";
+
+  const [step, setStep] = useState(1);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const {
     register,
@@ -75,58 +82,73 @@ export default function EventRegister() {
   const onSubmit: SubmitHandler<RegistrationFormData> = async (data) => {
     // console.log("Form data submitted:", data);
     try {
-        const auth = getAuth();
-        const user = auth.currentUser;
+      const auth = getAuth();
+      const user = auth.currentUser;
 
-        if (!user) {
-          console.error("User is not logged in.");
-          alert("You need to be logged in to register for the event.");
-          navigate("/login"); 
-          return; 
+      if (!user) {
+        console.error("User is not logged in.");
+        alert("You need to be logged in to register for the event.");
+        navigate("/login");
+        return;
+      }
+
+      // here we check if the user has registered more than once
+      const registrationRef = collection(db, "registrations");
+      const q = query(
+        registrationRef,
+        where("uid", "==", user.uid),
+        where("eventDetails.title", "==", data.eventDetails.title)
+      );
+
+      const registrationSnapshot = await getDocs(q);
+      if (!registrationSnapshot.empty) {
+        // user already regustered for the event, we return it
+        messageApi.error("You have already registered for the event.");
+        return;
+      }
+
+      const idToken = await user.getIdToken();
+
+      // const decodedToken = JSON.parse(atob(idToken.split('.')[1]));
+      // console.log("Decoded Token:", decodedToken);
+
+      const response = await fetch(import.meta.env.VITE_FIREBASE_FUNCTION_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${idToken}`,
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (response.ok) {
+        setIsModalOpen(true);
+        reset();
+        setStep(1); // reset the form
+      } else {
+        let errorMessage = "An error occurred";
+        try {
+          const errorData = await response.json();
+          errorMessage = errorData.message || errorMessage;
+        } catch (err) {
+          // this will print that the error is not JSON
+          console.error("Error parsing error response:", err);
         }
-
-        // console.log("Data being sent to db:", data);
-
-        const idToken = await user.getIdToken();
-
-        // const decodedToken = JSON.parse(atob(idToken.split('.')[1]));
-        // console.log("Decoded Token:", decodedToken);
-
-        const response = await fetch(import.meta.env.VITE_FIREBASE_FUNCTION_URL, {
-            method: "POST",
-            headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${idToken}`,
-            },
-            body: JSON.stringify(data),
-        });
-
-        if (response.ok) {
-            setIsModalOpen(true);
-            reset();
-            setStep(1); // reset the form
-        } else {
-            let errorMessage = "An error occurred";
-            try {
-                const errorData = await response.json();
-                errorMessage = errorData.message || errorMessage;
-            } catch (err) {
-                // this will print that the error is not JSON
-                console.error("Error parsing error response:", err);
-            }
-            alert(`Error: ${errorMessage}`);
-        }
+        alert(`Error: ${errorMessage}`);
+      }
     } catch (error) {
-        console.error("Error registering user: ", error);
-        alert("An error occurred. Please try again later.");
+      console.error("Error registering user: ", error);
+      alert("An error occurred. Please try again later.");
     }
   };
 
-  const handleNext = () => {
+  const handleNext = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
     if (step < 2) setStep(step + 1);
   };
 
-  const handleBack = () => {
+  const handleBack = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
     if (step > 1) setStep(step - 1);
   };
 
@@ -145,6 +167,7 @@ export default function EventRegister() {
 
   return (
     <>
+      {contextHolder}
       <form onSubmit={handleSubmit(onSubmit)}>
         {/* // aspect-square object-cover object-center rounded-sm transition-all duration-200 */}
         <div className="flex flex-wrap md:flex-nowrap min-h-screen w-full bg-gradient-to-br from-gray-900 via-gray-800 to-black p-8 rounded-lg text-gray-300 shadow-lg">
@@ -553,23 +576,6 @@ export default function EventRegister() {
                           required: "Please write your short answer here",
                         })}
                       ></textarea>
-                      {/* <div className="flex flex-col space-y-2">
-                                            <Checkbox className="text-blue-500" />
-                                            <Checkbox className="text-blue-500" />
-                                            <Checkbox className="text-blue-500" />
-                                            <Checkbox className="text-blue-500" />
-                                        </div> */}
-                      {/* <textarea
-                                            placeholder="Why are you interested in this event?"
-                                            rows={4}
-                                            className="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                        ></textarea>
-                                        <textarea
-                                            placeholder="What do you hope to gain from attending?"
-                                            rows={4}
-                                            className="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                        ></textarea> */}
-                      {/* Replace your current Controller for "consent" with this */}
                       <Controller
                         control={control}
                         name="consent"
@@ -618,6 +624,7 @@ export default function EventRegister() {
                       type="submit"
                       className="font-medium text-white bg-blue-700 border border-blue-700 py-1.5 px-3.5 rounded-full flex items-center hover:bg-white hover:text-blue-700 transition-colors duration-300"
                     >
+                      <FaArrowUpRightFromSquare className="flex-none mr-3 ml-1 m text-xs" />
                       <span>Register</span>
                     </button>
                   ) : (
@@ -646,7 +653,9 @@ export default function EventRegister() {
               <div className="grid grid-cols-2 gap-x-4 gap-y-4 text-lg text-gray-700">
                 <div className="flex flex-col">
                   <strong className="text-md text-blue-400 mb-1">Date:</strong>
-                  <p className="text-sm text-gray-400">{date}</p>
+                  <p className="text-sm text-gray-400">{ typeof date === "string"
+                        ? date
+                        : new Date(date * 1000).toDateString()}</p>
                 </div>
                 <div className="flex flex-col">
                   <strong className="text-md text-blue-400 mb-1">
