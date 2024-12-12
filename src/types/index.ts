@@ -14,7 +14,7 @@ export interface Event {
 
 export interface EventDetails {
     title: string;
-    date: string;
+    date: string | FirebaseTimestamp
     eventLocation: string;
   }
 
@@ -44,6 +44,7 @@ export interface EventForServer {
     imageUrls: string[];
     speakers?: Speaker[];
     schedule?: EventTimeline[];
+    maxSeats?: number;
 }
 
 export interface RegistrationFormData {
@@ -60,6 +61,7 @@ export interface RegistrationFormData {
     interestedField: string;
     hopes: string;
     additionalInfo: string;
+    eventId: string;
 }
 
 export interface PastEventDetailsProps {
@@ -107,3 +109,9 @@ export interface PastEventDetailsProps {
     date: string;
     time: string;
   };
+
+
+  export interface FirebaseTimestamp {
+    seconds: number;
+    nanoseconds: number;
+  }

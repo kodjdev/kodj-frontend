@@ -6,10 +6,10 @@ import {
 import React from "react";
 import EventRegister from "../pages/EventRegister/EventRegister";
 import MyPage from "../pages/MyPage/MyPage";
-import EventsList from "../pages/UpcomingEvents/EventsList.tsx";
+import EventsList from "../pages/Events/EventsList.tsx";
 import NewsDetails from "../pages/News/NewsDetails/NewsDetails";
 import NewsList from "../pages/News/NewsList";
-import EventDetails from "../pages/UpcomingEvents/details/EventDetails.tsx";
+import EventDetails from "../pages/Events/details/EventDetails.tsx";
 
 interface RouteType {
   path: string;

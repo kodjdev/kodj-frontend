@@ -17,7 +17,7 @@ import { useAuth } from "../../context/useAuth";
 import Modal from "../../components/ui/modal";
 import { Button } from "../../components/ui/button";
 import { getAuth } from "firebase/auth";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../../firebase/firebaseConfig";
 import { message } from "antd";
@@ -30,7 +30,7 @@ type FirstStepFields = Pick<
 >;
 
 export default function EventRegister() {
-  // const { id } = useParams<{ id: string }>();
+  const { id } = useParams<{ id: string }>();
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -48,6 +48,7 @@ export default function EventRegister() {
         author: string;
         // time: string;
         eventRoom: string;
+        eventId: string
       } | undefined;
 
   const title = state?.title || "Event";

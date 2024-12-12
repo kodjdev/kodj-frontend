@@ -57,6 +57,7 @@ export default function EventDetails() {
   const [isGalleryOpen, setGalleryOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [registeredCount, setRegisteredCount] = useState(0);
 
   const [messageApi, contextHolder] = message.useMessage();
 
@@ -88,6 +89,14 @@ export default function EventDetails() {
       if (eventDoc.exists()) {
         const eventData = eventDoc.data() as EventForServer;
         eventData.id = eventDoc.id;
+
+        const registrationsQuery = query(
+          collection(db, "registrations"),
+          where("eventId", "==", id)
+        );
+
+        const registrationSnapshot = await getDocs(registrationsQuery);
+        setRegisteredCount(registrationSnapshot.size);
 
         // Fetch image URLs
         if (eventData.images && eventData.images.length > 0) {
@@ -223,7 +232,7 @@ export default function EventDetails() {
           //   </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
             <div
-              className="col-span-2 relative h-72 sm:h-[440px] cursor-pointer overflow-hidden"
+              className="col-span-2 relative h-72 sm:h-[450px] cursor-pointer overflow-hidden"
               onClick={() => openGallery(0)}
             >
               <img
@@ -283,6 +292,12 @@ export default function EventDetails() {
                   >
                     View on Kakao Map
                   </a>
+                  <div className="mt-2 inline-flex items-center px-3 py-1 text-xs sm:text-sm bg-gray-700/80 text-gray-200 rounded-md border border-gray-600 shadow-sm hover:bg-gray-600/90 transition-all duration-200">
+                    <span className="font-medium mr-1">Registered:</span>
+                    <span className="text-white font-semibold">
+                      {registeredCount}/{event?.maxSeats ?? 0}
+                    </span>
+                  </div>
                   <EventButton
                     type={
                       event?.date
@@ -299,6 +314,7 @@ export default function EventDetails() {
                     eventRoom={event?.eventRoom}
                     location={event?.location}
                     handleProtectedLinkClick={handleProtectedLinkClick}
+                    isFull={registeredCount >= (event?.maxSeats ?? 0)}
                   />
                 </div>
               </div>
@@ -422,6 +438,12 @@ export default function EventDetails() {
                   >
                     View on Kakao Map
                   </a>
+                  <div className="mt-2 inline-flex items-center px-3 py-1 text-xs sm:text-sm bg-gray-700/80 text-gray-200 rounded-md border border-gray-600 shadow-sm hover:bg-gray-600/90 transition-all duration-200">
+                    <span className="font-medium mr-1">Registered:</span>
+                    <span className="text-white font-semibold">
+                      {registeredCount}/{event?.maxSeats ?? 0}
+                    </span>
+                  </div>
                   <EventButton
                     type={
                       event?.date
@@ -438,6 +460,7 @@ export default function EventDetails() {
                     eventRoom={event?.eventRoom}
                     location={event?.location}
                     handleProtectedLinkClick={handleProtectedLinkClick}
+                    isFull={registeredCount >= (event?.maxSeats ?? 0)}
                   />
                 </div>
               </div>
@@ -535,7 +558,8 @@ const EventButton = ({
   location,
   eventRoom,
   handleProtectedLinkClick,
-}: EventButtonProps) => {
+  isFull,
+}: EventButtonProps & { isFull: boolean }) => {
   return type === "upcoming" ? (
     <Link
       to={`/events/upcoming/details/${id}/register`}
@@ -549,9 +573,18 @@ const EventButton = ({
       }}
       onClick={handleProtectedLinkClick}
     >
-      <button className="mt-10 flex w-full sm:w-[322px] h-14 sm:h-[56px] p-[3px] sm:p-[20px_30px] hover:bg-gray-600 justify-center items-center gap-2 flex-shrink-0 bg-blue-600">
-        <FaArrowUpRightFromSquare className="flex-none text-xs" />
-        <span>Register</span>
+      <button className="mt-5 flex w-full sm:w-[322px] h-14 sm:h-[56px] p-[3px] sm:p-[20px_30px] hover:bg-gray-600 justify-center items-center gap-2 flex-shrink-0 bg-blue-600">
+        {isFull ? (
+          <>
+            <FaAlignCenter className="flex-none text-xs" />
+            <span>Registration Closed</span>
+          </>
+        ) : (
+          <>
+            <FaArrowUpRightFromSquare className="flex-none text-xs" />
+            <span>Register</span>
+          </>
+        )}
       </button>
     </Link>
   ) : (
