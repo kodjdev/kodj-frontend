@@ -102,3 +102,8 @@ export interface PastEventDetailsProps {
     speakerId: number,
     subject: string
   }
+
+  export interface FormattedDateTime  {
+    date: string;
+    time: string;
+  };

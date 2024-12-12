@@ -12,7 +12,7 @@ import {
   SelectValue,
 } from "../../components/ui/select";
 import { SubmitHandler, Controller } from "react-hook-form";
-import { RegistrationFormData } from "../../types";
+import { FormattedDateTime, RegistrationFormData } from "../../types";
 import { useAuth } from "../../context/useAuth";
 import Modal from "../../components/ui/modal";
 import { Button } from "../../components/ui/button";
@@ -32,19 +32,22 @@ export default function EventRegister() {
   // const { id } = useParams<{ id: string }>();
   const location = useLocation();
   const navigate = useNavigate();
+
   const [messageApi, contextHolder] = message.useMessage();
   const { user, loading: authLoading } = useAuth();
-  const state = location.state as
-    | {
+
+  const [step, setStep] = useState(1);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const state = location.state as {
         title: string;
-        date: string;
+        date: { seconds: number; nanoseconds: number }; 
         location: string;
         imageUrl: string;
         author: string;
-        time: string;
+        // time: string;
         eventRoom: string;
-      }
-    | undefined;
+      } | undefined;
 
   const title = state?.title || "Event";
   const date = state?.date || "N/A";
@@ -52,10 +55,6 @@ export default function EventRegister() {
   const eventLocation = state?.location || "Unknown";
   const imageSource = state?.imageUrl || "/pastEvents/past1.jpeg";
   const organizer = state?.author || "KO'DJ";
-  const time = state?.time || "1:00 PM - 5:00 PM";
-
-  const [step, setStep] = useState(1);
-  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const {
     register,
@@ -221,6 +220,38 @@ export default function EventRegister() {
     );
   };
 
+
+  // buyerda date (Timestamp) objectdan vaqt va kunni chiqarib olamiz
+  const formatDate = (firebaseDate: { seconds: number; nanoseconds: number } | string): FormattedDateTime => {
+    if(typeof firebaseDate === 'string') {
+      return {
+        date: "No date found",
+        time: "No time found"
+      }
+    }
+
+    const date = new Date(firebaseDate.seconds * 1000);
+    
+    const formattedDate = date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    })
+
+    const formattedTime = date.toLocaleTimeString('en-US', {
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true
+    })
+
+    return {
+      date: formattedDate,
+      time: formattedTime
+    }
+  }
+
+  const {date: formattedDate, time: formattedTime} = formatDate(state?.date || "No Date Found");
+
   return (
     <>
       {contextHolder}
@@ -242,8 +273,8 @@ export default function EventRegister() {
                     <h2 className="text-2xl font-bold text-blue-400 mb-5">
                       {title}
                     </h2>
-                    <p className="text-sm text-gray-400 mb-7">
-                      <span className="text font-bold">Time:</span> {time}
+                    <p className="text-sm text-white mb-7">
+                      <span className="text font-bold">Time:</span> {formattedTime}
                       {/* | Location: {location} */}
                     </p>
                     <div className="space-y-4">
@@ -789,17 +820,15 @@ export default function EventRegister() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-4 text-lg text-gray-700">
                 <div className="flex flex-col">
                   <strong className="text-md text-blue-400 mb-1">Date:</strong>
-                  <p className="text-sm text-gray-400">
-                    {typeof date === "string"
-                      ? date
-                      : new Date(date * 1000).toDateString()}
+                  <p className="text-sm text-white">
+                      {formattedDate}
                   </p>
                 </div>
                 <div className="flex flex-col">
                   <strong className="text-md text-blue-400 mb-1">
                     Organizer:
                   </strong>
-                  <p className="text-sm text-gray-400">{organizer}</p>
+                  <p className="text-sm text-white">{organizer}</p>
                 </div>
               </div>
               <div className="mt-4">
@@ -814,11 +843,10 @@ export default function EventRegister() {
                 </div>
                 <div className="flex flex-col">
                   <strong className="text-blue-400 mb-1">Location:</strong>
-                  <p className="text-sm text-gray-400 font-bold mb-2">
-                    {eventRoom ||
-                      "스페이스쉐어 삼성역센터 (삼성역 도보 3분) 갤럭시홀"}
+                  <p className="text-sm text-gray-300 font-bold mb-2">
+                    {eventLocation}
                   </p>
-                  <p className="text-sm text-gray-500 mb-4">{eventLocation}</p>
+                  <p className="text-sm text-gray-500 mb-4">{eventRoom}</p>
                 </div>
               </div>
             </div>

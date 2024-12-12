@@ -39,6 +39,9 @@ interface EventButtonProps {
   handleProtectedLinkClick: (
     e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
   ) => void;
+  imageUrl: string;
+  author: string;
+  eventRoom: string;
 }
 
 export default function EventDetails() {
@@ -291,6 +294,9 @@ export default function EventDetails() {
                     id={event?.id}
                     title={event?.title}
                     date={event?.date}
+                    author={event?.author}
+                    imageUrl={event.imageUrls?.[0]}
+                    eventRoom={event?.eventRoom}
                     location={event?.location}
                     handleProtectedLinkClick={handleProtectedLinkClick}
                   />
@@ -331,11 +337,10 @@ export default function EventDetails() {
                         // className="relative h-20 sm:h-40 cursor-pointer flex items-center justify-center bg-gray-700 rounded-lg shadow-md"
                         className="relative h-20 sm:h-40 cursor-pointer flex items-center justify-center rounded-lg shadow-md overflow-hidden"
                         style={{
-                            backgroundImage: `url(${event.imageUrls[3]})`,
-                            backgroundSize: 'cover',
-                            backgroundPosition: 'center',
-                          }}
-
+                          backgroundImage: `url(${event.imageUrls[3]})`,
+                          backgroundSize: "cover",
+                          backgroundPosition: "center",
+                        }}
                       >
                         <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
                           {/* Dimmed overlay */}
@@ -428,6 +433,9 @@ export default function EventDetails() {
                     id={event?.id}
                     title={event?.title}
                     date={event?.date}
+                    author={event?.author}
+                    imageUrl={event.imageUrls?.[0]}
+                    eventRoom={event?.eventRoom}
                     location={event?.location}
                     handleProtectedLinkClick={handleProtectedLinkClick}
                   />
@@ -520,9 +528,12 @@ export default function EventDetails() {
 const EventButton = ({
   type,
   id,
+  imageUrl,
   title,
   date,
+  author,
   location,
+  eventRoom,
   handleProtectedLinkClick,
 }: EventButtonProps) => {
   return type === "upcoming" ? (
@@ -530,8 +541,11 @@ const EventButton = ({
       to={`/events/upcoming/details/${id}/register`}
       state={{
         title: title,
-        date: date.toString(),
+        date: date,
         location: location,
+        imageUrl: imageUrl,
+        author: author,
+        eventRoom: eventRoom,
       }}
       onClick={handleProtectedLinkClick}
     >
