@@ -22,6 +22,7 @@ import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../../firebase/firebaseConfig";
 import { message } from "antd";
 import { FaArrowUpRightFromSquare } from "react-icons/fa6";
+import KakaoMap from "../../components/KakaoMap";
 
 type FirstStepFields = Pick<
   RegistrationFormData,
@@ -833,13 +834,17 @@ export default function EventRegister() {
               </div>
               <div className="mt-4">
                 <div className="w-full h-52 rounded-md overflow-hidden mb-4">
-                  <img
-                    src={"/events/event.png"}
-                    alt="Google Maps"
-                    className="rounded-md"
-                    width={400}
-                    height={400}
-                  />
+                 <KakaoMap address={eventLocation} eventRoom={eventRoom}/>
+                 <a
+                    href={`https://map.kakao.com/link/search/${encodeURIComponent(
+                      eventLocation
+                    )}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mr-3 mb-3 text-blue-500 hover:underline"
+                  >
+                    View on Kakao Map
+                  </a>
                 </div>
                 <div className="flex flex-col">
                   <strong className="text-blue-400 mb-1">Location:</strong>
