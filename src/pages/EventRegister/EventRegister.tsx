@@ -3,7 +3,7 @@ import Step from "../../components/ui/step";
 import { Label } from "../../components/ui/label";
 import { Input } from "../../components/ui/input";
 import { cn } from "../../lib/utils";
-import { Checkbox } from "../../components/ui/checkbox";
+import { useForm } from "react-hook-form";
 import {
   Select,
   SelectContent,
@@ -11,8 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../../components/ui/select";
-import { RadioGroup, RadioGroupItem } from "../../components/ui/radio-group";
-import { SubmitHandler, Controller, useForm } from "react-hook-form";
+import { SubmitHandler, Controller } from "react-hook-form";
 import { RegistrationFormData } from "../../types";
 import { useAuth } from "../../context/useAuth";
 import Modal from "../../components/ui/modal";
@@ -23,6 +22,11 @@ import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../../firebase/firebaseConfig";
 import { message } from "antd";
 import { FaArrowUpRightFromSquare } from "react-icons/fa6";
+
+type FirstStepFields = Pick<
+  RegistrationFormData,
+  "firstname" | "lastname" | "jobTitle" | "experience" | "email" | "phone"
+>;
 
 export default function EventRegister() {
   // const { id } = useParams<{ id: string }>();
@@ -58,8 +62,12 @@ export default function EventRegister() {
     handleSubmit,
     control,
     reset,
+    trigger,
+    watch,
     formState: { errors },
   } = useForm<RegistrationFormData>({
+    mode: "onTouched",
+    reValidateMode: "onSubmit",
     defaultValues: {
       firstname: "",
       lastname: "",
@@ -108,7 +116,6 @@ export default function EventRegister() {
       }
 
       const idToken = await user.getIdToken();
-
       // const decodedToken = JSON.parse(atob(idToken.split('.')[1]));
       // console.log("Decoded Token:", decodedToken);
 
@@ -142,11 +149,6 @@ export default function EventRegister() {
     }
   };
 
-  const handleNext = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    if (step < 2) setStep(step + 1);
-  };
-
   const handleBack = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     if (step > 1) setStep(step - 1);
@@ -165,11 +167,64 @@ export default function EventRegister() {
     navigate("/");
   };
 
+  // handleNext birinchi bolib inout valuelarni validate qiladi, togri bo;lsa keyingi etapga o;tadi
+  const handleNext = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+
+    if (step === 1) {
+      const fieldsToValidate: (keyof FirstStepFields)[] = [
+        "firstname",
+        "lastname",
+        "jobTitle",
+        "experience",
+        "email",
+        "phone",
+      ] as const;
+
+      // we trigger validation for specific fields (the ones which has errors)
+      const isStepValid = await trigger(fieldsToValidate, {
+        shouldFocus: true,
+      });
+
+      if (!isStepValid) {
+        fieldsToValidate.forEach(async (field) => {
+          await trigger(field);
+        });
+        return;
+      }
+    }
+
+    // If validation passes , keyingi etapga o'tamiz
+    if (step < 2) setStep(step + 1);
+  };
+
+  const isStepOneValid = () => {
+    const firstname = watch("firstname");
+    const lastname = watch("lastname");
+    const jobTitle = watch("jobTitle");
+    const experience = watch("experience");
+    const email = watch("email");
+    const phone = watch("phone");
+
+    // buyerda hamma input fieldlarga value bormi va validmi tekshriamiz
+    return (
+      firstname &&
+      firstname.length >= 2 &&
+      lastname &&
+      jobTitle &&
+      experience &&
+      email &&
+      /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(email) &&
+      phone &&
+      /^\d{3}-\d{4}-\d{4}$/.test(phone) &&
+      Object.keys(errors).length === 0
+    );
+  };
+
   return (
     <>
       {contextHolder}
       <form onSubmit={handleSubmit(onSubmit)}>
-        {/* // aspect-square object-cover object-center rounded-sm transition-all duration-200 */}
         {/* <div className="flex flex-wrap md:flex-nowrap min-h-screen w-full bg-gradient-to-br from-gray-900 via-gray-800 to-black p-8 rounded-lg text-gray-300 shadow-lg"> */}
         <div className="flex flex-col md:flex-row min-h-screen w-full bg-gradient-to-br from-gray-900 via-gray-800 to-black p-4 sm:p-8 rounded-lg text-gray-300 shadow-lg space-y-4 md:space-y-0">
           {/* // left side of the page */}
@@ -184,9 +239,6 @@ export default function EventRegister() {
               <div className="space-y-4 px-8 py-6">
                 {step === 1 && (
                   <div>
-                    {/* <h1 className="text-2xl font-bold text-blue-600 mb-5">
-                                        <span className="text-blue-600"> Registration: </span>
-                                    </h1> */}
                     <h2 className="text-2xl font-bold text-blue-400 mb-5">
                       {title}
                     </h2>
@@ -207,9 +259,20 @@ export default function EventRegister() {
                             id="firstname"
                             placeholder="Boltavoy"
                             type="text"
-                            className="bg-gray-800"
+                            className={`bg-gray-800 ${
+                              errors.firstname
+                                ? "border-red-500"
+                                : watch("firstname")?.length >= 2
+                                ? "border-green-500"
+                                : ""
+                            }`}
                             {...register("firstname", {
                               required: "First name is required",
+                              minLength: {
+                                value: 2,
+                                message:
+                                  "First name must be at least 2 characters",
+                              },
                             })}
                           />
                           {errors.firstname && (
@@ -226,12 +289,23 @@ export default function EventRegister() {
                             Last name
                           </Label>
                           <Input
-                            className="text-dark-400 bg-gray-800"
                             id="lastname"
                             placeholder="Teshaboev"
                             type="text"
+                            className={`bg-gray-800 ${
+                              errors.lastname
+                                ? "border-red-500"
+                                : watch("lastname")?.length >= 4
+                                ? "border-green-500"
+                                : ""
+                            }`}
                             {...register("lastname", {
-                              required: "Last name is required",
+                              required: "First name is required",
+                              minLength: {
+                                value: 4,
+                                message:
+                                  "Last name must be at least 4 characters",
+                              },
                             })}
                           />
                           {errors.lastname && (
@@ -252,9 +326,20 @@ export default function EventRegister() {
                           id="job"
                           placeholder="Developer | Student | Researcher"
                           type="text"
-                          className="bg-gray-800"
+                          className={`bg-gray-800 ${
+                            errors.jobTitle
+                              ? "border-red-500"
+                              : watch("jobTitle")?.length >= 4
+                              ? "border-green-500"
+                              : ""
+                          }`}
                           {...register("jobTitle", {
                             required: "Job title is required",
+                            minLength: {
+                              value: 4,
+                              message:
+                                "Job Title must be at least 4 characters",
+                            },
                           })}
                         />
                         {errors.jobTitle && (
@@ -272,11 +357,22 @@ export default function EventRegister() {
                         </Label>
                         <Input
                           id="experience"
-                          placeholder="Experience"
+                          placeholder="2 years"
                           type="text"
-                          className="bg-gray-800"
+                          className={`bg-gray-800 ${
+                            errors.experience
+                              ? "border-red-500"
+                              : watch("experience")?.length >= 2
+                              ? "border-green-500"
+                              : ""
+                          }`}
                           {...register("experience", {
-                            required: "Experience is required",
+                            required: "Experince is required",
+                            minLength: {
+                              value: 2,
+                              message:
+                                "Experience must be at least 2 characters",
+                            },
                           })}
                         />
                         {errors.experience && (
@@ -296,9 +392,22 @@ export default function EventRegister() {
                           id="email"
                           placeholder="teshaboev@gmail.com"
                           type="email"
-                          className="bg-gray-800"
+                          className={`bg-gray-800 ${
+                            errors.email
+                              ? "border-red-500"
+                              : watch("email") &&
+                                /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(
+                                  watch("email")
+                                )
+                              ? "border-green-500"
+                              : ""
+                          }`}
                           {...register("email", {
                             required: "Email is required",
+                            pattern: {
+                              value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                              message: "Invalid email address",
+                            },
                           })}
                         />
                         {errors.email && (
@@ -318,9 +427,15 @@ export default function EventRegister() {
                           id="phone"
                           placeholder="010-1234-5678"
                           type="tel"
-                          className="bg-gray-800"
+                          className={`bg-gray-800 ${
+                            errors.phone ? "border-red-500" : ""
+                          }`}
                           {...register("phone", {
                             required: "Phone number is required",
+                            pattern: {
+                              value: /^\d{3}-\d{4}-\d{4}$/,
+                              message: "Phone number format: 010-1234-5678",
+                            },
                           })}
                         />
                         {errors.phone && (
@@ -350,18 +465,16 @@ export default function EventRegister() {
                           control={control}
                           name="notify"
                           rules={{ required: "Please select an option" }}
-                          render={({ field }) => (
-                            <RadioGroup
-                              {...field}
-                              onValueChange={(value) => field.onChange(value)}
-                              value={field.value}
-                              
-                            >
+                          render={({ field: { onChange, value } }) => (
+                            <div className="space-y-3">
                               <div className="flex items-center space-x-2">
-                                <RadioGroupItem
-                                  value="first-time"
+                                <input
+                                  type="radio"
                                   id="first-time"
-                                  className="bg-gray-800 border border-gray-400 rounded-full focus:ring-0 focus:ring-offset-0 data-[state=checked]:bg-blue-500 data-[state=checked]:border-blue-500"
+                                  value="first-time"
+                                  checked={value === "first-time"}
+                                  onChange={() => onChange("first-time")}
+                                  className="w-4 h-4 bg-gray-800 border-2 border-gray-400 text-blue-500 rounded-full checked:bg-white checked:border-white"
                                 />
                                 <Label
                                   htmlFor="first-time"
@@ -371,10 +484,13 @@ export default function EventRegister() {
                                 </Label>
                               </div>
                               <div className="flex items-center space-x-2">
-                                <RadioGroupItem
-                                  value="several-times"
+                                <input
+                                  type="radio"
                                   id="several-times"
-                                  className="bg-gray-800 border border-gray-400 rounded-full focus:ring-0 focus:ring-offset-0 data-[state=checked]:bg-blue-500 data-[state=checked]:border-blue-500"
+                                  value="several-times"
+                                  checked={value === "several-times"}
+                                  onChange={() => onChange("several-times")}
+                                  className="w-4 h-4 bg-gray-800 border-2 border-gray-400 text-blue-500 rounded-full checked:bg-white checked:border-white"
                                 />
                                 <Label
                                   htmlFor="several-times"
@@ -383,7 +499,7 @@ export default function EventRegister() {
                                   No, I have before (several times)
                                 </Label>
                               </div>
-                            </RadioGroup>
+                            </div>
                           )}
                         />
                         {errors.notify && (
@@ -496,48 +612,53 @@ export default function EventRegister() {
                         rules={{
                           required: "Please select at least one option",
                         }}
-                        render={({ field }) => (
-                          <RadioGroup
-                            {...field}
-                            onValueChange={(values) => field.onChange(values)}
-                            value={field.value}
-                            // defaultValue=""
-                            // {...register("hopes", {required: "Please write your short answer here"})}
-                          >
+                        render={({ field: { onChange, value } }) => (
+                          <div className="space-y-3">
                             <div className="flex items-center space-x-2">
-                              <RadioGroupItem
-                                value="networking"
+                              <input
+                                type="radio"
                                 id="networking"
-                                className="bg-gray-800 border border-gray-400 rounded-full focus:ring-0 focus:ring-offset-0 data-[state=checked]:bg-blue-500 data-[state=checked]:border-blue-500"
-                                />
+                                value="networking"
+                                checked={value === "networking"}
+                                onChange={() => onChange("networking")}
+                                className="w-4 h-4 bg-gray-800 border-2 border-gray-400 text-blue-500 rounded-full checked:bg-white checked:border-white"
+                              />
                               <label
-                                htmlFor="first-time"
+                                htmlFor="networking"
                                 className="flex items-center text-gray-200"
                               >
                                 <span className="text-sm">Networking</span>
                               </label>
                             </div>
+
                             <div className="flex items-center space-x-2">
-                              <RadioGroupItem
-                                value="learning"
+                              <input
+                                type="radio"
                                 id="learning"
-                                className="bg-gray-800 border border-gray-400 rounded-full focus:ring-0 focus:ring-offset-0 data-[state=checked]:bg-blue-500 data-[state=checked]:border-blue-500"
-                                />
+                                value="learning"
+                                checked={value === "learning"}
+                                onChange={() => onChange("learning")}
+                                className="w-4 h-4 bg-gray-800 border-2 border-gray-400 text-blue-500 rounded-full checked:bg-white checked:border-white"
+                              />
                               <label
-                                htmlFor="second-time"
+                                htmlFor="learning"
                                 className="flex items-center text-gray-200"
                               >
                                 <span className="text-sm">Learning</span>
                               </label>
                             </div>
+
                             <div className="flex items-center space-x-2">
-                              <RadioGroupItem
-                                value="jobOpportunities"
+                              <input
+                                type="radio"
                                 id="jobOpportunities"
-                                className="bg-gray-800 border border-gray-400 rounded-full focus:ring-0 focus:ring-offset-0 data-[state=checked]:bg-blue-500 data-[state=checked]:border-blue-500"
-                                />
+                                value="jobOpportunities"
+                                checked={value === "jobOpportunities"}
+                                onChange={() => onChange("jobOpportunities")}
+                                className="w-4 h-4 bg-gray-800 border-2 border-gray-400 text-blue-500 rounded-full checked:bg-white checked:border-white"
+                              />
                               <label
-                                htmlFor="second-time"
+                                htmlFor="jobOpportunities"
                                 className="flex items-center text-gray-200"
                               >
                                 <span className="text-sm">
@@ -545,20 +666,24 @@ export default function EventRegister() {
                                 </span>
                               </label>
                             </div>
+
                             <div className="flex items-center space-x-2">
-                              <RadioGroupItem
-                                value="others"
+                              <input
+                                type="radio"
                                 id="others"
-                                className="bg-gray-800 border border-gray-400 rounded-full focus:ring-0 focus:ring-offset-0 data-[state=checked]:bg-blue-500 data-[state=checked]:border-blue-500"
+                                value="others"
+                                checked={value === "others"}
+                                onChange={() => onChange("others")}
+                                className="w-4 h-4 bg-gray-800 border-2 border-gray-400 text-blue-500 rounded-full checked:bg-white checked:border-white"
                               />
                               <label
-                                htmlFor="second-time"
+                                htmlFor="others"
                                 className="flex items-center text-gray-200"
                               >
                                 <span className="text-sm">Others</span>
                               </label>
                             </div>
-                          </RadioGroup>
+                          </div>
                         )}
                       />
                       {errors.hopes && (
@@ -575,7 +700,7 @@ export default function EventRegister() {
                       <textarea
                         placeholder="Please write your short answer here"
                         rows={2}
-                        className="w-full px-4 py-2 rounded-md border border-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 text-white bg-gray-800"
+                        className="w-full px-4 py-2 rounded-md border border-gray-100 focus:outline-none text-white bg-gray-800"
                         {...register("additionalInfo", {
                           required: "Please write your short answer here",
                         })}
@@ -585,20 +710,15 @@ export default function EventRegister() {
                         name="consent"
                         defaultValue={false}
                         rules={{ required: "You must agree to proceed" }}
-                        // render={({ field }) => (
-                        render={() => (
+                        render={({ field: { onChange, value } }) => (
                           <div className="flex items-start bg-gray-700 p-4 border-gray-500 rounded">
-                            {/* <Checkbox
-                              id="consent"
-                              checked={field.value}
-                              onCheckedChange={field.onChange}
-                              className="text-blue-400 inline-block mr-2 mt-2"
-                            /> */}
                             <input
                               type="checkbox"
                               id="consent"
+                              // we add a checked state
+                              checked={value}
+                              onChange={(e) => onChange(e.target.checked)}
                               className="form-checkbox h-6 w-6 text-blue-400 border-gray-300 rounded focus:ring-blue-500 text-blue-400 inline-block mr-2 mt-1"
-                              required={true}
                             />
                             <Label
                               htmlFor="consent"
@@ -641,7 +761,10 @@ export default function EventRegister() {
                   ) : (
                     <button
                       onClick={handleNext}
-                      className="font-medium text-white bg-blue-700 border border-blue-700 py-1.5 px-3.5 rounded-full flex items-center hover:bg-white hover:text-blue-700 transition-colors duration-300"
+                      className={`font-medium text-white bg-blue-700 border border-blue-700 py-1.5 px-3.5 rounded-full flex items-center hover:bg-white hover:text-blue-700 transition-colors duration-300 ${
+                        !isStepOneValid() ? "opacity-50 cursor-not-allowed" : ""
+                      }`}
+                      disabled={!isStepOneValid()}
                     >
                       Continue
                     </button>
@@ -666,9 +789,11 @@ export default function EventRegister() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-4 text-lg text-gray-700">
                 <div className="flex flex-col">
                   <strong className="text-md text-blue-400 mb-1">Date:</strong>
-                  <p className="text-sm text-gray-400">{ typeof date === "string"
-                        ? date
-                        : new Date(date * 1000).toDateString()}</p>
+                  <p className="text-sm text-gray-400">
+                    {typeof date === "string"
+                      ? date
+                      : new Date(date * 1000).toDateString()}
+                  </p>
                 </div>
                 <div className="flex flex-col">
                   <strong className="text-md text-blue-400 mb-1">
