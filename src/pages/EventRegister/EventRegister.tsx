@@ -48,7 +48,7 @@ export default function EventRegister() {
         author: string;
         // time: string;
         eventRoom: string;
-        eventId: string
+        isFull: boolean;
       } | undefined;
 
   const title = state?.title || "Event";
@@ -126,7 +126,10 @@ export default function EventRegister() {
           "Content-Type": "application/json",
           Authorization: `Bearer ${idToken}`,
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify({
+          ...data,
+          eventId: id
+          }),
       });
 
       if (response.ok) {

@@ -1,8 +1,7 @@
 import HomePage from "./Home/index";
 import LoginPage from "./Login/Login";
-import UpcomingEvents from "./Events/EventsList.tsx";
-import PastEvents from "./PastEvents/PastEvents";
+import Events from "./Events/EventsList.tsx";
 import About from "./About/About";
 
 
-export { HomePage, LoginPage, UpcomingEvents, PastEvents, About};
+export { HomePage, LoginPage, Events, About};
