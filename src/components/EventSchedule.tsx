@@ -55,7 +55,7 @@ export default function EventSchedule({
               >
                 <td className="p-4 border border-gray-700 text-white-400 font-semibold first:border-l-0 last:border-r-0">
                   <div className="flex flex-col">
-                    <span>{slot.subject}</span>
+                    <span>{slot.subject || "KO'DJ"}</span>
                     <span className="text-gray-500 text-sm">
                       {slot.location}
                     </span>
@@ -72,7 +72,7 @@ export default function EventSchedule({
                     ))} */}
                   <div className="mb-2 last:mb-0">
                     <p className="text-gray-100 font-semibold">
-                      {slot.subject}
+                      {slot.subject || "Q & A"}
                     </p>
                   </div>
                 </td>
@@ -93,7 +93,7 @@ export default function EventSchedule({
                       </div>
                     ))} */}
                   <div className="mb-2 last:mb-0 text-white-600">
-                    {slot.speakerName}
+                    {slot.speakerName || "Community Members"}
                   </div>
                 </td>
               </motion.tr>
