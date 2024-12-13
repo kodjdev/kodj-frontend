@@ -1,5 +1,5 @@
 import Header from "./Header";
-import SparklesPreview from "./Spakless";
+import SparklesPreview from "./Sparkless";
 import Footer from "./Footer";
 import { useLocation } from 'react-router-dom';
 

@@ -1,8 +1,4 @@
-import {
-  HomePage,
-  LoginPage,
-  About,
-} from "../pages";
+import { HomePage, LoginPage, About } from "../pages";
 import React from "react";
 import EventRegister from "../pages/EventRegister/EventRegister";
 import MyPage from "../pages/MyPage/MyPage";
@@ -40,17 +36,17 @@ export const routes: RouteType[] = [
   },
   {
     path: "/events",
-    component: <EventsList/>,
+    component: <EventsList />,
     auth: false,
   },
   {
     path: "/events:type",
-    component: <EventsList/>,
+    component: <EventsList />,
     auth: false,
   },
   {
     path: "/events/:type/details/:id",
-    component: <EventDetails/>,
+    component: <EventDetails />,
     auth: false,
   },
   {
@@ -69,5 +65,5 @@ export const routes: RouteType[] = [
   {
     path: "/news/:category/:id",
     component: <NewsDetails />,
-  }
+  },
 ];

@@ -1,13 +1,11 @@
 import { ReactNode } from "react";
-import { SparklesCore } from "../components/ui/sparkless";
+import { SparklesCore } from "./ui/sparkless";
 
-export default function SparklesPreview({children} : {children: ReactNode}) {
+export default function Sparkles({ children }: { children: ReactNode }) {
   return (
     <div className="relative w-full bg-black flex flex-col items-center justify-center min-h-screen">
       {/* we align the header at the top */}
-      <div className="relative w-full z-30">
-        {children}
-      </div>
+      <div className="relative w-full z-30">{children}</div>
       {/* here we display the sparkles background */}
       <div className="absolute insert-0 w-full h-full pointer-events-none">
         <SparklesCore

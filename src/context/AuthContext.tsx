@@ -8,12 +8,7 @@ import {
 import { onAuthStateChanged, User } from "firebase/auth";
 import { auth } from "../firebase/firebaseConfig";
 import { useNavigate } from "react-router-dom";
-
-// 20 minute millisekundda
-const SESSION_TIMEOUT = 20 * 60 * 1000;
-// 1 yarim minutda auto-clear qilamiz
-const INACTIVE_TIMEOUT = 90 * 1000;
-const CHECK_INTERVAL = 60 * 1000;
+import { CHECK_INTERVAL_MS, INACTIVE_TIMEOUT_MS, SESSION_TIMEOUT_MS } from "../utils/constant";
 
 interface AuthContextType {
   user: User | null;
@@ -50,11 +45,11 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     const lastActivityTime = storedLastActivity
       ? parseInt(storedLastActivity)
       : lastActivity;
-    if (currentTime - lastActivityTime >= INACTIVE_TIMEOUT) {
+    if (currentTime - lastActivityTime >= INACTIVE_TIMEOUT_MS) {
       // simply call logout()
       logout();
       alert("You have been logged out due to inactivity !");
-    } else if (currentTime - lastActivityTime >= SESSION_TIMEOUT) {
+    } else if (currentTime - lastActivityTime >= SESSION_TIMEOUT_MS) {
       logout();
       alert("Your session has expired, Please login again.");
     }
@@ -88,7 +83,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
       // buyerda biz activeligini har minutda tekshiramiz
       const intervalId = setInterval(() => {
         autoLogout();
-      }, CHECK_INTERVAL);
+      }, CHECK_INTERVAL_MS);
 
       return () => {
         events.forEach((event) => {

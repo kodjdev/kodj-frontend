@@ -15,7 +15,6 @@ const tabs = [
   { id: "login", label: "Login", path: "/login" },
 ];
 
-// import logoImg from "../../src/assets/icons/kodj_new.jpg";
 import FlipLogo from "./FlipLogo";
 
 export default function Tabs() {
@@ -89,7 +88,7 @@ export default function Tabs() {
       }`}
     >
       <div>
-        <FlipLogo/>
+        <FlipLogo />
       </div>
       {/* Bu yerda biz hide menu on small screens, show as flex on medium and larger screens  */}
       <div className="hidden md:flex space-x-1 mr-5">
