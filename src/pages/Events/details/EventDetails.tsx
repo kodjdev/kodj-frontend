@@ -1,10 +1,7 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaCalendarAlt, FaMapMarkedAlt, FaParking } from "react-icons/fa";
-import {
-  FaLocationDot,
-  FaNoteSticky,
-} from "react-icons/fa6";
+import { FaLocationDot, FaNoteSticky } from "react-icons/fa6";
 import Speakers from "../../../components/Speakers";
 import EventSchedule from "../../../components/EventSchedule";
 import { FaBowlFood } from "react-icons/fa6";
@@ -23,29 +20,15 @@ import {
 import { db, storage } from "../../../firebase/firebaseConfig";
 import { ref, getDownloadURL } from "firebase/storage";
 import { EventForServer, EventTimeline, Speaker } from "../../../types";
-import {Spin } from "antd";
-import { useParams } from "react-router-dom";
+import { Spin } from "antd";
+import { useNavigate, useParams } from "react-router-dom";
 import EventButton from "./EventButton";
-
-// interface EventButtonProps {
-//   type: "upcoming" | "past";
-//   id: string;
-//   title: string;
-//   date: Timestamp | string;
-//   location: string;
-//   handleProtectedLinkClick: (
-//     e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
-//   ) => void;
-//   imageUrl: string;
-//   author: string;
-//   eventRoom: string;
-// }
 
 export default function EventDetails() {
   // const { user } = useAuth();
   // const param = useParams();
   // const id = param.id as string;
-
+  const navigate = useNavigate();
   const { id, type } = useParams<{ id: string; type: string }>();
 
   const [event, setEvent] = useState<EventForServer | null>(null);
@@ -55,7 +38,6 @@ export default function EventDetails() {
   const [selectedImage, setSelectedImage] = useState(0);
   const [loading, setLoading] = useState(true);
   const [registeredCount, setRegisteredCount] = useState(0);
-
 
   const fetchEventData = async () => {
     if (!id) {
@@ -204,6 +186,15 @@ export default function EventDetails() {
     <>
       {/* {contextHolder} */}
       <div className="container mx-auto py-8 px-4 sm:px-8">
+        {/* // 1ta level orqaga qaytish buttoni */}
+        <div className="relative -mt-4 mb-8">
+          <button
+            onClick={() => navigate(-1)}
+            className="px-4 py-2 text-white hover:bg-gray-700/50 rounded-md transition-colors duration-200 flex items-center gap-2"
+          >
+            <span className="text-xl">&#8592;</span>
+          </button>
+        </div>
         {event.imageUrls?.length === 1 ? (
           // Only one image scenario
           //   <div
@@ -451,7 +442,18 @@ export default function EventDetails() {
             </div>
           </div>
         )}
-        <div className="prose prose-lg text-white mb-8 mt-5">
+        {/* <div className="prose prose-lg text-white mb-8 mt-5">
+          <p>{event.description}</p>
+        </div> */}
+        <div className="flex flex-wrap items-baseline gap-2 mb-5 mt-10">
+          <h1 className="text-white font-bold text-3xl leading-none">
+            Focusing on the{" "}
+          </h1>
+          <h1 className="text-gray-500 font-bold text-3xl leading-none mx-2">
+            Backend Implementation
+          </h1>
+        </div>
+        <div className="col-span-2 prose prose-lg text-white mt-5 flex-start ">
           <p>{event.description}</p>
         </div>
         {speakers.length > 0 && eventSchedule && (
@@ -531,4 +533,3 @@ export default function EventDetails() {
     </>
   );
 }
-

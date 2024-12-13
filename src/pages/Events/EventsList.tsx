@@ -141,6 +141,7 @@ export default function UpcomingEventsPage() {
                     }
                     author={event.author}
                     imageUrl={event.imageUrl}
+                    isUpcoming={true}
                   />
                 </Link>
               ))}
@@ -174,6 +175,7 @@ export default function UpcomingEventsPage() {
                 }
                 author={event.author}
                 imageUrl={event.imageUrl}
+                isUpcoming={false}
               />
             </Link>
           ))

@@ -115,3 +115,13 @@ export interface PastEventDetailsProps {
     seconds: number;
     nanoseconds: number;
   }
+
+  export interface EventCardProps {
+    title?: string;
+    description?: string;
+    date?: string;
+    author?: string;
+    imageUrl?: string;
+    isPlaceholder?: boolean;
+    isUpcoming?: boolean;
+  };
