@@ -2,8 +2,6 @@ import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaCalendarAlt, FaMapMarkedAlt, FaParking } from "react-icons/fa";
 import {
-  FaAlignCenter,
-  FaArrowUpRightFromSquare,
   FaLocationDot,
   FaNoteSticky,
 } from "react-icons/fa6";
@@ -20,32 +18,31 @@ import {
   getDocs,
   orderBy,
   query,
-  Timestamp,
   where,
 } from "firebase/firestore";
 import { db, storage } from "../../../firebase/firebaseConfig";
 import { ref, getDownloadURL } from "firebase/storage";
 import { EventForServer, EventTimeline, Speaker } from "../../../types";
-import { message, Spin } from "antd";
-import { Link, useParams } from "react-router-dom";
-import { useAuth } from "../../../context/useAuth";
+import {Spin } from "antd";
+import { useParams } from "react-router-dom";
+import EventButton from "./EventButton";
 
-interface EventButtonProps {
-  type: "upcoming" | "past";
-  id: string;
-  title: string;
-  date: Timestamp | string;
-  location: string;
-  handleProtectedLinkClick: (
-    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
-  ) => void;
-  imageUrl: string;
-  author: string;
-  eventRoom: string;
-}
+// interface EventButtonProps {
+//   type: "upcoming" | "past";
+//   id: string;
+//   title: string;
+//   date: Timestamp | string;
+//   location: string;
+//   handleProtectedLinkClick: (
+//     e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
+//   ) => void;
+//   imageUrl: string;
+//   author: string;
+//   eventRoom: string;
+// }
 
 export default function EventDetails() {
-  const { user } = useAuth();
+  // const { user } = useAuth();
   // const param = useParams();
   // const id = param.id as string;
 
@@ -59,17 +56,6 @@ export default function EventDetails() {
   const [loading, setLoading] = useState(true);
   const [registeredCount, setRegisteredCount] = useState(0);
 
-  const [messageApi, contextHolder] = message.useMessage();
-
-  const handleProtectedLinkClick = (
-    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
-  ) => {
-    if (!user) {
-      e.preventDefault();
-      messageApi.error("Please login first to register for the event.");
-      return;
-    }
-  };
 
   const fetchEventData = async () => {
     if (!id) {
@@ -216,7 +202,7 @@ export default function EventDetails() {
 
   return (
     <>
-      {contextHolder}
+      {/* {contextHolder} */}
       <div className="container mx-auto py-8 px-4 sm:px-8">
         {event.imageUrls?.length === 1 ? (
           // Only one image scenario
@@ -313,7 +299,6 @@ export default function EventDetails() {
                     imageUrl={event.imageUrls?.[0]}
                     eventRoom={event?.eventRoom}
                     location={event?.location}
-                    handleProtectedLinkClick={handleProtectedLinkClick}
                     isFull={registeredCount >= (event?.maxSeats ?? 0)}
                   />
                 </div>
@@ -459,7 +444,6 @@ export default function EventDetails() {
                     imageUrl={event.imageUrls?.[0]}
                     eventRoom={event?.eventRoom}
                     location={event?.location}
-                    handleProtectedLinkClick={handleProtectedLinkClick}
                     isFull={registeredCount >= (event?.maxSeats ?? 0)}
                   />
                 </div>
@@ -548,49 +532,3 @@ export default function EventDetails() {
   );
 }
 
-const EventButton = ({
-  type,
-  id,
-  imageUrl,
-  title,
-  date,
-  author,
-  location,
-  eventRoom,
-  handleProtectedLinkClick,
-  isFull,
-}: EventButtonProps & { isFull: boolean }) => {
-  return type === "upcoming" ? (
-    <Link
-      to={`/events/upcoming/details/${id}/register`}
-      state={{
-        title: title,
-        date: date,
-        location: location,
-        imageUrl: imageUrl,
-        author: author,
-        eventRoom: eventRoom,
-      }}
-      onClick={handleProtectedLinkClick}
-    >
-      <button className="mt-5 flex w-full sm:w-[322px] h-14 sm:h-[56px] p-[3px] sm:p-[20px_30px] hover:bg-gray-600 justify-center items-center gap-2 flex-shrink-0 bg-blue-600">
-        {isFull ? (
-          <>
-            <FaAlignCenter className="flex-none text-xs" />
-            <span>Registration Closed</span>
-          </>
-        ) : (
-          <>
-            <FaArrowUpRightFromSquare className="flex-none text-xs" />
-            <span>Register</span>
-          </>
-        )}
-      </button>
-    </Link>
-  ) : (
-    <button className="mt-10 flex w-full sm:w-[322px] h-14 sm:h-[56px] p-[3px] sm:p-[20px_30px] justify-center items-center gap-2 flex-shrink-0 bg-gray-600">
-      <FaAlignCenter className="flex-none text-xs" />
-      <span>Event has ended</span>
-    </button>
-  );
-};
