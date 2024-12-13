@@ -77,7 +77,7 @@ export default function LoginPage() {
   const handleGoogleSignIn = async () => {
     try {
       await signInWithPopup(auth, provider);
-      navigate("/mypage");
+      handleSuccessfulAuth();
     } catch (error) {
       console.error("Error signing in with Google:", error);
       alert("Failed to sign in. Please try again.");
