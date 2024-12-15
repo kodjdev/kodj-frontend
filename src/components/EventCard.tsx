@@ -55,7 +55,7 @@ export default function EventCard({
         {/* <div className="w-70 h-70 rounded-lg overflow-hidden justify-center"> */}
         <div className="w-full h-48 sm:h-64 md:h-72 overflow-hidden flex justify-center">
           <Image
-            width={370}
+            width={400}
             height={300}
             src={imageUrl ?? ""}
             alt={title ?? "Image"}

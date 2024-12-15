@@ -207,9 +207,10 @@ export default function EventDetails() {
           //       className="rounded-lg shadow-lg w-full h-full object-cover"
           //     />
           //   </div>
+
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
             <div
-              className="col-span-2 relative h-72 sm:h-[450px] cursor-pointer overflow-hidden"
+              className="col-span-2 relative h-72 sm:h-[450px] cursor-pointer overflow-hidden rounded-[8px] border border-[#505050]"
               onClick={() => openGallery(0)}
             >
               <img
@@ -303,63 +304,17 @@ export default function EventDetails() {
             <div className="col-span-2 flex flex-col gap-4">
               {/*  Asosiy katta rasm*/}
               <div
-                className="relative h-64 sm:h-[300px] cursor-pointer overflow-hidden"
+                className="relative h-72 sm:h-[450px] cursor-pointer overflow-hidden rounded-[8px] border border-[#505050]"
                 onClick={() => openGallery(0)}
               >
                 <img
                   src={event.imageUrls?.[0] ?? ""}
                   alt={event.title}
-                  className="rounded-lg shadow-lg w-full h-full object-cover"
+                  className="rounded-lg shadow-lg w-full h-full object-cover rounded-[8px] border border-[#505050]"
                 />
               </div>
 
               {/* {/* uchta rasmni asosiy rasmni poasida korsatamiz */}
-              <div className="grid grid-cols-3 gap-4">
-                {event.imageUrls?.slice(1, 4).map((image, index) => {
-                  // If we're at the last slot and there are more images than show
-                  const actualIndex = index + 1;
-                  const isLastSlot = index === 2;
-                  const totalImages = event.imageUrls.length;
-                  if (isLastSlot && totalImages > 4) {
-                    // Show +more pageda esa rasmni dimmed qilib korsatamiz
-                    return (
-                      <div
-                        key={index}
-                        onClick={() => openGallery(actualIndex)}
-                        // className="relative h-20 sm:h-40 cursor-pointer flex items-center justify-center bg-gray-700 rounded-lg shadow-md"
-                        className="relative h-20 sm:h-40 cursor-pointer flex items-center justify-center rounded-lg shadow-md overflow-hidden"
-                        style={{
-                          backgroundImage: `url(${event.imageUrls[3]})`,
-                          backgroundSize: "cover",
-                          backgroundPosition: "center",
-                        }}
-                      >
-                        <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-                          {/* Dimmed overlay */}
-                          <span className="text-white text-md font-bold">
-                            + {totalImages - 3} photos
-                          </span>
-                        </div>
-                      </div>
-                    );
-                  } else {
-                    // normal rasm uchun
-                    return (
-                      <div
-                        key={index}
-                        className="relative h-20 sm:h-40 cursor-pointer overflow-hidden"
-                        onClick={() => openGallery(actualIndex)}
-                      >
-                        <img
-                          src={image}
-                          alt={`${event.title} - ${index + 2}`}
-                          className="rounded-lg shadow-md w-full h-full object-cover"
-                        />
-                      </div>
-                    );
-                  }
-                })}
-              </div>
             </div>
 
             {/* Ong tomon tarafi */}
@@ -445,7 +400,7 @@ export default function EventDetails() {
         {/* <div className="prose prose-lg text-white mb-8 mt-5">
           <p>{event.description}</p>
         </div> */}
-        <div className="flex flex-wrap items-baseline gap-2 mb-5 mt-10">
+        <div className="flex flex-wrap items-baseline gap-2 mb-4 mt-10">
           <h1 className="text-white font-bold text-3xl leading-none">
             Focusing on the{" "}
           </h1>
@@ -453,8 +408,55 @@ export default function EventDetails() {
             Backend Implementation
           </h1>
         </div>
-        <div className="col-span-2 prose prose-lg text-white mt-5 flex-start ">
+        <div className="w-full max-w-[750px] overflow-auto "> {/* Use max-w and w-full for responsiveness */}
+        <div className="col-span-2 prose prose-lg text-white flex-start ">
           <p>{event.description}</p>
+        </div>
+        <div className="mt-4 grid grid-cols-3 gap-4">
+          {event.imageUrls?.slice(1, 4).map((image, index) => {
+            // If we're at the last slot and there are more images than show
+            const actualIndex = index + 1;
+            const isLastSlot = index === 2;
+            const totalImages = event.imageUrls.length;
+            if (isLastSlot && totalImages > 4) {
+              // Show +more pageda esa rasmni dimmed qilib korsatamiz
+              return (
+                <div
+                  key={index}
+                  onClick={() => openGallery(actualIndex)}
+                  // className="relative h-20 sm:h-40 cursor-pointer flex items-center justify-center bg-gray-700 rounded-lg shadow-md"
+                  className="relative h-20 sm:h-40 cursor-pointer flex items-center justify-center rounded-lg shadow-md overflow-hidden rounded-[8px] border border-[#505050]"
+                  style={{
+                    backgroundImage: `url(${event.imageUrls[3]})`,
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                  }}
+                >
+                  <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+                    {/* Dimmed overlay */}
+                    <span className="text-white text-md font-bold">
+                      + {totalImages - 3} photos
+                    </span>
+                  </div>
+                </div>
+              );
+            } else {
+              // normal rasm uchun
+              return (
+                <div
+                  key={index}
+                  className="relative h-20 sm:h-40 cursor-pointer overflow-hidden"
+                  onClick={() => openGallery(actualIndex)}
+                >
+                  <img
+                    src={image}
+                    alt={`${event.title} - ${index + 2}`}
+                    className="rounded-lg shadow-md w-full h-full object-cover rounded-[8px] border border-[#505050]"
+                  />
+                </div>
+              );
+            }
+          })}
         </div>
         {speakers.length > 0 && eventSchedule && (
           <EventSchedule schedule={eventSchedule} />
@@ -480,6 +482,7 @@ export default function EventDetails() {
               as we have limited seats. Thank you for your cooperation.
             </p>
           </div>
+        </div>
         </div>
         <div className="mt-10 flex justify-between"></div>
 

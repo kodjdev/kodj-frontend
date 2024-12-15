@@ -85,12 +85,12 @@ export interface Speaker {
   id?: string;
   category?: string;
   date?: Timestamp;
-  expertises: string[];
+  // expertises: string[];
   linkedinUrl: string;
   name: string;
   position: string;
   speakerImg: string;
-  speakersId: string;
+  // speakersId: string;
 }
 
 export interface EventTimeline {
