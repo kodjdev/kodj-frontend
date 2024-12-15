@@ -20,7 +20,7 @@ export default function EventSchedule({
   };
 
   return (
-    <div className="bg-gray-800 p-6 rounded-lg text-gray-200 mt-8">
+    <div className="bg-gray-800 p-6 rounded-lg text-gray-200 mt-10">
       <h2 className="text-2xl font-bold text-blue-500 mb-6">
         {/* <IoMdTime className="inline-block text-2xl mr-2 mt-1" /> */}
         Keynote Schedule:
@@ -34,12 +34,6 @@ export default function EventSchedule({
               </th>
               <th className="p-3 text-gray-500 font-medium border border-gray-700 first:border-l-0 last:border-r-0">
                 Time
-              </th>
-              <th className="p-3 text-gray-500 font-medium border border-gray-700 first:border-l-0 last:border-r-0">
-                Presentation Title
-              </th>
-              <th className="p-3 text-gray-500 font-medium border border-gray-700 first:border-l-0 last:border-r-0">
-                Company
               </th>
               <th className="p-3 text-gray-500 font-medium border border-gray-700 first:border-l-0 last:border-r-0">
                 Presenter
@@ -65,33 +59,6 @@ export default function EventSchedule({
                   {formatTime(slot.startTime)} ~ {formatTime(slot.endTime)}
                 </td>
                 <td className="p-4 border border-gray-700 first:border-l-0 last:border-r-0">
-                  {/* {slot.presentations.map((presentation, i) => (
-                      <div key={i} className="mb-2 last:mb-0">
-                        <p className="text-gray-100 font-semibold">{presentation.title}</p>
-                      </div>
-                    ))} */}
-                  <div className="mb-2 last:mb-0">
-                    <p className="text-gray-100 font-semibold">
-                      {slot.subject || "Q & A"}
-                    </p>
-                  </div>
-                </td>
-                <td className="p-4 border border-gray-700 first:border-l-0 last:border-r-0">
-                  {/* {slot.presentations.map((presentation, i) => (
-                      <div key={i} className="mb-2 last:mb-0 text-white-600">
-                        {presentation.company}
-                      </div>
-                    ))} */}
-                  <div className="mb-2 last:mb-0 text-white-600">
-                    {slot.companyName}
-                  </div>
-                </td>
-                <td className="p-4 border border-gray-700 first:border-l-0 last:border-r-0">
-                  {/* {slot.presentations.map((presentation, i) => (
-                      <div key={i} className="mb-2 last:mb-0 text-white-600">
-                        {presentation.presenter}
-                      </div>
-                    ))} */}
                   <div className="mb-2 last:mb-0 text-white-600">
                     {slot.speakerName || "Community Members"}
                   </div>

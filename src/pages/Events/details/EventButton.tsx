@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { message } from "antd";
 import { FaAlignCenter, FaArrowUpRightFromSquare } from "react-icons/fa6";
-import LoginConfirmModal from "../../../components/LoginConfirmModal"
+import LoginConfirmModal from "../../../components/LoginConfirmModal";
 import { Timestamp } from "firebase/firestore";
 import { useAuth } from "../../../context/useAuth";
 
@@ -34,9 +34,12 @@ export default function EventButton({
   const { user } = useAuth();
   const [messageApi, contextHolder] = message.useMessage();
 
-  const handleRegisterClick = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+
+  const handleRegisterClick = (
+    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
+  ) => {
     e.preventDefault();
-    
+
     if (!user) {
       messageApi.error("Please login first to register for the event.");
       setTimeout(() => {
@@ -54,11 +57,12 @@ export default function EventButton({
         imageUrl,
         author,
         eventRoom,
-      }
+      },
     });
   };
 
-  return (
+
+  return ( 
     <>
       {contextHolder}
       {type === "upcoming" ? (
@@ -66,25 +70,27 @@ export default function EventButton({
           to={`/events/upcoming/details/${id}/register`}
           onClick={handleRegisterClick}
         >
-          <button 
-            className="mt-5 flex w-full sm:w-[322px] h-14 sm:h-[56px] p-[3px] sm:p-[20px_30px] hover:bg-gray-600 justify-center items-center gap-2 flex-shrink-0 bg-blue-600"
-            disabled={isFull}
-          >
-            {isFull ? (
-              <>
+          {isFull ? (
+            <>
+              <button
+                className="mt-5 flex w-full sm:w-[322px] h-14 sm:h-[56px] p-[3px] sm:p-[20px_30px] justify-center items-center gap-2 flex-shrink-0 bg-gray-600"
+                disabled={isFull}
+              >
                 <FaAlignCenter className="flex-none text-xs" />
                 <span>Registration Closed</span>
-              </>
-            ) : (
-              <>
+              </button>
+            </>
+          ) : (                       
+            <>
+              <button className="mt-5 flex w-full sm:w-[322px] h-14 sm:h-[56px] p-[3px] sm:p-[20px_30px] hover:bg-gray-600 justify-center items-center gap-2 flex-shrink-0 bg-blue-600">
                 <FaArrowUpRightFromSquare className="flex-none text-xs" />
                 <span>Register</span>
-              </>
-            )}
-          </button>
+              </button>
+            </>
+          )}
         </Link>
       ) : (
-        <button className="mt-10 flex w-full sm:w-[322px] h-14 sm:h-[56px] p-[3px] sm:p-[20px_30px] justify-center items-center gap-2 flex-shrink-0 bg-gray-600">
+        <button className="mt-5 flex w-full sm:w-[322px] h-14 sm:h-[56px] p-[3px] sm:p-[20px_30px] justify-center items-center gap-2 flex-shrink-0 bg-gray-600">
           <FaAlignCenter className="flex-none text-xs" />
           <span>Event has ended</span>
         </button>
@@ -95,7 +101,7 @@ export default function EventButton({
         onClose={() => setShowLoginModal(false)}
         onConfirm={() => {
           setShowLoginModal(false);
-          navigate('/login', {
+          navigate("/login", {
             state: {
               returnUrl: `/events/upcoming/details/${id}/register`,
               eventDetails: {
@@ -106,8 +112,8 @@ export default function EventButton({
                 imageUrl,
                 author,
                 eventRoom,
-              }
-            }
+              },
+            },
           });
         }}
       />
