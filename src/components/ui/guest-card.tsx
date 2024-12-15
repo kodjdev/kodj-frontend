@@ -1,56 +1,38 @@
 import { motion } from "framer-motion";
-import { FaLinkedin } from "react-icons/fa";
 import { Speaker } from "../../types";
 
 export function SpeakerCard({
   name,
   position,
-  expertises,
   speakerImg,
   linkedinUrl,
 }: Speaker) {
   return (
     <motion.div
       whileHover={{ scale: 1.05 }}
-      className="bg-white rounded-lg shadow-lg p-4 flex flex-col items-center text-center border border-gray-200 hover:shadow-xl transition-all duration-300"
+      className="bg-transparent rounded-lg shadow-lg p-4 flex flex-col items-center text-center hover:shadow-xl transition-all duration-300"
     >
-      <img
-        src={speakerImg}
-        alt={`${name}'s photo`}
-        // width={240}
-        // height={240}
-        className="w-full h-auto rounded-lg mb-1"
-
-      />
-      <div className="flex items-center justify-between w-full">
-        <h2 className="text-lg flex-start font-semibold text-gray-800 text-left">
+      <a href={linkedinUrl} target="_blank" rel="noopener noreferrer" className="w-full">
+        <div className="relative w-full h-0 pb-[100%]">
+          <img
+            src={speakerImg}
+            alt={`${name}'s photo`}
+            className="absolute inset-0 w-30 h-30 sm:w-30 sm:h-30 rounded-full object-cover"
+          />
+        </div>
+      </a>
+      <div className="flex items-center justify-between w-full space-x-0 mt-4"> 
+        <h2 className="text-lg flex-start font-semibold text-white-800 text-left">
           {name}
         </h2>
-        {linkedinUrl && (
-          <a
-            href={linkedinUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="m-2 text-blue-500 hover:text-blue-700"
-          >
-            <FaLinkedin className="text-xl" />
-          </a>
-        )}
       </div>
       <div className="flex-grow w-full">
-        <p className="flex-start text-left w-full text-sm text-gray-500 mb-5">
+      <p className="flex-start text-left w-full text-[14px] text-blue-400 mb-5">
+        {/* <p className="flex-start text-left w-full text-sm text-blue-400 mb-5"> */}
           {position}
         </p>
       </div>
       <div className="flex flex-wrap gap-1 mt-auto">
-        {expertises.map((expertise, index) => (
-          <span
-            key={index}
-            className="flex-start text-left w text-xs text-gray-400 mt-2 px-2 py-1 rounded-full bg-gray-100"
-          >
-            {expertise}
-          </span>
-        ))}
       </div>
     </motion.div>
   );
