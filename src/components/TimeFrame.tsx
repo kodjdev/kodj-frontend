@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 const targetDate = new Date("2024-12-21T11:10:00Z");
-const eventName = "Meetup N4";
+const eventName = "Uchrashuv N4";
 
 function formatTime(value: number) {
   return value < 10 ? `0${value}` : value.toString();

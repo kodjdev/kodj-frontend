@@ -9,6 +9,7 @@ import { Event } from "../../types";
 import { FiLogOut } from "react-icons/fi";
 import { FaPersonRays } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
+import { Spin } from "antd";
 
 export default function MyPage() {
   const { user, loading } = useAuth();
@@ -82,8 +83,8 @@ export default function MyPage() {
 
   if (loading || fetching) {
     return (
-      <div className="flex justify-center items-center min-h-screen">
-        Loading...
+      <div className="flex items-center justify-center min-h-screen bg-black bg-opacity-50 text-blue-600 text-md">
+        <Spin tip="Wait a little bit" size="large"></Spin>
       </div>
     );
   }

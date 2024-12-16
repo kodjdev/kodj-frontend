@@ -13,6 +13,8 @@ import { FcGoogle } from "react-icons/fc";
 import { AiOutlineLogin, AiOutlineUserAdd } from "react-icons/ai";
 import { HiOutlineMail, HiOutlineLockClosed } from "react-icons/hi";
 import { useLocation, useNavigate } from "react-router-dom";
+import { FirebaseError } from "firebase/app";
+import { message } from "antd";
 
 export default function LoginPage() {
   const location = useLocation();
@@ -21,6 +23,7 @@ export default function LoginPage() {
   const [isSignUp, setIsSignUp] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [messageApi, contextHolder]  = message.useMessage();
 
   // for sign up
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -65,9 +68,15 @@ export default function LoginPage() {
       // we navigate to the event registration process
       handleSuccessfulAuth();
     } catch (error) {
-      if (error instanceof Error) {
+      if (error instanceof FirebaseError) {
         console.error("Error with email authentication:", error);
-        alert(error.message);
+        if (error.code === "auth/invalid-credential") {
+          // bu yerda proper message bilan alert qilamiz userni
+          messageApi.error("Invalid credentials. Please check your email and password.");
+
+        } else {
+          alert(error.message);
+        }
       } else {
         console.log(error);
       }
@@ -85,6 +94,8 @@ export default function LoginPage() {
   };
 
   return (
+    <>
+    {contextHolder}
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black p-4">
       <div className="w-full max-w-md p-8 bg-gray-800 bg-opacity-80 rounded-lg shadow-lg">
         {returnUrl && (
@@ -171,5 +182,6 @@ export default function LoginPage() {
         </div>
       </div>
     </div>
+    </>
   );
 }

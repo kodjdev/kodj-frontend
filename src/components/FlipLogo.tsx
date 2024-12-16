@@ -4,7 +4,7 @@ import logoImg from "../../src/assets/icons/kodj_new.jpg";
 
 export default function FlipLogo() {
   return (
-    <div className="relative w-28 h-28 mr-2 pb-2 mx-2 overflow-hidden flex-shrink-0">
+    <div className="relative w-28 h-28 overflow-hidden flex-shrink-0">
       <motion.div
         className="w-full h-full"
         whileHover={{ rotateY: 180 }}

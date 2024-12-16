@@ -184,7 +184,7 @@ export default function EventDetails() {
 
   return (
     <>
-      {/* {contextHolder} */}
+      contextHolder
       <div className="container mx-auto py-8 px-4 sm:px-8">
         {/* // 1ta level orqaga qaytish buttoni */}
         <div className="relative -mt-4 mb-8">

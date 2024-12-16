@@ -18,12 +18,16 @@ export default function UpcomingEventsPage() {
   const fetchdata = async () => {
     try {
       const upcomingEventCollectionRef = collection(db, "upcomingEvents");
-      const upcomingEventSnapshot = await getDocs(upcomingEventCollectionRef);
+      const pastEventCollectionRef = collection(db, "pastEvents");
 
-      // console.log(`Fetched ${eventSnapshot.docs.length} events from Firestore.`);
+      // parallel tarzda 2 ta endpointga fetch call qilamiz
+      const [upcomingEventSnapshot, pastEventSnapshot] = await Promise.all([
+        getDocs(upcomingEventCollectionRef),
+        getDocs(pastEventCollectionRef),
+      ]);
 
-      if (upcomingEventSnapshot.empty) {
-        console.log("No documents found in the upcoming collection.");
+      if (upcomingEventSnapshot.empty || pastEventSnapshot.empty) {
+        console.log("No data found in the colleection.");
       }
 
       const upcomingEventsData = upcomingEventSnapshot.docs.map((doc) => {
@@ -32,15 +36,6 @@ export default function UpcomingEventsPage() {
         console.log(`Event ID: ${eventData.id}`, eventData);
         return eventData;
       });
-
-      const pastEventCollectionRef = collection(db, "pastEvents");
-      const pastEventSnapshot = await getDocs(pastEventCollectionRef);
-
-      // console.log(`Fetched ${eventSnapshot.docs.length} events from Firestore.`);
-
-      if (upcomingEventSnapshot.empty) {
-        console.log("No documents found in the upcoming collection.");
-      }
 
       const pastEventsData = pastEventSnapshot.docs.map((doc) => {
         const eventData = doc.data() as EventForServer;
@@ -57,7 +52,6 @@ export default function UpcomingEventsPage() {
               const url = await getDownloadURL(imageRef);
               // we only need the first image
               eventData.imageUrl = url;
-              // console.log(`Fetched image URL for event ${eventData.id}: ${url}`);
             } catch (imageError) {
               console.error(
                 `Error fetching image for event ${eventData.id}:`,
