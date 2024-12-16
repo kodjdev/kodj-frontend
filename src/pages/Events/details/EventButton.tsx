@@ -34,7 +34,6 @@ export default function EventButton({
   const { user } = useAuth();
   const [messageApi, contextHolder] = message.useMessage();
 
-
   const handleRegisterClick = (
     e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
   ) => {
@@ -45,6 +44,11 @@ export default function EventButton({
       setTimeout(() => {
         setShowLoginModal(true);
       }, 1000);
+      return;
+    }
+
+    if (isFull) {
+      messageApi.error("Event registration is closed.");
       return;
     }
 
@@ -61,8 +65,7 @@ export default function EventButton({
     });
   };
 
-
-  return ( 
+  return (
     <>
       {contextHolder}
       {type === "upcoming" ? (
@@ -74,18 +77,40 @@ export default function EventButton({
             <>
               <button
                 className="mt-5 flex w-full sm:w-[322px] h-14 sm:h-[56px] p-[3px] sm:p-[20px_30px] justify-center items-center gap-2 flex-shrink-0 bg-gray-600"
-                disabled={isFull}
+                // disabled={isFull}
               >
                 <FaAlignCenter className="flex-none text-xs" />
                 <span>Registration Closed</span>
               </button>
             </>
-          ) : (                       
+          ) : (
             <>
               <button className="mt-5 flex w-full sm:w-[322px] h-14 sm:h-[56px] p-[3px] sm:p-[20px_30px] hover:bg-gray-600 justify-center items-center gap-2 flex-shrink-0 bg-blue-600">
                 <FaArrowUpRightFromSquare className="flex-none text-xs" />
                 <span>Register</span>
               </button>
+              {/* // faqatgina full bo'magan holatda popup modalni ochib login qiladi */}
+              <LoginConfirmModal
+                isOpen={showLoginModal}
+                onClose={() => setShowLoginModal(false)}
+                onConfirm={() => {
+                  setShowLoginModal(false);
+                  navigate("/login", {
+                    state: {
+                      returnUrl: `/events/upcoming/details/${id}/register`,
+                      eventDetails: {
+                        id,
+                        title,
+                        date,
+                        location,
+                        imageUrl,
+                        author,
+                        eventRoom,
+                      },
+                    },
+                  });
+                }}
+              />
             </>
           )}
         </Link>
@@ -95,28 +120,6 @@ export default function EventButton({
           <span>Event has ended</span>
         </button>
       )}
-
-      <LoginConfirmModal
-        isOpen={showLoginModal}
-        onClose={() => setShowLoginModal(false)}
-        onConfirm={() => {
-          setShowLoginModal(false);
-          navigate("/login", {
-            state: {
-              returnUrl: `/events/upcoming/details/${id}/register`,
-              eventDetails: {
-                id,
-                title,
-                date,
-                location,
-                imageUrl,
-                author,
-                eventRoom,
-              },
-            },
-          });
-        }}
-      />
     </>
   );
 }

@@ -20,7 +20,7 @@ import {
 import { db, storage } from "../../../firebase/firebaseConfig";
 import { ref, getDownloadURL } from "firebase/storage";
 import { EventForServer, EventTimeline, Speaker } from "../../../types";
-import { Spin } from "antd";
+import { message, Spin } from "antd";
 import { useNavigate, useParams } from "react-router-dom";
 import EventButton from "./EventButton";
 
@@ -38,6 +38,7 @@ export default function EventDetails() {
   const [selectedImage, setSelectedImage] = useState(0);
   const [loading, setLoading] = useState(true);
   const [registeredCount, setRegisteredCount] = useState(0);
+  const [messageApi, contextHolder] = message.useMessage();
 
   const fetchEventData = async () => {
     if (!id) {
@@ -184,7 +185,7 @@ export default function EventDetails() {
 
   return (
     <>
-      contextHolder
+      {contextHolder}
       <div className="container mx-auto py-8 px-4 sm:px-8">
         {/* // 1ta level orqaga qaytish buttoni */}
         <div className="relative -mt-4 mb-8">
