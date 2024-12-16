@@ -33,7 +33,6 @@ export default function UpcomingEventsPage() {
       const upcomingEventsData = upcomingEventSnapshot.docs.map((doc) => {
         const eventData = doc.data() as EventForServer;
         eventData.id = doc.id;
-        console.log(`Event ID: ${eventData.id}`, eventData);
         return eventData;
       });
 
