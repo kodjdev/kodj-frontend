@@ -39,7 +39,7 @@ export default function EventButton({
   ) => {
     e.preventDefault();
 
-    if (!user) {
+    if (!user && !isFull) {
       messageApi.error("Please login first to register for the event.");
       setTimeout(() => {
         setShowLoginModal(true);
@@ -65,6 +65,12 @@ export default function EventButton({
     });
   };
 
+  // const alertUser = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+  //   e.preventDefault();
+  //   if(isFull)
+  //   messageApi.error("Event registration is closed.");
+  // }
+
   return (
     <>
       {contextHolder}
@@ -78,6 +84,7 @@ export default function EventButton({
               <button
                 className="mt-5 flex w-full sm:w-[322px] h-14 sm:h-[56px] p-[3px] sm:p-[20px_30px] justify-center items-center gap-2 flex-shrink-0 bg-gray-600"
                 // disabled={isFull}
+                // onClick={alertUser}
               >
                 <FaAlignCenter className="flex-none text-xs" />
                 <span>Registration Closed</span>
