@@ -10,11 +10,15 @@ export interface Event {
   images?: string[];
   imageUrl?: string[] | string;
   events?: string;
+  docId?: string;
 }
 
 export interface EventDetails {
   title: string;
-  date: string | FirebaseTimestamp;
+  date: {
+    seconds: number;
+    nanoseconds: number;
+  }
   eventLocation: string;
 }
 
@@ -49,18 +53,18 @@ export interface EventForServer {
 
 export interface RegistrationFormData {
   id?: string;
-  firstname: string;
-  lastname: string;
-  email: string;
-  phone: string;
-  jobTitle: string;
+  firstname?: string;
+  lastname?: string;
+  email?: string;
+  phone?: string;
+  jobTitle?: string;
   eventDetails: EventDetails;
-  experience: string;
-  notify: string;
-  consent: boolean;
-  interestedField: string;
-  hopes: string;
-  additionalInfo: string;
+  experience?: string;
+  notify?: string;
+  consent?: boolean;
+  interestedField?: string;
+  hopes?: string;
+  additionalInfo?: string;
   eventId: string;
 }
 
