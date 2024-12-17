@@ -10,7 +10,6 @@ import { auth, provider } from "../../firebase/firebaseConfig";
 import { Button } from "../../components/ui/button";
 import { Input } from "../../components/ui/input";
 import { FcGoogle } from "react-icons/fc";
-import { AiOutlineLogin, AiOutlineUserAdd } from "react-icons/ai";
 import { HiOutlineMail, HiOutlineLockClosed } from "react-icons/hi";
 import { useLocation, useNavigate } from "react-router-dom";
 import { FirebaseError } from "firebase/app";

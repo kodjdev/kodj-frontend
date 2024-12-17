@@ -53,18 +53,18 @@ export interface EventForServer {
 
 export interface RegistrationFormData {
   id?: string;
-  firstname?: string;
-  lastname?: string;
-  email?: string;
-  phone?: string;
-  jobTitle?: string;
+  firstname: string;
+  lastname: string;
+  email: string;
+  phone: string;
+  jobTitle: string;
   eventDetails: EventDetails;
-  experience?: string;
-  notify?: string;
-  consent?: boolean;
-  interestedField?: string;
-  hopes?: string;
-  additionalInfo?: string;
+  experience: string;
+  notify: string;
+  consent: boolean;
+  interestedField: string;
+  hopes: string;
+  additionalInfo: string;
   eventId: string;
 }
 
@@ -89,12 +89,10 @@ export interface Speaker {
   id?: string;
   category?: string;
   date?: Timestamp;
-  // expertises: string[];
   linkedinUrl: string;
   name: string;
   position: string;
   speakerImg: string;
-  // speakersId: string;
 }
 
 export interface EventTimeline {

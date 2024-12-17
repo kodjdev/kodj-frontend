@@ -52,7 +52,8 @@ export default function EventRegister() {
       } | undefined;
 
   const title = state?.title || "Event";
-  const date = state?.date || "N/A";
+  // const date = state?.date || "N/A";
+  // const date = state?.date || { seconds: 0, nanoseconds: 0 }; // Default to an object if not available
   const eventRoom = state?.eventRoom;
   const eventLocation = state?.location || "Unknown";
   const imageSource = state?.imageUrl || "/pastEvents/past1.jpeg";
@@ -82,7 +83,10 @@ export default function EventRegister() {
       additionalInfo: "",
       eventDetails: {
         title,
-        date,
+        date: {
+          seconds: state?.date?.seconds || 0,
+          nanoseconds: state?.date?.nanoseconds || 0,
+        },
         eventLocation,
       },
     },
