@@ -6,6 +6,7 @@ import EventsList from "../pages/Events/EventsList.tsx";
 import NewsDetails from "../pages/News/NewsDetails/NewsDetails";
 import NewsList from "../pages/News/NewsList";
 import EventDetails from "../pages/Events/details/EventDetails.tsx";
+import ForgotPassword from "../components/ForgotPassword.tsx";
 
 interface RouteType {
   path: string;
@@ -27,6 +28,11 @@ export const routes: RouteType[] = [
   {
     path: "/login",
     component: <LoginPage />,
+    auth: false, // Public route
+  },
+  {
+    path: "/forgot-password",
+    component: <ForgotPassword />,
     auth: false, // Public route
   },
   {

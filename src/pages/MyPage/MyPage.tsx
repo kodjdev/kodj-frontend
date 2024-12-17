@@ -117,7 +117,7 @@ export default function MyPage() {
       await deleteDoc(doc(db, "registrations", docId));
 
       // delete qilganimizdan so'ng, upcomingEvent statedam eventni o'chiramiz
-      setUpcomingEvents((prev) => prev.filter((e: Event) => e.id !== docId));
+      setUpcomingEvents((prev) => prev.filter((e: Event) => e.docId !== docId));
       messageApi.success("You successfully canceled registration for event .");
     } catch (error) {
       if (error instanceof FirebaseError) {

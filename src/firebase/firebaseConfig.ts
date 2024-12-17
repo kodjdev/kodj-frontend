@@ -1,5 +1,5 @@
 import { getApps, initializeApp } from "firebase/app";
-import { getAuth, GoogleAuthProvider, connectAuthEmulator } from "firebase/auth";
+import { getAuth, GoogleAuthProvider, connectAuthEmulator, sendPasswordResetEmail } from "firebase/auth";
 import { connectFirestoreEmulator, getFirestore } from "firebase/firestore";
 import { getStorage, connectStorageEmulator} from "firebase/storage";
 
@@ -26,4 +26,5 @@ if(import.meta.env.VITE_USE_EMULATORS === 'true') {
     connectStorageEmulator(storage, 'localhost', 9199);
 }
 
-export { db, storage, auth, provider };
+export { db, storage, auth, provider, sendPasswordResetEmail };
+
