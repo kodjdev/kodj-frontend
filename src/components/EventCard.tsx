@@ -4,7 +4,7 @@ import {
   CardDescription,
   CardContent,
 } from "../../src/components/ui/card";
-import { CiCalendarDate } from "react-icons/ci";
+import { BiSolidCalendar, BiGroup } from "react-icons/bi";
 import { motion } from "framer-motion";
 import { FaPlus } from "react-icons/fa";
 import { Image } from "antd";
@@ -16,7 +16,9 @@ export default function EventCard({
   date,
   imageUrl,
   isPlaceholder,
-  isUpcoming
+  isUpcoming,
+  registeredCount,
+  maxSeats,
 }: EventCardProps) {
   // const location = useLocation();
   // const pathname = location.pathname;
@@ -67,21 +69,31 @@ export default function EventCard({
           <CardTitle className="text-lg sm:text-2xl font-semibold text-white">
             {title}
           </CardTitle>
-          <p className="text-sm sm:text-base text-gray-400 line-clamp-2 mt-2 text-left mb-3">
+          <p className="text-sm sm:text-base text-gray-400 overflow-hidden whitespace-nowrap text-ellipsis mt-2 text-left mb-3">
             {description}
           </p>
+          <div className="flex items-center">
+            <BiSolidCalendar className="inline-block text-white mr-2" />
+            <CardDescription className="text-sm sm:text-md text-white text-left">
+              {date}
+            </CardDescription>
+          </div>
           <div className="flex items-center justify-between">
             <div className="flex items-center">
-              <CiCalendarDate className="inline-block text-blue-600 mr-1" />
-              <CardDescription className="text-sm sm:text-md text-blue-600 text-left">
-                {date}
+              <BiGroup className="inline-block text-white mr-2" />
+              <CardDescription className="text-sm sm:text-md text-white text-left">
+                {/* {date} */}
+                 <span className="mr-1">Registered:</span>
+                    <span className="text-white">
+                      {registeredCount || 0}/{maxSeats ?? 0}
+                    </span>
               </CardDescription>
             </div>
             <div className="flex items-center">
               {isUpcoming && (
-              <span className="text-sm font-medium px-2.5 py-1 bg-blue-600/10 text-blue-400 rounded-full hover:bg-blue-600/20 transition-all duration-200 cursor-default border border-blue-600/20">
-                # Free
-              </span>
+                <span className="text-sm font-medium px-2.5 py-1 bg-blue-600/10 text-blue-400 rounded-md hover:bg-blue-600/20 transition-all duration-200 cursor-default border border-blue-600/20">
+                  # Free
+                </span>
               )}
             </div>
           </div>

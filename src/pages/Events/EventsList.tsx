@@ -1,6 +1,6 @@
 import EventCard from "../../components/EventCard";
 import { useEffect, useState } from "react";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, query, where } from "firebase/firestore";
 import { db, storage } from "../../firebase/firebaseConfig";
 import { ref, getDownloadURL } from "firebase/storage";
 import { EventForServer } from "../../types";
@@ -42,26 +42,63 @@ export default function UpcomingEventsPage() {
         return eventData;
       });
 
-      // we fetch the upcomoing event image URL for each event
-      const eventsWithUpcomingImageUrls = await Promise.all(
+       // Fetch the registered count for each upcoming event
+       const eventsWithRegisteredCount = await Promise.all(
         upcomingEventsData.map(async (eventData) => {
-          if (eventData.images && eventData.images.length > 0) {
-            try {
+          if(eventData.images && eventData.images.length > 0){
+            try{
+              const registrationsQuery = query(
+                collection(db, "registrations"),
+                where("eventId", "==", eventData.id)
+              );
+    
+              const registrationSnapshot = await getDocs(registrationsQuery);
+              eventData.registeredCount = registrationSnapshot.size; // Add registered count to event data
+
               const imageRef = ref(storage, eventData.images[0]);
               const url = await getDownloadURL(imageRef);
               // we only need the first image
               eventData.imageUrl = url;
-            } catch (imageError) {
+
+              return eventData;
+            }
+            catch(error){
               console.error(
                 `Error fetching image for event ${eventData.id}:`,
-                imageError
+                error
               );
               eventData.imageUrl = "";
             }
           }
-          return eventData;
+          return "No img or data found !";
         })
       );
+
+      // here we fitler out the undefined values
+      const filteredEventsWithRegisteredCount = eventsWithRegisteredCount.filter(
+        (event): event is EventForServer => event !== undefined
+      );
+
+      // we fetch the upcomoing event image URL for each event
+      // const eventsWithUpcomingImageUrls = await Promise.all(
+      //   upcomingEventsData.map(async (eventData) => {
+      //     if (eventData.images && eventData.images.length > 0) {
+      //       try {
+      //         const imageRef = ref(storage, eventData.images[0]);
+      //         const url = await getDownloadURL(imageRef);
+      //         // we only need the first image
+      //         eventData.imageUrl = url;
+      //       } catch (imageError) {
+      //         console.error(
+      //           `Error fetching image for event ${eventData.id}:`,
+      //           imageError
+      //         );
+      //         eventData.imageUrl = "";
+      //       }
+      //     }
+      //     return eventData;
+      //   })
+      // );
 
       // we fetch the upcomoing event image URL for each event
       const eventsWithPastImageUrls = await Promise.all(
@@ -83,7 +120,7 @@ export default function UpcomingEventsPage() {
         })
       );
 
-      setUpcomingEvents(eventsWithUpcomingImageUrls);
+      setUpcomingEvents(filteredEventsWithRegisteredCount);
       setPastEvents(eventsWithPastImageUrls);
       setLoading(false);
     } catch (error) {
@@ -135,6 +172,8 @@ export default function UpcomingEventsPage() {
                     author={event.author}
                     imageUrl={event.imageUrl}
                     isUpcoming={true}
+                    registeredCount={event.registeredCount}
+                    maxSeats={event.maxSeats}
                   />
                 </Link>
               ))}
@@ -169,6 +208,8 @@ export default function UpcomingEventsPage() {
                 author={event.author}
                 imageUrl={event.imageUrl}
                 isUpcoming={false}
+                registeredCount={event.registeredCount}
+                maxSeats={event.maxSeats}
               />
             </Link>
           ))

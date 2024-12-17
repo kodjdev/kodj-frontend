@@ -190,7 +190,7 @@ export default function EventDetails() {
         <div className="relative -mt-4 mb-8">
           <button
             onClick={() => navigate(-1)}
-            className="px-4 py-2 text-white hover:bg-gray-700/50 rounded-md transition-colors duration-200 flex items-center gap-2"
+            className="px-5 py-2 text-white hover:bg-gray-700/50 rounded-md transition-colors duration-200 flex items-center gap-2"
           >
             <span className="text-xl">&#8592;</span>
           </button>

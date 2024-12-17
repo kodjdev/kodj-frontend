@@ -96,8 +96,7 @@ export default function NewsDetails() {
       {/* // back button */}
       <button
         onClick={() => navigate(-1)}
-        className="absolute mb-6 px-4 py-1 text-white text- bg-trasnparent text-white rounded hover:bg-gray-500 transition  z-10"
-        // className="mb-6 px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-500 transition"
+        className="px-5 py-2 text-white hover:bg-gray-700/50 rounded-md transition-colors duration-200 flex items-center gap-2 mb-[-20px]"
       >
         &#8592;
       </button>
@@ -123,7 +122,9 @@ export default function NewsDetails() {
               >
                 <h2 className="text-2xl font-semibold mb-4">{item.title}</h2>
                 {item.author && (
-                  <p className="text-gray-300 text-lg mb-8">Author: {item.author}</p>
+                  <p className="text-gray-300 text-lg mb-8">
+                    Author: {item.author}
+                  </p>
                 )}
 
                 {/* Container to arrange text and image side-by-side on larger screens, stacked on mobile */}
@@ -154,7 +155,6 @@ export default function NewsDetails() {
                     ? formatDate(item.lastEdited)
                     : "No date available"}
                 </div>
-               
               </div>
             );
           })}

@@ -11,7 +11,8 @@ export interface Event {
   imageUrl?: string[] | string;
   events?: string;
   docId?: string;
-}
+  maxSeats?: number;
+  }
 
 export interface EventDetails {
   title: string;
@@ -49,6 +50,7 @@ export interface EventForServer {
   speakers?: Speaker[];
   schedule?: EventTimeline[];
   maxSeats?: number;
+  registeredCount?: number;
 }
 
 export interface RegistrationFormData {
@@ -125,4 +127,6 @@ export interface EventCardProps {
   imageUrl?: string;
   isPlaceholder?: boolean;
   isUpcoming?: boolean;
+  registeredCount?: number;
+  maxSeats?: number;
 }

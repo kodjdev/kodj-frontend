@@ -45,7 +45,7 @@ export default function NewsList() {
       <div className="">
         <button
           onClick={() => navigate(-1)}
-          className="absolute mb-6 px-4 py-1 text-white text- bg-trasnparent text-white rounded hover:bg-gray-500 transition  z-10"
+          className="px-5 py-2 text-white hover:bg-gray-700/50 rounded-md transition-colors duration-200 flex items-center gap-2"
           // className="mb-6 px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-500 transition"
         >
           &#8592;
