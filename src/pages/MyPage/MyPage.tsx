@@ -11,15 +11,14 @@ import {
 } from "firebase/firestore";
 import { auth, db } from "../../firebase/firebaseConfig";
 import { motion } from "framer-motion";
-import { Button } from "../../components/ui/button";
 import { CardContent } from "../../components/ui/card";
 import { Event, EventDetails } from "../../types";
-import { FiLogOut } from "react-icons/fi";
 import { FaPersonRays } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
 import { message, Spin } from "antd";
 import { FirebaseError } from "firebase/app";
 import Modal from "../../components/ui/modal";
+import { BsFillPersonLinesFill } from "react-icons/bs";
 
 interface Registration {
   id: string;
@@ -138,9 +137,9 @@ export default function MyPage() {
     }
   };
 
-  const handleLogoutClick = async () => {
-    setIsModalOpen(true);
-  }
+  // const handleLogoutClick = async () => {
+  //   setIsModalOpen(true);
+  // }
 
   if (loading || fetching) {
     return (
@@ -158,8 +157,8 @@ export default function MyPage() {
         <div className="flex justify-between items-center mb-8">
           {/* User info will go here */}
           <div className="flex items-center space-x-4">
-            <div className="w-20 h-20 rounded-full flex items-center justify-center bg-gray-200">
-              <FaPersonRays className="text-3xl" />
+            <div className="w-20 h-20 rounded-full flex items-center justify-center bg-gray-700">
+              <BsFillPersonLinesFill className="text-3xl" />
             </div>
             <div>
               <h1 className="text-3xl font-bold text-white">
@@ -168,13 +167,13 @@ export default function MyPage() {
               <p className="text-gray-400">{user?.email ?? "No Email found"}</p>
             </div>
           </div>
-          <Button
+          {/* <Button
             onClick={handleLogoutClick}
             className="flex items-center space-x-1.5 bg-blue-600 hover:bg-red-600 hover:text-black rounded-full px-3 text-sm font-medium text-white"
           >
             <FiLogOut />
             <span>Logout</span>
-          </Button>
+          </Button> */}
         </div>
 
         {/* // upcoming events list */}

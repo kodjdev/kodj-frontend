@@ -4,6 +4,7 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import { routes } from "./routes";
 import PrivateWrapper from "./ProtectedRoute";
+import Error from "../components/Error";
 
 export default function RouterPage() {
   return (
@@ -17,8 +18,8 @@ export default function RouterPage() {
           }
         />
       ))}
-      {/* // we catch undefined paths */}
-      <Route path="*" element={<Navigate to="/" replace />} />
+      {/* // unhandled routes will be moved to 404 page error handling component */}
+      <Route path="*" element={<Error />} />
     </Routes>
   );
 }
