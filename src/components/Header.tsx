@@ -108,7 +108,8 @@ export default function Tabs() {
               onClick={() => setIsMobileMenuOpen(false)}
               className="text-white focus:outline-none"
             >
-              <FiX size={24} />
+              {/* <FiX size={24} /> */}
+              &#x2715;
             </button>
           </div>
           <div className="flex flex-col space-y-4 p-5">

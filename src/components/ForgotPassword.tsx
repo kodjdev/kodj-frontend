@@ -32,19 +32,23 @@ const ForgotPassword = () => {
 
   return (
     <>
-      <div className="flex flex-col items-center justify-center min-h-screen p-4 relative">
-        <div className="absolute top-4 left-4 px-4 py-2 text-white rounded-md transition-colors duration-200 flex items-center gap-2">
+      <div className="flex flex-col items-center justify-center min-h-screen p-4 relative mt-[-40px]">
+        <div className="w-full max-w-md p-8 bg-gray-800 bg-opacity-80 rounded-lg shadow-lg">
+        <div className="flex justify-between items-center mb-6">
           <button
             onClick={() => navigate(-1)}
-            className="px-5 py-2 text-white hover:bg-gray-700/50 rounded-md transition-colors duration-200 flex items-center gap-2"
-            // className="mb-6 px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-500 transition"
+            className="px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-500 transition"
           >
             &#8592;
           </button>
+          <button
+            onClick={() => navigate("/")}
+            className="px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-500 transition"
+          >
+            &#x2715;
+          </button>
         </div>
-        {/* </div> */}
-        <div className="w-full max-w-md p-8 bg-gray-800 bg-opacity-80 rounded-lg shadow-lg">
-          <h2 className="text-2xl font-semibold mb-4">Forgot Password</h2>
+          <h2 className="text-2xl font-semibold mb-10">Forgot Password</h2>
           <form onSubmit={handleSubmit} className="flex flex-col">
             {/* <div className="flex items-center mb-4"> */}
             <p className="text-white text-md mb-5">
@@ -54,7 +58,6 @@ const ForgotPassword = () => {
                 we’ll send an email with confirmation to reset your password
               </span>
             </p>
-            {/* </div> */}
             <div className="relative">
               <HiOutlineMail className="absolute left-4 top-4 text-gray-400" />
               <input

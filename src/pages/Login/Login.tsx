@@ -100,7 +100,7 @@ export default function LoginPage() {
   return (
     <>
       {contextHolder}
-      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black p-4">
+      <div className="flex items-center justify-center min-h-screen  p-4">
         <div className="w-full max-w-md p-8 bg-gray-800 bg-opacity-80 rounded-lg shadow-lg">
           {returnUrl && (
             <div className="mb-4 text-sm text-gray-400 text-center">
