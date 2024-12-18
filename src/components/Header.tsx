@@ -2,9 +2,9 @@ import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { useAuth } from "../context/useAuth";
 import { auth } from "../firebase/firebaseConfig";
-import { FiLogOut, FiMenu, FiX } from "react-icons/fi";
+import { FiLogOut, FiMenu, FiSettings, FiUser, FiX } from "react-icons/fi";
 import { AiOutlineLogin } from "react-icons/ai";
-import { BsFillPersonBadgeFill } from "react-icons/bs";
+import { BsPerson } from "react-icons/bs";
 import { Link, useLocation } from "react-router-dom";
 
 const tabs = [
@@ -26,6 +26,8 @@ export default function Tabs() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [showProfileMenu, setShowProfileMenu] = useState(false);
+  const profileMenuRef = useRef<HTMLDivElement>(null);
 
   // Reference to the mobile menu
   const menuRef = useRef<HTMLDivElement>(null);
@@ -40,7 +42,7 @@ export default function Tabs() {
   }, [location.pathname]);
 
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
+    const handleClickOutsideMenu = (event: MouseEvent) => {
       if (
         menuRef.current &&
         !menuRef.current.contains(event.target as Node) &&
@@ -51,18 +53,28 @@ export default function Tabs() {
       }
     };
 
+    const handleClickOutsideMyPage = (event: MouseEvent) => {
+      if (
+        profileMenuRef.current &&
+        !profileMenuRef.current.contains(event.target as Node)
+      ) {
+        setShowProfileMenu(false);
+      }
+    };
+
+    // menu ni sortiga qarab event listener qo'shamiz
     if (isMobileMenuOpen) {
-      document.addEventListener("mousedown", handleClickOutside);
-      // document.body.style.overflow = "hidden";
-    } else {
-      document.removeEventListener("mousedown", handleClickOutside);
-      // document.body.style.overflow = "auto";
+      document.addEventListener("mousedown", handleClickOutsideMenu);
+    } else if (showProfileMenu) {
+      document.addEventListener("mousedown", handleClickOutsideMyPage);
     }
 
+    // cleanup method ikkila event listenerlarni delte qilish uchun
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutsideMenu);
+      document.removeEventListener("mousedown", handleClickOutsideMyPage);
     };
-  }, [isMobileMenuOpen]);
+  }, [isMobileMenuOpen, showProfileMenu]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -167,7 +179,7 @@ export default function Tabs() {
                         whileHover={{ scale: 1.1, rotate: 15 }}
                         transition={{ type: "spring", stiffness: 300 }}
                       >
-                        <BsFillPersonBadgeFill className="text-xl font-bold" />
+                        <BsPerson className="text-xl font-bold" />
                       </motion.span>
                     ) : (
                       tab.label
@@ -213,56 +225,101 @@ export default function Tabs() {
                 return true;
               })
               .map((tab) => (
-                <Link to={tab.path} key={tab.id}>
-                  <button
-                    onClick={() => setActiveTab(tab.id)}
-                    className={`relative rounded-full px-3 py-1.5 text-sm font-medium text-white outline-sky-400 transition focus-visible:outline-2 ${
-                      activeTab === tab.id ? "text-black" : "text-white"
-                    }`}
-                    style={{
-                      WebkitTapHighlightColor: "transparent",
-                    }}
-                  >
-                    {activeTab === tab.id && (
-                      <motion.span
-                        layoutId="bubble"
-                        className="absolute inset-0 z-10 bg-white mix-blend-difference"
-                        style={{ borderRadius: 9999 }}
-                        transition={{
-                          type: "spring",
-                          bounce: 0.2,
-                          duration: 0.6,
-                        }}
-                      />
-                    )}
-                    {tab.id === "login" && !user ? (
-                      <motion.span
-                        whileHover={{ scale: 1.1, rotate: 15 }}
-                        transition={{ type: "spring", stiffness: 300 }}
-                      >
-                        <AiOutlineLogin className="text-xl font-bold" />
-                      </motion.span>
-                    ) : tab.id === "mypage" && user ? (
-                      <motion.span
-                        whileHover={{ scale: 1.1, rotate: 15 }}
-                        transition={{ type: "spring", stiffness: 300 }}
-                      >
-                        <BsFillPersonBadgeFill className="text-xl font-bold" />
-                      </motion.span>
-                    ) : (
-                      tab.label
-                    )}
-                  </button>
-                </Link>
+                <div key={tab.id} className="relative">
+                  <Link to={tab.path}>
+                    <button
+                      onClick={(e) => {
+                        if (tab.id === "mypage") {
+                          e.preventDefault();
+                          setShowProfileMenu(!showProfileMenu);
+                        } else {
+                          setActiveTab(tab.id);
+                        }
+                      }}
+                      className={`relative rounded-full px-3 py-1.5 text-sm font-medium text-white outline-sky-400 transition focus-visible:outline-2 ${
+                        activeTab === tab.id ? "text-black" : "text-white"
+                      }`}
+                      style={{ WebkitTapHighlightColor: "transparent" }}
+                    >
+                      {activeTab === tab.id && (
+                        <motion.span
+                          layoutId="bubble"
+                          className="absolute inset-0 z-10 bg-white mix-blend-difference"
+                          style={{ borderRadius: 9999 }}
+                          transition={{
+                            type: "spring",
+                            bounce: 0.2,
+                            duration: 0.6,
+                          }}
+                        />
+                      )}
+                      {tab.id === "login" && !user ? (
+                        <motion.span
+                          whileHover={{ scale: 1.1, rotate: 15 }}
+                          transition={{ type: "spring", stiffness: 300 }}
+                        >
+                          <AiOutlineLogin className="text-xl font-bold" />
+                        </motion.span>
+                      ) : tab.id === "mypage" && user ? (
+                        <motion.span
+                          whileHover={{ scale: 1.1, rotate: 15 }}
+                          transition={{ type: "spring", stiffness: 300 }}
+                        >
+                          {/* // desktop version */}
+                          <BsPerson className="text-xl font-bold" />
+                        </motion.span>
+                      ) : (
+                        tab.label
+                      )}
+                    </button>
+                  </Link>
+
+                  {/* Profile Dropdown Menu */}
+                  {tab.id === "mypage" && showProfileMenu && (
+                    <div
+                      ref={profileMenuRef}
+                      className="absolute right-0 mt-2 w-64 rounded-lg bg-gray-800 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+                    >
+                      <div className="p-4">
+                        <div className="text-sm text-gray-300 border-b border-gray-700 pb-3">
+                          Signed in as
+                          <br />
+                          <span className="font-medium text-white">
+                            {user?.email}
+                          </span>
+                        </div>
+
+                        <div className="py-2 mb-5">
+                          <Link
+                            to="/mypage"
+                            className="flex items-center px-2 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white rounded-md"
+                          >
+                            <FiUser className="mr-3" />
+                            My Page
+                          </Link>
+                          <Link
+                            to="/settings"
+                            className="flex items-center px-2 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white rounded-md"
+                          >
+                            <FiSettings className="mr-3" />
+                            Profile Settings
+                          </Link>
+                        </div>
+
+                        <div className="border-t border-gray-700 pt-2">
+                          <button
+                            onClick={handleLogoutClick}
+                            className="flex w-full items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white rounded-md"
+                          >
+                            <FiLogOut className="mr-3" />
+                            Sign out
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
               ))}
-            {user && (
-              <button
-                onClick={handleLogoutClick}
-                className="flex items-center space-x-1.5 bg-blue-600 hover:bg-red-600 hover:text-black rounded-full px-3 py-1.5 text-sm font-medium text-white "
-              >
-                <FiLogOut />
-              </button>
-            )}
           </div>
           {isModalOpen && (
             <Modal onClose={() => setIsModalOpen(false)}>
