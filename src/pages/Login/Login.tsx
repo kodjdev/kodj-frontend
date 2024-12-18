@@ -108,7 +108,7 @@ export default function LoginPage() {
               <span className="text-blue-400">{eventDetails?.title}</span>
             </div>
           )}
-          <h2 className="text-3xl font-bold text-white mb-6 text-center">
+          <h2 className="text-3xl font-bold text-white mb-6 text-center mt-8">
             {isSignUp ? "Create an Account" : "Welcome Back"}
           </h2>
           <form onSubmit={handleEmailAuth} className="space-y-4">
@@ -185,7 +185,7 @@ export default function LoginPage() {
               Sign in with Google
             </Button>
           </div>
-          <div className="flex items-center justify-between mt-4">
+          <div className="flex items-center justify-between mt-4 mb-8">
             <span className="text-gray-400">
               {isSignUp ? "Already have an account?" : "Don't have an account?"}
             </span>

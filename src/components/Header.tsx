@@ -16,6 +16,7 @@ const tabs = [
 ];
 
 import FlipLogo from "./FlipLogo";
+import Modal from "./ui/modal";
 
 export default function Tabs() {
   const location = useLocation();
@@ -24,6 +25,7 @@ export default function Tabs() {
   );
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Reference to the mobile menu
   const menuRef = useRef<HTMLDivElement>(null);
@@ -52,11 +54,9 @@ export default function Tabs() {
     if (isMobileMenuOpen) {
       document.addEventListener("mousedown", handleClickOutside);
       // document.body.style.overflow = "hidden";
-
     } else {
       document.removeEventListener("mousedown", handleClickOutside);
       // document.body.style.overflow = "auto";
-
     }
 
     return () => {
@@ -76,10 +76,15 @@ export default function Tabs() {
   const handleLogout = async () => {
     try {
       await auth.signOut();
+      setIsModalOpen(false);
     } catch (error) {
       console.error("Error logging out:", error);
       alert("Failed to log out. Please try again.");
     }
+  };
+
+  const handleLogoutClick = async () => {
+    setIsModalOpen(true);
   };
 
   //  we use toggle for control the state
@@ -89,7 +94,7 @@ export default function Tabs() {
 
   return (
     <>
-    {/* // mobile menu uchun  */}
+      {/* // mobile menu uchun  */}
       {isMobileMenuOpen ? (
         <div
           ref={menuRef}
@@ -100,7 +105,7 @@ export default function Tabs() {
           }}
           // className="inset-0 z-[9999] bg-black bg-opacity-80 flex flex-col"
           // px-6 qo'shildi qaysiki 24 px ga tengdir for left and right padding
-          className="inset-0 z-[9999] bg-black bg-opacity-80 flex flex-col px-6" 
+          className="inset-0 z-[9999] bg-black bg-opacity-80 flex flex-col px-6"
         >
           <div className="flex items-center justify-between px-6 py-4">
             <FlipLogo />
@@ -252,13 +257,39 @@ export default function Tabs() {
               ))}
             {user && (
               <button
-                onClick={handleLogout}
+                onClick={handleLogoutClick}
                 className="flex items-center space-x-1.5 bg-blue-600 hover:bg-red-600 hover:text-black rounded-full px-3 py-1.5 text-sm font-medium text-white "
               >
                 <FiLogOut />
               </button>
             )}
           </div>
+          {isModalOpen && (
+            <Modal onClose={() => setIsModalOpen(false)}>
+              <div className="p-8 bg-gray-800">
+                <h2 className="text-xl font-semibold text-white-400 mb-4">
+                  Confirm Logout
+                </h2>
+                <p className="text-white mb-6">
+                  Are you sure you want to log out?
+                </p>
+                <div className="flex justify-end space-x-4">
+                  <button
+                    onClick={() => setIsModalOpen(false)}
+                    className="bg-transparent rounded-full text-blue-600 focus:outline-none focus:ring-0 transition-colors px-4 py-2"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleLogout}
+                    className="bg-transparent rounded-full text-red-600 focus:outline-none focus:ring-0 transition-colors px-4 py-2"
+                  >
+                    Logout
+                  </button>
+                </div>
+              </div>
+            </Modal>
+          )}
         </nav>
       )}
     </>

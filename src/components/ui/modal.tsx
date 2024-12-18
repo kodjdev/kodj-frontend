@@ -11,7 +11,7 @@ export default function Modal({ children, onClose }: ModalProps) {
       {/* Overlay */}
       <div className="fixed inset-0 bg-black opacity-50" onClick={onClose}></div>
       {/* Modal content */}
-      <div className="bg-white rounded-lg overflow-hidden shadow-xl z-10">
+      <div className="rounded-xl overflow-hidden shadow-xl z-10">
         {children}
       </div>
     </div>

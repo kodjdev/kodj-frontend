@@ -34,7 +34,7 @@ const ForgotPassword = () => {
     <>
       <div className="flex flex-col items-center justify-center min-h-screen p-4 relative mt-[-40px]">
         <div className="w-full max-w-md p-8 bg-gray-800 bg-opacity-80 rounded-lg shadow-lg">
-        <div className="flex justify-between items-center mb-6">
+        <div className="flex justify-between items-center mb-20">
           <button
             onClick={() => navigate(-1)}
             className="px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-500 transition"
@@ -48,7 +48,7 @@ const ForgotPassword = () => {
             &#x2715;
           </button>
         </div>
-          <h2 className="text-2xl font-semibold mb-10">Forgot Password</h2>
+          <h2 className="text-2xl font-semibold mb-6">Forgot Password</h2>
           <form onSubmit={handleSubmit} className="flex flex-col">
             {/* <div className="flex items-center mb-4"> */}
             <p className="text-white text-md mb-5">
@@ -73,7 +73,7 @@ const ForgotPassword = () => {
             <button
               type="submit"
               disabled={loading}
-              className={`px-4 py-2 h-12 text-white rounded-lg ${
+              className={`px-4 py-2 h-12 text-white rounded-lg mb-20  ${
                 loading ? "bg-gray-400" : "bg-blue-600 hover:bg-blue-700"
               }`}
             >

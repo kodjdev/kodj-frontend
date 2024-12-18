@@ -19,6 +19,7 @@ import { FaPersonRays } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
 import { message, Spin } from "antd";
 import { FirebaseError } from "firebase/app";
+import Modal from "../../components/ui/modal";
 
 interface Registration {
   id: string;
@@ -34,6 +35,7 @@ export default function MyPage() {
   const [upcomingEvents, setUpcomingEvents] = useState<Event[]>([]);
   const [fetching, setFetching] = useState(true);
   const [messageApi, contextHolder] = message.useMessage();
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   if (!loading && !user) {
     navigate("/login");
@@ -136,6 +138,10 @@ export default function MyPage() {
     }
   };
 
+  const handleLogoutClick = async () => {
+    setIsModalOpen(true);
+  }
+
   if (loading || fetching) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-black bg-opacity-50 text-blue-600 text-md">
@@ -163,7 +169,7 @@ export default function MyPage() {
             </div>
           </div>
           <Button
-            onClick={handleLogout}
+            onClick={handleLogoutClick}
             className="flex items-center space-x-1.5 bg-blue-600 hover:bg-red-600 hover:text-black rounded-full px-3 text-sm font-medium text-white"
           >
             <FiLogOut />
@@ -269,6 +275,32 @@ export default function MyPage() {
         </section>
         {/* </div> */}
       </div>
+      {isModalOpen && (
+        <Modal onClose={() => setIsModalOpen(false)}>
+          <div className="p-8 bg-gray-800">
+            <h2 className="text-xl font-semibold text-white-400 mb-4">
+              Confirm Logout
+            </h2>
+            <p className="text-white mb-6">
+              Are you sure you want to log out?
+            </p>
+            <div className="flex justify-end space-x-4">
+              <button
+                onClick={() => setIsModalOpen(false)}
+                className="bg-transparent rounded-full text-blue-600 focus:outline-none focus:ring-0 transition-colors px-4 py-2"
+                >
+                Cancel
+              </button>
+              <button
+                onClick={handleLogout}
+                className="bg-transparent rounded-full text-red-600 focus:outline-none focus:ring-0 transition-colors px-4 py-2"
+                >
+                Logout
+              </button>
+            </div>
+          </div>
+        </Modal>
+      )}
     </>
   );
 }
