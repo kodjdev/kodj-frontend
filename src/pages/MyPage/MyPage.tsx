@@ -13,12 +13,13 @@ import { auth, db } from "../../firebase/firebaseConfig";
 import { motion } from "framer-motion";
 import { CardContent } from "../../components/ui/card";
 import { Event, EventDetails } from "../../types";
-import { FaPersonRays } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
 import { message, Spin } from "antd";
 import { FirebaseError } from "firebase/app";
 import Modal from "../../components/ui/modal";
 import { BsFillPersonLinesFill } from "react-icons/bs";
+import { FiLogOut } from "react-icons/fi";
+import { Button } from "../../components/ui/button";
 
 interface Registration {
   id: string;
@@ -137,9 +138,9 @@ export default function MyPage() {
     }
   };
 
-  // const handleLogoutClick = async () => {
-  //   setIsModalOpen(true);
-  // }
+  const handleLogoutClick = async () => {
+    setIsModalOpen(true);
+  };
 
   if (loading || fetching) {
     return (
@@ -167,13 +168,15 @@ export default function MyPage() {
               <p className="text-gray-400">{user?.email ?? "No Email found"}</p>
             </div>
           </div>
-          {/* <Button
-            onClick={handleLogoutClick}
-            className="flex items-center space-x-1.5 bg-blue-600 hover:bg-red-600 hover:text-black rounded-full px-3 text-sm font-medium text-white"
-          >
-            <FiLogOut />
-            <span>Logout</span>
-          </Button> */}
+          <div>
+            <button
+              onClick={handleLogoutClick}
+              className="flex w-full items-center px-3 py-2 text-sm bg-transparent hover:bg-gray-700 hover:text-white rounded-full"
+            >
+              <FiLogOut className="mr-3" />
+              Sign out
+            </button>
+          </div>
         </div>
 
         {/* // upcoming events list */}
@@ -280,20 +283,18 @@ export default function MyPage() {
             <h2 className="text-xl font-semibold text-white-400 mb-4">
               Confirm Logout
             </h2>
-            <p className="text-white mb-6">
-              Are you sure you want to log out?
-            </p>
+            <p className="text-white mb-6">Are you sure you want to log out?</p>
             <div className="flex justify-end space-x-4">
               <button
                 onClick={() => setIsModalOpen(false)}
                 className="bg-transparent rounded-full text-blue-600 focus:outline-none focus:ring-0 transition-colors px-4 py-2"
-                >
+              >
                 Cancel
               </button>
               <button
                 onClick={handleLogout}
                 className="bg-transparent rounded-full text-red-600 focus:outline-none focus:ring-0 transition-colors px-4 py-2"
-                >
+              >
                 Logout
               </button>
             </div>
