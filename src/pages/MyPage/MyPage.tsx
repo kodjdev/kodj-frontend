@@ -19,7 +19,6 @@ import { FirebaseError } from "firebase/app";
 import Modal from "../../components/ui/modal";
 import { BsFillPersonLinesFill } from "react-icons/bs";
 import { FiLogOut } from "react-icons/fi";
-import { Button } from "../../components/ui/button";
 
 interface Registration {
   id: string;

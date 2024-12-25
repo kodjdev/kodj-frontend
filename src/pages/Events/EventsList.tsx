@@ -42,51 +42,59 @@ export default function UpcomingEventsPage() {
         return eventData;
       });
 
-       // Fetch the registered count for each upcoming event
-       const eventsWithRegisteredCount = await Promise.all(
-        upcomingEventsData.map(async (eventData) => {
-          if(eventData.images && eventData.images.length > 0){
-            try{
-              const registrationsQuery = query(
-                collection(db, "registrations"),
-                where("eventId", "==", eventData.id)
-              );
-    
-              const registrationSnapshot = await getDocs(registrationsQuery);
-              eventData.registeredCount = registrationSnapshot.size; // Add registered count to event data
+      // we fetch registration count and image for an event
+      const fetchEventDetails = async (eventData: EventForServer) => {
+        if (!eventData.images?.length) return eventData;
 
-              const imageRef = ref(storage, eventData.images[0]);
-              const url = await getDownloadURL(imageRef);
-              // we only need the first image
-              eventData.imageUrl = url;
+        try {
+          //we fetch registration count
+          const registrationsQuery = query(
+            collection(db, "registrations"),
+            where("eventId", "==", eventData.id)
+          );
+          const registrationSnapshot = await getDocs(registrationsQuery);
+          eventData.registeredCount = registrationSnapshot.size;
 
-              return eventData;
-            }
-            catch(error){
-              console.error(
-                `Error fetching image for event ${eventData.id}:`,
-                error
-              );
-              eventData.imageUrl = "";
-            }
-          }
-          return "No img or data found !";
-        })
+          // then we fetch image URL
+          const imageRef = ref(storage, eventData.images[0]);
+          eventData.imageUrl = await getDownloadURL(imageRef);
+
+          return eventData;
+        } catch (error) {
+          console.error(
+            `Error fetching details for event ${eventData.id}:`,
+            error
+          );
+          eventData.imageUrl = "";
+          eventData.registeredCount = 0;
+          return eventData;
+        }
+      };
+
+      // then we process upcoming and past events in parallel
+      const [processedUpcomingEvents, processedPastEvents] = await Promise.all([
+        Promise.all(upcomingEventsData.map(fetchEventDetails)),
+        Promise.all(pastEventsData.map(fetchEventDetails)),
+      ]);
+
+      // then we filter out any invalid events based on event type
+      const filteredUpcomingEvents = processedUpcomingEvents.filter(
+        (event): event is EventForServer =>
+          event !== undefined && typeof event !== "string"
       );
 
-      // here we fitler out the undefined values
-      const filteredEventsWithRegisteredCount = eventsWithRegisteredCount.filter(
-        (event): event is EventForServer => event !== undefined
+      const filteredPastEvents = processedPastEvents.filter(
+        (event): event is EventForServer =>
+          event !== undefined && typeof event !== "string"
       );
 
-      // we fetch the upcomoing event image URL for each event
-      // const eventsWithUpcomingImageUrls = await Promise.all(
-      //   upcomingEventsData.map(async (eventData) => {
+      // // we fetch the upcomoing event image URL for each event
+      // const eventsWithPastImageUrls = await Promise.all(
+      //   pastEventsData.map(async (eventData) => {
       //     if (eventData.images && eventData.images.length > 0) {
       //       try {
       //         const imageRef = ref(storage, eventData.images[0]);
       //         const url = await getDownloadURL(imageRef);
-      //         // we only need the first image
       //         eventData.imageUrl = url;
       //       } catch (imageError) {
       //         console.error(
@@ -100,36 +108,52 @@ export default function UpcomingEventsPage() {
       //   })
       // );
 
-      // we fetch the upcomoing event image URL for each event
-      const eventsWithPastImageUrls = await Promise.all(
-        pastEventsData.map(async (eventData) => {
-          if (eventData.images && eventData.images.length > 0) {
-            try {
-              const imageRef = ref(storage, eventData.images[0]);
-              const url = await getDownloadURL(imageRef);
-              eventData.imageUrl = url;
-            } catch (imageError) {
-              console.error(
-                `Error fetching image for event ${eventData.id}:`,
-                imageError
-              );
-              eventData.imageUrl = "";
-            }
-          }
-          return eventData;
-        })
-      );
-
-      setUpcomingEvents(filteredEventsWithRegisteredCount);
-      setPastEvents(eventsWithPastImageUrls);
+      setUpcomingEvents(filteredUpcomingEvents);
+      setPastEvents(filteredPastEvents);
       setLoading(false);
     } catch (error) {
       console.error("Error fetching events data: ", error);
     }
   };
 
+  const moveOldEvents = async () => {
+    try {
+      const response = await fetch(
+        import.meta.env.VITE_FIREBASE_MOVE_EVENTS_URL,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+
+      const data = await response.json();
+
+      if (response.ok && data.movedCount > 0) {
+        await fetchdata();
+      }
+    } catch (error) {
+      console.error("Error moving events:", error);
+    }
+  };
+
   useEffect(() => {
-    fetchdata();
+    const initializeData = async () => {
+      try {
+        const dataPromise = fetchdata();
+        if (import.meta.env.DEV) {
+          await Promise.all([dataPromise, moveOldEvents()]);
+        } else {
+          await dataPromise;
+        }
+      } catch (error) {
+        console.log("Error initializing data: ", error);
+      }
+      // // this method will now run for all users
+      // await moveOldEvents();
+      // await fetchdata();
+    };
+
+    initializeData();
   }, []);
 
   if (loading) {

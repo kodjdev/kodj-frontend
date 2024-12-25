@@ -9,16 +9,16 @@
 
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
-import cors from 'cors';
+import cors from "cors";
 
 admin.initializeApp();
 const db = admin.firestore();
 
-if (process.env.NODE_ENV === 'development') {
-    db.settings({
-        host: 'localhost:8080',
-        ssl: false,
-    });
+if (process.env.NODE_ENV === "development") {
+  db.settings({
+    host: "localhost:8080",
+    ssl: false,
+  });
 }
 
 interface RegistrationFormData {
@@ -57,36 +57,100 @@ export const registerEvent = functions.https.onRequest((req, res) => {
     }
 
     try {
-        const authHeader = req.headers.authorization;
+      const authHeader = req.headers.authorization;
 
-        if (!authHeader || !authHeader.startsWith("Bearer ")) {
-          return res.status(401).json({ message: "Unauthorized" });
-        }
-  
-        const token = authHeader.split("Bearer ")[1];
-  
-        const decodedToken = await admin.auth().verifyIdToken(token);
-        const uid = decodedToken.uid;  
-        const data: RegistrationFormData = req.body;
-  
-        const registrationData = {
-          ...data,
-          uid,
-          createdAt: admin.firestore.FieldValue.serverTimestamp(),
-        };
-  
-        const registrationDataCleaned = cleanData(registrationData);
-        console.log("Data to be saved to Firestore:", registrationDataCleaned);
-  
-        // datani firestorega saqlaymiz
-        const docRef = await db.collection("registrations").add(registrationDataCleaned);
+      if (!authHeader || !authHeader.startsWith("Bearer ")) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
 
-        res.status(201).json({ message: "Registration is successful", id: docRef.id });
-        return;
-      } catch (error) {
-        const errorMessage = (error instanceof Error) ? error.message : "Internal server error";
-        res.status(500).json({ message: errorMessage });
+      const token = authHeader.split("Bearer ")[1];
+
+      const decodedToken = await admin.auth().verifyIdToken(token);
+      const uid = decodedToken.uid;
+      const data: RegistrationFormData = req.body;
+
+      const registrationData = {
+        ...data,
+        uid,
+        createdAt: admin.firestore.FieldValue.serverTimestamp(),
+      };
+
+      const registrationDataCleaned = cleanData(registrationData);
+      console.log("Data to be saved to Firestore:", registrationDataCleaned);
+
+      // datani firestorega saqlaymiz
+      const docRef = await db
+        .collection("registrations")
+        .add(registrationDataCleaned);
+
+      res
+        .status(201)
+        .json({ message: "Registration is successful", id: docRef.id });
+      return;
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : "Internal server error";
+      res.status(500).json({ message: errorMessage });
+      return;
+    }
+  });
+});
+
+export const movePassedEvent = functions.https.onRequest((req, res) => {
+  corsHandler(req, res, async () => {
+    if (req.method !== "POST") {
+      res.status(405).json({ message: "Method Not Allowed" });
+      return;
+    }
+
+    try {
+      const now = admin.firestore.Timestamp.now();
+
+      // O'tib ketgan past eventsni topamiz
+      const snapshot = await db
+        .collection("upcomingEvents")
+        .where("date", "<", now)
+        .get();
+
+      console.log(`Found ${snapshot.size} events to move`);
+
+      if (snapshot.empty) {
+        console.log("No old events found to move.");
         return;
       }
-    });
+
+      const batch = db.batch();
+      let movedCount = 0;
+
+      for (const docSnapshot of snapshot.docs) {
+        const docData = docSnapshot.data();
+        //past events uchun reference yaratamiz
+        const pastDocRef = db.collection("pastEvents").doc(docSnapshot.id);
+
+        // newdataga type bilan yangi property berib eskini override qilamiz
+        // pastEvents colelctionga o'tkazinb qo'yamiz
+        batch.set(pastDocRef, {
+          ...docData,
+          type: "past",
+          movedAt: admin.firestore.FieldValue.serverTimestamp(),
+          originalId: docSnapshot.id,
+        });
+        batch.delete(docSnapshot.ref);
+        movedCount++;
+      }
+      await batch.commit();
+
+      res.status(200).json({
+        message: `Successfully processed ${snapshot.size} events`,
+        movedCount,
+        timestamp: now.toDate(),
+      });
+    } catch (error) {
+      console.error("Error in testMoveOldEvents:", error);
+      const errorMessage =
+        error instanceof Error ? error.message : "Internal server error";
+      res.status(500).json({ message: errorMessage });
+    }
+    return;
   });
+});
