@@ -130,3 +130,11 @@ export interface EventCardProps {
   registeredCount?: number;
   maxSeats?: number;
 }
+
+
+export interface StatisticsProps {
+  speakerCount: number;
+  meetupData: Array<{ date: string; value: number }>;
+  currentUsers: number;
+  maxUsers: number;
+}
