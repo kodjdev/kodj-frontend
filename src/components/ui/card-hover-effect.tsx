@@ -1,7 +1,6 @@
 import { cn } from "../../lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
-import { FaBoxOpen } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 
 export const HoverEffect = ({
@@ -12,59 +11,49 @@ export const HoverEffect = ({
     title: string;
     description: string;
     link: string;
+    icon?: React.ReactNode; // we add an icon 
   }[];
   className?: string;
 }) => {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
   return (
-    <div
-      className={cn(
-        "grid grid-cols-1 md:grid-cols-2  lg:grid-cols-3 gap-6  py-10 mt-24",
-        className
-      )}
-    >
-      {/* <p className="text-3xl lg:text-5xl lg:leading-tight max-w-5xl mx-auto text-center tracking-tight font-medium text-black text-white"> */}
-      <p className="col-span-full text-center text-4xl font-bold text-white mb-6 mx-auto text-center tracking-tight font-medium text-black text-white ">
-        Come and see what we have to offer
-        <FaBoxOpen className="inline-block ml-2 text-blue-800" />
-      </p>
-      {items.map((item, idx) => (
-        <Link
-          to={{
-            pathname: item?.link,
-            // we can add search and hash if needed
-            // search: "?query=string",
-            // hash: "#hash",
-          }}
-          key={item?.link}
-          className="relative group  block p-2 h-full w-full"
-          onMouseEnter={() => setHoveredIndex(idx)}
-          onMouseLeave={() => setHoveredIndex(null)}
-        >
-          <AnimatePresence>
-            {hoveredIndex === idx && (
-              <motion.span
-                className="absolute inset-0 h-full w-full bg-neutral-200 dark:bg-slate-800/[0.8] block  rounded-3xl"
-                layoutId="hoverBackground"
-                initial={{ opacity: 0 }}
-                animate={{
-                  opacity: 1,
-                  transition: { duration: 0.15 },
-                }}
-                exit={{
-                  opacity: 0,
-                  transition: { duration: 0.15, delay: 0.2 },
-                }}
-              />
-            )}
-          </AnimatePresence>
-          <Card>
-            <CardTitle>{item.title}</CardTitle>
-            <CardDescription>{item.description}</CardDescription>
-          </Card>
-        </Link>
-      ))}
+    <div className="max-w-7xl mx-auto px-1">
+      <h2 className="text-4xl font-bold text-white mb-4">
+        Come and see{" "}
+        <span className="text-neutral-500">what we have to offer</span>
+      </h2>
+      
+      <div className={cn("grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8", className)}>
+        {items.map((item, idx) => (
+          <Link
+            to={item.link}
+            key={item.link}
+            className="block group relative"
+            onMouseEnter={() => setHoveredIndex(idx)}
+            onMouseLeave={() => setHoveredIndex(null)}
+          >
+            <AnimatePresence>
+              {hoveredIndex === idx && (
+                <motion.div
+                  className="absolute -inset-2 rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 opacity-25 group-hover:opacity-100 blur transition duration-500"
+                  layoutId="hoverBackground"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                />
+              )}
+            </AnimatePresence>
+            <Card>
+              <div className="h-12 w-12 rounded-lg bg-neutral-900 flex items-center justify-center mb-4 ml-[-10px]">
+                {item.icon}
+              </div>
+              <CardTitle>{item.title}</CardTitle>
+              <CardDescription>{item.description}</CardDescription>
+            </Card>
+          </Link>
+        ))}
+      </div>
     </div>
   );
 };
@@ -79,16 +68,15 @@ export const Card = ({
   return (
     <div
       className={cn(
-        "rounded-2xl h-full w-full p-4 overflow-hidden bg-black border border-transparent dark:border-white/[0.2] group-hover:border-slate-700 relative z-20",
+        "relative h-full p-6 rounded-xl bg-neutral-900 border border-neutral-800 group-hover:border-neutral-700 transition duration-300",
         className
       )}
     >
-      <div className="relative z-50">
-        <div className="p-4">{children}</div>
-      </div>
+      {children}
     </div>
   );
 };
+
 export const CardTitle = ({
   className,
   children,
@@ -97,11 +85,12 @@ export const CardTitle = ({
   children: React.ReactNode;
 }) => {
   return (
-    <h4 className={cn("text-zinc-100 font-bold tracking-wide mt-4", className)}>
+    <h3 className={cn("text-xl font-semibold text-white mb-2", className)}>
       {children}
-    </h4>
+    </h3>
   );
 };
+
 export const CardDescription = ({
   className,
   children,
@@ -110,12 +99,7 @@ export const CardDescription = ({
   children: React.ReactNode;
 }) => {
   return (
-    <p
-      className={cn(
-        "mt-8 text-zinc-400 tracking-wide leading-relaxed text-sm",
-        className
-      )}
-    >
+    <p className={cn("text-neutral-400 text-md leading-relaxed", className)}>
       {children}
     </p>
   );

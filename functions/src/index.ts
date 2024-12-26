@@ -10,6 +10,7 @@
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
 import cors from "cors";
+import * as functionsV1 from "firebase-functions/v1";
 
 admin.initializeApp();
 const db = admin.firestore();
@@ -153,4 +154,120 @@ export const movePassedEvent = functions.https.onRequest((req, res) => {
     }
     return;
   });
+});
+
+export const getTotalUserCount = functions.https.onRequest((req, res) => {
+  corsHandler(req, res, async () => {
+    if (req.method !== "GET") {
+      res.status(405).json({ message: "Method Not Allowed" });
+      return;
+    }
+
+    try {
+      const userList = await admin.auth().listUsers();
+      const totalUsers = userList.users.length;
+
+      await db.collection("stats").doc("users").set({
+        totalCount: totalUsers,
+        lastUpdated: admin.firestore.FieldValue.serverTimestamp(),
+      });
+
+      res.status(200).json({
+        totalUsers,
+        timeStamp: new Date().toISOString,
+      });
+    } catch (error) {
+      console.error("Error fetching the user count: ", error);
+      const errorMessage =
+        error instanceof Error ? error.message : "Internal server error";
+      res.status(500).json({ message: errorMessage });
+    }
+  });
+});
+
+// yangi account yaratilganda usr countni update qilish uchun method (create)
+export const updateUserStats = functionsV1.auth.user().onCreate(() => {
+  return db
+    .collection("stats")
+    .doc("users")
+    .set(
+      {
+        totalCount: admin.firestore.FieldValue.increment(1),
+        lastUpdated: admin.firestore.FieldValue.serverTimestamp(),
+      },
+      { merge: true }
+    );
+});
+
+// (delete)
+export const decrementUserStats = functionsV1.auth.user().onDelete(() => {
+  return db
+    .collection("stats")
+    .doc("users")
+    .set(
+      {
+        totalCount: admin.firestore.FieldValue.increment(-1),
+        lastUpdated: admin.firestore.FieldValue.serverTimestamp(),
+      },
+      { merge: true }
+    );
+});
+
+
+// we add this trigger in order to maintain user data synchronization
+export const onUserCreated = functionsV1.auth.user().onCreate(async (user) => {
+  const batch = db.batch();
+
+  try {
+    // we add the user document
+    const userRef = db.collection("users").doc(user.uid);
+    batch.set(userRef, {
+      email: user.email,
+      displayName: user.displayName,
+      photoURL: user.photoURL,
+      createdAt: admin.firestore.FieldValue.serverTimestamp(),
+      lastSignIn: admin.firestore.FieldValue.serverTimestamp(),
+    });
+
+    // then update the stats
+    const statsRef = db.collection("stats").doc("users");
+    batch.set(
+      statsRef,
+      {
+        totalCount: admin.firestore.FieldValue.increment(1),
+        lastUpdated: admin.firestore.FieldValue.serverTimestamp(),
+      },
+      { merge: true }
+    );
+
+    await batch.commit();
+  } catch (error) {
+    console.error("Error creating user document:", error);
+  }
+});
+
+
+export const onUserDeleted = functionsV1.auth.user().onDelete(async (user) => {
+  const batch = db.batch();
+
+  try {
+    // we delete the ref
+    const userRef = db.collection("users").doc(user.uid);
+    batch.delete(userRef);
+
+    // then update the stats
+    const statsRef = db.collection("stats").doc("users");
+    batch.set(
+      statsRef,
+      {
+        totalCount: admin.firestore.FieldValue.increment(-1),
+        lastUpdated: admin.firestore.FieldValue.serverTimestamp(),
+      },
+      { merge: true }
+    );
+
+    await batch.commit();
+  } catch (error) {
+    console.error("Error deleting user document:", error);
+  }
 });

@@ -9,6 +9,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { StatisticsProps } from "../types";
+import { FaUserGroup } from "react-icons/fa6";
 
 const Statistics = ({
   speakerCount,
@@ -50,12 +51,20 @@ const Statistics = ({
           className="lg:col-span-3 bg-[#1a1a1a] rounded-xl p-6 h-full flex flex-col justify-between"
         >
           <h3 className="text-white text-xl mb-4">Meetup Speakers</h3>
-          <div className="flex-grow flex items-center justify-center">
+          <div className="flex-grow flex flex-col items-center justify-center gap-4">
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ duration: 0.5 }}
+            >
+              <FaUserGroup className="text-4xl text-blue-500 lg:mt-[-70px]" />{" "}
+              {/* Adjust size and color as needed */}
+            </motion.div>
             <motion.div
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className="text-6xl font-bold text-white"
+              className="text-6xl font-bold text-white flex items-center"
             >
               {speakerCount}
               <span className="text-3xl">+</span>
