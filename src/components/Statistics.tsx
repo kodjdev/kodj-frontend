@@ -57,7 +57,7 @@ const Statistics = ({
               animate={{ scale: 1 }}
               transition={{ duration: 0.5 }}
             >
-              <FaUserGroup className="text-4xl text-blue-500 lg:mt-[-70px]" />{" "}
+              <FaUserGroup className="text-4xl text-blue-500 lg:mt-[-60px]" />{" "}
               {/* Adjust size and color as needed */}
             </motion.div>
             <motion.div
@@ -67,10 +67,10 @@ const Statistics = ({
               className="text-6xl font-bold text-white flex items-center"
             >
               {speakerCount}
-              <span className="text-3xl">+</span>
+              <span className="text-3xl ml-2">+</span>
             </motion.div>
           </div>
-          <p className="text-gray-500 text-center">Visited Speakers</p>
+          <p className="text-gray-400 text-center">Visited Speakers</p>
         </motion.div>
         {/* Meetups Chart Card */}
         {/* <motion.div
@@ -121,7 +121,7 @@ const Statistics = ({
                   dataKey="date"
                   axisLine={false}
                   tickLine={false}
-                  stroke="#7c7c7c"
+                  stroke="#959393"
                   fontSize={12}
                   dy={10}
                 />
@@ -171,7 +171,7 @@ const Statistics = ({
           variants={itemVariants}
           className="lg:col-span-3 bg-[#1a1a1a] rounded-xl p-6 h-full flex flex-col justify-between"
         >
-          <h3 className="text-white text-xl mb-4">KO'DJ Registered users</h3>
+          <h3 className="text-white text-xl mb-4">Registered users</h3>
           <div className="flex-grow flex flex-col items-center justify-center">
             <div className="relative w-34 h-34">
               {/* bacground circle  */}
@@ -220,13 +220,14 @@ const Statistics = ({
                   className="text-4xl font-bold text-white"
                 >
                   {currentUsers}
+                  <span className="text-3xl ml-1">+</span>
                 </motion.div>
                 <div className="text-gray-500 text-sm">Current Users</div>
               </div>
             </div>
           </div>
-          <div className="text-center text-gray-600 text-xs mt-4">
-            Planning to host coders of {maxUsers}
+          <div className="flex flex-grows text-gray-400 text-xs mt-4 ">
+            Planning to host coders of {maxUsers} in 2025
           </div>
         </motion.div>
       </div>

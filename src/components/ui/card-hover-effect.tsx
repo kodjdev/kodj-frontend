@@ -19,7 +19,7 @@ export const HoverEffect = ({
 
   return (
     <div className="max-w-7xl mx-auto px-1">
-      <h2 className="text-4xl font-bold text-white mb-4">
+      <h2 className="text-4xl font-bold text-white mb-[30px]">
         Come and see{" "}
         <span className="text-neutral-500">what we have to offer</span>
       </h2>
