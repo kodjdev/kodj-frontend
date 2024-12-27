@@ -191,7 +191,7 @@ export default function Tabs() {
         </div>
       ) : (
         <nav
-          className={`px-6 md:px-[120px] flex items-center justify-between p-1 sticky top-0 z-50 transition-colors duration-100 ${
+          className={`px-6 md:px-[200px] flex items-center justify-between p-1 sticky top-0 z-50 transition-colors duration-100 ${
             isScrolled ? "bg-black shadow-lg" : "bg-transparent"
           }`}
         >

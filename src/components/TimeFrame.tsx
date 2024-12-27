@@ -40,7 +40,7 @@ export default function TimeCountdown() {
   }, []);
 
   return (
-    <div className="flex flex-col items-center justify-center gap-2 w-full sm:w-[1200px] pt-[31px] pb-[31px] px-[31px] mt-[70px] mb-[100px] rounded-[8px] border border-[#505050] bg-[#141414] overflow-hidden" >
+    <div className="flex flex-col w-full max-w-full sm:max-w-[1440px] pt-4 sm:pt-8 pb-4 sm:pb-8 px-4 sm:px-8 mt-4 sm:mt-[30px] mb-4 sm:mb-[30px] rounded-[8px] border border-[#505050] bg-[#141414]">
       <div className="flex w-full flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0">
         {/* //chap tomon */}
         <div className="flex flex-col items-start gap-[10px] w-full sm:w-[486px] flex-shrink-0 whitespace-nowrap">

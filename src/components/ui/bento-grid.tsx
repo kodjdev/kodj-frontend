@@ -15,37 +15,35 @@ export function FeaturesSection() {
         "Out community members operate in telegram. Join to get latest updates and news",
       skeleton: <SkeletonThree />,
       className:
-        "col-span-1 lg:col-span-3 lg:border-r  dark:border-neutral-800",
+        "col-span-1 lg:col-span-3 lg:border-r  dark:border-neutral-500",
     },
     {
       title: "We connect S.Korea with Uzbekistan ❤️ ",
       description:
-        "We aim to serve the best of both developers world to our community members.",
+        "We connect developers from both countries and serve the best 🤝 of both worlds.",
       skeleton: <SkeletonFour />,
       className: "col-span-1 lg:col-span-3 border-b lg:border-none",
     },
   ];
   return (    
-    <div className="relative z-20 py-2 max-w-9xl mx-auto">
+    <div className="relative z-20 max-w-9xl mx-auto">
         <div className="px-8">
-     
         {/* <h1 className="md:text-7xl text-3xl lg:text-6xl font-bold text-center text-white relative bg-transparent mt-20 p-5 whitespace-normal sm:whitespace-nowrap overflow-hidden">
           <FlipTitle />
           </h1> */}
-          <h1 className="md:text-7xl text-3xl lg:text-6xl font-bold text-center text-white relative bg-transparent mt-10 p-1 whitespace-normal overflow-hidden">
+          <h1 className="md:text-7xl text-3xl lg:text-6xl font-bold text-center text-white relative bg-transparent mt-10 whitespace-normal overflow-hidden mt-[-15px]">
             <FlipTitle />
           </h1>
-          <h4 className="text-2xl lg:text-4xl lg:leading-tight max-w-5xl mx-auto text-center tracking-tight font-medium text-black text-white">
-            We connect 👨‍💻s in South Korea.
+          <h4 className="text-2xl lg:text-2xl lg:leading-tight max-w-5xl mx-auto text-center tracking-tight font-medium text-black text-white">
+            We are a community of Uzbek Developers 👨‍💻 working and studying and in South Korea and we connect 👨‍💻s.
           </h4>
-
-          <p className="text-sm lg:text-base  max-w-2xl  my-4 mx-auto text-neutral-500 text-center font-normal text-white">
-           We are a community of Uzbek Developers 👨‍💻 working and studying in South Korea. We connect developers from both countries and serve the best 🤝 of both worlds.
-          </p>
+          {/* <p className="text-sm lg:text-base  max-w-2xl  my-4 mx-auto text-neutral-500 text-center font-normal text-white">
+           We are a community of Uzbek Developers 👨‍💻 working and studying in South Korea.
+          </p> */}
         </div>
 
         <div className="relative mb-[50px]">
-          <div className="grid grid-cols-1 lg:grid-cols-6 mt-12 xl:border rounded-md dark:border-neutral-800">
+          <div className="grid grid-cols-1 lg:grid-cols-6 mt-12 xl:border rounded-md border border-[#505050] ">
             {features.map((feature) => (
               <FeatureCard key={feature.title} className={feature.className}>
                 <FeatureTitle>{feature.title}</FeatureTitle>

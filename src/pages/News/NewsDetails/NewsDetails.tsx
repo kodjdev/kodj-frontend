@@ -92,74 +92,85 @@ export default function NewsDetails() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto p-4">
-      {/* // back button */}
-      <button
-        onClick={() => navigate(-1)}
-        className="px-5 py-2 text-white hover:bg-gray-700/50 rounded-md transition-colors duration-200 flex items-center gap-2 mb-[-20px]"
-      >
-        &#8592;
-      </button>
-      {loading ? (
-        <div className="flex items-center justify-center min-h-screen bg-black bg-opacity-50 text-blue-600 text-md">
-          <Spin tip="Wait a little bit" size="large"></Spin>
+    <div className="w-full">
+      <div className="max-w-[1440px] mx-auto px-6 md:px-[2px]">
+        {/* bback button uchun container div */}
+        <div className="pt-2">
+          <button
+            onClick={() => navigate(-1)}
+            className="px-5 py-2 text-white hover:bg-gray-700/50 rounded-md transition-colors duration-200 flex items-center gap-2"
+          >
+            &#8592;
+          </button>
         </div>
-      ) : news.length === 0 ? (
-        <div className="text-center text-gray-500 p-40"> No news found!</div>
-      ) : (
-        <div className="space-y-8 pt-20">
-          {news.map((item) => {
-            const description = item.description ?? "";
-            const sentences = description
-              .split(".")
-              .map((s) => s.trim())
-              .filter(Boolean);
+        <div className="flex flex-col w-full">          
+          {loading ? (
+            <div className="flex items-center justify-center min-h-screen bg-black bg-opacity-50 text-blue-600 text-md">
+              <Spin tip="Wait a little bit" size="large"></Spin>
+            </div>
+          ) : news.length === 0 ? (
+            <div className="text-center text-gray-500 p-40">
+              {" "}
+              No news found!
+            </div>
+          ) : (
+            <div className="space-y-8 pt-20">
+              {news.map((item) => {
+                const description = item.description ?? "";
+                const sentences = description
+                  .split(".")
+                  .map((s) => s.trim())
+                  .filter(Boolean);
 
-            return (
-              <div
-                key={item.id}
-                className="p-6 border rounded-md shadow-md bg-neutral-800 text-white"
-              >
-                <h2 className="text-2xl font-semibold mb-4">{item.title}</h2>
-                {item.author && (
-                  <p className="text-gray-300 text-lg mb-8">
-                    Author: {item.author}
-                  </p>
-                )}
+                return (
+                  <div
+                    key={item.id}
+                    className="p-6 border border-[#9a9a9a] rounded-md shadow-md bg-neutral-800 text-white"
+                  >
+                    <h2 className="text-2xl font-semibold mb-4">
+                      {item.title}
+                    </h2>
+                    {item.author && (
+                      <p className="text-gray-300 text-lg mb-8">
+                        Author: {item.author}
+                      </p>
+                    )}
 
-                {/* Container to arrange text and image side-by-side on larger screens, stacked on mobile */}
-                <div className="md:flex md:items-start md:justify-between">
-                  <div className="text-gray-300 space-y-4 md:flex-1">
-                    {sentences.map((sentence: string, index: number) => (
-                      <p key={index}>{sentence}.</p>
-                    ))}
+                    {/* Container to arrange text and image side-by-side on larger screens, stacked on mobile */}
+                    <div className="md:flex md:items-start md:justify-between">
+                      <div className="text-gray-300 space-y-4 md:flex-1">
+                        {sentences.map((sentence: string, index: number) => (
+                          <p key={index}>{sentence}.</p>
+                        ))}
+                      </div>
+
+                      {item.images && item.images.length > 0 ? (
+                        <div className="mt-4 md:mt-0 md:ml-4 flex-shrink-0">
+                          <img
+                            src={item.images[0]}
+                            alt={item.title}
+                            className="w-[150px] h-auto object-contain rounded"
+                          />
+                        </div>
+                      ) : (
+                        <div className="mt-4 md:mt-0 w-[50px] h-[50px] bg-gray-300 rounded md:ml-4 flex-shrink-0">
+                          No Image
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="mt-4 text-sm text-gray-400 pt-40">
+                      {item.lastEdited
+                        ? formatDate(item.lastEdited)
+                        : "No date available"}
+                    </div>
                   </div>
-
-                  {item.images && item.images.length > 0 ? (
-                    <div className="mt-4 md:mt-0 md:ml-4 flex-shrink-0">
-                      <img
-                        src={item.images[0]}
-                        alt={item.title}
-                        className="w-[150px] h-auto object-contain rounded"
-                      />
-                    </div>
-                  ) : (
-                    <div className="mt-4 md:mt-0 w-[50px] h-[50px] bg-gray-300 rounded md:ml-4 flex-shrink-0">
-                      No Image
-                    </div>
-                  )}
-                </div>
-
-                <div className="mt-4 text-sm text-gray-400 pt-40">
-                  {item.lastEdited
-                    ? formatDate(item.lastEdited)
-                    : "No date available"}
-                </div>
-              </div>
-            );
-          })}
+                );
+              })}
+            </div>
+          )}
         </div>
-      )}
+      </div>
     </div>
   );
 }

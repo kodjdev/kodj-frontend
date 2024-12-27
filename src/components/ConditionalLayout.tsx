@@ -14,17 +14,20 @@ export default function ConditionalLayout({
   const LayoutContent = (
     <div className="flex flex-col min-h-screen">
       <Header />
-      <main className="flex-grow w-full max-w-screen-xl mx-auto px-10 pb-20 pt-2">
-        {children}
+      <main className="flex-grow w-full">
+        <div className="max-w-[1440px] mx-auto px-6 md:px-[40px] w-full py-[70px]">
+          {children}
+        </div>
       </main>
       <Footer />
     </div>
-  ) ;
+  );
+
   return isHomePage ? (
     <SparklesPreview>
       {LayoutContent}
     </SparklesPreview>
-  ): (
+  ) : (
     <div className="bg-black w-full">
       {LayoutContent}
     </div>

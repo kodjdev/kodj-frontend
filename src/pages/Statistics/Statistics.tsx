@@ -19,7 +19,6 @@ export default function StatisticsPage() {
     const unsubscribe = onSnapshot(
       doc(db, "stats", "users"),
       (doc) => {
-        
         if (doc.exists()) {
           setUserCount(doc.data().totalCount);
         }
@@ -44,9 +43,9 @@ export default function StatisticsPage() {
 
   return (
     <>
-      <h1 className="text-4xl font-bold text-white mt-10">
+      <h2 className="text-4xl font-bold text-white mb-[30px] mt-[90px] ">
         Statistics <span className="text-gray-500">of KO'DJ</span>
-      </h1>
+      </h2>
       <Statistics
         speakerCount={16}
         meetupData={meetupData}

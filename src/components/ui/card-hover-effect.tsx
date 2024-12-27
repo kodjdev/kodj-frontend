@@ -18,12 +18,10 @@ export const HoverEffect = ({
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
   return (
-    <div className="max-w-7xl mx-auto px-1">
-      <h2 className="text-4xl font-bold text-white mb-[30px]">
-        Come and see{" "}
-        <span className="text-neutral-500">what we have to offer</span>
-      </h2>
-      
+    <div 
+      className="max-w-7xl mx-auto sm:max-w-[1440px] sm:mt-[30px] mb-4 sm:mb-[30px]"
+      // className="flex flex-col w-full max-w-full sm:max-w-[1440px] pt-4 sm:pt-8 pb-4 sm:pb-8 px-4 sm:px-8 mt-4 sm:mt-[30px] mb-4 sm:mb-[30px] rounded-[8px] border border-[#505050] bg-[#141414]"
+    >      
       <div className={cn("grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8", className)}>
         {items.map((item, idx) => (
           <Link
@@ -44,7 +42,7 @@ export const HoverEffect = ({
                 />
               )}
             </AnimatePresence>
-            <Card>
+            <Card className="border border-[#505050]">
               <div className="h-12 w-12 rounded-lg bg-neutral-900 flex items-center justify-center mb-4 ml-[-10px]">
                 {item.icon}
               </div>

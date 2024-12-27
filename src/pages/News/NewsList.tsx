@@ -60,7 +60,7 @@ export default function NewsList() {
   // })
 
   return (
-    <div className="max-w-7xl mx-auto p-4">
+    <div className="flex flex-col w-full max-w-full sm:max-w-[1440px] sm:pb-4 sm:pb-2 px-4 sm:px-2 sm:mb-4 sm:mb-[30px]">
       <h1 className="text-3xl font-bold mb-4">News</h1>
       <nav className="flex space-x-4 mb-6">
         <NavLink
