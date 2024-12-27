@@ -185,7 +185,7 @@ export default function EventDetails() {
 
   return (
     <>
-      <div className="container mx-auto py-8 px-4 sm:px-8">
+      <div className="container mx-auto py-8 px-1 sm:px-1">
         {/* // 1ta level orqaga qaytish buttoni */}
         <div className="relative -mt-4 mb-8">
           <button
@@ -270,12 +270,14 @@ export default function EventDetails() {
                   >
                     View on Kakao Map
                   </a>
-                  <div className="mt-2 inline-flex items-center px-3 py-1 text-xs sm:text-sm bg-gray-700/80 text-gray-200 rounded-md border border-gray-600 shadow-sm hover:bg-gray-600/90 transition-all duration-200">
-                    <span className="font-medium mr-1">Registered:</span>
-                    <span className="text-white font-semibold">
-                      {registeredCount}/{event?.maxSeats ?? 0}
-                    </span>
-                  </div>
+                    <div className="flex items-center mt-2">
+                      <div className="inline-flex items-center px-3 py-1 text-xs sm:text-sm bg-gray-700/80 text-gray-200 rounded-md border border-gray-600 shadow-sm">
+                        <span className="font-medium mr-1">Registered:</span>
+                        <span className="text-white font-semibold">
+                          {registeredCount}/{event?.maxSeats ?? 0}
+                        </span>
+                      </div>
+                    </div>
                   <EventButton
                     type={
                       event?.date
@@ -408,81 +410,82 @@ export default function EventDetails() {
             Backend Implementation
           </h1>
         </div>
-        <div className="w-full max-w-[750px] overflow-auto "> {/* Use max-w and w-full for responsiveness */}
-        <div className="col-span-2 prose prose-lg text-white flex-start ">
-          <p>{event.description}</p>
-        </div>
-        <div className="mt-4 grid grid-cols-3 gap-4">
-          {event.imageUrls?.slice(1, 4).map((image, index) => {
-            // If we're at the last slot and there are more images than show
-            const actualIndex = index + 1;
-            const isLastSlot = index === 2;
-            const totalImages = event.imageUrls.length;
-            if (isLastSlot && totalImages > 4) {
-              // Show +more pageda esa rasmni dimmed qilib korsatamiz
-              return (
-                <div
-                  key={index}
-                  onClick={() => openGallery(actualIndex)}
-                  // className="relative h-20 sm:h-40 cursor-pointer flex items-center justify-center bg-gray-700 rounded-lg shadow-md"
-                  className="relative h-20 sm:h-40 cursor-pointer flex items-center justify-center rounded-lg shadow-md overflow-hidden rounded-[8px] border border-[#505050]"
-                  style={{
-                    backgroundImage: `url(${event.imageUrls[3]})`,
-                    backgroundSize: "cover",
-                    backgroundPosition: "center",
-                  }}
-                >
-                  <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-                    {/* Dimmed overlay */}
-                    <span className="text-white text-md font-bold">
-                      + {totalImages - 3} photos
-                    </span>
+        <div className="w-full max-w-[750px] overflow-auto ">
+          {" "}
+          {/* Use max-w and w-full for responsiveness */}
+          <div className="col-span-2 prose prose-lg text-white flex-start ">
+            <p>{event.description}</p>
+          </div>
+          <div className="mt-4 grid grid-cols-3 gap-4">
+            {event.imageUrls?.slice(1, 4).map((image, index) => {
+              // If we're at the last slot and there are more images than show
+              const actualIndex = index + 1;
+              const isLastSlot = index === 2;
+              const totalImages = event.imageUrls.length;
+              if (isLastSlot && totalImages > 4) {
+                // Show +more pageda esa rasmni dimmed qilib korsatamiz
+                return (
+                  <div
+                    key={index}
+                    onClick={() => openGallery(actualIndex)}
+                    // className="relative h-20 sm:h-40 cursor-pointer flex items-center justify-center bg-gray-700 rounded-lg shadow-md"
+                    className="relative h-20 sm:h-40 cursor-pointer flex items-center justify-center rounded-lg shadow-md overflow-hidden rounded-[8px] border border-[#505050]"
+                    style={{
+                      backgroundImage: `url(${event.imageUrls[3]})`,
+                      backgroundSize: "cover",
+                      backgroundPosition: "center",
+                    }}
+                  >
+                    <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+                      {/* Dimmed overlay */}
+                      <span className="text-white text-md font-bold">
+                        + {totalImages - 3} photos
+                      </span>
+                    </div>
                   </div>
-                </div>
-              );
-            } else {
-              // normal rasm uchun
-              return (
-                <div
-                  key={index}
-                  className="relative h-20 sm:h-40 cursor-pointer overflow-hidden"
-                  onClick={() => openGallery(actualIndex)}
-                >
-                  <img
-                    src={image}
-                    alt={`${event.title} - ${index + 2}`}
-                    className="rounded-lg shadow-md w-full h-full object-cover rounded-[8px] border border-[#505050]"
-                  />
-                </div>
-              );
-            }
-          })}
-        </div>
-        {speakers.length > 0 && eventSchedule && (
-          <EventSchedule schedule={eventSchedule} />
-        )}
-        <div className="mt-10"></div>
-
-        {speakers.length > 0 && (
-          <div className="mt-6">
-            <Speakers speakers={speakers} />
+                );
+              } else {
+                // normal rasm uchun
+                return (
+                  <div
+                    key={index}
+                    className="relative h-20 sm:h-40 cursor-pointer overflow-hidden"
+                    onClick={() => openGallery(actualIndex)}
+                  >
+                    <img
+                      src={image}
+                      alt={`${event.title} - ${index + 2}`}
+                      className="rounded-lg shadow-md w-full h-full object-cover rounded-[8px] border border-[#505050]"
+                    />
+                  </div>
+                );
+              }
+            })}
           </div>
-        )}
-
-        <div className="bg-gray-800 p-6 rounded-lg text-gray-200 mt-8">
-          <h4 className="flex text-2xl font-bold text-blue-500 mb-2">
-            <FaNoteSticky className="inline-block text-2xl mr-2 mt-1" />
-            Note:
-          </h4>
-          <div className="overflow-x-auto">
-            <p className="text-gray-500 text-left">
-              Please note that this event is for registered attendees only. If
-              you have not registered yet, please do so before the event starts.
-              Only registered attendees will be allowed to enter the event venue
-              as we have limited seats. Thank you for your cooperation.
-            </p>
+          {speakers.length > 0 && eventSchedule && (
+            <EventSchedule schedule={eventSchedule} />
+          )}
+          <div className="mt-10"></div>
+          {speakers.length > 0 && (
+            <div className="mt-6">
+              <Speakers speakers={speakers} />
+            </div>
+          )}
+          <div className="bg-gray-800 p-6 rounded-lg text-gray-200 mt-8">
+            <h4 className="flex text-2xl font-bold text-blue-500 mb-2">
+              <FaNoteSticky className="inline-block text-2xl mr-2 mt-1" />
+              Note:
+            </h4>
+            <div className="overflow-x-auto">
+              <p className="text-gray-500 text-left">
+                Please note that this event is for registered attendees only. If
+                you have not registered yet, please do so before the event
+                starts. Only registered attendees will be allowed to enter the
+                event venue as we have limited seats. Thank you for your
+                cooperation.
+              </p>
+            </div>
           </div>
-        </div>
         </div>
         <div className="mt-10 flex justify-between"></div>
 

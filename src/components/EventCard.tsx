@@ -55,13 +55,14 @@ export default function EventCard({
     >
       <Card className="border-none">
         {/* <div className="w-70 h-70 rounded-lg overflow-hidden justify-center"> */}
-        <div className="w-full h-48 sm:h-64 md:h-72 overflow-hidden flex justify-center">
+        <div className="w-full aspect-video overflow-hidden">
           <Image
-            width={400}
-            height={300}
+            width="100%"
+            height="100%"
             src={imageUrl ?? ""}
             alt={title ?? "Image"}
             className="object-center"
+            preview={false}
             // className="object-cover w-full h-full"
           />
         </div>
