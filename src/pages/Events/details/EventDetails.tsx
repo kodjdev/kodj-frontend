@@ -23,6 +23,7 @@ import { EventForServer, EventTimeline, Speaker } from "../../../types";
 import { Spin } from "antd";
 import { useNavigate, useParams } from "react-router-dom";
 import EventButton from "./EventButton";
+import KakaoMap from "../../../components/KakaoMap";
 
 export default function EventDetails() {
   // const { user } = useAuth();
@@ -271,34 +272,36 @@ export default function EventDetails() {
                     View on Kakao Map
                   </a>
 
-                  <div className="flex flex-col w-full gap-2"> {/* Added flex-col and w-full */}
-                  <div className="flex items-center mt-2 w-full">
-                    <div className="inline-flex items-center px-3 py-1 text-xs sm:text-sm bg-gray-700/80 text-gray-200 rounded-md border border-gray-600 shadow-sm">
-                      <span className="font-medium mr-1">Registered:</span>
-                      <span className="text-white font-semibold">
-                        {registeredCount}/{event?.maxSeats ?? 0}
-                      </span>
+                  <div className="flex flex-col w-full gap-2">
+                    {" "}
+                    {/* Added flex-col and w-full */}
+                    <div className="flex items-center mt-2 w-full">
+                      <div className="inline-flex items-center px-3 py-1 text-xs sm:text-sm bg-gray-700/80 text-gray-200 rounded-md border border-gray-600 shadow-sm">
+                        <span className="font-medium mr-1">Registered:</span>
+                        <span className="text-white font-semibold">
+                          {registeredCount}/{event?.maxSeats ?? 0}
+                        </span>
+                      </div>
                     </div>
-                  </div>
-                  <div className="w-full">
-                    <EventButton
-                      type={
-                        event?.date
-                          ? new Date(event.date.seconds * 1000) > new Date()
-                            ? "upcoming"
+                    <div className="w-full">
+                      <EventButton
+                        type={
+                          event?.date
+                            ? new Date(event.date.seconds * 1000) > new Date()
+                              ? "upcoming"
+                              : "past"
                             : "past"
-                          : "past"
-                      }
-                      id={event?.id}
-                      title={event?.title}
-                      date={event?.date}
-                      author={event?.author}
-                      imageUrl={event.imageUrls?.[0]}
-                      eventRoom={event?.eventRoom}
-                      location={event?.location}
-                      isFull={registeredCount >= (event?.maxSeats ?? 0)}
-                    />
-                  </div>
+                        }
+                        id={event?.id}
+                        title={event?.title}
+                        date={event?.date}
+                        author={event?.author}
+                        imageUrl={event.imageUrls?.[0]}
+                        eventRoom={event?.eventRoom}
+                        location={event?.location}
+                        isFull={registeredCount >= (event?.maxSeats ?? 0)}
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -376,34 +379,36 @@ export default function EventDetails() {
                   >
                     View on Kakao Map
                   </a>
-                  <div className="flex flex-col w-full gap-2"> {/* Added flex-col and w-full */}
-                  <div className="flex items-center w-full">
-                    <div className="mt-2 inline-flex items-center px-3 py-1 text-xs sm:text-sm bg-gray-700/80 text-gray-200 rounded-md border border-gray-600 shadow-sm hover:bg-gray-600/90 transition-all duration-200">
-                      <span className="font-medium mr-1">Registered:</span>
-                      <span className="text-white font-semibold">
-                        {registeredCount}/{event?.maxSeats ?? 0}
-                      </span>
+                  <div className="flex flex-col w-full gap-2">
+                    {" "}
+                    {/* Added flex-col and w-full */}
+                    <div className="flex items-center w-full">
+                      <div className="mt-2 inline-flex items-center px-3 py-1 text-xs sm:text-sm bg-gray-700/80 text-gray-200 rounded-md border border-gray-600 shadow-sm hover:bg-gray-600/90 transition-all duration-200">
+                        <span className="font-medium mr-1">Registered:</span>
+                        <span className="text-white font-semibold">
+                          {registeredCount}/{event?.maxSeats ?? 0}
+                        </span>
+                      </div>
                     </div>
-                  </div>
-                  <div className="w-full">
-                    <EventButton
-                      type={
-                        event?.date
-                          ? new Date(event.date.seconds * 1000) > new Date()
-                            ? "upcoming"
+                    <div className="w-full">
+                      <EventButton
+                        type={
+                          event?.date
+                            ? new Date(event.date.seconds * 1000) > new Date()
+                              ? "upcoming"
+                              : "past"
                             : "past"
-                          : "past"
-                      }
-                      id={event?.id}
-                      title={event?.title}
-                      date={event?.date}
-                      author={event?.author}
-                      imageUrl={event.imageUrls?.[0]}
-                      eventRoom={event?.eventRoom}
-                      location={event?.location}
-                      isFull={registeredCount >= (event?.maxSeats ?? 0)}
-                    />
-                  </div>
+                        }
+                        id={event?.id}
+                        title={event?.title}
+                        date={event?.date}
+                        author={event?.author}
+                        imageUrl={event.imageUrls?.[0]}
+                        eventRoom={event?.eventRoom}
+                        location={event?.location}
+                        isFull={registeredCount >= (event?.maxSeats ?? 0)}
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -482,6 +487,14 @@ export default function EventDetails() {
               <Speakers speakers={speakers} />
             </div>
           )}
+          <h2 className="text-3xl text-blue-600 font-bold mb-5 mt-3">
+            Event Location:{" "}
+          </h2>
+          <div className="flex items-center gap-2 mb-3">
+            {/* <FaMapMarkedAlt className="text-2xl text-blue-500" /> */}
+            <p className="text-xl text-gray-500 font-bold">{event.location}</p>
+          </div>
+          <KakaoMap address={event.location} eventRoom={event.eventRoom} />
           <div className="bg-gray-800 p-6 rounded-lg text-gray-200 mt-8">
             <h4 className="flex text-2xl font-bold text-blue-500 mb-2">
               <FaNoteSticky className="inline-block text-2xl mr-2 mt-1" />
