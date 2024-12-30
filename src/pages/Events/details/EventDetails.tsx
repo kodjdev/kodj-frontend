@@ -208,7 +208,7 @@ export default function EventDetails() {
           //     />
           //   </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
+          <div className="grid grid-cols-1 flex flex-col items-start justify-start sm:grid-cols-3 gap-4 mb-4">
             <div
               className="col-span-2 relative h-72 sm:h-[450px] cursor-pointer overflow-hidden rounded-[8px] border border-[#505050]"
               onClick={() => openGallery(0)}
@@ -228,8 +228,8 @@ export default function EventDetails() {
                   <strong>By: {event.author}</strong>
                 </p>
               </div>
-              <div className="text-blue-100">
-                <div className="mb-2 font-bold">
+              <div className="text-blue-100 w-full">
+                <div className="mb-2 font-bold w-full">
                   <p className="mb-2 flex items-center">
                     <FaCalendarAlt className="inline-block mr-3 mb-1" />
                     {formattedDate}
@@ -270,38 +270,43 @@ export default function EventDetails() {
                   >
                     View on Kakao Map
                   </a>
-                    <div className="flex items-center mt-2">
-                      <div className="inline-flex items-center px-3 py-1 text-xs sm:text-sm bg-gray-700/80 text-gray-200 rounded-md border border-gray-600 shadow-sm">
-                        <span className="font-medium mr-1">Registered:</span>
-                        <span className="text-white font-semibold">
-                          {registeredCount}/{event?.maxSeats ?? 0}
-                        </span>
-                      </div>
+
+                  <div className="flex flex-col w-full gap-2"> {/* Added flex-col and w-full */}
+                  <div className="flex items-center mt-2 w-full">
+                    <div className="inline-flex items-center px-3 py-1 text-xs sm:text-sm bg-gray-700/80 text-gray-200 rounded-md border border-gray-600 shadow-sm">
+                      <span className="font-medium mr-1">Registered:</span>
+                      <span className="text-white font-semibold">
+                        {registeredCount}/{event?.maxSeats ?? 0}
+                      </span>
                     </div>
-                  <EventButton
-                    type={
-                      event?.date
-                        ? new Date(event.date.seconds * 1000) > new Date()
-                          ? "upcoming"
+                  </div>
+                  <div className="w-full">
+                    <EventButton
+                      type={
+                        event?.date
+                          ? new Date(event.date.seconds * 1000) > new Date()
+                            ? "upcoming"
+                            : "past"
                           : "past"
-                        : "past"
-                    }
-                    id={event?.id}
-                    title={event?.title}
-                    date={event?.date}
-                    author={event?.author}
-                    imageUrl={event.imageUrls?.[0]}
-                    eventRoom={event?.eventRoom}
-                    location={event?.location}
-                    isFull={registeredCount >= (event?.maxSeats ?? 0)}
-                  />
+                      }
+                      id={event?.id}
+                      title={event?.title}
+                      date={event?.date}
+                      author={event?.author}
+                      imageUrl={event.imageUrls?.[0]}
+                      eventRoom={event?.eventRoom}
+                      location={event?.location}
+                      isFull={registeredCount >= (event?.maxSeats ?? 0)}
+                    />
+                  </div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         ) : (
           // Ko'plab rasmlar bo'lgan holatda
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
+          <div className="grid grid-cols-1 flex flex-col items-start justify-start sm:grid-cols-3 gap-4 mb-4">
             {/* ?? chap tomoni */}
             <div className="col-span-2 flex flex-col gap-4">
               {/*  Asosiy katta rasm*/}
@@ -329,8 +334,8 @@ export default function EventDetails() {
                   <strong>By: {event.author}</strong>
                 </p>
               </div>
-              <div className="text-blue-100">
-                <div className="mb-2 font-bold">
+              <div className="text-blue-100 w-full">
+                <div className="mb-2 font-bold w-full">
                   <p className="mb-2 flex items-center">
                     <FaCalendarAlt className="inline-block mr-3 mb-1" />
                     {formattedDate}
@@ -371,29 +376,35 @@ export default function EventDetails() {
                   >
                     View on Kakao Map
                   </a>
-                  <div className="mt-2 inline-flex items-center px-3 py-1 text-xs sm:text-sm bg-gray-700/80 text-gray-200 rounded-md border border-gray-600 shadow-sm hover:bg-gray-600/90 transition-all duration-200">
-                    <span className="font-medium mr-1">Registered:</span>
-                    <span className="text-white font-semibold">
-                      {registeredCount}/{event?.maxSeats ?? 0}
-                    </span>
+                  <div className="flex flex-col w-full gap-2"> {/* Added flex-col and w-full */}
+                  <div className="flex items-center w-full">
+                    <div className="mt-2 inline-flex items-center px-3 py-1 text-xs sm:text-sm bg-gray-700/80 text-gray-200 rounded-md border border-gray-600 shadow-sm hover:bg-gray-600/90 transition-all duration-200">
+                      <span className="font-medium mr-1">Registered:</span>
+                      <span className="text-white font-semibold">
+                        {registeredCount}/{event?.maxSeats ?? 0}
+                      </span>
+                    </div>
                   </div>
-                  <EventButton
-                    type={
-                      event?.date
-                        ? new Date(event.date.seconds * 1000) > new Date()
-                          ? "upcoming"
+                  <div className="w-full">
+                    <EventButton
+                      type={
+                        event?.date
+                          ? new Date(event.date.seconds * 1000) > new Date()
+                            ? "upcoming"
+                            : "past"
                           : "past"
-                        : "past"
-                    }
-                    id={event?.id}
-                    title={event?.title}
-                    date={event?.date}
-                    author={event?.author}
-                    imageUrl={event.imageUrls?.[0]}
-                    eventRoom={event?.eventRoom}
-                    location={event?.location}
-                    isFull={registeredCount >= (event?.maxSeats ?? 0)}
-                  />
+                      }
+                      id={event?.id}
+                      title={event?.title}
+                      date={event?.date}
+                      author={event?.author}
+                      imageUrl={event.imageUrls?.[0]}
+                      eventRoom={event?.eventRoom}
+                      location={event?.location}
+                      isFull={registeredCount >= (event?.maxSeats ?? 0)}
+                    />
+                  </div>
+                  </div>
                 </div>
               </div>
             </div>

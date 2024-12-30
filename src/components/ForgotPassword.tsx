@@ -32,7 +32,7 @@ const ForgotPassword = () => {
 
   return (
     <>
-      <div className="flex flex-col items-center justify-center min-h-screen p-4 relative mt-[-40px]">
+      <div className="flex flex-col items-center justify-center min-h-screen p-4 relative mt-[-100px]">
         <div className="w-full max-w-md p-8 bg-gray-800 bg-opacity-80 rounded-lg shadow-lg">
         <div className="flex justify-between items-center mb-20">
           <button

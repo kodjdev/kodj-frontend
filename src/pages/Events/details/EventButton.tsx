@@ -82,7 +82,7 @@ export default function EventButton({
           {isFull ? (
             <>
               <button
-                className="mt-5 flex w-full sm:w-[322px] h-14 sm:h-[56px] p-[3px] sm:p-[20px_30px] justify-center items-center gap-2 flex-shrink-0 bg-gray-600"
+                className= "mt-5 flex w-full h-14 p-[3px] sm:p-[20px_30px] justify-center items-center gap-2 flex-shrink-0 bg-gray-600"
                 // disabled={isFull}
                 // onClick={alertUser}
               >
@@ -92,7 +92,7 @@ export default function EventButton({
             </>
           ) : (
             <>
-              <button className="mt-5 flex w-full sm:w-[322px] h-14 sm:h-[56px] p-[3px] sm:p-[20px_30px] hover:bg-gray-600 justify-center items-center gap-2 flex-shrink-0 bg-blue-600">
+              <button className="mt-5 flex w-full h-14 p-[3px] sm:p-[20px_30px] hover:bg-gray-600 justify-center items-center gap-2 flex-shrink-0 bg-blue-600">
                 <FaArrowUpRightFromSquare className="flex-none text-xs" />
                 <span>Register</span>
               </button>
@@ -122,7 +122,7 @@ export default function EventButton({
           )}
         </Link>
       ) : (
-        <button className="mt-5 flex w-full sm:w-[322px] h-14 sm:h-[56px] p-[3px] sm:p-[20px_30px] justify-center items-center gap-2 flex-shrink-0 bg-gray-600">
+        <button className="mt-5 flex w-full h-14 p-[3px] sm:p-[20px_30px] justify-center items-center gap-2 flex-shrink-0 bg-gray-600">
           <FaAlignCenter className="flex-none text-xs" />
           <span>Event has ended</span>
         </button>
