@@ -54,8 +54,11 @@ export const HoverEffect = ({
               <div className="h-12 w-12 rounded-lg bg-neutral-900 flex items-center justify-center mb-4 ml-[-10px]">
                 {item.icon}
               </div>
-              <CardTitle>{t(item.title)}</CardTitle>
-              <CardDescription>{t(item.description)}</CardDescription>
+              <CardTitle>{t(item.title, {defaultValue: item.title})}</CardTitle>
+              <CardDescription>
+                {/* {t(item.description)} */}
+                {t(item.description, {defaultValue: item.description})}
+                </CardDescription>
             </Card>
           </Link>
         ))}

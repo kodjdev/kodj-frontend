@@ -4,12 +4,6 @@ import gsap from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
 import { FaUsers, FaChalkboardTeacher, FaNetworkWired, FaHandshake, FaLightbulb, FaRocket } from "react-icons/fa";
 import { LuGoal } from "react-icons/lu";
-import career from '../assets/icons/career.png';
-import networking from '../assets/icons/networking.png';
-import communication from '../assets/icons/communication.png';
-import collaborate from '../assets/icons/collaborate.png';
-import creativity from '../assets/icons/creativity.png';
-import workshop from '../assets/icons/workshop.png';
 import AnimatedTitle from "./AnimatedTitle";
 import { GoGoal } from "react-icons/go";
 import sardorImage from '../assets/avatars/sardor.png';
@@ -24,37 +18,37 @@ const benefits = [
     title: "Networking Opportunities",
     description: "Expand your professional network by connecting with like-minded individuals, industry experts, and potential collaborators.",
     icon: <FaUsers className="text-3xl text-blue-500" />,
-    imageUrl: networking,
+    imageUrl: <FaNetworkWired className="text-3xl text-blue-500" />,
   },
   {
     title: "Expert Talks",
     description: "Learn directly from tech leaders and innovators as they share insights, trends, and practical knowledge and experience in the field.",
     icon: <FaChalkboardTeacher className="text-3xl text-green-500" />,
-    imageUrl: communication,
+    imageUrl: <FaPeopleGroup className="text-3xl text-green-500" />,
   },
   {
     title: "Hands-on Workshops",
     description: "Participate in interactive workshops designed to provide practical, real-world experience and enhance your skills with hands-on learning.",
     icon: <FaNetworkWired className="text-3xl text-purple-500" />,
-    imageUrl: workshop,
+    imageUrl: <FaNetworkWired className="text-3xl text-purple-500" />,
   },
   {
     title: "Collaboration Opportunities",
     description: "Collaborate on innovative projects with a supportive and talented community of developers.",
     icon: <FaHandshake className="text-3xl text-red-500" />,
-    imageUrl: collaborate,
+    imageUrl: <FaHandshake className="text-3xl text-red-500" />,
   },
   {
     title: "Inspiration and Innovation",
     description: "Discover new ideas, get inspired by success stories, and ignite your creativity to innovate.",
     icon: <FaLightbulb className="text-3xl text-yellow-500" />,
-    imageUrl: creativity,
+    imageUrl: <FaLightbulb className="text-3xl text-yellow-500" />,
   },
   {
     title: "Career Growth",
     description: "Boost your career by learning in-demand skills, finding mentorship opportunities, and staying ahead in your field.",
     icon: <FaRocket className="text-3xl text-pink-500" />,
-    imageUrl: career,
+    imageUrl: <FaRocket className="text-3xl text-pink-500" />,
   },
 ];
 

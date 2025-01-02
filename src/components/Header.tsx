@@ -194,7 +194,7 @@ export default function Tabs() {
                         <BsPerson className="text-xl font-bold" />
                       </motion.span>
                     ) : (
-                      t(tab.labelKey)
+                      t(tab.labelKey, {defaultValue: tab.labelKey})
                     )}
                   </button>
                 </Link>
@@ -281,7 +281,7 @@ export default function Tabs() {
                           <BsPerson className="text-xl font-bold" />
                         </motion.span>
                       ) : (
-                        t(tab.labelKey)
+                        t(tab.labelKey, {defaultValue: tab.labelKey})
                       )}
                     </button>
                   </Link>
@@ -336,7 +336,7 @@ export default function Tabs() {
             <div className="relative" ref={langMenuRef}>
               <button
                 onClick={() => setLangMenuOpen(!langMenuOpen)}
-                className="bg-transparent text-white px-3 py-1.5 rounded-full focus:outline-none border border-blue-700"
+                className="bg-transparent text-white px-3 py-1 rounded-full focus:outline-none border border-blue-700"
               >
                 {currentLanguage.toUpperCase()} <span className="ml-1">▼</span>
               </button>
@@ -346,13 +346,13 @@ export default function Tabs() {
                     className="w-full text-left px-4 py-2 text-sm text-white hover:bg-gray-700"
                     onClick={() => handleLanguageChange("en")}
                   >
-                    EN
+                    en
                   </button>{" "}
                   <button
                     className="w-full text-left px-4 py-2 text-sm text-white hover:bg-gray-700"
                     onClick={() => handleLanguageChange("uz")}
                   >
-                    UZ
+                    uz
                   </button>
                 </div>
               )}

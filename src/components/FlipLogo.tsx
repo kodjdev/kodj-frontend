@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import logoImg from "../../src/assets/icons/kodj_new.jpg";
+import logoImg from "../../src/assets/avatars/kodj_new.jpg";
 
 export default function FlipLogo() {
   return (
