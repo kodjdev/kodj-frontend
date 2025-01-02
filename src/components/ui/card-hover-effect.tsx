@@ -2,6 +2,7 @@ import { cn } from "../../lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 export const HoverEffect = ({
   items,
@@ -11,18 +12,25 @@ export const HoverEffect = ({
     title: string;
     description: string;
     link: string;
-    icon?: React.ReactNode; // we add an icon 
+    icon?: React.ReactNode; // we add an icon
   }[];
   className?: string;
 }) => {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
+  const { t } = useTranslation();
+
   return (
-    <div 
+    <div
       className="max-w-7xl mx-auto sm:max-w-[1440px] sm:mt-[30px] mb-4 sm:mb-[30px]"
       // className="flex flex-col w-full max-w-full sm:max-w-[1440px] pt-4 sm:pt-8 pb-4 sm:pb-8 px-4 sm:px-8 mt-4 sm:mt-[30px] mb-4 sm:mb-[30px] rounded-[8px] border border-[#505050] bg-[#141414]"
-    >      
-      <div className={cn("grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8", className)}>
+    >
+      <div
+        className={cn(
+          "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8",
+          className
+        )}
+      >
         {items.map((item, idx) => (
           <Link
             to={item.link}
@@ -46,8 +54,8 @@ export const HoverEffect = ({
               <div className="h-12 w-12 rounded-lg bg-neutral-900 flex items-center justify-center mb-4 ml-[-10px]">
                 {item.icon}
               </div>
-              <CardTitle>{item.title}</CardTitle>
-              <CardDescription>{item.description}</CardDescription>
+              <CardTitle>{t(item.title)}</CardTitle>
+              <CardDescription>{t(item.description)}</CardDescription>
             </Card>
           </Link>
         ))}

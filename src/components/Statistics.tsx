@@ -10,6 +10,7 @@ import {
 } from "recharts";
 import { StatisticsProps } from "../types";
 import { FaUserGroup } from "react-icons/fa6";
+import { t } from "i18next";
 
 const Statistics = ({
   speakerCount,
@@ -51,7 +52,8 @@ const Statistics = ({
             variants={itemVariants}
             className="lg:col-span-3 bg-[#1a1a1a] rounded-xl p-6 h-full flex flex-col justify-between"
           >
-            <h3 className="text-white text-xl mb-4">Meetup Speakers</h3>
+            
+            <h3 className="text-white text-xl mb-4">{t("statisticsPage.statisticsBody.users.title")}</h3>
             <div className="flex-grow flex flex-col items-center justify-center gap-4">
               <motion.div
                 initial={{ scale: 0 }}
@@ -71,7 +73,7 @@ const Statistics = ({
                 <span className="text-3xl ml-2">+</span>
               </motion.div>
             </div>
-            <p className="text-gray-400 text-center">Visited Speakers</p>
+            <p className="text-gray-400 text-center">{t("statisticsPage.statisticsBody.users.description")}</p>
           </motion.div>
           {/* Meetups Chart Card */}
           {/* <motion.div
@@ -107,7 +109,7 @@ const Statistics = ({
             className="lg:col-span-6 bg-[#1a1a1a] rounded-xl p-6 flex flex-col"
           >
             <div className="flex items-center gap-2 mb-4">
-              <h3 className="text-white text-xl">Meetups</h3>
+              <h3 className="text-white text-xl">{t("statisticsPage.statisticsBody.meetups.title")}</h3>
               <span className="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">
                 + 4
               </span>
@@ -172,7 +174,7 @@ const Statistics = ({
             variants={itemVariants}
             className="lg:col-span-3 bg-[#1a1a1a] rounded-xl p-6 h-full flex flex-col justify-between"
           >
-            <h3 className="text-white text-xl mb-4">Registered users</h3>
+            <h3 className="text-white text-xl mb-4">{t("statisticsPage.statisticsBody.registeredUsers.title")}</h3>
             <div className="flex-grow flex flex-col items-center justify-center">
               <div className="relative w-34 h-34">
                 {/* bacground circle  */}
@@ -223,12 +225,12 @@ const Statistics = ({
                     {currentUsers}
                     <span className="text-3xl ml-1">+</span>
                   </motion.div>
-                  <div className="text-gray-500 text-sm">Current Users</div>
+                  <div className="text-gray-500 text-sm">{t("statisticsPage.statisticsBody.registeredUsers.description")}</div>
                 </div>
               </div>
             </div>
             <div className="flex flex-grows text-gray-400 text-xs mt-4 ">
-              Planning to host coders of {maxUsers} in 2025
+            {t("statisticsPage.statisticsBody.planning.title")} {maxUsers} {t("statisticsPage.statisticsBody.planning.description")}
             </div>
           </motion.div>
         </div>

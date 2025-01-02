@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 const targetDate = new Date("2025-01-18T01:30:00Z");
 const eventName = "Uchrashuv N5";
@@ -14,6 +15,8 @@ export default function TimeCountdown() {
     minutes: 0,
     seconds: 0,
   });
+
+  const {t} = useTranslation();
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -60,16 +63,19 @@ export default function TimeCountdown() {
               </svg>
             </div>
             <p className="text-gray-500 font-inter text-[18px] leading-none">
-              Hurry up, time is going!
+              {/* Hurry up, time is going! */}
+              {t("timerPage.headingTitle")}
             </p>
           </div>
           {/* // time left untl next */}
           <div className="flex flex-wrap items-baseline gap-2">
             <p className="text-white font-bold text-[20px] sm:text-[28px] leading-none">
-              Time left
+              {/* Time left */}
+              {t("timerPage.timeLeft")}
             </p>
             <p className="text-gray-500 font-bold text-[20px] sm:text-[28px] leading-none mx-2">
-              until next
+              {/* until next */}
+              {t("timerPage.untilNext")}
             </p>
             <p className="text-gray-500 font-bold text-[20px] sm:text-[28px] leading-none">
             {eventName}
@@ -84,7 +90,8 @@ export default function TimeCountdown() {
               {formatTime(timeLeft.days)}
             </p>
             <p className="text-[#6B7380] font-inter text-[16px] font-extrabold uppercase m-0">
-              Days
+              {/* Days */}
+              {t("timerPage.days")}
             </p>
           </div>
           <span className="text-white font-inter text-[40px] sm:text-[70px] font-normal uppercase tracking-[0.5px] m-0 hidden sm:inline-block">
@@ -95,7 +102,8 @@ export default function TimeCountdown() {
               {formatTime(timeLeft.hours)}
             </p>
             <p className="text-[#6B7380] font-inter text-[16px] font-extrabold uppercase m-0">
-              Hours
+              {/* Hours */}
+              {t("timerPage.hours")}
             </p>
           </div>
           <span className="text-white font-inter text-[40px] sm:text-[70px] font-normal uppercase tracking-[0.5px] m-0 hidden sm:inline-block">
@@ -106,7 +114,8 @@ export default function TimeCountdown() {
               {formatTime(timeLeft.minutes)}
             </p>
             <p className="text-[#6B7380] font-inter text-[16px] font-semibold uppercase tracking-[0.48px] m-0">
-              Minutes
+              {/* Minutes */}
+              {t("timerPage.minutes")}
             </p>
           </div>
           <span className="text-white font-inter text-[40px] sm:text-[70px] font-normal uppercase tracking-[0.5px] m-0 hidden sm:inline-block">
@@ -117,7 +126,8 @@ export default function TimeCountdown() {
               {formatTime(timeLeft.seconds)}
             </p>
             <p className="text-[#6B7380] font-inter text-[16px] font-light uppercase tracking-[0.48px] m-0">
-              Seconds
+              {/* Seconds */}
+              {t("timerPage.seconds")}
             </p>
           </div>
         </div>

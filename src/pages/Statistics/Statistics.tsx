@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Statistics from "../../components/Statistics";
 import { doc, onSnapshot } from "firebase/firestore";
 import { db } from "../../firebase/firebaseConfig";
+import { useTranslation } from "react-i18next";
 
 const meetupData = [
   { date: "12.2022", value: 30 },
@@ -13,6 +14,8 @@ const meetupData = [
 export default function StatisticsPage() {
   const [userCount, setUserCount] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(true);
+
+  const { t } = useTranslation();
 
   useEffect(() => {
     // Listen to real-time updates from stats document
@@ -44,7 +47,7 @@ export default function StatisticsPage() {
   return (
     <>
       <h2 className="text-4xl font-bold text-white mb-[30px] mt-[90px] ">
-        Statistics <span className="text-gray-500">of KO'DJ</span>
+        {t("statisticsPage.statisticsHeader")} <span className="text-gray-500">{t("statisticsPage.statisticsHeaderGray")}</span>
       </h2>
       <Statistics
         speakerCount={16}

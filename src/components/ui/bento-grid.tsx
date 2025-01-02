@@ -4,56 +4,56 @@ import createGlobe from "cobe";
 import { useEffect, useRef } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { FlipTitle } from "../../components/FlipTitle";
-import telegram from "../../assets/avatars/kodj_telegram.jpg"
+import telegram from "../../assets/avatars/kodj_telegram.jpg";
+import { useTranslation } from "react-i18next";
 
 export function FeaturesSection() {
-  
+  const { t } = useTranslation();
+
   const features = [
     {
-      title: "Join our community of developers ▶",
-      description:
-        "Out community members operate in telegram. Join to get latest updates and news",
+      title: t("featuresSection.feature1.title"),
+      description: t("featuresSection.feature1.description"),
       skeleton: <SkeletonThree />,
       className:
         "col-span-1 lg:col-span-3 lg:border-r  dark:border-neutral-500",
     },
     {
-      title: "We connect S.Korea with Uzbekistan ❤️ ",
-      description:
-        "We connect developers from both countries and serve the best 🤝 of both worlds.",
+      title: t("featuresSection.feature2.title"),
+      description: t("featuresSection.feature2.description"),
       skeleton: <SkeletonFour />,
       className: "col-span-1 lg:col-span-3 border-b lg:border-none",
     },
   ];
-  return (    
+  return (
     <div className="relative z-20 max-w-9xl mx-auto">
-        <div className="px-8">
+      <div className="px-8">
         {/* <h1 className="md:text-7xl text-3xl lg:text-6xl font-bold text-center text-white relative bg-transparent mt-20 p-5 whitespace-normal sm:whitespace-nowrap overflow-hidden">
           <FlipTitle />
           </h1> */}
-          <h1 className="md:text-7xl text-3xl lg:text-6xl font-bold text-center text-white relative bg-transparent mt-10 whitespace-normal overflow-hidden mt-[-15px] mb-[25px]">
-            <FlipTitle />
-          </h1>
-          <h4 className="text-2xl lg:text-2xl lg:leading-tight max-w-5xl mx-auto text-center tracking-tight font-medium text-black text-white">
-            We are a community of Uzbek Developers 👨‍💻 working and studying and in South Korea and we connect 👨‍💻s.
-          </h4>
-          {/* <p className="text-sm lg:text-base  max-w-2xl  my-4 mx-auto text-neutral-500 text-center font-normal text-white">
+        <h1 className="md:text-7xl text-3xl lg:text-6xl font-bold text-center text-white relative bg-transparent mt-10 whitespace-normal overflow-hidden mt-[-15px] mb-[25px]">
+          <FlipTitle />
+        </h1>
+        <h4 className="text-2xl lg:text-2xl lg:leading-tight max-w-5xl mx-auto text-center tracking-tight font-medium text-black text-white">
+          {t("headingTitle")}
+        </h4>
+        {/* <p className="text-sm lg:text-base  max-w-2xl  my-4 mx-auto text-neutral-500 text-center font-normal text-white">
            We are a community of Uzbek Developers 👨‍💻 working and studying in South Korea.
           </p> */}
-        </div>
+      </div>
 
-        <div className="relative mb-[50px]">
-          <div className="grid grid-cols-1 lg:grid-cols-6 mt-12 xl:border rounded-md border border-[#505050] ">
-            {features.map((feature) => (
-              <FeatureCard key={feature.title} className={feature.className}>
-                <FeatureTitle>{feature.title}</FeatureTitle>
-                <FeatureDescription>{feature.description}</FeatureDescription>
-                <div className=" h-full w-full">{feature.skeleton}</div>
-              </FeatureCard>
-            ))}
-          </div>
+      <div className="relative mb-[50px]">
+        <div className="grid grid-cols-1 lg:grid-cols-6 mt-12 xl:border rounded-md border border-[#505050] ">
+          {features.map((feature) => (
+            <FeatureCard key={feature.title} className={feature.className}>
+              <FeatureTitle>{feature.title}</FeatureTitle>
+              <FeatureDescription>{feature.description}</FeatureDescription>
+              <div className=" h-full w-full">{feature.skeleton}</div>
+            </FeatureCard>
+          ))}
         </div>
       </div>
+    </div>
   );
 }
 
@@ -90,27 +90,6 @@ const FeatureDescription = ({ children }: { children?: React.ReactNode }) => {
     >
       {children}
     </p>
-  );
-};
-export const SkeletonOne = () => {
-  return (
-    <div className="relative flex py-1 px-2 gap-10 h-full">
-      <div className="w-full p-4 mx-auto bg-white dark:bg-neutral-900 shadow-2xl group h-full">
-        <div className="flex flex-1 w-full h-full flex-col space-y-2">
-          {/* TODO */}
-          <img
-            src="https://images.unsplash.com/photo-1729830114379-4c3dfe391a74?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-            alt="header"
-            width={800}
-            height={800}
-            className="h-full w-full aspect-square object-cover object-left-top rounded-sm"
-          />
-        </div>
-      </div>
-
-      <div className="absolute bottom-0 z-40 inset-x-0 h-60 bg-gradient-to-t from-white dark:from-black via-white dark:via-black to-transparent w-full pointer-events-none" />
-      <div className="absolute top-0 z-40 inset-x-0 h-60 bg-gradient-to-b from-white dark:from-black via-transparent to-transparent w-full pointer-events-none" />
-    </div>
   );
 };
 
@@ -164,81 +143,6 @@ export const SkeletonThree = () => {
           </motion.div>
         )}
       </AnimatePresence>
-    </div>
-  );
-};
-
-export const SkeletonTwo = () => {
-  const images = [
-    "https://images.unsplash.com/photo-1517322048670-4fba75cbbb62?q=80&w=3000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    "https://images.unsplash.com/photo-1573790387438-4da905039392?q=80&w=3425&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    "https://images.unsplash.com/photo-1555400038-63f5ba517a47?q=80&w=3540&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    "https://images.unsplash.com/photo-1554931670-4ebfabf6e7a9?q=80&w=3387&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    "https://images.unsplash.com/photo-1546484475-7f7bd55792da?q=80&w=2581&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-  ];
-
-  const imageVariants = {
-    whileHover: {
-      scale: 1.1,
-      rotate: 0,
-      zIndex: 100,
-    },
-    whileTap: {
-      scale: 1.1,
-      rotate: 0,
-      zIndex: 100,
-    },
-  };
-  return (
-    <div className="relative flex flex-col items-start p-8 gap-10 h-full overflow-hidden">
-      {/* TODO */}
-      <div className="flex flex-row -ml-20">
-        {images.map((image, idx) => (
-          <motion.div
-            variants={imageVariants}
-            key={"images-first" + idx}
-            style={{
-              rotate: Math.random() * 20 - 10,
-            }}
-            whileHover="whileHover"
-            whileTap="whileTap"
-            className="rounded-xl -mr-4 mt-4 p-1 bg-white dark:bg-neutral-800 dark:border-neutral-700 border border-neutral-100 flex-shrink-0 overflow-hidden"
-          >
-            <img
-              src={image}
-              alt="bali images"
-              width="500"
-              height="500"
-              className="rounded-lg h-20 w-20 md:h-40 md:w-40 object-cover flex-shrink-0"
-            />
-          </motion.div>
-        ))}
-      </div>
-      <div className="flex flex-row">
-        {images.map((image, idx) => (
-          <motion.div
-            key={"images-second" + idx}
-            style={{
-              rotate: Math.random() * 20 - 10,
-            }}
-            variants={imageVariants}
-            whileHover="whileHover"
-            whileTap="whileTap"
-            className="rounded-xl -mr-4 mt-4 p-1 bg-white dark:bg-neutral-800 dark:border-neutral-700 border border-neutral-100 flex-shrink-0 overflow-hidden"
-          >
-            <img
-              src={image}
-              alt="bali images"
-              width="500"
-              height="500"
-              className="rounded-lg h-20 w-20 md:h-40 md:w-40 object-cover flex-shrink-0"
-            />
-          </motion.div>
-        ))}
-      </div>
-
-      <div className="absolute left-0 z-[100] inset-y-0 w-20 bg-gradient-to-r from-white dark:from-black to-transparent  h-full pointer-events-none" />
-      <div className="absolute right-0 z-[100] inset-y-0 w-20 bg-gradient-to-l from-white dark:from-black  to-transparent h-full pointer-events-none" />
     </div>
   );
 };

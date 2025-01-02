@@ -8,18 +8,21 @@ import { BsPerson } from "react-icons/bs";
 import { Link, useLocation } from "react-router-dom";
 
 const tabs = [
-  { id: "about", label: "About Us", path: "/about" },
-  { id: "news", label: "News", path: "/news" },
-  { id: "events", label: "Events", path: "/events" },
-  { id: "mypage", label: "My Page", path: "/mypage" },
-  { id: "login", label: "Login", path: "/login" },
+  { id: "about", labelKey: "header.aboutUs", path: "/about" },
+  { id: "news", labelKey: "header.news", path: "/news" },
+  { id: "events", labelKey: "header.events", path: "/events" },
+  { id: "mypage", labelKey: "header.myPage", path: "/mypage" },
+  { id: "login", labelKey: "header.login", path: "/login" },
 ];
 
 import FlipLogo from "./FlipLogo";
 import Modal from "./ui/modal";
+import { useTranslation } from "react-i18next";
 
 export default function Tabs() {
   const location = useLocation();
+  const { i18n, t } = useTranslation();
+
   const [activeTab, setActiveTab] = useState(
     tabs.find((tab) => location.pathname.startsWith(tab.path))?.id || ""
   );
@@ -27,8 +30,12 @@ export default function Tabs() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
-  const profileMenuRef = useRef<HTMLDivElement>(null);
+  const [langMenuOpen, setLangMenuOpen] = useState(false);
+  const langMenuRef = useRef<HTMLDivElement>(null);
 
+  const currentLanguage = i18n.language || "en";
+
+  const profileMenuRef = useRef<HTMLDivElement>(null);
   // Reference to the mobile menu
   const menuRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -102,6 +109,11 @@ export default function Tabs() {
   //  we use toggle for control the state
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
+  const handleLanguageChange = (lang: string) => {
+    i18n.changeLanguage(lang);
+    setLangMenuOpen(false);
   };
 
   return (
@@ -182,7 +194,7 @@ export default function Tabs() {
                         <BsPerson className="text-xl font-bold" />
                       </motion.span>
                     ) : (
-                      tab.label
+                      t(tab.labelKey)
                     )}
                   </button>
                 </Link>
@@ -269,7 +281,7 @@ export default function Tabs() {
                           <BsPerson className="text-xl font-bold" />
                         </motion.span>
                       ) : (
-                        tab.label
+                        t(tab.labelKey)
                       )}
                     </button>
                   </Link>
@@ -320,6 +332,31 @@ export default function Tabs() {
                   )}
                 </div>
               ))}
+            {/* Language Dropdown Toggle */}
+            <div className="relative" ref={langMenuRef}>
+              <button
+                onClick={() => setLangMenuOpen(!langMenuOpen)}
+                className="bg-transparent text-white px-3 py-1.5 rounded-full focus:outline-none border border-blue-700"
+              >
+                {currentLanguage.toUpperCase()} <span className="ml-1">▼</span>
+              </button>
+              {langMenuOpen && (
+                <div className="absolute right-0 mt-2 w-24 bg-gray-800 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                  <button
+                    className="w-full text-left px-4 py-2 text-sm text-white hover:bg-gray-700"
+                    onClick={() => handleLanguageChange("en")}
+                  >
+                    EN
+                  </button>{" "}
+                  <button
+                    className="w-full text-left px-4 py-2 text-sm text-white hover:bg-gray-700"
+                    onClick={() => handleLanguageChange("uz")}
+                  >
+                    UZ
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
           {isModalOpen && (
             <Modal onClose={() => setIsModalOpen(false)}>

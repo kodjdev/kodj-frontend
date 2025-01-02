@@ -1,3 +1,4 @@
+import { t } from "i18next";
 import { HoverEffect } from "./ui/card-hover-effect";
 import {
   FaRobot,
@@ -10,55 +11,59 @@ import {
 
 const projects = [
   {
-    title: "AI & ML Events",
-    description:
-      "A platform for discovering and sharing AI and machine learning events in Uzbekistan and South Korea.",
+    title: "affiliateCardsPage.projects.project1.title",
+    description: "affiliateCardsPage.projects.project1.description",
     link: "https://aiandmlevents.uz",
     icon: <FaRobot className="w-6 h-6 text-blue-500" />,
   },
   {
-    title: "DevFest Seoul 2024",
-    description:
-      "A community-led developer conference hosted by KODJ community, featuring talks, workshops, and networking opportunities.",
+    title: "affiliateCardsPage.projects.project2.title",
+    description: "affiliateCardsPage.projects.project2.description",
     link: "https://devfest.gdg.uz",
     icon: <FaLaptopCode className="w-6 h-6 text-purple-500" />,
   },
   {
-    title: "Dev Hackathon",
-    description:
-      "A hackathon event for developers to collaborate and build projects using the latest technologies and tools.",
+    title: "affiliateCardsPage.projects.project3.title",
+    description: "affiliateCardsPage.projects.project3.description",
     link: "https://gdg.uz",
     icon: <FaCode className="w-6 h-6 text-green-500" />,
   },
   {
-    title: "IT Park Uzbekistan",
-    description:
-      "A technology park in Tashkent, Uzbekistan, providing infrastructure and support for startups and tech companies.",
+    title: "affiliateCardsPage.projects.project4.title",
+    description: "affiliateCardsPage.projects.project4.description",
     link: "https://itpark.uz",
     icon: <FaBuilding className="w-6 h-6 text-yellow-500" />,
   },
   {
-    title: "Mobile Development Meetup",
-    description:
-      "A community of uzbek mobile developers in South Korea, organizing meetups and events to share knowledge and network.",
+    title: "affiliateCardsPage.projects.project5.title",
+    description: "affiliateCardsPage.projects.project5.description",
     link: "https://kodj.dev",
     icon: <FaMobile className="w-6 h-6 text-red-500" />,
   },
   {
-    title: "Startup Grind",
-    description:
-      "A global community of entrepreneurs, hosting events and programs to help startups grow and succeed.",
+    title: "affiliateCardsPage.projects.project6.title",
+    description: "affiliateCardsPage.projects.project6.description",
     link: "https://startupgrind.uz",
     icon: <FaRocket className="w-6 h-6 text-orange-500" />,
   },
 ];
 
+// "affiliateCardsPage": {
+//   "headingTitle": "Come and see ",
+//   "headingTitleGray": "what we have to offer",
+//   "projects": {
+//     "project1": {
+//       "title": "AI & ML Events",
+//       "description": "A platform for discovering and sharing AI and machine learning events in Uzbekistan and South Korea."
+//     },
 export function CardHoverEffect() {
   return (
     <>
       <h2 className="text-4xl font-bold text-white mb-[30px] mt-[90px]">
-        Come and see{" "}
-        <span className="text-neutral-500">what we have to offer</span>
+        {t("affiliateCardsPage.headingTitle")}{" "}
+        <span className="text-neutral-500">
+          {t("affiliateCardsPage.headingTitleGray")}
+        </span>
       </h2>
       <HoverEffect items={projects} />;
     </>
