@@ -1,4 +1,4 @@
-import EventCard from "../../components/EventCard";
+import EventCard from "../../components/Event/EventCard";
 import { useEffect, useState } from "react";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { db, storage } from "../../firebase/firebaseConfig";

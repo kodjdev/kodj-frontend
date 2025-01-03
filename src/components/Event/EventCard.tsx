@@ -3,12 +3,12 @@ import {
   CardTitle,
   CardDescription,
   CardContent,
-} from "../../src/components/ui/card";
+} from "../ui/card";
 import { BiSolidCalendar, BiGroup } from "react-icons/bi";
 import { motion } from "framer-motion";
 import { FaPlus } from "react-icons/fa";
 import { Image } from "antd";
-import { EventCardProps } from "../types";
+import { EventCardProps } from "../../types";
 
 export default function EventCard({
   title,

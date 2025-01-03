@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { FaCalendarAlt, FaMapMarkedAlt, FaParking } from "react-icons/fa";
 import { FaLocationDot, FaNoteSticky } from "react-icons/fa6";
 import Speakers from "../../../components/Speakers";
-import EventSchedule from "../../../components/EventSchedule";
+import EventSchedule from "../../../components/Event/EventSchedule";
 import { FaBowlFood } from "react-icons/fa6";
 import { BsPeopleFill } from "react-icons/bs";
 import { BsArrowUpRightCircle } from "react-icons/bs";

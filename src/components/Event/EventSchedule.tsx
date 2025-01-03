@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { EventTimeline } from "../types";
+import { EventTimeline } from "../../types";
 
 export default function EventSchedule({
   schedule,
