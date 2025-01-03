@@ -1,13 +1,11 @@
-import { useEffect } from 'react';
-import { gsap } from 'gsap';
-import ScrollTrigger from 'gsap/dist/ScrollTrigger';
-import BenefitsSection from '../../components/Community';
-
+import { useEffect } from "react";
+import { gsap } from "gsap";
+import ScrollTrigger from "gsap/dist/ScrollTrigger";
+import BenefitsSection from "../../components/Community";
 
 gsap.registerPlugin(ScrollTrigger);
 
 export default function About() {
-
   useEffect(() => {
     // initalize the ScrollTrigger
     gsap.utils.toArray(".revealUp").forEach((elem) => {
@@ -25,12 +23,16 @@ export default function About() {
               y: 0,
               autoAlpha: 1,
               ease: "back",
-              overwrite: "auto"
+              overwrite: "auto",
             }
           );
         },
         onLeave: () => {
-          gsap.fromTo(elem as Element, { autoAlpha: 1 }, { autoAlpha: 0, overwrite: "auto" });
+          gsap.fromTo(
+            elem as Element,
+            { autoAlpha: 1 },
+            { autoAlpha: 0, overwrite: "auto" }
+          );
         },
         onEnterBack: () => {
           gsap.fromTo(
@@ -41,20 +43,24 @@ export default function About() {
               y: 0,
               autoAlpha: 1,
               ease: "back",
-              overwrite: "auto"
+              overwrite: "auto",
             }
           );
         },
         onLeaveBack: () => {
-          gsap.fromTo(elem as Element, { autoAlpha: 1 }, { autoAlpha: 0, overwrite: "auto" });
-        }
+          gsap.fromTo(
+            elem as Element,
+            { autoAlpha: 1 },
+            { autoAlpha: 0, overwrite: "auto" }
+          );
+        },
       });
     });
   }, []);
 
   return (
     <div>
-       <BenefitsSection/>
+      <BenefitsSection />
     </div>
-  )
+  );
 }

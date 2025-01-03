@@ -1,12 +1,16 @@
 import { HomePage, LoginPage, About } from "../pages";
-import React from "react";
-import EventRegister from "../pages/EventRegister/EventRegister";
-import MyPage from "../pages/MyPage/MyPage";
+import React, { Suspense } from "react";
 import EventsList from "../pages/Events/EventsList.tsx";
-import NewsDetails from "../pages/News/NewsDetails/NewsDetails";
-import NewsList from "../pages/News/NewsList";
-import EventDetails from "../pages/Events/details/EventDetails.tsx";
 import ForgotPassword from "../components/ForgotPassword.tsx";
+import ComponentLoading from "../components/ComponentLoading.tsx";
+
+import {
+  MyPage,
+  EventDetails,
+  EventRegister,
+  NewsDetails,
+  NewsList,
+} from "./lazyComponents";
 
 interface RouteType {
   path: string;
@@ -18,26 +22,30 @@ export const routes: RouteType[] = [
   {
     path: "/",
     component: <HomePage />,
-    auth: false, // Public route
+    auth: false,
   },
   {
     path: "/about",
     component: <About />,
-    auth: false, // Public route
+    auth: false,
   },
   {
     path: "/login",
     component: <LoginPage />,
-    auth: false, // Public route
+    auth: false,
   },
   {
     path: "/forgot-password",
     component: <ForgotPassword />,
-    auth: false, // Public route
+    auth: false,
   },
   {
     path: "/mypage",
-    component: <MyPage />,
+    component: (
+      <Suspense fallback={<ComponentLoading />}>
+        <MyPage />
+      </Suspense>
+    ),
     auth: true,
   },
   {
@@ -52,24 +60,44 @@ export const routes: RouteType[] = [
   },
   {
     path: "/events/:type/details/:id",
-    component: <EventDetails />,
+    component: (
+      <Suspense fallback={<ComponentLoading />}>
+        <EventDetails />,
+      </Suspense>
+    ),
     auth: false,
   },
   {
     path: "/events/upcoming/details/:id/register",
-    component: <EventRegister />,
+    component: (
+      <Suspense fallback={<ComponentLoading />}>
+        <EventRegister />
+      </Suspense>
+    ),
     auth: true, // Protected route
   },
   {
     path: "/news",
-    component: <NewsList />,
+    component: (
+      <Suspense fallback={<ComponentLoading />}>
+        <NewsList />
+      </Suspense>
+    )
   },
   {
     path: "/news/:category",
-    component: <NewsList />,
+    component: (
+      <Suspense fallback={<ComponentLoading />}>
+        <NewsList />,
+      </Suspense>
+    ),
   },
   {
     path: "/news/:category/:id",
-    component: <NewsDetails />,
+    component: (
+      <Suspense fallback={<ComponentLoading />}>
+        <NewsDetails />,
+      </Suspense>
+    ),
   },
 ];

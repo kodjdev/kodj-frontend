@@ -40,16 +40,18 @@ export default function EventRegister() {
   const [step, setStep] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const state = location.state as {
+  const state = location.state as
+    | {
         title: string;
-        date: { seconds: number; nanoseconds: number }; 
+        date: { seconds: number; nanoseconds: number };
         location: string;
         imageUrl: string;
         author: string;
         // time: string;
         eventRoom: string;
         isFull: boolean;
-      } | undefined;
+      }
+    | undefined;
 
   const title = state?.title || "Event";
   // const date = state?.date || "N/A";
@@ -132,8 +134,8 @@ export default function EventRegister() {
         },
         body: JSON.stringify({
           ...data,
-          eventId: id
-          }),
+          eventId: id,
+        }),
       });
 
       if (response.ok) {
@@ -229,37 +231,40 @@ export default function EventRegister() {
     );
   };
 
-
   // buyerda date (Timestamp) objectdan vaqt va kunni chiqarib olamiz
-  const formatDate = (firebaseDate: { seconds: number; nanoseconds: number } | string): FormattedDateTime => {
-    if(typeof firebaseDate === 'string') {
+  const formatDate = (
+    firebaseDate: { seconds: number; nanoseconds: number } | string
+  ): FormattedDateTime => {
+    if (typeof firebaseDate === "string") {
       return {
         date: "No date found",
-        time: "No time found"
-      }
+        time: "No time found",
+      };
     }
 
     const date = new Date(firebaseDate.seconds * 1000);
-    
-    const formattedDate = date.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    })
 
-    const formattedTime = date.toLocaleTimeString('en-US', {
-      hour: 'numeric',
-      minute: '2-digit',
-      hour12: true
-    })
+    const formattedDate = date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+
+    const formattedTime = date.toLocaleTimeString("en-US", {
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true,
+    });
 
     return {
       date: formattedDate,
-      time: formattedTime
-    }
-  }
+      time: formattedTime,
+    };
+  };
 
-  const {date: formattedDate, time: formattedTime} = formatDate(state?.date || "No Date Found");
+  const { date: formattedDate, time: formattedTime } = formatDate(
+    state?.date || "No Date Found"
+  );
 
   return (
     <>
@@ -283,7 +288,8 @@ export default function EventRegister() {
                       {title}
                     </h2>
                     <p className="text-sm text-white mb-7">
-                      <span className="text font-bold">Time:</span> {formattedTime}
+                      <span className="text font-bold">Time:</span>{" "}
+                      {formattedTime}
                       {/* | Location: {location} */}
                     </p>
                     <div className="space-y-4">
@@ -829,9 +835,7 @@ export default function EventRegister() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-4 text-lg text-gray-700">
                 <div className="flex flex-col">
                   <strong className="text-md text-blue-400 mb-1">Date:</strong>
-                  <p className="text-sm text-white">
-                      {formattedDate}
-                  </p>
+                  <p className="text-sm text-white">{formattedDate}</p>
                 </div>
                 <div className="flex flex-col">
                   <strong className="text-md text-blue-400 mb-1">
@@ -842,8 +846,8 @@ export default function EventRegister() {
               </div>
               <div className="mt-4">
                 <div className="w-full h-52 rounded-md overflow-hidden mb-4">
-                 <KakaoMap address={eventLocation} eventRoom={eventRoom}/>
-                 <a
+                  <KakaoMap address={eventLocation} eventRoom={eventRoom} />
+                  <a
                     href={`https://map.kakao.com/link/search/${encodeURIComponent(
                       eventLocation
                     )}`}
