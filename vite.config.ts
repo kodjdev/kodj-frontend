@@ -15,62 +15,51 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks(id: string) {
-          // react and its core libraries
+          // react core libraries
           if (
             id.includes("node_modules/react") ||
             id.includes("node_modules/react-dom") ||
-            id.includes("node_modules/scheduler")
+            id.includes("node_modules/scheduler") ||
+            id.includes("node_modules/@radix-ui") ||
+            id.includes("node_modules/@floating-ui")
           ) {
-            return "@react-vendor";
+            return "@core-vendor";
           }
 
-          // we split the firebase chunks by functionality
+          if (id.includes("node_modules/d3-scale")) {
+            return "@d3-scale-vendor";
+          }
+          if (id.includes("node_modules/d3-shape")) {
+            return "@d3-shape-vendor";
+          }
+          if (id.includes("node_modules/recharts")) {
+            return "@recharts-vendor";
+          }
+
+          // firebaseni funksiyalariga qarab chunk qilish
           if (id.includes("node_modules/@firebase/auth")) {
             return "@firebase-auth-vendor";
           }
           if (id.includes("node_modules/@firebase/firestore")) {
             return "@firebase-firestore-vendor";
           }
-          if (id.includes("node_modules/@firebase/storage")) {
-            return "@firebase-storage-vendor";
-          }
-          // ui animations
+          if (id.includes(""))
+            if (id.includes("node_modules/@firebase/storage")) {
+              return "@firebase-storage-vendor";
+            }
+
+          // animations
           if (
+            id.includes("/motion/") ||
             id.includes("framer-motion") ||
-            id.includes("popmotion") ||
-            id.includes("style-value-types")
+            id.includes("popmotion")
           ) {
-            return "@animation-vendor";
+            return "@animation-core";
           }
 
-          // internationalization
+          // i18next
           if (id.includes("i18next") || id.includes("react-i18next")) {
-            return "@i18n-vendor";
-          }
-
-          // ui component and libraries
-          if (
-            id.includes("node_modules/@radix-ui") ||
-            id.includes("node_modules/@floating-ui")
-          ) {
-            return "@ui-vendor";
-          }
-
-          // data visualization libraries
-          if (
-            id.includes("node_modules/recharts") ||
-            id.includes("node_modules/d3")
-          ) {
-            return "@viz-vendor";
-          }
-
-          // utils and hooks
-          if (
-            id.includes("/utils/") ||
-            id.includes("/hooks/") ||
-            id.includes("/lib/")
-          ) {
-            return "@utils";
+            return "@i18next-vendor";
           }
         },
       },

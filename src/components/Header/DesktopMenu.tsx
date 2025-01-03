@@ -5,7 +5,7 @@ import { BsPerson } from "react-icons/bs";
 import { FiLogOut, FiSettings, FiUser } from "react-icons/fi";
 import { Link } from "react-router-dom";
 import { TFunction } from "i18next";
-import { User } from "../../types/auth";
+import { User } from "firebase/auth";
 
 interface DesktopMenuProps {
   tabs: { id: string; labelKey: string; path: string }[];

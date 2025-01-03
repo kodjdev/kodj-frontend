@@ -5,7 +5,7 @@ import { BsPerson } from "react-icons/bs";
 import { Link } from "react-router-dom";
 import FlipLogo from "../FlipLogo";
 import type { TFunction } from "i18next";
-import { User } from "../../types/auth";
+import { User } from "firebase/auth";
 
 interface MobileMenuProps {
   tabs: { id: string; labelKey: string; path: string }[];

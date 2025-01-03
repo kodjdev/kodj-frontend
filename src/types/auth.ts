@@ -1,8 +1,8 @@
 export interface User {
     id: string;
     email: string;
-    isAdmin: boolean;
-    username: string;
+    isAdmin?: boolean;
+    username?: string;
   }
   export interface AuthType {
     accessToken?: string | null;
