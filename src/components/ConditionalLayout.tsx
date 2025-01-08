@@ -15,7 +15,7 @@ export default function ConditionalLayout({
     <div className="flex flex-col min-h-screen">
       <Header />
       <main className="flex-grow w-full">
-        <div className="max-w-[1440px] mx-auto px-6 md:px-[40px] w-full py-[70px]">
+        <div className="max-w-[1440px] mx-auto pl-8 pr-8 md:px-[40px] w-full py-[70px]">
           {children}
         </div>
       </main>

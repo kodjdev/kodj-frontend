@@ -1,9 +1,4 @@
-import {
-  Card,
-  CardTitle,
-  CardDescription,
-  CardContent,
-} from "../ui/card";
+import { Card, CardTitle, CardDescription, CardContent } from "../ui/card";
 import { BiSolidCalendar, BiGroup } from "react-icons/bi";
 import { motion } from "framer-motion";
 import { FaPlus } from "react-icons/fa";
@@ -51,10 +46,9 @@ export default function EventCard({
         transition: { duration: 0.3 },
       }}
       // className="shadow-md hover:shadow-lg transition-shadow duration-300 rounded-xl overflow-hidden max-w-[90%] mx-auto sm:max-w-full"
-      className="shadow-md hover:shadow-lg transition-shadow duration-300 rounded-lg overflow-hidden max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg mx-auto"
+      className="shadow-md hover:shadow-lg transition-shadow duration-300 rounded-lg overflow-hidden max-w-full sm:max-w-full md:max-w-md lg:max-w-lg mx-auto"
     >
-      <Card className="border-none">
-        {/* <div className="w-70 h-70 rounded-lg overflow-hidden justify-center"> */}
+      <Card>
         <div className="w-full aspect-video overflow-hidden">
           <Image
             width="100%"
@@ -66,7 +60,7 @@ export default function EventCard({
             // className="object-cover w-full h-full"
           />
         </div>
-        <CardContent className="p-2 sm:p-4 bg-neutral-900">
+        <CardContent className="p-4 sm:p-4 bg-neutral-900">
           <CardTitle className="text-lg sm:text-2xl font-semibold text-white">
             {title}
           </CardTitle>
@@ -84,10 +78,10 @@ export default function EventCard({
               <BiGroup className="inline-block text-white mr-2" />
               <CardDescription className="text-sm sm:text-md text-white text-left">
                 {/* {date} */}
-                 <span className="mr-1">Registered:</span>
-                    <span className="text-white">
-                      {registeredCount || 0}/{maxSeats ?? 0}
-                    </span>
+                <span className="mr-1">Registered:</span>
+                <span className="text-white">
+                  {registeredCount || 0}/{maxSeats ?? 0}
+                </span>
               </CardDescription>
             </div>
             <div className="flex items-center">

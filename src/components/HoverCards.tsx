@@ -48,14 +48,6 @@ const projects = [
   },
 ];
 
-// "affiliateCardsPage": {
-//   "headingTitle": "Come and see ",
-//   "headingTitleGray": "what we have to offer",
-//   "projects": {
-//     "project1": {
-//       "title": "AI & ML Events",
-//       "description": "A platform for discovering and sharing AI and machine learning events in Uzbekistan and South Korea."
-//     },
 export function CardHoverEffect() {
   return (
     <>
@@ -65,7 +57,12 @@ export function CardHoverEffect() {
           {t("affiliateCardsPage.headingTitleGray")}
         </span>
       </h2>
-      <HoverEffect items={projects} />;
+      <HoverEffect items={projects} />
+      {/* <Button
+        text=" test "
+        icon={<FaWatchmanMonitoring style={{ width: "50px" }} />}
+        background="#292140"
+      /> */}
     </>
   );
 }
