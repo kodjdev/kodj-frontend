@@ -1,13 +1,13 @@
-import React from "react"
-import { Link } from "react-router-dom"
-import { FiLogOut, FiSettings, FiUser } from "react-icons/fi"
-import { User } from "firebase/auth"
+import React from "react";
+import { Link } from "react-router-dom";
+import { FiLogOut, FiSettings, FiUser } from "react-icons/fi";
+import { User } from "firebase/auth";
 
 type ProfileDropdownProps = {
-  user: User | null
-  onLogoutClick: () => void
-  dropdownRef: React.RefObject<HTMLDivElement>
-}
+  user: User | null;
+  onLogoutClick: () => void;
+  dropdownRef: React.RefObject<HTMLDivElement>;
+};
 
 export function ProfileDropdown({
   user,
@@ -17,7 +17,7 @@ export function ProfileDropdown({
   return (
     <div
       ref={dropdownRef}
-      className="absolute right-0 mt-2 w-64 rounded-lg bg-gray-800 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+      className="absolute right-0 mt-2 w-64 rounded-lg bg-gray-800 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-50"
     >
       <div className="p-4">
         <div className="text-sm text-gray-300 border-b border-gray-700 pb-3">
@@ -54,5 +54,5 @@ export function ProfileDropdown({
         </div>
       </div>
     </div>
-  )
+  );
 }

@@ -8,7 +8,7 @@ function formatTime(value: number) {
   return value < 10 ? `0${value}` : value.toString();
 }
 
-export default function TimeCountdown() {
+export default function TimeFrame() {
   const [timeLeft, setTimeLeft] = useState({
     days: 0,
     hours: 0,

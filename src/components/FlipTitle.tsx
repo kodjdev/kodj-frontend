@@ -6,7 +6,7 @@ export function FlipTitle() {
 
   return (
     // <span className="whitespace-nowrap overflow-hidden">
-    <span className="overflow-hidden ">
+    <span className="overflow-hidden">
       Koreya O&apos;zbek Dasturchilar 
       {/* <p className="text-blue-600">Jamiyati</p> */}
        <FlipWords words={words}/>
