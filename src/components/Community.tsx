@@ -72,16 +72,34 @@ const organizers = [
       "Dedicated to fostering a welcoming and inclusive environment for all attendees, speakers, and sponsors. Building a community of learners and creators.",
     imageUrl: behzodImage,
     githubUrl: "https://github.com/behzodhalil",
-    jobtags: "Andoroid Developer",
+    jobtags: "Android Developer",
   },
   {
-    name: "Sardor M",
+    name: "Sardor Madaminov",
     title: "Co-Founder & Organizer",
     description:
       "Passionate about organizing events that bring people together to share ideas and innovate, with a focus on building a strong community.",
     imageUrl: sardorImage,
     githubUrl: "https://github.com/Sardor-M",
     jobtags: "Software Developer",
+  },
+  {
+    name: "Javokhir Khakimjonov",
+    title: "Moderator & Organizer",
+    description:
+      "Ensuring smooth event operations and engaging discussions, committed to enhancing the attendee experience.",
+    imageUrl: sardorImage,
+    githubUrl: "https://kr.linkedin.com/in/jaykhakim/en",
+    jobtags: "Software Developer",
+  },
+  {
+    name: "Oybek Kholiqov",
+    title: "UI/UX Designer",
+    description:
+      "Creating intuitive and engaging designs to enhance user experience, dedicated to the visual and functional aspects of our events.",
+    imageUrl: sardorImage,
+    githubUrl: "https://www.linkedin.com/in/oybek-kholikov-b354b6258/",
+    jobtags: "UI/UX Designer",
   },
 ];
 
@@ -151,7 +169,7 @@ export default function BenefitsSection() {
             benefits that can help you grow as a developer and advance your
             career. Whether you&apos;re looking to expand your network, learn
             new skills, or find inspiration, KO&apos;DJ has something to offer
-            you,
+            you: 
             <p className="text-left text-blue-500 text-lg hover:text-gray-500">
               <LuGoal className="inline-block text-1xl mr-2 mt-1 mb-2" />
               Our events are designed to provide you with the tools, resources,

@@ -82,7 +82,6 @@ export default function TimeFrame() {
             </p>
           </div>
         </div>
-
         {/* // ong tomon time displaye */}
         <div className="flex items-center gap-2 sm:gap-[10px] flex-wrap justify-center">
           <div className="text-center">
