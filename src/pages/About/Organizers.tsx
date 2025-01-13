@@ -1,7 +1,9 @@
 import { motion } from "framer-motion";
 import { FaPeopleGroup } from "react-icons/fa6";
 import sardorImage from "@/assets/avatars/sardor.png";
-import behzodImage from "@/assets/avatars/bekhzod.png";
+import behzodImg from "@/assets/avatars/bekhzod.png";
+import javokhirImg from "@/assets/avatars/javokhir.jpg"
+import oybekImg from "@/assets/avatars/oybek.jpg"
 
 const organizers = [
   {
@@ -9,7 +11,7 @@ const organizers = [
     title: "Founder & Organizer",
     description:
       "Dedicated to fostering a welcoming and inclusive environment ...",
-    imageUrl: behzodImage,
+    imageUrl: behzodImg,
     githubUrl: "https://github.com/behzodhalil",
     jobtags: "Android Developer",
   },
@@ -27,7 +29,7 @@ const organizers = [
     title: "Moderator & Organizer",
     description:
       "Ensuring smooth event operations and engaging discussions ...",
-    imageUrl: sardorImage,
+    imageUrl: javokhirImg,
     githubUrl: "https://kr.linkedin.com/in/jaykhakim/en",
     jobtags: "Software Developer",
   },
@@ -36,7 +38,7 @@ const organizers = [
     title: "UI/UX Designer",
     description:
       "Creating intuitive and engaging designs to enhance user experience ...",
-    imageUrl: sardorImage,
+    imageUrl: oybekImg,
     githubUrl: "https://www.linkedin.com/in/oybek-kholikov-b354b6258/",
     jobtags: "UI/UX Designer",
   },
@@ -70,13 +72,14 @@ export function Organizers() {
               whileHover={{ scale: 1.02 }}
             >
               <div className="flex flex-col sm:flex-row items-start min-w-0">
-                <div className="relative w-28 h-28 mr-4 rounded-full overflow-hidden bg-white flex-shrink-0">
+              <div className="relative w-28 h-28 mr-4 rounded-full overflow-hidden bg-white flex-shrink-0 flex items-center justify-center">
                   <img
                     src={organizer.imageUrl}
                     alt={organizer.name}
                     width={116}
                     height={116}
-                    className="rounded-full"
+                    className="rounded-full object-cover w-full h-full"
+
                   />
                 </div>
                 <div className="flex flex-col">
