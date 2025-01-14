@@ -111,8 +111,10 @@ export default function MyPage() {
       navigate("/login");
     } catch (err) {
       messageApi.error("Failed to log out.");
+      console.log(err);
     }
   };
+  
   if (loading || fetching) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-black bg-opacity-50 text-blue-600 text-md">
