@@ -2,6 +2,7 @@ import { Label } from "@/components/ui/label";
 import { useFormContext, Controller } from "react-hook-form";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import type { RegistrationFormData } from "@/types";
+import { CustomRadio } from "@/atoms/CustomRadio";
 
 export const StepTwoForm = () => {
   const {
@@ -23,26 +24,26 @@ export const StepTwoForm = () => {
           render={({ field: { onChange, value } }) => (
             <div className="space-y-3">
               <div className="flex items-center space-x-2">
-                <input
+                <CustomRadio
                   type="radio"
                   id="first-time"
                   value="first-time"
                   checked={value === "first-time"}
                   onChange={() => onChange("first-time")}
-                  className="w-4 h-4 bg-gray-800 border-2 border-gray-400 text-blue-500 rounded-full checked:bg-white checked:border-white"
+                //   label="First Time"
                 />
                 <Label htmlFor="first-time" className="text-gray-200">
                   First time
                 </Label>
               </div>
               <div className="flex items-center space-x-2">
-                <input
+                <CustomRadio
                   type="radio"
                   id="several-times"
                   value="several-times"
                   checked={value === "several-times"}
                   onChange={() => onChange("several-times")}
-                  className="w-4 h-4 bg-gray-800 border-2 border-gray-400 text-blue-500 rounded-full checked:bg-white checked:border-white"
+                //   label="No, I have before (several times)"
                 />
                 <Label htmlFor="several-times" className="text-gray-200">
                   No, I have before (several times)
@@ -102,13 +103,12 @@ export const StepTwoForm = () => {
             <div className="space-y-3">
               {["networking", "learning", "jobOpportunities", "others"].map((option) => (
                 <div key={option} className="flex items-center space-x-2">
-                  <input
+                  <CustomRadio
                     type="radio"
                     id={option}
                     value={option}
                     checked={value === option}
                     onChange={() => onChange(option)}
-                    className="w-4 h-4 bg-gray-800 border-2 border-gray-400 text-blue-500 rounded-full checked:bg-white checked:border-white"
                   />
                   <Label htmlFor={option} className="text-gray-200">
                     {option === "jobOpportunities" ? "Job opportunities" : 
@@ -149,12 +149,13 @@ export const StepTwoForm = () => {
           rules={{ required: "You must agree to proceed" }}
           render={({ field: { onChange, value } }) => (
             <div className="flex items-start bg-gray-700 p-4 border-gray-500 rounded">
-              <input
+              <CustomRadio
                 type="checkbox"
                 id="consent"
                 checked={value}
                 onChange={(e) => onChange(e.target.checked)}
                 className="form-checkbox h-6 w-6 text-blue-400 border-gray-300 rounded focus:ring-blue-500 inline-block mr-2 mt-1"
+                // label="I understand that my information will be used for event registration purposes only."
               />
               <Label htmlFor="consent" className="text-gray-500 ml-2 mt-1 text-ms leading-tight">
                 I understand that my information will be used for event registration purposes only.

@@ -28,11 +28,6 @@ export const StepOneForm = () => {
               },
             })}
           />
-          {/* {errors.firstname && (
-            <span className="text-red-500 text-sm">
-              {errors.firstname.message}
-            </span>
-          )} */}
         </div>
         <div className="flex flex-col space-y-2 w-full">
           <Label className="text-gray-400 font-semibold">Last name</Label>
@@ -49,11 +44,6 @@ export const StepOneForm = () => {
               },
             })}
           />
-          {/* {errors.lastname && (
-            <span className="text-red-500 text-sm">
-              {errors.lastname.message}
-            </span>
-          )} */}
         </div>
       </div>
 
@@ -72,11 +62,6 @@ export const StepOneForm = () => {
             },
           })}
         />
-        {/* {errors.jobTitle && (
-          <span className="text-red-500 text-sm">
-            {errors.jobTitle.message}
-          </span>
-        )} */}
       </div>
       <div className="flex flex-col space-y-2 w-full">
         <Label className="text-gray-400 font-semibold">Experience</Label>
@@ -93,11 +78,6 @@ export const StepOneForm = () => {
             },
           })}
         />
-        {/* {errors.experience && (
-          <span className="text-red-500 text-sm">
-            {errors.experience.message}
-          </span>
-        )} */}
       </div>
 
       <div className="flex flex-col space-y-2 w-full">
@@ -106,14 +86,6 @@ export const StepOneForm = () => {
           id="email"
           placeholder="teshaboev@gmail.com"
           type="email"
-          //   className={`bg-gray-800 ${
-          //     errors.email
-          //       ? "border-red-500"
-          //       : watch("email") &&
-          //         /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(watch("email"))
-          //       ? "border-green-500"
-          //       : ""
-          //   }`}
           error={errors.email?.message}
           isValid={watch("email")?.length >= 6}
           {...register("email", {
@@ -124,9 +96,6 @@ export const StepOneForm = () => {
             },
           })}
         />
-        {/* {errors.email && (
-          <span className="text-red-500 text-sm">{errors.email.message}</span>
-        )} */}
       </div>
 
       <div className="flex flex-col space-y-2 w-full">

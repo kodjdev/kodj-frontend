@@ -280,6 +280,7 @@ export default function EventRegister() {
                         Continue
                       </CustomButton>
                     )}
+
                   </div>
                 </div>
               </div>
