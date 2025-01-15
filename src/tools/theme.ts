@@ -20,11 +20,15 @@ const theme = {
 
   // Ranglar
   white: "#FFFFFF",
+  blue: "#1E88E5",
   black: "#323232",
   black_40: "rgba(0, 0, 0, 0.4)",
   black_60: "rgba(0, 0, 0, 0.6)",
   purple: "#6E3678",
   purple_disabled: "#B89DBD",
+  blue_dark: "#1565C0",
+  blue_disabled: "#1565C0",
+  white_dark: "#E0E0E0",
   purple_dark: "#572A5E",
   purple_light: "#FAF6FB",
   purple_background: "#FAF8FB",
@@ -36,8 +40,15 @@ const theme = {
   red_button: "#91313B",
   red_background: "#F9E8E7",
   green_button: "#23913C",
-  green_background: "#E6F7E4",
   blue_text: "#576ADE",
+  green_background: "#A4C2A5",
+
+  variantSizes: {
+    default: "h-6 px-4 py-2 text-sm font-medium",
+    sm: "h-8 px-3 rounded-md text-xs",
+    md: "h-12 px-8 rounded-md text-md",
+    lg: "h-10 px-8 rounded-md text-base",
+  },
 
   yellow: "#F2A024",
 

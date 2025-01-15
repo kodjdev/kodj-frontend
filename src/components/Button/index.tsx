@@ -1,85 +1,133 @@
-import { HTMLProps, ReactNode } from "react";
+import * as React from "react";
+import { Slot } from "@radix-ui/react-slot";
+import { cva, VariantProps } from "class-variance-authority";
+import { cn } from "../../lib/utils";
 
-import useHover from "@/hooks/theme/useHover"; 
 import theme from "@/tools/theme";
+import useHover from "@/hooks/theme/useHover";
 
-type ButtonType = "purple" | "purple_inset" | "gray" | "white";
+type CustomColor = "blue" | "purple_inset" | "gray" | "white";
 
-type ButtonProps = {
-  type?: ButtonType;
-  disabled?: boolean;
-  className?: string;
-  children?: ReactNode;
-} & HTMLProps<HTMLDivElement>;
+// CVA factory for “base” stylelarni yaratamiz
+const baseButtonVariants = cva(
+  // basic tailwind classlarni define qilamiz
+  ` inline-flex items-center justify-center gap-2 
+    whitespace-nowrap rounded-md transition-colors 
+    focus-visible:outline-none focus-visible:ring-1 
+    disabled:pointer-events-none disabled:opacity-50
+  `,
+  {
+    variants: {
+      size: {
+        default: theme.variantSizes.default,
+        sm: theme.variantSizes.sm,
+        md: theme.variantSizes.md,
+        lg: theme.variantSizes.lg,
+      },
+      fullWidth: {
+        true: "w-full",
+        false: "w-auto",
+      },
+    },
+    defaultVariants: {
+      size: "default",
+      fullWidth: false,
+    },
+  }
+);
 
-const Button = ({
-  type,
-  disabled = false,
-  className,
-  children,
-  onClick,
-  ...divProps
-}: ButtonProps) => {
-  const [hoverProps, isHover, isClicked] = useHover();
+// extended props type bilan  HTML props + CVA variant + theme-lens ni merge qilamniz
+export interface AtomicButtonProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
+    VariantProps<typeof baseButtonVariants> {
+  asChild?: boolean;
+  fullWidth?: boolean;
+  color?: CustomColor;
+}
 
-  const getColor = () => {
-    switch (type) {
-      case "purple":
-        return {
-          backgroundColor: disabled
-            ? theme.purple_disabled
-            : isHover
-            ? theme.purple_dark
-            : theme.purple,
-          color: theme.white,
-          boxShadow:
-            isClicked && !disabled ? theme.shadow_clicked : theme.shadow,
-        };
-      case "purple_inset":
-        return {
-          backgroundColor: disabled
-            ? theme.purple_disabled
-            : isHover
-            ? theme.purple_dark
-            : theme.purple,
-          color: theme.white,
-          boxShadow: theme.shadow_purple_button_inset,
-        };
-      case "gray":
-        return {
-          backgroundColor: isHover ? theme.gray_line : theme.gray_background,
-          color: isHover ? theme.white : theme.gray_text,
-          boxShadow: theme.shadow_gray_button_inset,
-          fontWeight: isHover ? 500 : undefined,
-        };
-      case "white":
-        return {
-          backgroundColor: isHover ? theme.purple_hover : theme.white,
-          color: theme.purple,
-          boxShadow:
-            isClicked && !disabled ? theme.shadow_clicked : theme.shadow,
-        };
-    }
-  };
+export const Button = React.forwardRef<HTMLButtonElement, AtomicButtonProps>(
+  (
+    {
+      className,
+      size,
+      fullWidth,
+      asChild = false,
+      color = "blue",
+      disabled,
+      onClick,
+      ...props
+    },
+    ref
+  ) => {
+    const Comp = asChild ? Slot : "button";
 
-  const style = {
-    transitionDuration: theme.duration,
-    textAlign: "center" as const,
-    ...theme.cursor(disabled),
-    ...getColor(),
-  };
+    // useHover hook use
+    const [hoverProps, isHover, isClicked] = useHover();
 
-  return (
-    <div
-      style={style}
-      className={className}
-      onClick={disabled ? undefined : onClick}
-      {...hoverProps}
-      {...divProps}
-    >
-      {children}
-    </div>
-  );
-};
+    // style object orqali themeni ishlatish:
+    const getStyleFromTheme = React.useMemo(() => {
+      const isDisabled = Boolean(disabled);
+      switch (color) {
+        case "blue":
+          return {
+            backgroundColor: isDisabled
+              ? theme.blue_disabled
+              : isHover
+              ? theme.blue_dark
+              : theme.blue,
+            color: theme.white,
+            boxShadow:
+              isClicked && !isDisabled ? theme.shadow_clicked : theme.shadow,
+          };
+        case "purple_inset":
+          return {
+            backgroundColor: isDisabled
+              ? theme.purple_disabled
+              : isHover
+              ? theme.purple_dark
+              : theme.purple,
+            color: theme.white,
+            boxShadow: theme.shadow_purple_button_inset,
+          };
+        case "gray":
+          return {
+            backgroundColor: isHover ? theme.gray_line : theme.gray_background,
+            color: isHover ? theme.white : theme.gray_text,
+            boxShadow: theme.shadow_gray_button_inset,
+            fontWeight: isHover ? 500 : undefined,
+          };
+        case "white":
+          return {
+            backgroundColor: isHover ? theme.white_dark : theme.white,
+            color: theme.purple,
+            boxShadow:
+              isClicked && !isDisabled ? theme.shadow_clicked : theme.shadow,
+          };
+        default:
+          return {};
+      }
+    }, [color, disabled, isHover, isClicked]);
 
-export default Button;
+    // CVA va boshqa classlarni qo'shamiz
+    const classes = cn(baseButtonVariants({ size, className, fullWidth }));
+
+    return (
+      <Comp
+        ref={ref}
+        className={classes}
+        onClick={disabled ? undefined : onClick}
+        style={{
+          transitionDuration: theme.duration,
+          textAlign: "center",
+          cursor: disabled ? "not-allowed" : "pointer",
+          ...getStyleFromTheme,
+        }}
+        disabled={disabled}
+        {...hoverProps}
+        {...props}
+      />
+    );
+  }
+);
+
+Button.displayName = "MainButton";

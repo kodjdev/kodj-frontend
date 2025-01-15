@@ -7,13 +7,13 @@ import {
   updateProfile,
 } from "firebase/auth";
 import { auth, provider } from "../../firebase/firebaseConfig";
-import { Button } from "../../components/ui/button";
 import { Input } from "../../components/ui/input";
 import { FcGoogle } from "react-icons/fc";
 import { HiOutlineMail, HiOutlineLockClosed } from "react-icons/hi";
 import { useLocation, useNavigate } from "react-router-dom";
 import { FirebaseError } from "firebase/app";
 import { message } from "antd";
+import { Button } from "@/components/Button";
 
 export default function LoginPage() {
   const location = useLocation();
@@ -148,14 +148,14 @@ export default function LoginPage() {
               </div>
             )}
             {isSignUp ? (
-              <>
-                <Button
-                  type="submit"
-                  className="w-full h-13 bg-blue-600 hover:bg-blue-700 text-md py-3 flex items-center justify-center space-x-2"
-                >
-                  <span>Sign Up</span>
-                </Button>
-              </>
+              <Button
+                color="blue"
+                size="md"
+                fullWidth={true}
+                onClick={() => handleEmailAuth}
+              >
+                Sign Up
+              </Button>
             ) : (
               <>
                 <div className="flex justify-end">
@@ -167,19 +167,23 @@ export default function LoginPage() {
                   </a>
                 </div>
                 <Button
-                  type="submit"
-                  className="w-full h-13 bg-blue-600 hover:bg-blue-700 text-md py-3 flex items-center justify-center space-x-2"
+                  color="blue"
+                  size="md"
+                  fullWidth={true}
+                  onClick={() => handleEmailAuth}
                 >
                   <span>Login</span>
                 </Button>
               </>
             )}
           </form>
-          <hr className="mt-8 mb-8 border-gray-500"/>
+          <hr className="mt-8 mb-8 border-gray-500" />
           <div className="mt-6">
             <Button
+              color="white"
               onClick={handleGoogleSignIn}
-              className="w-full h-12 flex items-center justify-center bg-white text-black hover:bg-gray-100 py-3"
+              size="md"
+              fullWidth={true}
             >
               <FcGoogle className="mr-2" />
               Sign in with Google
