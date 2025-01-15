@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, RefObject } from "react";
+import { Dispatch, SetStateAction, RefObject, useEffect } from "react";
 import { motion } from "framer-motion";
 import { AiOutlineLogin } from "react-icons/ai";
 import { BsPerson } from "react-icons/bs";
@@ -39,6 +39,31 @@ export default function DesktopMenu({
   setLangMenuOpen,
   handleLanguageChange,
 }: DesktopMenuProps) {
+  // modal close handler outside of the dropdown
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (showProfileMenu) {
+        const target = event.target as Node;
+
+        const isOutSideDropdown =
+          profileMenuRef.current && !profileMenuRef.current.contains(target);
+        const isOutsideButton =
+          profileMenuRef.current && !profileMenuRef.current.contains(target);
+
+        if (isOutSideDropdown && isOutsideButton) {
+          setShowProfileMenu(false);
+        }
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    // clean qilamiz
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [showProfileMenu, setShowProfileMenu, profileMenuRef]);
+
   return (
     <div className="hidden md:flex space-x-3 mr-5">
       {tabs

@@ -17,7 +17,7 @@ export function ProfileDropdown({
   return (
     <div
       ref={dropdownRef}
-      className="absolute right-0 mt-2 w-64 rounded-lg bg-gray-800 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-50"
+      className="absolute z-50 right-0 mt-2 w-54 rounded-lg bg-gray-800 shadow-lg ring-1 ring-black ring-opacity-5"
     >
       <div className="p-4">
         <div className="text-sm text-gray-300 border-b border-gray-700 pb-3">
@@ -39,7 +39,7 @@ export function ProfileDropdown({
             className="flex items-center px-2 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white rounded-md"
           >
             <FiSettings className="mr-3" />
-            Profile Settings
+            Settings
           </Link>
         </div>
 

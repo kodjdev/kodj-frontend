@@ -1,4 +1,4 @@
-import React  from "react";
+import React from "react";
 import { cn } from "../../../lib/utils";
 import createGlobe from "cobe";
 import { useEffect, useRef } from "react";
@@ -25,7 +25,7 @@ export function MainCard() {
     },
   ];
   return (
-    <div className="relative z-20 max-w-9xl mx-auto">
+    <div className="abosolute z-10 max-w-9xl mx-auto">
       <div className="px-8">
         {/* <h1 className="md:text-7xl text-3xl lg:text-6xl font-bold text-center text-white relative bg-transparent mt-20 p-5 whitespace-normal sm:whitespace-nowrap overflow-hidden">
           <FlipTitle />
@@ -36,9 +36,6 @@ export function MainCard() {
         <h4 className="text-2xl lg:text-2xl lg:leading-tight max-w-5xl mx-auto text-center tracking-tight font-medium text-black text-white">
           {t("headingTitle")}
         </h4>
-        {/* <p className="text-sm lg:text-base  max-w-2xl  my-4 mx-auto text-neutral-500 text-center font-normal text-white">
-           We are a community of Uzbek Developers 👨‍💻 working and studying in South Korea.
-          </p> */}
       </div>
 
       <div className="relative mb-[50px]">
