@@ -26,9 +26,6 @@ import EventButton from "./EventButton";
 import KakaoMap from "../../../components/KakaoMap";
 
 export default function EventDetails() {
-  // const { user } = useAuth();
-  // const param = useParams();
-  // const id = param.id as string;
   const navigate = useNavigate();
   const { id, type } = useParams<{ id: string; type: string }>();
 
@@ -39,7 +36,6 @@ export default function EventDetails() {
   const [selectedImage, setSelectedImage] = useState(0);
   const [loading, setLoading] = useState(true);
   const [registeredCount, setRegisteredCount] = useState(0);
-  // const [messageApi, contextHolder] = message.useMessage();
 
   const fetchEventData = async () => {
     if (!id) {

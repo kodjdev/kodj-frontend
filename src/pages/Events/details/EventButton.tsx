@@ -5,6 +5,7 @@ import { FaAlignCenter, FaArrowUpRightFromSquare } from "react-icons/fa6";
 import LoginConfirmModal from "../../../components/LoginConfirmModal";
 import { Timestamp } from "firebase/firestore";
 import { useAuth } from "../../../context/useAuth";
+import { Button } from "@/components/Button/Button";
 
 interface EventButtonProps {
   type: "upcoming" | "past";
@@ -81,21 +82,32 @@ export default function EventButton({
         >
           {isFull ? (
             <>
-              <button
-                className= "mt-5 flex w-full h-14 p-[3px] sm:p-[20px_30px] justify-center items-center gap-2 flex-shrink-0 bg-gray-600"
+              <Button
+                size="md"
+                fullWidth={true}
+                disabled={true}
+                color="gray"
+                className="p-[4px] sm:p-[20px_30px] mt-5"
+                // className="mt-5 flex w-full h-14 p-[3px] sm:p-[20px_30px] justify-center items-center gap-2 flex-shrink-0 bg-gray-600"
                 // disabled={isFull}
                 // onClick={alertUser}
               >
                 <FaAlignCenter className="flex-none text-xs" />
                 <span>Registration Closed</span>
-              </button>
+              </Button>
             </>
           ) : (
             <>
-              <button className="mt-5 flex w-full h-14 p-[3px] sm:p-[20px_30px] hover:bg-gray-600 justify-center items-center gap-2 flex-shrink-0 bg-blue-600">
+              <Button 
+                size="md"
+                fullWidth={true}
+                disabled={false}
+                color="blue"
+                className="p-[4px] sm:p-[20px_30px] mt-5"
+              >
                 <FaArrowUpRightFromSquare className="flex-none text-xs" />
                 <span>Register</span>
-              </button>
+              </Button>
               {/* // faqatgina full bo'magan holatda popup modalni ochib login qiladi */}
               <LoginConfirmModal
                 isOpen={showLoginModal}
@@ -122,10 +134,18 @@ export default function EventButton({
           )}
         </Link>
       ) : (
-        <button className="mt-5 flex w-full h-14 p-[3px] sm:p-[20px_30px] justify-center items-center gap-2 flex-shrink-0 bg-gray-600">
+        <Button
+          size="md"
+          fullWidth={true}
+          color="gray"
+          // disabled={true}
+          className="p-[4px] sm:p-[20px_30px] mt-5"
+          // style={{cursor: "not-allowed"}}
+        >
+          {/* // className="mt-5 flex w-full h-14 p-[3px] sm:p-[20px_30px] justify-center items-center gap-2 flex-shrink-0 bg-gray-600" */}
           <FaAlignCenter className="flex-none text-xs" />
           <span>Event has ended</span>
-        </button>
+        </Button>
       )}
     </>
   );

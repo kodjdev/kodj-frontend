@@ -91,8 +91,13 @@ export const Button = React.forwardRef<HTMLButtonElement, AtomicButtonProps>(
           };
         case "gray":
           return {
-            backgroundColor: isHover ? theme.gray_line : theme.gray_background,
-            color: isHover ? theme.white : theme.gray_text,
+            backgroundColor: isDisabled
+              ? theme.gray
+              : isHover
+              ? theme.gray_dark
+              : theme.gray_dark,
+            // backgroundColor: isHover ? theme.gray_line : theme.gray_background,
+            color: isHover ? theme.white: theme.gray,
             boxShadow: theme.shadow_gray_button_inset,
             fontWeight: isHover ? 500 : undefined,
           };

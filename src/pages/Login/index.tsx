@@ -13,7 +13,7 @@ import { HiOutlineMail, HiOutlineLockClosed } from "react-icons/hi";
 import { useLocation, useNavigate } from "react-router-dom";
 import { FirebaseError } from "firebase/app";
 import { message } from "antd";
-import { Button } from "@/components/Button";
+import { Button } from "@/components/Button/Button";
 
 export default function LoginPage() {
   const location = useLocation();

@@ -19,28 +19,39 @@ const theme = {
   modal_width_large: "755px" as PixelValue,
 
   // Ranglar
-  white: "#FFFFFF",
-  blue: "#1E88E5",
-  black: "#323232",
+  black: "#2563E",
   black_40: "rgba(0, 0, 0, 0.4)",
   black_60: "rgba(0, 0, 0, 0.6)",
+ 
+
+  blue: "#2563EB",
+  blue_dark: "#2542EB",
+  blue_disabled: "#2C6EA8",
+  blue_text: "#576ADE",
+
+  white: "#FFFFFF",
+  white_dark: "#E0E0E0",
+
   purple: "#6E3678",
   purple_disabled: "#B89DBD",
-  blue_dark: "#1565C0",
-  blue_disabled: "#1565C0",
-  white_dark: "#E0E0E0",
   purple_dark: "#572A5E",
   purple_light: "#FAF6FB",
   purple_background: "#FAF8FB",
   purple_hover: "#F4EAF6",
+
+
+  gray: "#ABABAB",
+  gray_dark: "#6B6B6B",
   gray_text: "#888888",
-  gray_background: "#EEEEEE",
   gray_line: "#C8C8C8",
+
+
   red_text: "#DD616E",
   red_button: "#91313B",
   red_background: "#F9E8E7",
+
+
   green_button: "#23913C",
-  blue_text: "#576ADE",
   green_background: "#A4C2A5",
 
   variantSizes: {

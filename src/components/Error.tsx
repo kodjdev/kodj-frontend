@@ -5,7 +5,7 @@ import { FiArrowLeft } from "react-icons/fi";
 export default function Error() {
   return (
     <div className="min-h-screen bg-black flex items-center justify-center px-4">
-      <div className="max-w-lg w-full text-center -mt-40">
+      <div className="max-w-lg w-full text-center -mt-80">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
