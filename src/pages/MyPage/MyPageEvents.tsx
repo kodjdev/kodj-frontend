@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { CardContent } from "../../components/ui/card";
+import { CardContent } from "../../components/Event/EventCard";
 import { Event } from "../../types";
 
 interface MyPageEventsProps {

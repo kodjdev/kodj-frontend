@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import { TFunction } from "i18next";
 import { User } from "firebase/auth";
 import { ProfileDropdown } from "@/components/Header/ProfileDropdown";
-import { HeaderButton } from "@/atoms/header/HeaderButton";
+import { HeaderButton } from "@/components/Header/HeaderButton";
 
 interface DesktopMenuProps {
   tabs: { id: string; labelKey: string; path: string }[];

@@ -7,7 +7,7 @@ import {
   updateProfile,
 } from "firebase/auth";
 import { auth, provider } from "../../firebase/firebaseConfig";
-import { Input } from "../../components/ui/input";
+import { Input } from "../../components/Input/Input";
 import { FcGoogle } from "react-icons/fc";
 import { HiOutlineMail, HiOutlineLockClosed } from "react-icons/hi";
 import { useLocation, useNavigate } from "react-router-dom";

@@ -1,5 +1,5 @@
 import "../index.css";
-import ConditionalLayout from "../components/ConditionalLayout";
+import ConditionalLayout from "../components/Layout/ConditionalLayout";
 import { AuthProvider } from "../context/AuthContext";
 
 export default function RootLayout({ children}: Readonly <{children: React.ReactNode }>) {

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaCalendarAlt, FaMapMarkedAlt, FaParking } from "react-icons/fa";
 import { FaLocationDot, FaNoteSticky } from "react-icons/fa6";
-import Speakers from "../../../components/Speakers";
+import Speakers from "../../../components/Event/Speakers";
 import EventSchedule from "../../../components/Event/EventSchedule";
 import { FaBowlFood } from "react-icons/fa6";
 import { BsPeopleFill } from "react-icons/bs";

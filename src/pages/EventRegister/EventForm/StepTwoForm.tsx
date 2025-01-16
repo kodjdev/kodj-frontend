@@ -1,8 +1,8 @@
-import { Label } from "@/components/ui/label";
+import { Label } from "@/components/Label";
 import { useFormContext, Controller } from "react-hook-form";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import type { RegistrationFormData } from "@/types";
-import { CustomRadio } from "@/atoms/CustomRadio";
+import { CustomRadio } from "@/components/Button/CustomRadio";
 
 export const StepTwoForm = () => {
   const {

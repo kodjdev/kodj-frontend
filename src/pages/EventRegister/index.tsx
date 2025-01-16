@@ -1,6 +1,6 @@
 import { FormProvider, useForm, SubmitHandler } from "react-hook-form";
 import { EventForm } from "./EventForm/EventForm";
-import { CustomButton } from "@/atoms/CustomButton";
+import { CustomButton } from "@/components/Button/CustomButton";
 import { FaArrowUpRightFromSquare } from "react-icons/fa6";
 import type { FormattedDateTime, RegistrationFormData } from "@/types";
 import Step from "@/components/ui/step";

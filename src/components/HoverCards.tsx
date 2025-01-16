@@ -58,11 +58,6 @@ export function CardHoverEffect() {
         </span>
       </h2>
       <HoverEffect items={projects} />
-      {/* <Button
-        text=" test "
-        icon={<FaWatchmanMonitoring style={{ width: "50px" }} />}
-        background="#292140"
-      /> */}
     </>
   );
 }

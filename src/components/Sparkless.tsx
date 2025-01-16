@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
 import { SparklesCore } from "./ui/sparkless";
 
-export default function Sparkles({ children }: { children: ReactNode }) {
+export default function Sparkless({ children }: { children: ReactNode }) {
   return (
     <div className="relative w-full bg-black flex flex-col items-center min-h-screen">
       {/* header conteyneri full width uchun */}

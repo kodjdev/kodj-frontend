@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { TFunction } from "i18next";
 import { User } from "firebase/auth";
-import { HeaderButton } from "@/atoms/header/HeaderButton";
+import { HeaderButton } from "@/components/Header/HeaderButton";
 
 type MobileMenuProps = {
   tabs: { id: string; labelKey: string; path: string }[];
