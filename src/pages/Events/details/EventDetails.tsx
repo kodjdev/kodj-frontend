@@ -21,12 +21,12 @@ import { db, storage } from "../../../firebase/firebaseConfig";
 import { ref, getDownloadURL } from "firebase/storage";
 import { EventForServer, EventTimeline, Speaker } from "../../../types";
 import { Spin } from "antd";
-import { useNavigate, useParams } from "react-router-dom";
+import {  useParams } from "react-router-dom";
 import EventButton from "./EventButton";
 import KakaoMap from "../../../components/KakaoMap";
+import { BackButton } from "@/components/Button/BackButton";
 
 export default function EventDetails() {
-  const navigate = useNavigate();
   const { id, type } = useParams<{ id: string; type: string }>();
 
   const [event, setEvent] = useState<EventForServer | null>(null);
@@ -185,12 +185,7 @@ export default function EventDetails() {
       <div className="container mx-auto py-8 px-1 sm:px-1">
         {/* // 1ta level orqaga qaytish buttoni */}
         <div className="relative -mt-4 mb-8">
-          <button
-            onClick={() => navigate(-1)}
-            className="px-5 py-2 text-white hover:bg-gray-700/50 rounded-md transition-colors duration-200 flex items-center gap-2"
-          >
-            <span className="text-xl">&#8592;</span>
-          </button>
+          <BackButton size="md" onClick={() => console.log("went back")} />
         </div>
         {event.imageUrls?.length === 1 ? (
           // Only one image scenario

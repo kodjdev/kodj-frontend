@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import { db } from "../../firebase/firebaseConfig";
 import { collection, getDocs, query, where, orderBy } from "firebase/firestore";
-import { NavLink, Link, useParams, useNavigate } from "react-router-dom";
+import { NavLink, Link, useParams } from "react-router-dom";
 import { NewsItem } from "../../types";
+import { BackButton } from "@/components/Button/BackButton";
 
 export default function NewsList() {
   const [news, setNews] = useState<NewsItem[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const navigate = useNavigate();
 
   const { category } = useParams<{ category: string }>();
   const currentCategory = category ?? "tech";
@@ -42,16 +42,13 @@ export default function NewsList() {
 
   if (news.length === 0) {
     return (
-      <div className="">
-        <button
-          onClick={() => navigate(-1)}
-          className="px-5 py-2 text-white hover:bg-gray-700/50 rounded-md transition-colors duration-200 flex items-center gap-2"
-          // className="mb-6 px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-500 transition"
-        >
-          &#8592;
-        </button>
+      <>
+        <BackButton
+          size="md"
+          onClick={() => console.log("going back")}
+          />
         <div className="text-center text-gray-500 p-20">No news found!</div>
-      </div>
+      </>
     );
   }
 

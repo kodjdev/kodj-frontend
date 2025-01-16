@@ -13,6 +13,7 @@ import { collection, query, where, getDocs } from "firebase/firestore";
 import { db } from "@/firebase/firebaseConfig";
 import Modal from "@/components/ui/modal";
 import RightsideDetails from "./RightsideDetails";
+import { BackButton } from "@/components/Button/BackButton";
 
 type FirstStepFields = Pick<
   RegistrationFormData,
@@ -243,7 +244,10 @@ export default function EventRegister() {
       {contextHolder}
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="flex flex-col md:flex-row min-h-screen w-full bg-gradient-to-br from-gray-900 via-gray-800 to-black p-4 sm:p-8 rounded-lg text-gray-300 shadow-lg space-y-4 md:space-y-0">
+          <div className="pt-2 pl-4 sm:pl-10">
+            <BackButton size="md" onClick={() => console.log("going back")} />
+          </div>
+          <div className="flex flex-col md:flex-row min-h-screen w-full sm:p-8 rounded-lg text-gray-300 shadow-lg space-y-1 md:space-y-0">
             <div className="w-full md:w-1/2 p-6 bg-opacity-80">
               <div className="w-full bg-gradient-to-r from-gray-800 to-gray-900 rounded-lg shadow-lg">
                 <div className="flex justify-between rounded p-8">
@@ -280,7 +284,6 @@ export default function EventRegister() {
                         Continue
                       </CustomButton>
                     )}
-
                   </div>
                 </div>
               </div>

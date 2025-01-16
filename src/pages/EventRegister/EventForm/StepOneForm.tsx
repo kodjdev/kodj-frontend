@@ -2,7 +2,6 @@ import { Label } from "@/components/Label";
 import { useFormContext } from "react-hook-form";
 import type { RegistrationFormData } from "@/types";
 import { CustomInput } from "@/components/Input/CustomInput";
-import { Input } from "antd";
 
 export const StepOneForm = () => {
   const {

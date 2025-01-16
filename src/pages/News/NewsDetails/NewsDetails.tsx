@@ -1,16 +1,16 @@
 import { useEffect, useState } from "react";
 import { db } from "../../../firebase/firebaseConfig";
 import { doc, getDoc, Timestamp } from "firebase/firestore";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { getDownloadURL, getStorage, ref } from "firebase/storage";
 import { NewsItem } from "../../../types";
 import { Spin } from "antd";
+import { BackButton } from "@/components/Button/BackButton";
 
 export default function NewsDetails() {
   const { category, id } = useParams<{ category: string; id: string }>();
   const [news, setNews] = useState<NewsItem[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const navigate = useNavigate();
 
   // Replace the fetchNews function body with the following code:
 
@@ -96,14 +96,12 @@ export default function NewsDetails() {
       <div className="max-w-[1440px] mx-auto px-6 md:px-[2px]">
         {/* bback button uchun container div */}
         <div className="pt-2">
-          <button
-            onClick={() => navigate(-1)}
-            className="px-5 py-2 text-white hover:bg-gray-700/50 rounded-md transition-colors duration-200 flex items-center gap-2"
-          >
-            &#8592;
-          </button>
+          <BackButton
+            size="md"
+            onClick={() => console.log("going back")}
+          />
         </div>
-        <div className="flex flex-col w-full">          
+        <div className="flex flex-col w-full">
           {loading ? (
             <div className="flex items-center justify-center min-h-screen bg-black bg-opacity-50 text-blue-600 text-md">
               <Spin tip="Wait a little bit" size="large"></Spin>
