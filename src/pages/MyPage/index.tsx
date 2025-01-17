@@ -45,6 +45,11 @@ export default function MyPage() {
   if (!loading && !user) {
     navigate("/login");
   }
+  
+  useEffect(() => {
+    setModals((prev) => prev.filter((modal) => modal.type !== "logout"));
+  }, [setModals])
+
   // Fetch events on mount
   useEffect(() => {
     const fetchEvents = async () => {
