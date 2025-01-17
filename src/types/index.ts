@@ -12,14 +12,14 @@ export interface Event {
   events?: string;
   docId?: string;
   maxSeats?: number;
-  }
+}
 
 export interface EventDetails {
   title: string;
   date: {
     seconds: number;
     nanoseconds: number;
-  }
+  };
   eventLocation: string;
 }
 
@@ -130,7 +130,6 @@ export interface EventCardProps {
   registeredCount?: number;
   maxSeats?: number;
 }
-
 
 export interface StatisticsProps {
   speakerCount: number;

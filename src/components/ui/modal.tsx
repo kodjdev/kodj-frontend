@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 
-interface ModalProps {
+export interface ModalProps {
   children: ReactNode;
   onClose: () => void;
 }
