@@ -30,7 +30,7 @@ export default function EventButton({
   location,
   isFull,
 }: EventButtonProps) {
-  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [showLoginModal, setShowLoginModal] = useState<boolean>(false);
   const navigate = useNavigate();
   const { user } = useAuth();
   const [messageApi, contextHolder] = message.useMessage();

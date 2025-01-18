@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { CardContent } from "../../components/Event/EventCard";
-import { Event } from "../../types";
+import { Event } from "@/atoms/events";
 
 interface MyPageEventsProps {
   upcomingEvents: Event[];

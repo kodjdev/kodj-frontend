@@ -62,7 +62,7 @@ export const routes: RouteType[] = [
     path: "/events/:type/details/:id",
     component: (
       <Suspense fallback={<ComponentLoading />}>
-        <EventDetails />,
+        <EventDetails />
       </Suspense>
     ),
     auth: false,

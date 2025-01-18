@@ -1,7 +1,7 @@
 import { Timestamp } from "firebase/firestore";
 
 export interface Event {
-  id: number | string;
+  id: string;
   title: string;
   description?: string;
   date?: string | Timestamp;
@@ -12,6 +12,10 @@ export interface Event {
   events?: string;
   docId?: string;
   maxSeats?: number;
+  imageUrls: string[];
+  eventRoom?: string,
+  parking?: boolean,
+  seats?: string
 }
 
 export interface EventDetails {
@@ -36,6 +40,7 @@ export interface EventForServer {
   speakerId?: string;
   id: string;
   title: string;
+  headerTitle?: string,
   description: string;
   date: Timestamp;
   location: string;

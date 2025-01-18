@@ -94,7 +94,7 @@ export default function EventsList() {
                     date={
                       typeof event.date === "string"
                         ? event.date
-                        : new Date(event.date.seconds * 1000).toDateString()
+                        : event.date ? new Date(event.date.seconds * 1000).toDateString() : "Date not available"
                     }
                     author={event.author}
                     imageUrl={event.imageUrl}
@@ -130,7 +130,7 @@ export default function EventsList() {
                 date={
                   typeof event.date === "string"
                     ? event.date
-                    : new Date(event.date.seconds * 1000).toDateString()
+                    : event.date ? new Date(event.date.seconds * 1000).toDateString() : "Date not available"
                 }
                 author={event.author}
                 imageUrl={event.imageUrl}

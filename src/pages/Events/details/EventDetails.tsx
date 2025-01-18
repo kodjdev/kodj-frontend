@@ -202,7 +202,7 @@ export default function EventDetails() {
 
           <div className="grid grid-cols-1 flex flex-col items-start justify-start sm:grid-cols-3 gap-4 mb-4">
             <div
-              className="col-span-2 relative h-72 sm:h-[450px] cursor-pointer overflow-hidden rounded-[8px] border border-[#505050]"
+              className="col-span-2 relative h-72 sm:h-[500px] cursor-pointer overflow-hidden rounded-[8px] border border-[#505050]"
               onClick={() => openGallery(0)}
             >
               <img
@@ -411,11 +411,11 @@ export default function EventDetails() {
         </div> */}
         <div className="flex flex-wrap items-baseline gap-2 mb-4 mt-10">
           <h1 className="text-white font-bold text-3xl leading-none">
-            Focusing on the{" "}
+            {event.headerTitle || "Focusing on the Backend Implementation"} 
           </h1>
-          <h1 className="text-gray-500 font-bold text-3xl leading-none mx-2">
+          {/* <h1 className="text-gray-500 font-bold text-3xl leading-none mx-2">
             Backend Implementation
-          </h1>
+          </h1> */}
         </div>
         <div className="w-full max-w-[750px] overflow-auto ">
           {" "}

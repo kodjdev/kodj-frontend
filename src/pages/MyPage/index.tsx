@@ -13,13 +13,13 @@ import {
 import { auth, db } from "../../firebase/firebaseConfig";
 import { FirebaseError } from "firebase/app";
 import { Spin, message } from "antd";
-import { Event, EventDetails } from "../../types";
+import { EventDetails } from "../../types";
 import Modal from "../../components/ui/modal";
 
 import MyPageProfile from "./MyPageProfile";
 import MyPageEvents from "./MyPageEvents";
 import { useRecoilState } from "recoil";
-import { upcomingEventsAtom } from "@/atoms/events";
+import { Event, upcomingEventsAtom } from "@/atoms/events";
 import { pastEventsAtom } from "@/atoms/events";
 import { isModalOpenAtom } from "@/atoms/modals";
 
