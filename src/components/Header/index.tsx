@@ -82,7 +82,7 @@ export default function Header() {
         <div className="md:hidden">
           <button
             onClick={() => setIsMobileMenuOpen(true)}
-            className="text-white focus:outline-none"
+            className="text-sm font-medium text-gray-900 dark:text-white outline-sky-400 transition focus-visible:outline-2"
           >
             ☰
           </button>

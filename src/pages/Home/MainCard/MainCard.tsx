@@ -26,12 +26,12 @@ export function MainCard() {
   ];
   return (
     <div className="abosolute z-10 max-w-9xl mx-auto">
-      <div className="px-8">
+      <div className="px-8 relative z-10">
         {/* <h1 className="md:text-7xl text-3xl lg:text-6xl font-bold text-center text-white relative bg-transparent mt-20 p-5 whitespace-normal sm:whitespace-nowrap overflow-hidden">
           <FlipTitle />
           </h1> */}
-        <h1 className="md:text-7xl text-3xl lg:text-6xl font-bold text-center text-white relative bg-transparent mt-10 whitespace-normal overflow-hidden mt-[-15px] mb-[25px]">
-          <FlipTitle />
+        <h1 className="md:text-7xl text-3xl lg:text-6xl font-bold text-center text-white relative bg-transparent mt-10 whitespace-normal overflow-hidden mt-[-15px] mb-[25px] z-10"> {/* Added z-10 */}
+        <FlipTitle />
         </h1>
         <h4 className="text-2xl lg:text-2xl lg:leading-tight max-w-5xl mx-auto text-center tracking-tight font-medium text-black text-white">
           {t("headingTitle")}

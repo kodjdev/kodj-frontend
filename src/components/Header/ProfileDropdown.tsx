@@ -18,6 +18,7 @@ export function ProfileDropdown({
     <div
       ref={dropdownRef}
       className="absolute z-50 right-0 mt-2 w-54 rounded-lg bg-gray-800 shadow-lg ring-1 ring-black ring-opacity-5"
+      style={{ minWidth: "250px" }}
     >
       <div className="p-4">
         <div className="text-sm text-gray-300 border-b border-gray-700 pb-3">

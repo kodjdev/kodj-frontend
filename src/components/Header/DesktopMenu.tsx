@@ -85,7 +85,7 @@ export default function DesktopMenu({
                   }
                 }}
                 isActive={activeTab === tab.id}
-                className="text-sm font-medium text-white outline-sky-400 transition focus-visible:outline-2"
+                className="text-sm font-medium text-gray-900 dark:text-white outline-sky-400 transition focus-visible:outline-2"
               >
                 {activeTab === tab.id && (
                   <motion.span
@@ -120,11 +120,19 @@ export default function DesktopMenu({
             </Link>
 
             {tab.id === "mypage" && showProfileMenu && (
-              <ProfileDropdown
-                user={user}
-                dropdownRef={profileMenuRef}
-                onLogoutClick={handleLogoutClick}
-              />
+              <div className="relative">
+                <div
+                  className="fixed inset-0 z-40"
+                  onClick={() => setShowProfileMenu(false)}
+                />
+                <div className="relative z-50">
+                  <ProfileDropdown
+                    user={user}
+                    dropdownRef={profileMenuRef}
+                    onLogoutClick={handleLogoutClick}
+                  />
+                </div>
+              </div>
             )}
           </div>
         ))}

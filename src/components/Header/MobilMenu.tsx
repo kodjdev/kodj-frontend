@@ -28,7 +28,7 @@ export function MobileMenu({
       <div className="flex items-center justify-between px-6 py-4">
         <button
           onClick={() => setIsMobileMenuOpen(false)}
-          className="text-white focus:outline-none"
+          className="text-sm font-medium text-gray-900 dark:text-white outline-sky-400 transition focus-visible:outline-2"
         >
           &#x2715; 
         </button>
@@ -52,7 +52,9 @@ export function MobileMenu({
               <HeaderButton
                 isActive={activeTab === tab.id}
                 // active bulganda backgroudni oq qilib textni qora qilamiz
-                className="relative rounded-full px-3 py-1.5 text-sm font-medium text-white outline-sky-400 transition focus-visible:outline-2"
+                // className="relative rounded-full px-3 py-1.5 text-sm font-medium text-white outline-sky-400 transition focus-visible:outline-2"
+                className="text-sm font-medium text-gray-900 dark:text-white outline-sky-400 transition focus-visible:outline-2"
+
               >
                 {activeTab === tab.id && (
                   <motion.span
