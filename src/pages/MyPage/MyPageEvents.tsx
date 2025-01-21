@@ -100,7 +100,7 @@ export default function MyPageEvents({
                     <h3 className="text-xl font-semibold text-white mt-4">
                       {event.title}
                     </h3>
-                    {/* <p className="text-gray-400">{event.date?.toString()}</p> */}
+                    {/* <p className="text-gray-400">{event.formattedDate}</p> */}
                     <p className="text-gray-400">{event.location}</p>
                   </CardContent>
                 </motion.div>

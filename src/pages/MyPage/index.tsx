@@ -55,7 +55,6 @@ const formatEventDate = (date: Date): string => {
   });
 };
 
-
 export default function MyPage() {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
@@ -109,15 +108,21 @@ export default function MyPage() {
             const eventDocSnap = await getDoc(eventDocRef);
             const eventData = eventDocSnap.data();
 
+            // const eDate = new Date(
+            //   reg.eventDetails.date.seconds * 1000 +
+            //     reg.eventDetails.date.nanoseconds / 1_000_000
+            // );
+
             const item: Event = {
               id: reg.eventId || "",
               title: reg.eventDetails.title,
-            //   date: formatEventDate(eventDate),  
+              date: formatEventDate(eventDate),
+              // date: eDate.toDateString(),
               location: reg.eventDetails.eventLocation,
               images: eventData?.images || "No img found",
               docId: reg.id,
               rawDate: eventDate,
-              formattedDate: formatEventDate(eventDate)
+              formattedDate: formatEventDate(eventDate),
             };
 
             if (eventDate < new Date()) {

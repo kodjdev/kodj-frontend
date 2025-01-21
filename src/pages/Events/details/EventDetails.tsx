@@ -21,7 +21,7 @@ import { db, storage } from "../../../firebase/firebaseConfig";
 import { ref, getDownloadURL } from "firebase/storage";
 import { EventForServer, EventTimeline, Speaker } from "../../../types";
 import { Spin } from "antd";
-import {  useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import EventButton from "./EventButton";
 import KakaoMap from "../../../components/KakaoMap";
 import { BackButton } from "@/components/Button/BackButton";
@@ -182,37 +182,27 @@ export default function EventDetails() {
 
   return (
     <>
-      <div className="container mx-auto py-8 px-1 sm:px-1">
+      <div className="container mx-auto py-8">
         {/* // 1ta level orqaga qaytish buttoni */}
         <div className="relative -mt-4 mb-8">
           <BackButton size="md" onClick={() => console.log("went back")} />
         </div>
         {event.imageUrls?.length === 1 ? (
-          // Only one image scenario
-          //   <div
-          //     className="relative h-72 sm:h-[600px] cursor-pointer overflow-hidden mb-4"
-          //     onClick={() => openGallery(0)}
-          //   >
-          //     <img
-          //       src={event.imageUrls[0]}
-          //       alt={event.title}
-          //       className="rounded-lg shadow-lg w-full h-full object-cover"
-          //     />
-          //   </div>
-
-          <div className="grid grid-cols-1 flex flex-col items-start justify-start sm:grid-cols-3 gap-4 mb-4">
-            <div
-              className="col-span-1 relative h-72 sm:h-[500px] cursor-pointer overflow-hidden rounded-[8px] border border-[#505050]"
-              onClick={() => openGallery(0)}
-            >
-              <img
-                src={event.imageUrls[0]}
-                alt={event.title}
-                className="rounded-lg shadow-lg w-full h-full object-cover"
-              />
+          <div className="grid grid-cols-1 sm:grid-cols-3 flex flex-col items-start justify-start  gap-4 mb-4">
+            <div className="col-span-2 flex flex-col gap-4">
+              <div
+                className="col-span-2 relative h-72 sm:h-[500px] cursor-pointer overflow-hidden rounded-[8px] border border-[#505050]"
+                onClick={() => openGallery(0)}
+              >
+                <img
+                  src={event.imageUrls[0]}
+                  alt={event.title}
+                  className="rounded-lg shadow-lg w-full h-full object-cover"
+                />
+              </div>
             </div>
             <div className="col-span-1 flex flex-col items-start justify-start gap-2 p-5 sm:p-[22px] w-full h-full rounded-[8px] border border-[#505050] bg-[#141414] overflow-hidden">
-              <div className="mb-6 flex-none">
+              <div className="mb-6 flex-grow">
                 <h1 className="text-3xl text-blue-600 font-bold mt-1">
                   {event.title}
                 </h1>
@@ -411,7 +401,7 @@ export default function EventDetails() {
         </div> */}
         <div className="flex flex-wrap items-baseline gap-2 mb-4 mt-10">
           <h1 className="text-white font-bold text-3xl leading-none">
-            {event.headerTitle || "Focusing on the Backend Implementation"} 
+            {event.headerTitle || "Focusing on the Backend Implementation"}
           </h1>
           {/* <h1 className="text-gray-500 font-bold text-3xl leading-none mx-2">
             Backend Implementation
