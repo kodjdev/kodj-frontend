@@ -8,7 +8,7 @@ export type Event = {
   docId?: string;
   title: string;
   description?: string;
-  date?: string | Timestamp;
+  date?: Timestamp | null;  
   location?: string;
   eventRoom?: string;
   images?: string[];
@@ -22,6 +22,8 @@ export type Event = {
   schedule?: EventTimeline[];
   maxSeats?: number;
   registeredCount?: number;
+  rawDate?: Date;
+  formattedDate?: string;
 };
 
 export const pastEventsAtom = atom<Event[]>({

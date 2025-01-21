@@ -46,17 +46,17 @@ export default function MyPageEvents({
                   />
                   <CardContent className="flex justify-between items-center">
                     <div>
-                      <h3 className="text-xl font-semibold text-white">
+                      <h3 className="text-xl font-semibold text-white mt-4">
                         {event.title}
                       </h3>
                       <p className="text-gray-400">
-                        {event.date?.toString()}
+                        {/* {event.date?.toString()} */}
                       </p>
                       <p className="text-gray-400">{event.location}</p>
                     </div>
                     <button
                       onClick={() => onCancelAttendance(event.docId as string)}
-                      className="mt-4 px-4 py-2 bg-gray-400 text-white rounded-full hover:bg-red-700 transition"
+                      className="mt-4 px-4 py-2 bg-gray-400 text-white  rounded-full hover:bg-red-700 transition"
                     >
                       Cancel
                     </button>
@@ -97,10 +97,10 @@ export default function MyPageEvents({
                     className="w-full h-48 object-cover"
                   />
                   <CardContent>
-                    <h3 className="text-xl font-semibold text-white">
+                    <h3 className="text-xl font-semibold text-white mt-4">
                       {event.title}
                     </h3>
-                    <p className="text-gray-400">{event.date?.toString()}</p>
+                    {/* <p className="text-gray-400">{event.date?.toString()}</p> */}
                     <p className="text-gray-400">{event.location}</p>
                   </CardContent>
                 </motion.div>

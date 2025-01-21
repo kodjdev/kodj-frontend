@@ -9,6 +9,7 @@ import {
   deleteDoc,
   doc,
   getDoc,
+  Timestamp,
 } from "firebase/firestore";
 import { auth, db } from "../../firebase/firebaseConfig";
 import { FirebaseError } from "firebase/app";
@@ -31,6 +32,30 @@ interface Registration {
   eventId: string;
 }
 
+const convertTimestampToDate = (timestamp: any): Date => {
+  if (timestamp instanceof Timestamp) {
+    return timestamp.toDate();
+  }
+  if (timestamp && typeof timestamp.seconds === "number") {
+    return new Date(
+      timestamp.seconds * 1000 + (timestamp.nanoseconds || 0) / 1_000_000
+    );
+  }
+  return new Date();
+};
+
+const formatEventDate = (date: Date): string => {
+  return date.toLocaleString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true,
+  });
+};
+
+
 export default function MyPage() {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
@@ -41,7 +66,12 @@ export default function MyPage() {
     useRecoilState(upcomingEventsAtom);
   const [modals, setModals] = useRecoilState(isModalOpenAtom);
 
-  const [fetching, setFetching] = useState(true);
+  const [fetchStatus, setFetchStatus] = useState({
+    loading: true,
+    error: null as string | null,
+    dataFetched: false,
+  });
+
   // If user not logged in, go to login
   if (!loading && !user) {
     navigate("/login");
@@ -71,36 +101,63 @@ export default function MyPage() {
         const upcoming: Event[] = [];
         const past: Event[] = [];
 
-        for (const reg of registrations) {
-          const eDate = new Date(
-            reg.eventDetails.date.seconds * 1000 +
-              reg.eventDetails.date.nanoseconds / 1_000_000
-          );
-          const eventDocRef = doc(db, "upcomingEvents", reg.eventId);
-          const eventDocSnap = await getDoc(eventDocRef);
-          const eventData = eventDocSnap.data();
+        await Promise.all(
+          registrations.map(async (reg) => {
+            const eventDate = convertTimestampToDate(reg.eventDetails.date);
 
-          const item: Event = {
-            id: reg.eventId || "",
-            title: reg.eventDetails.title,
-            date: eDate.toDateString(),
-            location: reg.eventDetails.eventLocation,
-            images: eventData?.images || "No img found",
-            docId: reg.id,
-          };
-          if (eDate < new Date()) past.push(item);
-          else upcoming.push(item);
-        }
+            const eventDocRef = doc(db, "upcomingEvents", reg.eventId);
+            const eventDocSnap = await getDoc(eventDocRef);
+            const eventData = eventDocSnap.data();
+
+            const item: Event = {
+              id: reg.eventId || "",
+              title: reg.eventDetails.title,
+            //   date: formatEventDate(eventDate),  
+              location: reg.eventDetails.eventLocation,
+              images: eventData?.images || "No img found",
+              docId: reg.id,
+              rawDate: eventDate,
+              formattedDate: formatEventDate(eventDate)
+            };
+
+            if (eventDate < new Date()) {
+              past.push(item);
+            } else {
+              upcoming.push(item);
+            }
+          })
+        );
+
+        upcoming.sort(
+          (a, b) =>
+            (a.rawDate as Date).getTime() - (b.rawDate as Date).getTime()
+        );
+        past.sort(
+          (a, b) =>
+            (b.rawDate as Date).getTime() - (a.rawDate as Date).getTime()
+        );
+
         setUpcomingEvents(upcoming);
         setPastEvents(past);
-        setFetching(false);
+        setFetchStatus({
+          loading: false,
+          error: null,
+          dataFetched: true,
+        });
       } catch (err) {
         console.error("Error fetching events:", err);
-        setFetching(false);
+        setFetchStatus({
+          loading: false,
+          error: null,
+          dataFetched: true,
+        });
       }
     };
-    fetchEvents();
-  }, [user]);
+    if (user) {
+      fetchEvents();
+    }
+  }, [user, setUpcomingEvents, setPastEvents]);
+
   const handleCancelAttendance = async (docId: string) => {
     if (!user) return;
     try {
@@ -146,7 +203,7 @@ export default function MyPage() {
     }
   };
 
-  if (loading || fetching) {
+  if (loading || !fetchStatus.dataFetched) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-black bg-opacity-50 text-blue-600 text-md">
         <Spin tip="Wait a little bit" size="large"></Spin>
@@ -170,7 +227,10 @@ export default function MyPage() {
                 Calendar
               </h2>
               {/* // here will add the calendar component */}
-              <Calendar upcomingEvents={upcomingEvents} pastEvents={pastEvents} />
+              <Calendar
+                upcomingEvents={upcomingEvents}
+                pastEvents={pastEvents}
+              />
             </div>
           </div>
           <div className="lg:col-span-2 space-y-6">

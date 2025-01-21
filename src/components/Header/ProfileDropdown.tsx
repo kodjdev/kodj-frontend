@@ -47,7 +47,7 @@ export function ProfileDropdown({
         <div className="border-t border-gray-700 pt-2">
           <button
             onClick={onLogoutClick}
-            className="flex w-full items-center px-3 py-2 text-sm bg-transparent hover:bg-gray-700 hover:text-white rounded-md"
+            className="flex w-full items-center px-3 py-2 text-gray-300 text-sm bg-transparent hover:bg-gray-700 hover:text-white rounded-md"
           >
             <FiLogOut className="mr-3" />
             Sign out
