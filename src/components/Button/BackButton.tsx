@@ -1,4 +1,3 @@
-// 1) Add these imports:
 import { cva, type VariantProps } from "class-variance-authority";
 import { useNavigate } from "react-router-dom";
 import { cn } from "../../lib/utils";

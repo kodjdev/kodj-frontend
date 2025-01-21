@@ -85,7 +85,7 @@ export default function DesktopMenu({
                   }
                 }}
                 isActive={activeTab === tab.id}
-                className="text-sm font-medium text-gray-900 dark:text-white outline-sky-400 transition focus-visible:outline-2"
+                className="text-white"
               >
                 {activeTab === tab.id && (
                   <motion.span
@@ -141,20 +141,20 @@ export default function DesktopMenu({
       <div className="relative">
         <button
           onClick={() => setLangMenuOpen(!langMenuOpen)}
-          className="bg-transparent text-white px-3 py-1 rounded-full focus:outline-none border border-blue-700"
+          className="bg-gray-700 text-white px-3 py-1 rounded-full focus:outline-none border border-gray-700"
         >
           {currentLanguage.toUpperCase()} <span className="ml-1">▼</span>
         </button>
         {langMenuOpen && (
           <div className="absolute right-0 mt-2 w-24 bg-gray-800 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
             <button
-              className="w-full text-left px-4 py-2 text-sm text-white hover:bg-gray-700"
+              className="w-full text-left px-4 py-2 text-sm text-white bg-gray-800 hover:bg-gray-700"
               onClick={() => handleLanguageChange("en")}
             >
               en
             </button>
             <button
-              className="w-full text-left px-4 py-2 text-sm text-white hover:bg-gray-700"
+              className="w-full text-left px-4 py-2 text-sm text-white bg-gray-800 hover:bg-gray-700"
               onClick={() => handleLanguageChange("uz")}
             >
               uz

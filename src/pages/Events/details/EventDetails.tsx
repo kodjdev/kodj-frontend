@@ -202,7 +202,7 @@ export default function EventDetails() {
 
           <div className="grid grid-cols-1 flex flex-col items-start justify-start sm:grid-cols-3 gap-4 mb-4">
             <div
-              className="col-span-2 relative h-72 sm:h-[500px] cursor-pointer overflow-hidden rounded-[8px] border border-[#505050]"
+              className="col-span-1 relative h-72 sm:h-[500px] cursor-pointer overflow-hidden rounded-[8px] border border-[#505050]"
               onClick={() => openGallery(0)}
             >
               <img
@@ -212,7 +212,7 @@ export default function EventDetails() {
               />
             </div>
             <div className="col-span-1 flex flex-col items-start justify-start gap-2 p-5 sm:p-[22px] w-full h-full rounded-[8px] border border-[#505050] bg-[#141414] overflow-hidden">
-              <div className="mb-4 flex-grow">
+              <div className="mb-6 flex-none">
                 <h1 className="text-3xl text-blue-600 font-bold mt-1">
                   {event.title}
                 </h1>

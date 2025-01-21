@@ -37,6 +37,7 @@
     "recharts": "^2.15.0",
     "recoil": "^0.7.7",
     "rollup-plugin-visualizer": "^5.13.1",
+    "styled-components": "^6.1.14",
     "tailwind-merge": "^2.5.5",
     "tailwindcss-animate": "^1.0.7"
   },

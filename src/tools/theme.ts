@@ -50,7 +50,6 @@ const theme = {
   red_button: "#91313B",
   red_background: "#F9E8E7",
 
-
   green_button: "#23913C",
   green_background: "#A4C2A5",
 

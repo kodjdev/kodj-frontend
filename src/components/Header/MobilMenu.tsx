@@ -24,11 +24,11 @@ export function MobileMenu({
   setIsMobileMenuOpen,
 }: MobileMenuProps) {
   return (
-    <div className="inset-0 z-[9999] bg-black bg-opacity-80 flex flex-col px-6">
+    <div className="inset-0 z-[9999] flex flex-col px-6">
       <div className="flex items-center justify-between px-6 py-4">
         <button
           onClick={() => setIsMobileMenuOpen(false)}
-          className="text-sm font-medium text-gray-900 dark:text-white outline-sky-400 transition focus-visible:outline-2"
+          className="text-white outline-sky-400 transition focus-visible:outline-2 bg-gray-700 px-4 py-2"
         >
           &#x2715; 
         </button>
@@ -53,7 +53,7 @@ export function MobileMenu({
                 isActive={activeTab === tab.id}
                 // active bulganda backgroudni oq qilib textni qora qilamiz
                 // className="relative rounded-full px-3 py-1.5 text-sm font-medium text-white outline-sky-400 transition focus-visible:outline-2"
-                className="text-sm font-medium text-gray-900 dark:text-white outline-sky-400 transition focus-visible:outline-2"
+                className="text-white"
 
               >
                 {activeTab === tab.id && (

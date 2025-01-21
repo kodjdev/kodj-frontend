@@ -15,7 +15,8 @@ export function HeaderButton({
     <button
       className={cn(
         "relative rounded-full px-3 py-1.5 text-sm font-medium transition focus:outline-none",
-        isActive ? "text-black" : "text-white",
+        "text-white",
+        isActive ? "bg-gray-700" : "bg-transparent",
         className
       )}
       style={{ WebkitTapHighlightColor: "transparent" }}
