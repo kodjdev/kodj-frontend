@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { cn } from "../../lib/utils";
 
 const backButtonVariants = cva(
-  "px-5 py-2 text-white hover:bg-gray-700/50 rounded-md transition-colors duration-200 flex items-center gap-2",
+  "px-5 py-2 text-white bg-gray-700 hover:bg-gray-700/50 rounded-md transition-colors duration-200 flex items-center gap-2",
   {
     variants: {
       size: {

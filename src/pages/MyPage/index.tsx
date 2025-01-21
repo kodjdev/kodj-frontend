@@ -22,6 +22,7 @@ import { useRecoilState } from "recoil";
 import { Event, upcomingEventsAtom } from "@/atoms/events";
 import { pastEventsAtom } from "@/atoms/events";
 import { isModalOpenAtom } from "@/atoms/modals";
+import Calendar from "./Calendar";
 
 interface Registration {
   id: string;
@@ -45,10 +46,10 @@ export default function MyPage() {
   if (!loading && !user) {
     navigate("/login");
   }
-  
+
   useEffect(() => {
     setModals((prev) => prev.filter((modal) => modal.type !== "logout"));
-  }, [setModals])
+  }, [setModals]);
 
   // Fetch events on mount
   useEffect(() => {
@@ -156,19 +157,38 @@ export default function MyPage() {
   return (
     <>
       {contextHolder}
-      <div className="container mx-auto py-8 px-4 sm:px-8 flex flex-col flex-grow">
-        <MyPageProfile user={user} onLogoutClick={handleLogoutClick} />
-        <MyPageEvents
-          upcomingEvents={upcomingEvents}
-          pastEvents={pastEvents}
-          onCancelAttendance={handleCancelAttendance}
-        />
+      <div className="container w-full h-full">
+        <div className="grid grid-cols-1  lg:grid-cols-3 gap-8">
+          {/* // left side of the page */}
+          <div className="lg:col-span-1 space-y-6">
+            <div className="bg-gray-800 rounded-lg p-6">
+              <MyPageProfile user={user} onLogoutClick={handleLogoutClick} />
+            </div>
+
+            <div className="bg-gray-800 rounded-lg p-6">
+              <h2 className="text-xl font-semibold text-white mb-4">
+                Calendar
+              </h2>
+              {/* // here will add the calendar component */}
+              <Calendar upcomingEvents={upcomingEvents} pastEvents={pastEvents} />
+            </div>
+          </div>
+          <div className="lg:col-span-2 space-y-6">
+            <div className="bg-gray-800 rounded-lg p-6">
+              <MyPageEvents
+                upcomingEvents={upcomingEvents}
+                pastEvents={pastEvents}
+                onCancelAttendance={handleCancelAttendance}
+              />
+            </div>
+          </div>
+        </div>
       </div>
       {modals.map((modal) =>
         modal.type === "logout" ? (
           <Modal key={modal.id} onClose={() => handleCloseModal(modal.id)}>
             <div className="p-8 bg-gray-800">
-              <h2 className="text-xl font-semibold text-white-400 mb-4">
+              <h2 className="text-xl font-semibold text-white mb-4">
                 Confirm Logout
               </h2>
               <p className="text-white mb-6">
