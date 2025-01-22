@@ -134,8 +134,8 @@ export const Button = React.forwardRef<HTMLButtonElement, AtomicButtonProps>(
       asChild = false,
       color = "blue",
       textColor,
-      radius = "md",
-      variant = "solid",
+      // radius = "md",
+      // variant = "solid",
       disabled,
       onClick,
       ...props

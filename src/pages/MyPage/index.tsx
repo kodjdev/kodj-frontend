@@ -12,7 +12,6 @@ import {
   Timestamp,
 } from "firebase/firestore";
 import { auth, db } from "../../firebase/firebaseConfig";
-import { FirebaseError } from "firebase/app";
 import { Spin, message } from "antd";
 import { EventDetails } from "../../types";
 import Modal from "../../components/ui/modal";
@@ -64,6 +63,7 @@ export default function MyPage() {
   const [upcomingEvents, setUpcomingEvents] =
     useRecoilState(upcomingEventsAtom);
   const [modals, setModals] = useRecoilState(isModalOpenAtom);
+  const [isMobileView, setIsMobileView] = useState(false);
 
   const [fetchStatus, setFetchStatus] = useState({
     loading: true,
@@ -75,6 +75,21 @@ export default function MyPage() {
   if (!loading && !user) {
     navigate("/login");
   }
+
+  useEffect(() => {
+    const handleSizeChange = () => {
+      setIsMobileView(window.innerWidth < 1024);
+    };
+
+    handleSizeChange();
+
+    window.addEventListener("resize", handleSizeChange);
+
+    // we remove the event listener
+    return () => {
+      window.removeEventListener("resize", handleSizeChange);
+    };
+  }, []);
 
   useEffect(() => {
     setModals((prev) => prev.filter((modal) => modal.type !== "logout"));
@@ -249,7 +264,11 @@ export default function MyPage() {
           {/* // left side of the page */}
           <div className="lg:col-span-1 space-y-6">
             <div className="bg-gray-800 rounded-lg p-6">
-              <MyPageProfile user={user} onLogoutClick={handleLogoutClick} />
+              <MyPageProfile
+                user={user}
+                onLogoutClick={handleLogoutClick}
+                isMobileView={isMobileView}
+              />
             </div>
 
             <div className="bg-gray-800 rounded-lg p-6">

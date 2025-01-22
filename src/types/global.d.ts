@@ -2,7 +2,6 @@ import type { Dayjs as _Dayjs } from "dayjs";
 import type { Location as _RouterLocation } from "history";
 import type { CSSProperties } from "react";
 
-import Env from "./env";
 import type { Location } from "./location";
 
 export {};
@@ -19,8 +18,11 @@ declare global {
     | `${PixelValue} ${PixelValue} ${PixelValue}`
     | `${PixelValue} ${PixelValue} ${PixelValue} ${PixelValue}`;
   type Padding = Margin;
+
   type User = {
-    _id: string;
+    displayName: string;
+    email: string;
+    id: number;
     name: string;
     nickname: string;
     profileImageUrl: string;
@@ -39,18 +41,11 @@ declare global {
   };
 
   type ReportResponse = { status: number };
+
   type Report = {
     reportedId: string;
     type: "no-settlement" | "no-show" | "etc-reason";
     etcDetail: string;
     time: Date;
   };
-
-  interface Window {
-    flutter_inappwebview: {
-      callHandler: (name: string, ...args: any[]) => Promise<any>;
-    };
-    env: Env;
-    Kakao: any;
-  }
 }
