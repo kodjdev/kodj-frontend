@@ -22,7 +22,6 @@ const theme = {
   black: "#2563E",
   black_40: "rgba(0, 0, 0, 0.4)",
   black_60: "rgba(0, 0, 0, 0.6)",
- 
 
   blue: "#2563EB",
   blue_dark: "#2542EB",
@@ -39,12 +38,10 @@ const theme = {
   purple_background: "#FAF8FB",
   purple_hover: "#F4EAF6",
 
-
   gray: "#ABABAB",
   gray_dark: "#6B6B6B",
   gray_text: "#888888",
   gray_line: "#C8C8C8",
-
 
   red_text: "#DD616E",
   red_button: "#91313B",
@@ -53,11 +50,24 @@ const theme = {
   green_button: "#23913C",
   green_background: "#A4C2A5",
 
+  red_background_light: "#EC7063",
+
   variantSizes: {
     default: "h-6 px-4 py-2 text-sm font-medium",
     sm: "h-8 px-3 rounded-md text-xs",
     md: "h-12 px-8 rounded-md text-md",
     lg: "h-10 px-8 rounded-md text-base",
+  },
+
+  radiusSizes: {
+    none: "rounded-none",
+    sm: "rounded-sm",
+    md: "rounded-md",
+    lg: "rounded-lg",
+    xl: "rounded-xl",
+    two_xl: "rounded-2xl",
+    three_xl: "rounded-3xl",
+    full: "rounded-full",
   },
 
   yellow: "#F2A024",

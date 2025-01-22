@@ -78,7 +78,7 @@ export default function EventsList() {
       <h4 className="font-semibold text-white mb-9">
         Check out our past events below:
       </h4>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12 justify-center md:justify-start pb-40">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 justify-center md:justify-start pb-40">
         {upcomingEvents && upcomingEvents.length > 0 ? (
           <>
             {upcomingEvents &&
@@ -120,7 +120,7 @@ export default function EventsList() {
       <h4 className="font-semibold text-white mb-9">
         Check out our past events below:
       </h4>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12 justify-center md:justify-start pb-40">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 justify-center md:justify-start pb-40">
         {pastEvents && pastEvents.length > 0 ? (
           pastEvents.map((event) => (
             <Link to={`/events/past/details/${event.id}`} key={event.id}>

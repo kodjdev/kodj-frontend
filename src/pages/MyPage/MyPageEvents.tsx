@@ -1,11 +1,13 @@
 import { motion } from "framer-motion";
 import { CardContent } from "../../components/Event/EventCard";
 import { Event } from "@/atoms/events";
+import { Button } from "@/components/Button/Button";
+import theme from "@/tools/theme";
 
 interface MyPageEventsProps {
   upcomingEvents: Event[];
   pastEvents: Event[];
-  onCancelAttendance: (docId: string) => void;
+  onCancelAttendance: (registrationId: string) => void;
 }
 
 export default function MyPageEvents({
@@ -26,16 +28,15 @@ export default function MyPageEvents({
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {upcomingEvents.map((event) => {
-              const imageUrl =
-                Array.isArray(event.images) && event.images.length > 0
-                  ? event.images[0]
-                  : "/placeholder.jpg";
+              const imageUrl = Array.isArray(event.images) 
+                ? event.images[0]
+                : event.images || "/placeholder.jpg";
 
               return (
                 <motion.div
                   key={event.id}
                   whileHover={{ scale: 1.05 }}
-                  className="bg-gray-800 rounded-lg shadow-lg overflow-hidden"
+                  className="bg-gray-800 rounded-lg shadow-lg overflow-hidden flex flex-col"
                 >
                   <img
                     src={imageUrl}
@@ -44,22 +45,40 @@ export default function MyPageEvents({
                     height={200}
                     className="w-full h-48 object-cover"
                   />
-                  <CardContent className="flex justify-between items-center">
+                  <CardContent className="flex flex-col justify-between p-4 h-full">
                     <div>
-                      <h3 className="text-xl font-semibold text-white mt-4">
+                      <h3 className="text-xl font-semibold text-white ">
                         {event.title}
                       </h3>
-                      <p className="text-gray-400">
-                        {/* {event.date?.toString()} */}
-                      </p>
-                      <p className="text-gray-400">{event.location}</p>
+                      <div className="flex justify-between text-gray-400 text-sm">
+                        <p>{event.date?.toString()}</p>
+                      </div>
+                      <div className="text-gray-400 text-sm">
+                        <p>{event.location}</p>
+                      </div>
                     </div>
-                    <button
-                      onClick={() => onCancelAttendance(event.docId as string)}
-                      className="mt-4 px-4 py-2 bg-gray-400 text-white  rounded-full hover:bg-red-700 transition"
-                    >
-                      Cancel
-                    </button>
+                    <div className="mt-[-60px] flex justify-end">
+                      {event.registrationId && (
+                        <Button
+                          onClick={() => {
+                            console.log(
+                              "Cancelling registration:",
+                              event.registrationId
+                            );
+                            if (event.registrationId) {
+                              onCancelAttendance(event.registrationId);
+                            }
+                          }}
+                          size="sm"
+                          color="red"
+                          textColor={theme.white}
+                          fullWidth={false}
+                          radius="md"
+                        >
+                          Cancel
+                        </Button>
+                      )}
+                    </div>
                   </CardContent>
                 </motion.div>
               );
@@ -96,11 +115,11 @@ export default function MyPageEvents({
                     height={200}
                     className="w-full h-48 object-cover"
                   />
-                  <CardContent>
-                    <h3 className="text-xl font-semibold text-white mt-4">
+                  <CardContent className="items-start space-y-2 p-4">
+                    <h3 className="text-xl font-semibold text-white">
                       {event.title}
                     </h3>
-                    {/* <p className="text-gray-400">{event.formattedDate}</p> */}
+                    <p className="text-gray-400">{event.date?.toString()}</p>
                     <p className="text-gray-400">{event.location}</p>
                   </CardContent>
                 </motion.div>

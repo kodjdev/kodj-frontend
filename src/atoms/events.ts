@@ -24,6 +24,7 @@ export type Event = {
   registeredCount?: number;
   rawDate?: Date;
   formattedDate?: string;
+  registrationId?: string;
 };
 
 export const pastEventsAtom = atom<Event[]>({

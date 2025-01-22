@@ -108,6 +108,7 @@ export default function MyPage() {
             const eventDocSnap = await getDoc(eventDocRef);
             const eventData = eventDocSnap.data();
 
+            if (!eventData) return; // we skip if no event data
             // const eDate = new Date(
             //   reg.eventDetails.date.seconds * 1000 +
             //     reg.eventDetails.date.nanoseconds / 1_000_000
@@ -123,6 +124,7 @@ export default function MyPage() {
               docId: reg.id,
               rawDate: eventDate,
               formattedDate: formatEventDate(eventDate),
+              registrationId: reg.id, // we store the registration id
             };
 
             if (eventDate < new Date()) {
@@ -163,16 +165,39 @@ export default function MyPage() {
     }
   }, [user, setUpcomingEvents, setPastEvents]);
 
-  const handleCancelAttendance = async (docId: string) => {
-    if (!user) return;
+  const handleCancelAttendance = async (registrationId: string) => {
+    if (!user || !registrationId) return;
+
     try {
-      await deleteDoc(doc(db, "registrations", docId));
-      setUpcomingEvents((prev) => prev.filter((e) => e.docId !== docId));
-      messageApi.success("You successfully canceled registration.");
-    } catch (error) {
-      if (error instanceof FirebaseError) {
-        messageApi.error("Failed to cancel attendance.");
+      console.log("Attempting to cancel registration:", registrationId);
+
+      // First verify the registration exists
+      const registrationRef = doc(db, "registrations", registrationId);
+      const registrationDoc = await getDoc(registrationRef);
+
+      if (!registrationDoc.exists()) {
+        console.error("Registration document not found");
+        messageApi.error("Registration not found");
+        return;
       }
+
+      // Delete the registration
+      await deleteDoc(registrationRef);
+      console.log("Registration deleted successfully");
+
+      // Update local state
+      setUpcomingEvents((prevEvents) => {
+        const updatedEvents = prevEvents.filter(
+          (event) => event.registrationId !== registrationId
+        );
+        console.log("Updated events:", updatedEvents);
+        return updatedEvents;
+      });
+
+      messageApi.success("Successfully cancelled registration");
+    } catch (error) {
+      console.error("Error cancelling registration:", error);
+      messageApi.error("Failed to cancel registration. Please try again.");
     }
   };
 

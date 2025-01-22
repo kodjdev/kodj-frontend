@@ -6,7 +6,26 @@ import { cn } from "../../lib/utils";
 import theme from "@/tools/theme";
 import useHover from "@/hooks/theme/useHover";
 
-type CustomColor = "blue" | "purple_inset" | "gray" | "white";
+export interface ButtonColorConfig {
+  backgroundColor: string;
+  hoverBackgroundColor: string;
+  disabledBackgroundColor: string;
+  defaultTextColor: string;
+  boxShadow?: string;
+  hoverBoxShadow?: string;
+  clickedBoxShadow?: string;
+}
+
+type CustomColor = "blue" | "purple_inset" | "gray" | "white" | "red" | "link";
+type BorderRadius =
+  | "none"
+  | "sm"
+  | "md"
+  | "lg"
+  | "xl"
+  | "two_xl"
+  | "three_xl"
+  | "full";
 
 // CVA factory for “base” stylelarni yaratamiz
 const baseButtonVariants = cva(
@@ -28,13 +47,70 @@ const baseButtonVariants = cva(
         true: "w-full",
         false: "w-auto",
       },
-    },
-    defaultVariants: {
-      size: "default",
-      fullWidth: false,
+      radius: {
+        none: theme.radiusSizes.none,
+        sm: theme.radiusSizes.sm,
+        md: theme.radiusSizes.md,
+        lg: theme.radiusSizes.lg,
+        xl: theme.radiusSizes.xl,
+        two_xl: theme.radiusSizes.two_xl,
+        three_xl: theme.radiusSizes.three_xl,
+        full: theme.radiusSizes.full,
+      },
+      defaultVariants: {
+        size: "default",
+        fullWidth: false,
+        radius: "md",
+        variants: "solid",
+      },
     },
   }
 );
+
+const buttonColorConfigs: Record<CustomColor, ButtonColorConfig> = {
+  blue: {
+    backgroundColor: theme.blue,
+    hoverBackgroundColor: theme.blue_dark,
+    disabledBackgroundColor: theme.blue_disabled,
+    defaultTextColor: theme.white,
+    boxShadow: theme.shadow,
+    clickedBoxShadow: theme.shadow_clicked,
+  },
+  purple_inset: {
+    backgroundColor: theme.purple,
+    hoverBackgroundColor: theme.purple_dark,
+    disabledBackgroundColor: theme.purple_disabled,
+    defaultTextColor: theme.white,
+    boxShadow: theme.shadow_purple_button_inset,
+  },
+  gray: {
+    backgroundColor: theme.gray_dark,
+    hoverBackgroundColor: theme.gray_dark,
+    disabledBackgroundColor: theme.gray,
+    defaultTextColor: theme.gray,
+    boxShadow: theme.shadow_gray_button_inset,
+  },
+  white: {
+    backgroundColor: theme.white,
+    hoverBackgroundColor: theme.white_dark,
+    disabledBackgroundColor: theme.white,
+    defaultTextColor: theme.purple,
+    boxShadow: theme.shadow,
+    clickedBoxShadow: theme.shadow_clicked,
+  },
+  red: {
+    backgroundColor: theme.red_button,
+    hoverBackgroundColor: theme.red_button,
+    disabledBackgroundColor: theme.red_background,
+    defaultTextColor: theme.red_text,
+  },
+  link: {
+    backgroundColor: "transparent",
+    hoverBackgroundColor: "transparent",
+    disabledBackgroundColor: "transparent",
+    defaultTextColor: theme.blue_text,
+  },
+};
 
 // extended props type bilan  HTML props + CVA variant + theme-lens ni merge qilamniz
 export interface AtomicButtonProps
@@ -43,6 +119,10 @@ export interface AtomicButtonProps
   asChild?: boolean;
   fullWidth?: boolean;
   color?: CustomColor;
+  textColor?: string;
+  radius?: BorderRadius;
+  disabled?: boolean;
+  varint?: "solid" | "outline" | "red" | "ghost_gray";
 }
 
 export const Button = React.forwardRef<HTMLButtonElement, AtomicButtonProps>(
@@ -53,6 +133,9 @@ export const Button = React.forwardRef<HTMLButtonElement, AtomicButtonProps>(
       fullWidth,
       asChild = false,
       color = "blue",
+      textColor,
+      radius = "md",
+      variant = "solid",
       disabled,
       onClick,
       ...props
@@ -66,52 +149,23 @@ export const Button = React.forwardRef<HTMLButtonElement, AtomicButtonProps>(
 
     // style object orqali themeni ishlatish:
     const getStyleFromTheme = React.useMemo(() => {
+      const colorConfig = buttonColorConfigs[color];
       const isDisabled = Boolean(disabled);
-      switch (color) {
-        case "blue":
-          return {
-            backgroundColor: isDisabled
-              ? theme.blue_disabled
-              : isHover
-              ? theme.blue_dark
-              : theme.blue,
-            color: theme.white,
-            boxShadow:
-              isClicked && !isDisabled ? theme.shadow_clicked : theme.shadow,
-          };
-        case "purple_inset":
-          return {
-            backgroundColor: isDisabled
-              ? theme.purple_disabled
-              : isHover
-              ? theme.purple_dark
-              : theme.purple,
-            color: theme.white,
-            boxShadow: theme.shadow_purple_button_inset,
-          };
-        case "gray":
-          return {
-            backgroundColor: isDisabled
-              ? theme.gray
-              : isHover
-              ? theme.gray_dark
-              : theme.gray_dark,
-            // backgroundColor: isHover ? theme.gray_line : theme.gray_background,
-            color: isHover ? theme.white: theme.gray,
-            boxShadow: theme.shadow_gray_button_inset,
-            fontWeight: isHover ? 500 : undefined,
-          };
-        case "white":
-          return {
-            backgroundColor: isHover ? theme.white_dark : theme.white,
-            color: theme.purple,
-            boxShadow:
-              isClicked && !isDisabled ? theme.shadow_clicked : theme.shadow,
-          };
-        default:
-          return {};
-      }
-    }, [color, disabled, isHover, isClicked]);
+
+      return {
+        backgroundColor: isDisabled
+          ? colorConfig.disabledBackgroundColor
+          : isHover
+          ? colorConfig.hoverBackgroundColor
+          : colorConfig.backgroundColor,
+        color: textColor || colorConfig.defaultTextColor,
+        boxShadow:
+          isClicked && !isDisabled && colorConfig.clickedBoxShadow
+            ? colorConfig.clickedBoxShadow
+            : colorConfig.boxShadow || "none",
+        fontWeight: color === "gray" && isHover ? 500 : undefined,
+      };
+    }, [color, disabled, isHover, isClicked, textColor]);
 
     // CVA va boshqa classlarni qo'shamiz
     const classes = cn(baseButtonVariants({ size, className, fullWidth }));

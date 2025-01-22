@@ -31,7 +31,8 @@ export default function MyPageProfile({
         <Button
           size="sm"
           disabled={false}
-          color="gray"
+          color="blue"
+          textColor="white"
           fullWidth={false}
           onClick={onLogoutClick}
           className="px-6 py-2 min-w-[100px] bg-gray-800 hover:bg-gray-700 text-gray-200"

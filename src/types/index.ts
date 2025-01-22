@@ -56,6 +56,7 @@ export interface EventForServer {
   schedule?: EventTimeline[];
   maxSeats?: number;
   registeredCount?: number;
+  rawDate?: Date;
 }
 
 export interface RegistrationFormData {

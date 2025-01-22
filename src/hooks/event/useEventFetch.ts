@@ -83,9 +83,28 @@ export function useEventFetcher() {
           event !== undefined && typeof event !== "string"
       );
 
+      filteredUpcomingEvents.forEach((event) => {
+        if (!event.rawDate || !(event.rawDate instanceof Date)) {
+          event.rawDate = event.date.toDate();
+        }
+      });
+
+      filteredPastEvents.forEach((event) => {
+        if (!event.rawDate || !(event.rawDate instanceof Date)) {
+          event.rawDate = event.date.toDate();
+        }
+      });
+
+      filteredUpcomingEvents.sort(
+        (a, b) => (a.rawDate as Date).getTime() - (b.rawDate as Date).getTime()
+      );
+      filteredPastEvents.sort(
+        (a, b) => (b.rawDate as Date).getTime() - (a.rawDate as Date).getTime()
+      );
+
       setUpcomingEvents(filteredUpcomingEvents);
       setPastEvents(filteredPastEvents);
-      //   setLoading(false);
+      // setLoading(false);
     } catch (error) {
       console.error("Error fetching events data: ", error);
     }
@@ -111,5 +130,5 @@ export function useEventFetcher() {
     }
   }, [fetchEventsData]);
 
-  return {fetchEventsData, moveOldEvents};
+  return { fetchEventsData, moveOldEvents };
 }
