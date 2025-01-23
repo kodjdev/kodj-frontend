@@ -8,7 +8,7 @@ import { User } from "firebase/auth";
 import { ProfileDropdown } from "@/components/Header/ProfileDropdown";
 import { HeaderButton } from "@/components/Header/HeaderButton";
 
-interface DesktopMenuProps {
+export type DesktopMenuProps = {
   tabs: { id: string; labelKey: string; path: string }[];
   t: TFunction;
   user: User | null;
@@ -33,7 +33,7 @@ export default function DesktopMenu({
   showProfileMenu,
   setShowProfileMenu,
   profileMenuRef,
-  handleLogoutClick,
+  handleLogoutClick: triggerLogoutModal,
   currentLanguage,
   langMenuOpen,
   setLangMenuOpen,
@@ -129,7 +129,7 @@ export default function DesktopMenu({
                   <ProfileDropdown
                     user={user}
                     dropdownRef={profileMenuRef}
-                    onLogoutClick={handleLogoutClick}
+                    onLogoutClick={triggerLogoutModal}
                   />
                 </div>
               </div>

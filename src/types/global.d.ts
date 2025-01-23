@@ -22,7 +22,7 @@ declare global {
   type User = {
     displayName: string;
     email: string;
-    id: number;
+    id: string;
     name: string;
     nickname: string;
     profileImageUrl: string;

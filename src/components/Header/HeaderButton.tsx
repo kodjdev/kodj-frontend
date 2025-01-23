@@ -1,9 +1,9 @@
-import React from "react"
-import { cn } from "@/lib/utils"
+import React from "react";
+import { cn } from "@/lib/utils";
 
 type HeaderButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
-  isActive?: boolean
-}
+  isActive?: boolean;
+};
 
 export function HeaderButton({
   className,
@@ -24,5 +24,5 @@ export function HeaderButton({
     >
       {children}
     </button>
-  )
+  );
 }

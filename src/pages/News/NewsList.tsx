@@ -43,10 +43,7 @@ export default function NewsList() {
   if (news.length === 0) {
     return (
       <>
-        <BackButton
-          size="md"
-          onClick={() => console.log("going back")}
-          />
+        <BackButton size="md" onClick={() => console.log("going back")} />
         <div className="text-center text-gray-500 p-20">No news found!</div>
       </>
     );

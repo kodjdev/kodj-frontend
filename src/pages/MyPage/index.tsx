@@ -11,27 +11,28 @@ import {
   getDoc,
   Timestamp,
 } from "firebase/firestore";
-import { auth, db } from "../../firebase/firebaseConfig";
+import { db } from "../../firebase/firebaseConfig";
 import { Spin, message } from "antd";
 import { EventDetails } from "../../types";
-import Modal from "../../components/ui/modal";
 
 import MyPageProfile from "./MyPageProfile";
 import MyPageEvents from "./MyPageEvents";
 import { useRecoilState } from "recoil";
 import { Event, upcomingEventsAtom } from "@/atoms/events";
 import { pastEventsAtom } from "@/atoms/events";
-import { isModalOpenAtom } from "@/atoms/modals";
 import Calendar from "./Calendar";
 
-interface Registration {
+export type Registration = {
   id: string;
   uid: string;
   eventDetails: EventDetails;
   eventId: string;
-}
+  createdAt: Timestamp;
+};
 
-const convertTimestampToDate = (timestamp: any): Date => {
+const convertTimestampToDate = (
+  timestamp: Timestamp | { seconds: number; nanoseconds?: number } | null
+): Date => {
   if (timestamp instanceof Timestamp) {
     return timestamp.toDate();
   }
@@ -62,8 +63,6 @@ export default function MyPage() {
   const [pastEvents, setPastEvents] = useRecoilState(pastEventsAtom);
   const [upcomingEvents, setUpcomingEvents] =
     useRecoilState(upcomingEventsAtom);
-  const [modals, setModals] = useRecoilState(isModalOpenAtom);
-  const [isMobileView, setIsMobileView] = useState(false);
 
   const [fetchStatus, setFetchStatus] = useState({
     loading: true,
@@ -71,6 +70,7 @@ export default function MyPage() {
     dataFetched: false,
   });
 
+  const [isMobileView, setIsMobileView] = useState(false);
   // If user not logged in, go to login
   if (!loading && !user) {
     navigate("/login");
@@ -91,10 +91,6 @@ export default function MyPage() {
     };
   }, []);
 
-  useEffect(() => {
-    setModals((prev) => prev.filter((modal) => modal.type !== "logout"));
-  }, [setModals]);
-
   // Fetch events on mount
   useEffect(() => {
     const fetchEvents = async () => {
@@ -110,6 +106,7 @@ export default function MyPage() {
           uid: doc.data().uid,
           eventDetails: doc.data().eventDetails,
           eventId: doc.data().eventId,
+          createdAt: doc.data().createdAt,
         })) as Registration[];
 
         const upcoming: Event[] = [];
@@ -180,12 +177,14 @@ export default function MyPage() {
     }
   }, [user, setUpcomingEvents, setPastEvents]);
 
+  const createdDate = user?.metadata?.creationTime
+    ? new Date(user.metadata.creationTime)
+    : new Date();
+
   const handleCancelAttendance = async (registrationId: string) => {
     if (!user || !registrationId) return;
 
     try {
-      console.log("Attempting to cancel registration:", registrationId);
-
       // First verify the registration exists
       const registrationRef = doc(db, "registrations", registrationId);
       const registrationDoc = await getDoc(registrationRef);
@@ -198,14 +197,13 @@ export default function MyPage() {
 
       // Delete the registration
       await deleteDoc(registrationRef);
-      console.log("Registration deleted successfully");
 
-      // Update local state
+      // then we update local state
       setUpcomingEvents((prevEvents) => {
         const updatedEvents = prevEvents.filter(
           (event) => event.registrationId !== registrationId
         );
-        console.log("Updated events:", updatedEvents);
+        // console.log("Updated events:", updatedEvents);
         return updatedEvents;
       });
 
@@ -213,38 +211,6 @@ export default function MyPage() {
     } catch (error) {
       console.error("Error cancelling registration:", error);
       messageApi.error("Failed to cancel registration. Please try again.");
-    }
-  };
-
-  const handleLogoutClick = () => {
-    setModals((prev) => [
-      ...prev,
-      {
-        id: "logout-modal",
-        type: "logout",
-        props: {
-          onClose: () =>
-            setModals((prev) =>
-              prev.filter((modal) => modal.id !== "logout-modal")
-            ),
-          children: null, // buyerda childrenni alohida render qilamiz
-        },
-      },
-    ]);
-  };
-
-  // modal statedagi arrayni empty array qilib modal close qilamiz
-  const handleCloseModal = (modalId: string) => {
-    setModals((prev) => prev.filter((modal) => modal.id !== modalId));
-  };
-
-  const handleLogout = async () => {
-    try {
-      await auth.signOut();
-      navigate("/login");
-    } catch (err) {
-      messageApi.error("Failed to log out.");
-      console.log(err);
     }
   };
 
@@ -266,8 +232,9 @@ export default function MyPage() {
             <div className="bg-gray-800 rounded-lg p-6">
               <MyPageProfile
                 user={user}
-                onLogoutClick={handleLogoutClick}
+                // onLogoutClick={triggerLogoutModal}
                 isMobileView={isMobileView}
+                createdAt={createdDate}
               />
             </div>
 
@@ -293,37 +260,6 @@ export default function MyPage() {
           </div>
         </div>
       </div>
-      {modals.map((modal) =>
-        modal.type === "logout" ? (
-          <Modal key={modal.id} onClose={() => handleCloseModal(modal.id)}>
-            <div className="p-8 bg-gray-800">
-              <h2 className="text-xl font-semibold text-white mb-4">
-                Confirm Logout
-              </h2>
-              <p className="text-white mb-6">
-                Are you sure you want to log out?
-              </p>
-              <div className="flex justify-end space-x-4">
-                <button
-                  onClick={() => handleCloseModal(modal.id)}
-                  className="bg-transparent rounded-full text-blue-600 focus:outline-none focus:ring-0 transition-colors px-4 py-2"
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={handleLogout}
-                  className="bg-transparent rounded-full text-red-600 focus:outline-none focus:ring-0 transition-colors px-4 py-2"
-                >
-                  Logout
-                </button>
-              </div>
-            </div>
-          </Modal>
-        ) : (
-          // keyinchalik boshqa modal render qilsak boladi typega qarab
-          <div key={modal.id}>Nothing found</div>
-        )
-      )}
     </>
   );
 }

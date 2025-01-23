@@ -11,6 +11,7 @@ import {
   NewsDetails,
   NewsList,
 } from "./lazyComponents";
+import EditMyPage from "@/pages/MyPage/EditMyPage.tsx";
 
 interface RouteType {
   path: string;
@@ -44,6 +45,15 @@ export const routes: RouteType[] = [
     component: (
       <Suspense fallback={<ComponentLoading />}>
         <MyPage />
+      </Suspense>
+    ),
+    auth: true,
+  },
+  {
+    path: "/mypage/editProfile",
+    component: (
+      <Suspense fallback={<ComponentLoading />}>
+        <EditMyPage />
       </Suspense>
     ),
     auth: true,
