@@ -1,6 +1,8 @@
-![logo_kodj](https://github.com/user-attachments/assets/f36c1210-e6df-4207-8820-e714ebfeea23)
-
-<div align=center> 
+<div align="center" style="width: 100%">
+  <img src="https://github.com/user-attachments/assets/75e522ad-09c9-4d2e-99b4-bd6f6ea158b7" alt="kodj_logo" height="600" width="auto" />
+</div>
+&nbsp;
+<div align=center > 
   <img src="https://img.shields.io/badge/React-61DAFB?style=flat-square&logo=React&logoColor=black"/> 
   <img src="https://img.shields.io/badge/Typescript-3178C6?style=flat-square&logo=Typescript&logoColor=white"/>
 </div>
