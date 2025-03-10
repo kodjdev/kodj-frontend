@@ -13,12 +13,12 @@ export const CustomInput = forwardRef<HTMLInputElement, CustomInputProps>(
         <input
           ref={ref}
           className={cn(
-            "w-full px-3 py-2 rounded-md border focus:outline-none",
-            "bg-gray-800 text-white",
+            "w-full bg-gray-800 border border-gray-700 rounded-md py-3 px-4 ",
+            "focus:outline-none focus:ring-2 focus:ring-blue-500",
             {
               "border-red-500": error,
-              "border-green-500": isValid && !error,
-              "border-gray-400": !error && !isValid
+              "border-gray-500": isValid && !error,
+              "border": !error && !isValid
             },
             className
           )}

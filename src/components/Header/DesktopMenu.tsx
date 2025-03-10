@@ -91,7 +91,7 @@ export default function DesktopMenu({
                   <motion.span
                     layoutId="bubble"
                     className="absolute inset-0 z-10 bg-white mix-blend-difference"
-                    style={{ borderRadius: 9999 }}
+                    style={{  borderRadius: '8px'  }}
                     transition={{
                       type: "spring",
                       bounce: 0.2,
@@ -141,7 +141,7 @@ export default function DesktopMenu({
       <div className="relative">
         <button
           onClick={() => setLangMenuOpen(!langMenuOpen)}
-          className="bg-gray-700 text-white px-3 py-1 rounded-full focus:outline-none border border-gray-700"
+          className="bg-gray-700 text-white px-3 py-1 rounded-xl focus:outline-none border border-gray-700"
         >
           {currentLanguage.toUpperCase()} <span className="ml-1">▼</span>
         </button>

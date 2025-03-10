@@ -16,7 +16,7 @@ export const CustomButton = ({
   return (
     <button
       className={cn(
-        "font-medium py-1.5 px-3.5 rounded-full flex items-center transition-colors duration-300",
+        "font-medium py-1.5 px-12 rounded-xl flex items-center transition-colors duration-300",
         {
           "text-white bg-blue-700 border border-blue-700 hover:bg-white hover:text-blue-700":
             variant === "primary",
