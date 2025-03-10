@@ -11,6 +11,7 @@ import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
 import cors from "cors";
 import * as functionsV1 from "firebase-functions/v1";
+import { Request, Response } from "express";
 
 admin.initializeApp();
 const db = admin.firestore();
@@ -20,6 +21,21 @@ if (process.env.NODE_ENV === "development") {
     host: "localhost:8080",
     ssl: false,
   });
+}
+
+interface RateLimitSettings {
+  windowMs: number;
+  max: number;
+  keyGenerator: (req: Request) => string;
+}
+
+interface IpData {
+  count: number;
+  resetTime: number;
+}
+
+declare global {
+  var ipMap: Map<string, IpData> | undefined;
 }
 
 interface RegistrationFormData {
@@ -40,6 +56,19 @@ interface RegistrationFormData {
   };
 }
 
+interface SpeakerData {
+  email: string;
+  fullname: string;
+  jobPosition: string;
+  expertiseField: string;
+  phone: string;
+  topics: string;
+  portfolioUrl: string;
+  githubUrl: string;
+  linkedinUrl: string;
+  [key: string]: any; 
+}
+
 const corsHandler = cors({ origin: true });
 
 function cleanData(obj: any) {
@@ -50,7 +79,7 @@ function cleanData(obj: any) {
   );
 }
 
-export const registerEvent = functions.https.onRequest((req, res) => {
+export const registerEvent = functions.https.onRequest((req: Request, res: Response) => {
   corsHandler(req, res, async () => {
     if (req.method !== "POST") {
       res.status(405).json({ message: "Method Not Allowed" });
@@ -97,7 +126,95 @@ export const registerEvent = functions.https.onRequest((req, res) => {
   });
 });
 
-export const movePassedEvent = functions.https.onRequest((req, res) => {
+const rateLimiter = (req: Request, settings: RateLimitSettings): boolean => {
+  const ip = settings.keyGenerator(req);
+
+  const ipMap = (global.ipMap = global.ipMap || new Map<string, IpData>());
+
+  const ipData = ipMap.get(ip) || {
+    count: 0,
+    resetTime: Date.now() + settings.windowMs,
+  };
+  
+  if (Date.now() > ipData.resetTime) {
+    ipData.count = 0;
+    ipData.resetTime = Date.now() + settings.windowMs;
+  }
+  ipData.count++;
+
+  // we svae the data back to map
+  ipMap.set(ip, ipData);
+
+  return ipData.count > settings.max;
+};
+
+const rateLimitSettings: RateLimitSettings = {
+  windowMs: 5 * 60 * 1000, // 5 minutes
+  max: 5,
+  keyGenerator: (req: Request): string => {
+    const forwarded = req.headers["x-forwarded-for"];
+    return (
+      (typeof forwarded === "string" ? forwarded : 
+       Array.isArray(forwarded) ? forwarded[0] : undefined) || 
+      (req.connection && req.connection.remoteAddress) || 
+      ""
+    );
+  },
+};
+
+export const registerSpeaker = functions.https.onRequest((req: Request, res: Response) => {
+  // we add cors headers to allow any origin
+  res.set('Access-Control-Allow-Origin', '*');
+  
+  // preflight request options
+  if (req.method === 'OPTIONS') {
+    res.set('Access-Control-Allow-Methods', 'POST');
+    res.set('Access-Control-Allow-Headers', 'Content-Type');
+    res.status(204).send('');
+    return;
+  }
+
+  if (rateLimiter(req, rateLimitSettings)) {
+    res
+      .status(429)
+      .json({ message: "Too many requests, please try again later." });
+    return;
+  }
+
+  corsHandler(req, res, async () => {
+    if (req.method !== "POST") {
+      res.status(405).json({ message: "Method Not Allowed" });
+      return;
+    }
+
+    try {
+      const data: SpeakerData = req.body;
+
+      const speakerData = {
+        ...data,
+        createdAt: admin.firestore.FieldValue.serverTimestamp(),
+        // status: "pending" // keyinchalik track qilish uchun
+      };
+
+      const speakerDataCleaned = cleanData(speakerData);
+
+      // firestorega save qilamiz
+      const docRef = await db
+        .collection("registerSpeakers")
+        .add(speakerDataCleaned);
+
+      res
+        .status(201)
+        .json({ message: "Speaker registration successful", id: docRef.id });
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : "Internal server error";
+      res.status(500).json({ message: errorMessage });
+    }
+  });
+});
+
+export const movePassedEvent = functions.https.onRequest((req: Request, res: Response) => {
   corsHandler(req, res, async () => {
     if (req.method !== "POST") {
       res.status(405).json({ message: "Method Not Allowed" });
@@ -117,7 +234,7 @@ export const movePassedEvent = functions.https.onRequest((req, res) => {
 
       if (snapshot.empty) {
         console.log("No old events found to move.");
-        return;
+        return res.status(200).json({ message: "No events to move" });
       }
 
       const batch = db.batch();
@@ -156,7 +273,7 @@ export const movePassedEvent = functions.https.onRequest((req, res) => {
   });
 });
 
-export const getTotalUserCount = functions.https.onRequest((req, res) => {
+export const getTotalUserCount = functions.https.onRequest((req: Request, res: Response) => {
   corsHandler(req, res, async () => {
     if (req.method !== "GET") {
       res.status(405).json({ message: "Method Not Allowed" });
@@ -174,7 +291,7 @@ export const getTotalUserCount = functions.https.onRequest((req, res) => {
 
       res.status(200).json({
         totalUsers,
-        timeStamp: new Date().toISOString,
+        timeStamp: new Date().toISOString(), 
       });
     } catch (error) {
       console.error("Error fetching the user count: ", error);
@@ -213,7 +330,6 @@ export const decrementUserStats = functionsV1.auth.user().onDelete(() => {
     );
 });
 
-
 // we add this trigger in order to maintain user data synchronization
 export const onUserCreated = functionsV1.auth.user().onCreate(async (user) => {
   const batch = db.batch();
@@ -245,7 +361,6 @@ export const onUserCreated = functionsV1.auth.user().onCreate(async (user) => {
     console.error("Error creating user document:", error);
   }
 });
-
 
 export const onUserDeleted = functionsV1.auth.user().onDelete(async (user) => {
   const batch = db.batch();

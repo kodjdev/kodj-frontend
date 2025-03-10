@@ -44,21 +44,48 @@ export default function SpeakersRegister() {
 
   const { i18n,t } = useTranslation("speakers" as any);
 
-  const onSubmit: SubmitHandler<SpeakerRegistration> = () => {
-    console.log("Form submitted:", formData);
-    setFormData({
-      email: "",
-      fullName: "",
-      jobPosition: "",
-      phone: "",
-      yearsOfExperience: "",
-      expertiseField: "",
-      topics: "",
-      linkedinUrl: "",
-      githubUrl: "",
-      portfolioUrl: "",
-    });
-    setIsModalOpen(true);
+  const onSubmit: SubmitHandler<SpeakerRegistration> = async (data) => {
+    try {
+      // we saubmit the data to fireastore
+      const response = await fetch(import.meta.env.VITE_FIREBASE_REGISTER_SPEAKER_FUNCTION_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          ...data,
+          createdAt: new Date().toISOString()
+        }),
+      });
+  
+      if (response.ok) {
+        setIsModalOpen(true);
+        setFormData({
+          email: "",
+          fullName: "",
+          jobPosition: "",
+          phone: "",
+          yearsOfExperience: "",
+          expertiseField: "",
+          topics: "",
+          linkedinUrl: "",
+          githubUrl: "",
+          portfolioUrl: "",
+        });
+      } else {
+        let errorMessage = "An error occurred";
+        try {
+          const errorData = await response.json();
+          errorMessage = errorData.message || errorMessage;
+        } catch (err) {
+          console.error("Error parsing error response:", err);
+        }
+        alert(`Error: ${errorMessage}`);
+      }
+    } catch (error) {
+      console.error("Error registering speaker: ", error);
+      alert("An error occurred. Please try again later.");
+    }
   };
 
   const handleClick = () => {

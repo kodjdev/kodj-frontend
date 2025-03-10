@@ -118,7 +118,7 @@ export default function EventRegister() {
 
       const idToken = await user.getIdToken();
 
-      const response = await fetch(import.meta.env.VITE_FIREBASE_FUNCTION_URL, {
+      const response = await fetch(import.meta.env.VITE_FIREBASE_REGISTER_EVENT_FUNCTION_URL, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
