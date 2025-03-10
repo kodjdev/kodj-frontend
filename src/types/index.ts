@@ -76,6 +76,18 @@ export interface RegistrationFormData {
   eventId: string;
 }
 
+export interface SpeakerRegistration {
+  email: string;
+  fullname: string;
+  jobPosition: string;
+  expertiseField: string;
+  phone: string;
+  topics: string,
+  portfolioUrl: string;
+  githubUrl: string;
+  linkedinUrl: string;
+}
+
 export interface PastEventDetailsProps {
   params: Promise<{
     id: string;

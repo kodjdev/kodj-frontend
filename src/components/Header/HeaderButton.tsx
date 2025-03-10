@@ -14,7 +14,7 @@ export function HeaderButton({
   return (
     <button
       className={cn(
-        "relative rounded-full px-3 py-1.5 text-sm font-medium transition focus:outline-none",
+        "relative rounded-lg px-3 py-1.5 text-sm font-medium transition focus:outline-none",
         "text-white",
         isActive ? "bg-gray-700" : "bg-transparent",
         className

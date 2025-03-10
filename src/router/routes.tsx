@@ -10,6 +10,7 @@ import {
   EventRegister,
   NewsDetails,
   NewsList,
+  SpeakerRegistrationForm,
 } from "./lazyComponents";
 import EditMyPage from "@/pages/MyPage/EditMyPage.tsx";
 
@@ -85,6 +86,14 @@ export const routes: RouteType[] = [
       </Suspense>
     ),
     auth: true, // Protected route
+  },
+  {
+    path: "/speakers",
+    component: (
+      <Suspense fallback={<ComponentLoading/>}>
+        <SpeakerRegistrationForm/>
+      </Suspense>
+    )
   },
   {
     path: "/news",

@@ -12,6 +12,7 @@ const tabs = [
   { id: "about", labelKey: "header.aboutUs", path: "/about" },
   { id: "news", labelKey: "header.news", path: "/news" },
   { id: "events", labelKey: "header.events", path: "/events" },
+  { id: "speakers", labelKey: "header.speakers", path: "/speakers" },
   { id: "mypage", labelKey: "header.myPage", path: "/mypage" },
   { id: "login", labelKey: "header.login", path: "/login" },
 ];

@@ -5,3 +5,4 @@ export const EventDetails = React.lazy(() => import("../pages/Events/details/Eve
 export const EventRegister = React.lazy(() => import("../pages/EventRegister/index.tsx"));
 export const NewsDetails = React.lazy(() => import("../pages/News/NewsDetails/NewsDetails.tsx"));
 export const NewsList = React.lazy(() => import("../pages/News/NewsList.tsx"));
+export const SpeakerRegistrationForm = React.lazy(() => import ("../pages/Speakers/index.tsx"))
