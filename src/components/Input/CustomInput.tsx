@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import theme from "@/tools/theme";
 import { InputHTMLAttributes, forwardRef } from "react";
 
 interface CustomInputProps extends InputHTMLAttributes<HTMLInputElement> {
@@ -13,7 +14,7 @@ export const CustomInput = forwardRef<HTMLInputElement, CustomInputProps>(
         <input
           ref={ref}
           className={cn(
-            "w-full bg-gray-800 border border-gray-700 rounded-md py-3 px-4 ",
+            "w-full border border-gray-700 rounded-md py-3 px-4 ",
             "focus:outline-none focus:ring-2 focus:ring-blue-500",
             {
               "border-red-500": error,
@@ -22,6 +23,7 @@ export const CustomInput = forwardRef<HTMLInputElement, CustomInputProps>(
             },
             className
           )}
+          style={{backgroundColor: theme.gray_inputTag_background}}
           {...props}
         />
         {error && <span className="text-red-500 text-sm mt-1">{error}</span>}

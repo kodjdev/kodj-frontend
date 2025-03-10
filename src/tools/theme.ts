@@ -38,14 +38,23 @@ const theme = {
   purple_background: "#FAF8FB",
   purple_hover: "#F4EAF6",
 
+  // card related colors
   gray: "#ABABAB",
   gray_dark: "#6B6B6B",
   gray_text: "#888888",
   gray_line: "#C8C8C8",
+  
+  
+  gray_background: "#292929",
+  gray_inputTag_background: "#5B5B5B",
+  gray_label_tag_color: "#969696",
 
   red_text: "#DD616E",
   red_button: "#91313B",
   red_background: "#F9E8E7",
+
+  //primary button background color
+  blue_dark_background: "#057CCC",
 
   green_button: "#23913C",
   green_background: "#A4C2A5",

@@ -6,6 +6,7 @@ import React, { useState } from "react";
 import { SubmitHandler, useFormContext } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
+import theme from "@/tools/theme";
 
 export default function SpeakersRegister() {
   const [formData, setFormData] = useState({
@@ -42,22 +43,25 @@ export default function SpeakersRegister() {
     }));
   };
 
-  const { i18n,t } = useTranslation("speakers" as any);
+  const { i18n, t } = useTranslation("speakers" as any);
 
   const onSubmit: SubmitHandler<SpeakerRegistration> = async (data) => {
     try {
       // we saubmit the data to fireastore
-      const response = await fetch(import.meta.env.VITE_FIREBASE_REGISTER_SPEAKER_FUNCTION_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          ...data,
-          createdAt: new Date().toISOString()
-        }),
-      });
-  
+      const response = await fetch(
+        import.meta.env.VITE_FIREBASE_REGISTER_SPEAKER_FUNCTION_URL,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            ...data,
+            createdAt: new Date().toISOString(),
+          }),
+        }
+      );
+
       if (response.ok) {
         setIsModalOpen(true);
         setFormData({
@@ -99,34 +103,39 @@ export default function SpeakersRegister() {
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-blue-400 mb-4">
             <span className="text-white">{"> "}</span>
-            {
-              i18n.language === 'uz' ? (
-                <>                
-                  <span className="bg-gray-200 px-2">KO'DJ</span>&nbsp;ga&nbsp;
-                  {t("titleStart" )} {t("titleEnd")} 
-                </>
-              ) : (
-                <>
-                  {t("titleStart" )} <span className="bg-gray-200 px-2">KO'DJ</span>{" "}
-                  {t("titleEnd")}
-                </>
-              )
-            }
+            {i18n.language === "uz" ? (
+              <>
+                <span className="bg-gray-200 px-2">KO'DJ</span>&nbsp;ga&nbsp;
+                {t("titleStart")} {t("titleEnd")}
+              </>
+            ) : (
+              <>
+                {t("titleStart")}{" "}
+                <span className="bg-gray-200 px-2">KO'DJ</span> {t("titleEnd")}
+              </>
+            )}
           </h1>
           <p className="text-xl text-gray-300 max-w-3xl mx-auto">
             {t("subtitle")}
           </p>
         </div>
         {/* // form  */}
-        <div className="max-w-3xl mx-auto bg-gray-900 rounded-lg p-8 shadow-lg">
-          <h2 className="text-2xl font-bold text-blue-400 mb-6">
-            {t("applyToSpeak")}
+        <div
+          className="max-w-3xl mx-auto rounded-lg p-8 shadow-lg"
+          style={{ backgroundColor: theme.gray_background }}
+        >
+          <h2 className="text-2xl font-bold text-white mb-6">
+            🔉 {t("applyToSpeak")}
           </h2>
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             <div className="space-y-4">
               <div className="flex flex-col space-y-2 w-full">
-                <label htmlFor="fullName" className="block text-blue-300 mb-2">
+                <label
+                  htmlFor="fullName"
+                  className="block mb-2"
+                  style={{ color: theme.gray_label_tag_color }}
+                >
                   {/* Full Name * */}
                   {t("formFields.fullName")}
                 </label>{" "}
@@ -145,7 +154,11 @@ export default function SpeakersRegister() {
                 />
               </div>
               <div>
-                <label htmlFor="fullName" className="block text-blue-300 mb-2">
+                <label
+                  htmlFor="fullName"
+                  className="block mb-2"
+                  style={{ color: theme.gray_label_tag_color }}
+                >
                   {/* Current Job Position */}
                   {t("formFields.jobPosition")}
                 </label>
@@ -165,7 +178,11 @@ export default function SpeakersRegister() {
               </div>
               {/* <div> */}
               <div className="flex flex-col space-y-2 w-full">
-                <label htmlFor="fullName" className="block text-blue-300 mb-2">
+                <label
+                  htmlFor="fullName"
+                  className="block mb-2"
+                  style={{ color: theme.gray_label_tag_color }}
+                >
                   {/* Phone Number */}
                   {t("formFields.phone")}
                 </label>
@@ -188,7 +205,8 @@ export default function SpeakersRegister() {
                 <div>
                   <label
                     htmlFor="yearsOfExperience"
-                    className="block text-blue-300 mb-2"
+                    className="block  mb-2"
+                    style={{ color: theme.gray_label_tag_color }}
                   >
                     {t("formFields.yearsOfExperience")}
                   </label>
@@ -198,7 +216,8 @@ export default function SpeakersRegister() {
                     value={formData.yearsOfExperience}
                     onChange={handleChange}
                     required
-                    className="w-full bg-gray-800 border border-gray-700 rounded-md py-3 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full border border-gray-700 rounded-md py-3 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    style={{ backgroundColor: theme.gray_inputTag_background }}
                   >
                     <option value="">
                       {t("experienceOptions.selectExperience")}
@@ -224,7 +243,8 @@ export default function SpeakersRegister() {
                 <div>
                   <label
                     htmlFor="formFields.expertiseField"
-                    className="block text-blue-300 mb-2"
+                    className="block mb-2"
+                    style={{ color: theme.gray_label_tag_color }}
                   >
                     {/* Field of Expertise * */}
                     {t("formFields.expertiseField")}
@@ -235,9 +255,12 @@ export default function SpeakersRegister() {
                     value={formData.expertiseField}
                     onChange={handleChange}
                     required
-                    className="w-full bg-gray-800 border border-gray-700 rounded-md py-3 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full border border-gray-700 rounded-md py-3 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    style={{ backgroundColor: theme.gray_inputTag_background }}
                   >
-                    <option value="">{t("expertiseOptions.selectField")}</option>
+                    <option value="">
+                      {t("expertiseOptions.selectField")}
+                    </option>
                     <option value="frontend">Frontend Development</option>
                     <option value="backend">Backend Development</option>
                     <option value="fullstack">Full Stack Development</option>
@@ -254,7 +277,11 @@ export default function SpeakersRegister() {
               </div>
 
               <div>
-                <label htmlFor="topics" className="block text-blue-300 mb-2">
+                <label
+                  htmlFor="topics"
+                  className="block mb-2"
+                  style={{ color: theme.gray_label_tag_color }}
+                >
                   {t("formFields.topics")}
                 </label>
                 <textarea
@@ -264,7 +291,8 @@ export default function SpeakersRegister() {
                   onChange={handleChange}
                   required
                   rows={4}
-                  className="w-full bg-gray-800 border border-gray-700 rounded-md py-3 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full border border-gray-700 rounded-md py-3 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  style={{ backgroundColor: theme.gray_inputTag_background }}
                   placeholder="Please describe specific themes or topics you would like to cover in our meetups"
                 ></textarea>
               </div>
@@ -272,7 +300,8 @@ export default function SpeakersRegister() {
               <div>
                 <label
                   htmlFor="linkedinUrl"
-                  className="block text-blue-300 mb-2"
+                  className="block mb-2"
+                  style={{ color: theme.gray_label_tag_color }}
                 >
                   {t("formFields.linkedinUrl")}
                 </label>
@@ -282,7 +311,8 @@ export default function SpeakersRegister() {
                   name="linkedinUrl"
                   value={formData.linkedinUrl}
                   onChange={handleChange}
-                  className="w-full bg-gray-800 border border-gray-700 rounded-md py-3 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full border border-gray-700 rounded-md py-3 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  style={{ backgroundColor: theme.gray_inputTag_background }}
                   placeholder="https://linkedin.com/in/yourprofile"
                 />
               </div>
@@ -291,7 +321,8 @@ export default function SpeakersRegister() {
                 <div>
                   <label
                     htmlFor="githubUrl"
-                    className="block text-blue-300 mb-2"
+                    className="block mb-2"
+                    style={{ color: theme.gray_label_tag_color }}
                   >
                     {t("formFields.githubUrl")}
                   </label>
@@ -301,7 +332,8 @@ export default function SpeakersRegister() {
                     name="githubUrl"
                     value={formData.githubUrl}
                     onChange={handleChange}
-                    className="w-full bg-gray-800 border border-gray-700 rounded-md py-3 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full border border-gray-700 rounded-md py-3 px-4 focus:outline-none focus:ring-2 focus:ring-blue-900"
+                    style={{ backgroundColor: theme.gray_inputTag_background }}
                     placeholder="https://github.com/yourusername"
                   />
                 </div>
@@ -309,7 +341,8 @@ export default function SpeakersRegister() {
                 <div>
                   <label
                     htmlFor="formFields.portfolioUrl"
-                    className="block text-blue-300 mb-2"
+                    className="block mb-2"
+                    style={{ color: theme.gray_label_tag_color }}
                   >
                     {t("formFields.portfolioUrl")}
                   </label>
@@ -319,7 +352,8 @@ export default function SpeakersRegister() {
                     name="portfolioUrl"
                     value={formData.portfolioUrl}
                     onChange={handleChange}
-                    className="w-full bg-gray-800 border border-gray-700 rounded-md py-3 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full border border-gray-700 rounded-md py-3 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    style={{ backgroundColor: theme.gray_inputTag_background }}
                     placeholder="https://yourportfolio.com"
                   />
                 </div>
@@ -329,7 +363,8 @@ export default function SpeakersRegister() {
             <div className="pt-4">
               <button
                 type="submit"
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-md transition duration-300 transform hover:scale-105"
+                className="w-full hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-md transition duration-300 transform hover:scale-105"
+                style={{ backgroundColor: theme.blue_dark_background }}
               >
                 {/* Submit Application */}
                 {t("formFields.submitButton")}
@@ -338,7 +373,10 @@ export default function SpeakersRegister() {
           </form>
         </div>
 
-        <div className="max-w-3xl mx-auto mt-16 bg-gray-900 rounded-lg p-8 shadow-lg">
+        <div
+          className="max-w-3xl mx-auto mt-16 rounded-lg p-8 shadow-lg"
+          style={{ backgroundColor: theme.gray_background }}
+        >
           <h2 className="text-2xl font-bold text-blue-400 mb-6">
             {t("whyBecomeSpeaker.title")}
           </h2>
@@ -370,12 +408,12 @@ export default function SpeakersRegister() {
               {t("successModal.message")}
             </p>
             <p className="text-gray-600  mt-3 mb-4 text-center">
-            {t("successModal.footer")}
+              {t("successModal.footer")}
             </p>
             <div className="flex justify-center">
               <CustomButton onClick={handleClick}>
                 {t("successModal.button")}
-                </CustomButton>
+              </CustomButton>
             </div>
           </div>
         </Modal>
