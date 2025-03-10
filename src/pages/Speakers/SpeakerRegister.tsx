@@ -163,7 +163,6 @@ export default function SpeakersRegister() {
                     htmlFor="yearsOfExperience"
                     className="block text-blue-300 mb-2"
                   >
-                    {/* Years of Experience * */}
                     {t("formFields.yearsOfExperience")}
                   </label>
                   <select
@@ -229,7 +228,6 @@ export default function SpeakersRegister() {
 
               <div>
                 <label htmlFor="topics" className="block text-blue-300 mb-2">
-                  {/* Topic(s) you would like to cover * */}
                   {t("formFields.topics")}
                 </label>
                 <textarea
@@ -249,7 +247,6 @@ export default function SpeakersRegister() {
                   htmlFor="linkedinUrl"
                   className="block text-blue-300 mb-2"
                 >
-                  {/* LinkedIn Profile URL */}
                   {t("formFields.linkedinUrl")}
                 </label>
                 <input
@@ -269,7 +266,6 @@ export default function SpeakersRegister() {
                     htmlFor="githubUrl"
                     className="block text-blue-300 mb-2"
                   >
-                    {/* GitHub Profile URL */}
                     {t("formFields.githubUrl")}
                   </label>
                   <input
@@ -288,8 +284,7 @@ export default function SpeakersRegister() {
                     htmlFor="formFields.portfolioUrl"
                     className="block text-blue-300 mb-2"
                   >
-                    {/* Portfolio/Website URL */}
-                    {t("portfolioUrl")}
+                    {t("formFields.portfolioUrl")}
                   </label>
                   <input
                     type="url"
