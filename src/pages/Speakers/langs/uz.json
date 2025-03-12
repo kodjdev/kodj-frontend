@@ -45,10 +45,17 @@
     "button": "OK"
   },
   "validation": {
-    "fullNameRequired": "Ism kiritilishi shart",
-    "fullNameMinLength": "To'liq ism kamida 6 ta belgidan iborat bo'lishi kerak",
-    "jobPositionRequired": "Lavozim kiritilishi shart.",
+    "fullNameRequired": "Ism-sharif kiritilishi shart",
+    "fullNameMinLength": "Ism-sharif kamida 6 ta belgidan iborat bo'lishi kerak",
+    "jobPositionRequired": "Lavozimni kiritish majburiy",
     "phoneRequired": "Telefon raqami kiritilishi shart",
-    "phoneFormat": "Telefon raqami formati: 010-1234-5678"
+    "phoneFormat": "Telefon raqami formati: 010-1234-5678",
+    "yearsOfExperienceRequired": "Tajriba yilini tanlash majburiy",
+    "expertiseFieldRequired": "Mutaxassislik sohasini tanlash majburiy",
+    "topicsRequired": "Taqdim etmoqchi bo'lgan mavzularingizni tasvirlab bering",
+    "topicsMinLength": "Mavzu tavsifi kamida 10 ta belgidan iborat bo'lishi kerak",
+    "linkedinUrlFormat": "LinkedIn profil havolasini to'g'ri kiriting",
+    "githubUrlFormat": "GitHub profil havolasini to'g'ri kiriting",
+    "portfolioUrlFormat": "To'g'ri veb-sayt havolasini kiriting"
   }
 }

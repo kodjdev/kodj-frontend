@@ -49,6 +49,15 @@
     "fullNameMinLength": "Full name must be at least 6 characters",
     "jobPositionRequired": "Job position is required field.",
     "phoneRequired": "Phone number is required",
-    "phoneFormat": "Phone number format: 010-1234-5678"
+    "phoneFormat": "Phone number format: 010-1234-5678",
+    "yearsOfExperienceRequired": "Years of experience is required",
+    "expertiseFieldRequired": "Field of expertise is required",
+    "topicsRequired": "Please describe the topics you want to present",
+    "topicsMinLength": "Your topic description should be at least 10 characters",
+    "linkedinUrlFormat": "Please enter a valid LinkedIn profile URL",
+    "githubUrlFormat": "Please enter a valid GitHub profile URL",
+    "portfolioUrlFormat": "Please enter a valid website URL"
   }
 }
+
+

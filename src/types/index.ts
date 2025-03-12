@@ -86,6 +86,7 @@ export interface SpeakerRegistration {
   portfolioUrl: string;
   githubUrl: string;
   linkedinUrl: string;
+  yearsOfExperience: string;
 }
 
 export interface PastEventDetailsProps {

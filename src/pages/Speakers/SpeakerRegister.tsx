@@ -212,6 +212,9 @@ export default function SpeakersRegister() {
                   </label>
                   <select
                     id="yearsOfExperience"
+                    {...register("yearsOfExperience", {
+                      required: t("validation.yearsOfExperienceRequired"),
+                    })}
                     name="yearsOfExperience"
                     value={formData.yearsOfExperience}
                     onChange={handleChange}
@@ -238,6 +241,11 @@ export default function SpeakersRegister() {
                       {t("experienceOptions.moreThanTenYears")}
                     </option>
                   </select>
+                  {errors.yearsOfExperience && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {errors.yearsOfExperience.message}
+                    </p>
+                  )}
                 </div>
 
                 <div>
@@ -251,6 +259,9 @@ export default function SpeakersRegister() {
                   </label>
                   <select
                     id="expertiseField"
+                    {...register("expertiseField", {
+                      required: t("validation.expertiseFieldRequired"),
+                    })}
                     name="expertiseField"
                     value={formData.expertiseField}
                     onChange={handleChange}
@@ -273,6 +284,11 @@ export default function SpeakersRegister() {
                     <option value="gamedev">Game Development</option>
                     <option value="other">Other</option>
                   </select>
+                  {errors.expertiseField && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {errors.expertiseField.message}
+                    </p>
+                  )}
                 </div>
               </div>
 
@@ -286,6 +302,13 @@ export default function SpeakersRegister() {
                 </label>
                 <textarea
                   id="topics"
+                  {...register("topics", {
+                    required: t("validation.topicsRequired"),
+                    minLength: {
+                      value: 10,
+                      message: t("validation.topicsMinLength"),
+                    },
+                  })}
                   name="topics"
                   value={formData.topics}
                   onChange={handleChange}
@@ -295,10 +318,16 @@ export default function SpeakersRegister() {
                   style={{ backgroundColor: theme.gray_inputTag_background }}
                   placeholder="Please describe specific themes or topics you would like to cover in our meetups"
                 ></textarea>
+                {errors.topics && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.topics.message}
+                  </p>
+                )}
               </div>
 
               <div>
                 <label
+                  id="linkedinUrl"
                   htmlFor="linkedinUrl"
                   className="block mb-2"
                   style={{ color: theme.gray_label_tag_color }}
@@ -308,6 +337,13 @@ export default function SpeakersRegister() {
                 <input
                   type="url"
                   id="linkedinUrl"
+                  {...register("linkedinUrl", {
+                    pattern: {
+                      value:
+                        /^https?:\/\/(www\.)?linkedin\.com\/in\/[a-zA-Z0-9_-]+\/?$/,
+                      message: t("validation.linkedinUrlFormat"),
+                    },
+                  })}
                   name="linkedinUrl"
                   value={formData.linkedinUrl}
                   onChange={handleChange}
@@ -315,6 +351,11 @@ export default function SpeakersRegister() {
                   style={{ backgroundColor: theme.gray_inputTag_background }}
                   placeholder="https://linkedin.com/in/yourprofile"
                 />
+                {errors.linkedinUrl && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.linkedinUrl.message}
+                  </p>
+                )}
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -329,6 +370,13 @@ export default function SpeakersRegister() {
                   <input
                     type="url"
                     id="githubUrl"
+                    {...register("githubUrl", {
+                      pattern: {
+                        value:
+                          /^https?:\/\/(www\.)?github\.com\/[a-zA-Z0-9_-]+\/?$/,
+                        message: t("validation.githubUrlFormat"),
+                      },
+                    })}
                     name="githubUrl"
                     value={formData.githubUrl}
                     onChange={handleChange}
@@ -336,6 +384,11 @@ export default function SpeakersRegister() {
                     style={{ backgroundColor: theme.gray_inputTag_background }}
                     placeholder="https://github.com/yourusername"
                   />
+                  {errors.githubUrl && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {errors.githubUrl.message}
+                    </p>
+                  )}
                 </div>
 
                 <div>
@@ -349,6 +402,13 @@ export default function SpeakersRegister() {
                   <input
                     type="url"
                     id="portfolioUrl"
+                    {...register("portfolioUrl", {
+                      pattern: {
+                        value:
+                          /^https?:\/\/(www\.)?[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9]\.[a-zA-Z]{2,}(\/.*)?$/,
+                        message: t("validation.portfolioUrlFormat"),
+                      },
+                    })}
                     name="portfolioUrl"
                     value={formData.portfolioUrl}
                     onChange={handleChange}
@@ -356,6 +416,11 @@ export default function SpeakersRegister() {
                     style={{ backgroundColor: theme.gray_inputTag_background }}
                     placeholder="https://yourportfolio.com"
                   />
+                  {errors.portfolioUrl && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {errors.portfolioUrl.message}
+                    </p>
+                  )}
                 </div>
               </div>
             </div>
