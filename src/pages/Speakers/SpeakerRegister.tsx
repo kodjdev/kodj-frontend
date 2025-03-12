@@ -7,6 +7,7 @@ import { SubmitHandler, useFormContext } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import theme from "@/tools/theme";
+import { Spin } from "antd";
 
 export default function SpeakersRegister() {
   const [formData, setFormData] = useState({
@@ -22,6 +23,7 @@ export default function SpeakersRegister() {
     portfolioUrl: "",
   });
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
   const {
@@ -47,6 +49,7 @@ export default function SpeakersRegister() {
 
   const onSubmit: SubmitHandler<SpeakerRegistration> = async (data) => {
     try {
+      setIsLoading(true);
       // we saubmit the data to fireastore
       const response = await fetch(
         import.meta.env.VITE_FIREBASE_REGISTER_SPEAKER_FUNCTION_URL,
@@ -63,6 +66,7 @@ export default function SpeakersRegister() {
       );
 
       if (response.ok) {
+        setIsLoading(false);
         setIsModalOpen(true);
         setFormData({
           email: "",
@@ -79,6 +83,7 @@ export default function SpeakersRegister() {
       } else {
         let errorMessage = "An error occurred";
         try {
+          setIsLoading(false);
           const errorData = await response.json();
           errorMessage = errorData.message || errorMessage;
         } catch (err) {
@@ -96,6 +101,14 @@ export default function SpeakersRegister() {
     setIsModalOpen(false);
     navigate("/");
   };
+
+  // if (isLoading) {
+  //   return (
+  //     <div className="flex items-center justify-center min-h-screen bg-black bg-opacity-50 text-blue-600 text-md">
+  //       <Spin tip="Wait a little bit" size="large"></Spin>
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="min-h-screen bg-black text-white">
@@ -121,9 +134,18 @@ export default function SpeakersRegister() {
         </div>
         {/* // form  */}
         <div
-          className="max-w-3xl mx-auto rounded-lg p-8 shadow-lg"
+          className="max-w-3xl mx-auto rounded-lg p-8 shadow-lg relative"
           style={{ backgroundColor: theme.gray_background }}
         >
+          {isLoading && (
+            <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-70 z-10 rounded-lg">
+              <Spin
+                tip="Wait a little bit"
+                size="large"
+                className="text-blue-600"
+              />
+            </div>
+          )}
           <h2 className="text-2xl font-bold text-white mb-6">
             🔉 {t("applyToSpeak")}
           </h2>
@@ -334,28 +356,21 @@ export default function SpeakersRegister() {
                 >
                   {t("formFields.linkedinUrl")}
                 </label>
-                <input
-                  type="url"
+                <CustomInput
                   id="linkedinUrl"
+                  placeholder="linkedin.com"
+                  type="linkedin"
+                  error={errors.linkedinUrl?.message}
+                  isValid={watch("linkedinUrl")?.length >= 12}
                   {...register("linkedinUrl", {
+                    required: t("validation.linkedinUrlFormat"),
                     pattern: {
                       value:
                         /^https?:\/\/(www\.)?linkedin\.com\/in\/[a-zA-Z0-9_-]+\/?$/,
                       message: t("validation.linkedinUrlFormat"),
                     },
                   })}
-                  name="linkedinUrl"
-                  value={formData.linkedinUrl}
-                  onChange={handleChange}
-                  className="w-full border border-gray-700 rounded-md py-3 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  style={{ backgroundColor: theme.gray_inputTag_background }}
-                  placeholder="https://linkedin.com/in/yourprofile"
                 />
-                {errors.linkedinUrl && (
-                  <p className="text-red-500 text-sm mt-1">
-                    {errors.linkedinUrl.message}
-                  </p>
-                )}
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -367,28 +382,21 @@ export default function SpeakersRegister() {
                   >
                     {t("formFields.githubUrl")}
                   </label>
-                  <input
-                    type="url"
+                  <CustomInput
                     id="githubUrl"
+                    placeholder="github.com"
+                    type="github"
+                    error={errors.githubUrl?.message}
+                    isValid={watch("githubUrl")?.length >= 12}
                     {...register("githubUrl", {
+                      required: t("validation.githubUrlFormat"),
                       pattern: {
                         value:
                           /^https?:\/\/(www\.)?github\.com\/[a-zA-Z0-9_-]+\/?$/,
                         message: t("validation.githubUrlFormat"),
                       },
                     })}
-                    name="githubUrl"
-                    value={formData.githubUrl}
-                    onChange={handleChange}
-                    className="w-full border border-gray-700 rounded-md py-3 px-4 focus:outline-none focus:ring-2 focus:ring-blue-900"
-                    style={{ backgroundColor: theme.gray_inputTag_background }}
-                    placeholder="https://github.com/yourusername"
                   />
-                  {errors.githubUrl && (
-                    <p className="text-red-500 text-sm mt-1">
-                      {errors.githubUrl.message}
-                    </p>
-                  )}
                 </div>
 
                 <div>
@@ -399,28 +407,21 @@ export default function SpeakersRegister() {
                   >
                     {t("formFields.portfolioUrl")}
                   </label>
-                  <input
-                    type="url"
+                  <CustomInput
                     id="portfolioUrl"
+                    placeholder="portfolio.com"
+                    type="portfolio"
+                    error={errors.portfolioUrl?.message}
+                    isValid={watch("portfolioUrl")?.length >= 12}
                     {...register("portfolioUrl", {
+                      required: t("validation.portfolioUrlFormat"),
                       pattern: {
                         value:
                           /^https?:\/\/(www\.)?[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9]\.[a-zA-Z]{2,}(\/.*)?$/,
                         message: t("validation.portfolioUrlFormat"),
                       },
                     })}
-                    name="portfolioUrl"
-                    value={formData.portfolioUrl}
-                    onChange={handleChange}
-                    className="w-full border border-gray-700 rounded-md py-3 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    style={{ backgroundColor: theme.gray_inputTag_background }}
-                    placeholder="https://yourportfolio.com"
                   />
-                  {errors.portfolioUrl && (
-                    <p className="text-red-500 text-sm mt-1">
-                      {errors.portfolioUrl.message}
-                    </p>
-                  )}
                 </div>
               </div>
             </div>
