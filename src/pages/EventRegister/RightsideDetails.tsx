@@ -1,7 +1,7 @@
 import React from "react";
 import KakaoMap from "@/components/KakaoMap";
 
-interface RightsideDetailsProps {
+interface RightSideDetailsProps {
   imageSource: string;
   title: string;
   formattedDate: string;
@@ -10,7 +10,7 @@ interface RightsideDetailsProps {
   eventRoom: string;
 }
 
-const RightsideDetails: React.FC<RightsideDetailsProps> = ({
+const RightSideDetails: React.FC<RightSideDetailsProps> = ({
   imageSource,
   title,
   formattedDate,
@@ -19,8 +19,8 @@ const RightsideDetails: React.FC<RightsideDetailsProps> = ({
   eventRoom,
 }) => {
   return (
-    <div className="w-full md:w-1/2 p-6 bg-opacity-80">
-      <div className="w-full max-w-md p-8 bg-gradient-to-r from-gray-900 to-gray-800 rounded-lg shadow-lg">
+    <div className="w-full md:w-1/2 bg-opacity-80 max-w-lg">
+      <div className="w-full max-w-md p-8 bg-gradient-to-r from-gray-900 to-gray-800 rounded-xl shadow-2xl border border-gray-700 overflow-hidden hover:shadow-blue-900/20 transition-all duration-300">
         <img
           src={imageSource}
           alt={title}
@@ -55,10 +55,10 @@ const RightsideDetails: React.FC<RightsideDetailsProps> = ({
           </div>
           <div className="flex flex-col">
             <strong className="text-blue-400 mb-1">Location:</strong>
-            <p className="text-sm text-gray-300 font-bold mb-2">
+            <p className="text-sm text-gray-300 font-bold mb-1">
               {eventLocation}
             </p>
-            <p className="text-sm text-gray-500 mb-4">{eventRoom}</p>
+            <p className="text-sm text-gray-500">{eventRoom}</p>
           </div>
         </div>
       </div>
@@ -66,4 +66,4 @@ const RightsideDetails: React.FC<RightsideDetailsProps> = ({
   );
 };
 
-export default RightsideDetails;
+export default RightSideDetails;

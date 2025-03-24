@@ -7,6 +7,20 @@ import enNavbar from './en/about.json';
 import uzNavbar from './uz/about.json';
 import enSpeakers from '../pages/Speakers/langs/en.json';
 import uzSpeakers from '../pages/Speakers/langs/uz.json';
+import enEventRegister from '../pages/EventRegister/langs/en.json';
+import uzEventRegister from '../pages/EventRegister/langs/uz.json';
+
+declare module 'i18next' {
+  interface CustomTypeOptions {
+    defaultNS: 'about';
+    resources: {
+      navbar: typeof enNavbar;
+      about: typeof enNavbar;
+      eventRegister: typeof enEventRegister;
+      speakers: typeof enSpeakers;
+    };
+  }
+}
 
 /**
  * {@link https://www.i18next.com/overview/configuration-options}
@@ -20,6 +34,7 @@ i18n
       en: {
         navbar: enNavbar,
         about: enNavbar,
+        eventRegister: enEventRegister,
         // events: enEvents,
         // news: enNews,
         speakers: enSpeakers
@@ -27,6 +42,7 @@ i18n
       uz: {
         navbar: uzNavbar,
         about: uzNavbar,
+        eventRegister: uzEventRegister,
         // aboutUs: enAboutUs,
         // events: enEvents,
         // news: enNews,
@@ -37,7 +53,7 @@ i18n
     interpolation: {
       escapeValue: false,
     },
-    ns: ['about','navbar', 'speakers'],
+    ns: ['about','navbar', 'speakers', 'eventRegister'],
     defaultNS: 'about',
     detection: {
       order: ['localStorage', 'navigator'],

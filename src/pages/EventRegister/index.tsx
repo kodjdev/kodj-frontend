@@ -1,10 +1,10 @@
+import React, { useEffect, useState } from "react";
 import { FormProvider, useForm, SubmitHandler } from "react-hook-form";
 import { EventForm } from "./EventForm/EventForm";
 import { CustomButton } from "@/components/Button/CustomButton";
 import { FaArrowUpRightFromSquare } from "react-icons/fa6";
 import type { FormattedDateTime, RegistrationFormData } from "@/types";
 import Step from "@/components/ui/step";
-import { useEffect, useState } from "react";
 import { useAuth } from "@/context/useAuth";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { message } from "antd";
@@ -12,13 +12,43 @@ import { getAuth } from "firebase/auth";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import { db } from "@/firebase/firebaseConfig";
 import Modal from "@/components/ui/modal";
-import RightsideDetails from "./RightsideDetails";
-import { BackButton } from "@/components/Button/BackButton";
+import RightSideDetails from "./RightsideDetails";
+import { useTranslation } from "react-i18next";
 
 type FirstStepFields = Pick<
   RegistrationFormData,
-  "firstname" | "lastname" | "jobTitle" | "experience" | "email" | "phone"
+  "firstName" | "lastName" | "jobTitle" | "experience" | "email" | "phone"
 >;
+
+const formatDate = (
+  firebaseDate: { seconds: number; nanoseconds: number } | string
+): FormattedDateTime => {
+  if (typeof firebaseDate === "string") {
+    return {
+      date: "No date found",
+      time: "No time found",
+    };
+  }
+
+  const date = new Date(firebaseDate.seconds * 1000);
+
+  const formattedDate = date.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+
+  const formattedTime = date.toLocaleTimeString("en-US", {
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true,
+  });
+
+  return {
+    date: formattedDate,
+    time: formattedTime,
+  };
+};
 
 export default function EventRegister() {
   const [step, setStep] = useState(1);
@@ -30,12 +60,14 @@ export default function EventRegister() {
   const { user, loading: authLoading } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const { t } = useTranslation("eventRegister");
+
   const methods = useForm<RegistrationFormData>({
-    mode: "onTouched",
-    reValidateMode: "onSubmit",
+    mode: "onChange",
+    reValidateMode: "onChange",
     defaultValues: {
-      firstname: "",
-      lastname: "",
+      firstName: "",
+      lastName: "",
       email: "",
       phone: "",
       jobTitle: "",
@@ -73,13 +105,7 @@ export default function EventRegister() {
   const imageSource = state?.imageUrl || "/pastEvents/past1.jpeg";
   const organizer = state?.author || "KO'DJ";
 
-  const {
-    handleSubmit,
-    watch,
-    trigger,
-    reset,
-    formState: { errors },
-  } = methods;
+  const { handleSubmit, trigger, reset } = methods;
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -170,8 +196,8 @@ export default function EventRegister() {
 
     if (step === 1) {
       const fieldsToValidate: (keyof FirstStepFields)[] = [
-        "firstname",
-        "lastname",
+        "firstName",
+        "lastName",
         "jobTitle",
         "experience",
         "email",
@@ -182,67 +208,16 @@ export default function EventRegister() {
         shouldFocus: true,
       });
 
+      fieldsToValidate.forEach((field) => {
+        trigger(field);
+      });
+
       if (!isStepValid) {
-        fieldsToValidate.forEach(async (field) => {
-          await trigger(field);
-        });
         return;
       }
     }
 
     if (step < 2) setStep(step + 1);
-  };
-
-  const isStepOneValid = () => {
-    const firstname = watch("firstname");
-    const lastname = watch("lastname");
-    const jobTitle = watch("jobTitle");
-    const experience = watch("experience");
-    const email = watch("email");
-    const phone = watch("phone");
-
-    return (
-      firstname &&
-      firstname.length >= 2 &&
-      lastname &&
-      jobTitle &&
-      experience &&
-      email &&
-      /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(email) &&
-      phone &&
-      /^\d{3}-\d{4}-\d{4}$/.test(phone) &&
-      Object.keys(errors).length === 0
-    );
-  };
-
-  const formatDate = (
-    firebaseDate: { seconds: number; nanoseconds: number } | string
-  ): FormattedDateTime => {
-    if (typeof firebaseDate === "string") {
-      return {
-        date: "No date found",
-        time: "No time found",
-      };
-    }
-
-    const date = new Date(firebaseDate.seconds * 1000);
-
-    const formattedDate = date.toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
-
-    const formattedTime = date.toLocaleTimeString("en-US", {
-      hour: "numeric",
-      minute: "2-digit",
-      hour12: true,
-    });
-
-    return {
-      date: formattedDate,
-      time: formattedTime,
-    };
   };
 
   const { date: formattedDate } = formatDate(
@@ -254,15 +229,21 @@ export default function EventRegister() {
       {contextHolder}
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="pt-2 pl-4 sm:pl-10">
-            <BackButton size="md" onClick={() => console.log("going back")} />
-          </div>
-          <div className="flex flex-col md:flex-row min-h-screen w-full sm:p-8 rounded-lg text-gray-300 shadow-lg space-y-1 md:space-y-0">
-            <div className="w-full md:w-1/2 p-6 bg-opacity-80">
-              <div className="w-full bg-gradient-to-r from-gray-800 to-gray-900 rounded-lg shadow-lg">
+          <div className="flex flex-col md:flex-row justify-center items-center max-w-7xl mx-auto gap-6 py-10 px-4 min-h-[80vh] w-full rounded-lg text-gray-300 space-y-4 md:space-y-0">
+            <div className="w-full md:w-1/2 bg-opacity-80 max-w-lg">
+              <div className="w-full bg-gradient-to-r from-gray-800 to-gray-900 rounded-xl shadow-2xl border border-gray-700 overflow-hidden hover:shadow-blue-900/20 transition-all duration-300">
                 <div className="flex justify-between rounded p-8">
-                  <Step step={1} currentStep={step} />
-                  <Step step={2} currentStep={step} />
+                  <div className="flex items-center justify-between w-full">
+                    <Step step={1} currentStep={step} />
+                    <div className="flex-1 mx-2">
+                      <div
+                        className={`h-1 ${
+                          step > 1 ? "bg-blue-500" : "bg-gray-700"
+                        }`}
+                      />
+                    </div>
+                    <Step step={2} currentStep={step} />
+                  </div>
                 </div>
 
                 <div className="space-y-4 px-8 py-6">
@@ -288,10 +269,7 @@ export default function EventRegister() {
                         {isSubmitting ? "Submitting" : "Register"}
                       </CustomButton>
                     ) : (
-                      <CustomButton
-                        onClick={handleNext}
-                        disabled={!isStepOneValid()}
-                      >
+                      <CustomButton type="button" onClick={handleNext}>
                         Continue
                       </CustomButton>
                     )}
@@ -299,8 +277,7 @@ export default function EventRegister() {
                 </div>
               </div>
             </div>
-            {/* // this is the right side of the event resgiter form preview */}
-            <RightsideDetails
+            <RightSideDetails
               imageSource={imageSource}
               title={title}
               formattedDate={formattedDate}
@@ -310,27 +287,27 @@ export default function EventRegister() {
             />
           </div>
         </form>
-        {isModalOpen && (
-          <Modal onClose={() => setIsModalOpen(false)}>
-            <div className="p-8 bg-gray-800 rounded-lg text-gray-200">
-              <h2 className="text-2xl font-bold text-blue-400 mb-4">
-                Registration Successful
-              </h2>
-              <p className="text-gray-400">
-                Your registration for{" "}
-                <strong>{methods.getValues("eventDetails.title")}</strong> has
-                been submitted successfully.
-              </p>
-              <p className="text-gray-600 mb-6 text-center">
-                We look forward to seeing you at the event.
-              </p>
-              <div className="flex justify-center">
-                <CustomButton onClick={handleClick}>OK</CustomButton>
-              </div>
-            </div>
-          </Modal>
-        )}
       </FormProvider>
+      {isModalOpen && (
+        <Modal onClose={() => setIsModalOpen(false)}>
+          <div className="p-8 bg-gray-800 rounded-lg text-gray-200">
+            <h2 className="text-2xl font-bold text-blue-400 mb-4">
+              {t("successModal.title")}
+            </h2>
+            <p className="text-gray-400">
+              {t("successModal.message", {
+                title: methods.getValues("eventDetails.title"),
+              })}
+            </p>
+            <p className="text-gray-600 mb-6 text-center">
+              {t("successModal.footer")}
+            </p>
+            <div className="flex justify-center">
+              <CustomButton onClick={handleClick}>OK</CustomButton>
+            </div>
+          </div>
+        </Modal>
+      )}
     </>
   );
 }

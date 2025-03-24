@@ -3,9 +3,6 @@ import { collection, getDocs, limit, orderBy, query } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-const targetDate = new Date("2025-01-18T01:30:00Z");
-const eventName = "Uchrashuv N5";
-
 function formatTime(value: number) {
   return value < 10 ? `0${value}` : value.toString();
 }

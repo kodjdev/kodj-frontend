@@ -1,7 +1,8 @@
-import { Label } from "@/components/Label";
 import { useFormContext } from "react-hook-form";
 import type { RegistrationFormData } from "@/types";
 import { CustomInput } from "@/components/Input/CustomInput";
+import { FormLabel } from "@/components/FormLabel";
+import { useTranslation } from "react-i18next";
 
 export const StepOneForm = () => {
   const {
@@ -10,37 +11,48 @@ export const StepOneForm = () => {
     watch,
   } = useFormContext<RegistrationFormData>();
 
+  const { t } = useTranslation('eventRegister') ;
+
   return (
-    <div className="space-y-4">
+    <div className="space-y-3.5">
       <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2">
         <div className="flex flex-col space-y-2 w-full">
-          <Label className="text-gray-400 font-semibold">First name</Label>
+          {/* <Label className="text-gray-400 font-semibold">First name</Label> */}
+          <FormLabel
+            id="firstName"
+            htmlFor="firstName"
+            labelText={t("formFields.firstName")}
+          />
           <CustomInput
-            id="firstname"
-            placeholder="Boltavoy"
-            error={errors.firstname?.message}
-            isValid={watch("firstname")?.length >= 4}
-            {...register("firstname", {
-              required: "First name is required",
+            id="firsName"
+            placeholder="Aziz"
+            error={errors.firstName?.message}
+            isValid={watch("firstName")?.length >= 4}
+            {...register("firstName", {
+              required: t("validation.firstNameRequired"),
               minLength: {
                 value: 2,
-                message: "First name must be at least 2 characters",
+                message: t("validation.firstNameMinLength"),
               },
             })}
           />
         </div>
         <div className="flex flex-col space-y-2 w-full">
-          <Label className="text-gray-400 font-semibold">Last name</Label>
+          <FormLabel
+            id="lastName"
+            htmlFor="lastName"
+            labelText={t("formFields.lastName")}
+          />
           <CustomInput
-            id="lastname"
-            placeholder="Teshaboev"
-            error={errors.lastname?.message}
-            isValid={watch("lastname")?.length >= 4}
-            {...register("lastname", {
-              required: "Last name is required",
+            id="lastName"
+            placeholder="Botirov"
+            error={errors.lastName?.message}
+            isValid={watch("lastName")?.length >= 4}
+            {...register("lastName", {
+              required: t("validation.lastNameRequired"),
               minLength: {
                 value: 4,
-                message: "Last name must be at least 4 characters",
+                message: t("validation.lastNameMinLength"),
               },
             })}
           />
@@ -48,40 +60,52 @@ export const StepOneForm = () => {
       </div>
 
       <div className="flex flex-col space-y-2 w-full">
-        <Label className="text-gray-400 font-semibold">Job Title</Label>
+        <FormLabel
+          id="jobTitle"
+          htmlFor="jobTitle"
+          labelText={t("formFields.jobTitle")}
+        />
         <CustomInput
           id="jobTitle"
           placeholder="Developer | Student | Researcher"
           error={errors.jobTitle?.message}
           isValid={watch("jobTitle")?.length >= 4}
           {...register("jobTitle", {
-            required: "Job title is required",
+            required: t("validation.jobTitleRequired"),
             minLength: {
               value: 4,
-              message: "Job Title must be at least 4 characters",
+              message: t("validation.jobTitleMinLength"),
             },
           })}
         />
       </div>
       <div className="flex flex-col space-y-2 w-full">
-        <Label className="text-gray-400 font-semibold">Experience</Label>
+        <FormLabel
+          id="experience"
+          htmlFor="experience"
+          labelText={t("formFields.experience")}
+        />
         <CustomInput
           id="experience"
           placeholder="2 years"
           isValid={watch("experience")?.length >= 1}
           error={errors.experience?.message}
           {...register("experience", {
-            required: "Experience is required",
+            required: t("validation.experienceRequired"),
             minLength: {
               value: 2,
-              message: "Experience must be at least 2 characters",
+              message: t("validation.experienceMinLength"),
             },
           })}
         />
       </div>
 
       <div className="flex flex-col space-y-2 w-full">
-        <Label className="text-gray-400 font-semibold">Email Address</Label>
+        <FormLabel
+          id="email"
+          htmlFor="email"
+          labelText={t("formFields.email")}
+        />
         <CustomInput
           id="email"
           placeholder="teshaboev@gmail.com"
@@ -89,17 +113,21 @@ export const StepOneForm = () => {
           error={errors.email?.message}
           isValid={watch("email")?.length >= 6}
           {...register("email", {
-            required: "Email is required",
+            required: t("validation.emailRequired"),
             pattern: {
               value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-              message: "Invalid email address",
+              message: t("validation.emailInvalid"),
             },
           })}
         />
       </div>
 
       <div className="flex flex-col space-y-2 w-full">
-        <Label className="text-gray-400 font-semibold">Phone Number</Label>
+        <FormLabel
+          id="phone"
+          htmlFor="phone"
+          labelText={t("formFields.phone")}
+        />
         <CustomInput
           id="phone"
           placeholder="010-1234-5678"
@@ -107,10 +135,10 @@ export const StepOneForm = () => {
           error={errors.phone?.message}
           isValid={watch("phone")?.length >= 12}
           {...register("phone", {
-            required: "Phone number is required",
+            required: t("validation.phoneRequired"),
             pattern: {
               value: /^\d{3}-\d{4}-\d{4}$/,
-              message: "Phone number format: 010-1234-5678",
+              message: t("validation.phoneInvalid"),
             },
           })}
         />

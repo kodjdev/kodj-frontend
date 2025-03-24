@@ -1,14 +1,9 @@
-import { Label } from "@/components/Label";
 import { useFormContext, Controller } from "react-hook-form";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import type { RegistrationFormData } from "@/types";
-import { CustomRadio } from "@/components/Button/CustomRadio";
+import { useTranslation } from "react-i18next";
+import theme from "@/tools/theme";
+import { SelectField } from "@/components/Form/SelectFields";
+import { FormField } from "@/components/Form/FormField";
 
 export const StepTwoForm = () => {
   const {
@@ -17,18 +12,14 @@ export const StepTwoForm = () => {
     formState: { errors },
   } = useFormContext<RegistrationFormData>();
 
+  const { t } = useTranslation("eventRegister");
+
   const validateMinLength = (value: string) => {
-    return (
-      value.trim().length >= 15 ||
-      "Please provide at least 15 characters of meaningful answer."
-    );
+    return value.trim().length >= 15 || t("validation.additionalInfoMinLength");
   };
 
   const validateNotJustWhitespace = (value: string) => {
-    return (
-      /\S/.test(value) ||
-      "Your answer can not be just empty or contain only space!"
-    );
+    return /\S/.test(value) || t("validation.additionalInfoNoEmptySpace");
   };
 
   const validateNotRepeatedChars = (value: string) => {
@@ -36,167 +27,116 @@ export const StepTwoForm = () => {
     const uniqueChars = new Set(trimmed.split("")).size;
     return (
       uniqueChars >= Math.max(3, Math.floor(trimmed.length * 0.3)) ||
-      "Please provide a meaningful response, not repeated characters"
+      t("validation.additionalInfoMeaningful")
     );
   };
 
+  const fieldOptions = [
+    { value: "ai", label: t("fieldOptions.ai") },
+    { value: "backend", label: t("fieldOptions.backend") },
+    { value: "frontend", label: t("fieldOptions.frontend") },
+    { value: "UI", label: t("fieldOptions.UI") },
+    { value: "mobile", label: t("fieldOptions.mobile") },
+    { value: "cloud", label: t("fieldOptions.cloud") },
+    { value: "cyber", label: t("fieldOptions.cyber") },
+    { value: "block", label: t("fieldOptions.block") },
+    { value: "game", label: t("fieldOptions.game") },
+    { value: "data", label: t("fieldOptions.data") },
+    { value: "web", label: t("fieldOptions.web") },
+    { value: "devops", label: t("fieldOptions.devops") },
+  ];
+
+  const attendanceOptions = [
+    { value: "first-time", label: t("formFields.firstTime") },
+    { value: "several-times", label: t("formFields.severalTimes") },
+  ];
+
+  const hopeOptions = [
+    { value: "networking", label: t("formFields.networking") },
+    { value: "learning", label: t("formFields.learning") },
+    { value: "jobOpportunities", label: t("formFields.jobOpportunities") },
+    { value: "others", label: t("formFields.others") },
+  ];
+
   return (
-    <div className="space-y-4">
-      <div className="flex flex-col space-y-2 w-full">
-        <Label htmlFor="notify" className="text-gray-400 font-semibold">
-          Have you been to our event(s) before?
-        </Label>
-        <Controller
-          control={control}
-          name="notify"
-          rules={{ required: "Please select an option" }}
-          render={({ field: { onChange, value } }) => (
-            <div className="space-y-3">
-              <div className="flex items-center space-x-2">
-                <CustomRadio
-                  type="radio"
-                  id="first-time"
-                  value="first-time"
-                  checked={value === "first-time"}
-                  onChange={() => onChange("first-time")}
-                  //   label="First Time"
-                />
-                <Label htmlFor="first-time" className="text-gray-200">
-                  First time
-                </Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <CustomRadio
-                  type="radio"
-                  id="several-times"
-                  value="several-times"
-                  checked={value === "several-times"}
-                  onChange={() => onChange("several-times")}
-                  //   label="No, I have before (several times)"
-                />
-                <Label htmlFor="several-times" className="text-gray-200">
-                  No, I have before (several times)
-                </Label>
-              </div>
-            </div>
-          )}
-        />
-        {errors.notify && (
-          <span className="text-red-500 text-sm">{errors.notify.message}</span>
-        )}
-      </div>
-
-      <div className="flex flex-col space-y-2 w-full">
-        <Label className="text-gray-400 font-semibold">
-          Fields of Interest
-        </Label>
-        <Controller
-          control={control}
-          name="interestedField"
-          rules={{ required: "Please select an option" }}
-          render={({ field }) => (
-            <Select
+    <div className="space-y-3.5">
+      <Controller
+        control={control}
+        name="notify"
+        rules={{ required: t("validation.notifyRequired") }}
+        render={({ field, fieldState: { error } }) => (
+          <FormField
+            id="notify"
+            label={t("formFields.attendedBefore")}
+            required
+            error={error?.message}
+          >
+            <SelectField
               value={field.value}
-              onValueChange={(selected) => field.onChange(selected)}
-            >
-              <SelectTrigger className="w-full bg-gray-800">
-                <SelectValue placeholder="Select field" />
-              </SelectTrigger>
-              <SelectContent className="bg-gray-800">
-                <SelectItem value="ai" className="text-white">
-                  AI & ML
-                </SelectItem>
-                <SelectItem value="backend" className="text-white">
-                  Backend Development
-                </SelectItem>
-                <SelectItem value="frontend" className="text-white">
-                  Frontend Development
-                </SelectItem>
-                <SelectItem value="UI" className="text-white">
-                  UI/UX Design
-                </SelectItem>
-                <SelectItem value="mobile" className="text-white">
-                  Mobile Development
-                </SelectItem>
-                <SelectItem value="cloud" className="text-white">
-                  Cloud Computing
-                </SelectItem>
-                <SelectItem value="cyber" className="text-white">
-                  Cybersecurity
-                </SelectItem>
-                <SelectItem value="block" className="text-white">
-                  Blockchain
-                </SelectItem>
-                <SelectItem value="game" className="text-white">
-                  Game Development
-                </SelectItem>
-                <SelectItem value="data" className="text-white">
-                  Data Science
-                </SelectItem>
-                <SelectItem value="web" className="text-white">
-                  Web Development
-                </SelectItem>
-                <SelectItem value="devops" className="text-white">
-                  DevOps
-                </SelectItem>
-              </SelectContent>
-            </Select>
-          )}
-        />
-        {errors.interestedField && (
-          <span className="text-red-500 text-sm">
-            {errors.interestedField.message}
-          </span>
+              onChange={(value) => field.onChange(value)}
+              options={attendanceOptions}
+              placeholder={t("fieldOptions.selectField")}
+            />
+          </FormField>
         )}
-      </div>
+      />
 
-      <div className="flex flex-col space-y-2 w-full">
-        <Label className="text-gray-400 font-semibold">
-          What do you hope to gain from attending?
-        </Label>
-        <Controller
-          control={control}
-          name="hopes"
-          rules={{ required: "Please select an option" }}
-          render={({ field: { onChange, value } }) => (
-            <div className="space-y-3">
-              {["networking", "learning", "jobOpportunities", "others"].map(
-                (option) => (
-                  <div key={option} className="flex items-center space-x-2">
-                    <CustomRadio
-                      type="radio"
-                      id={option}
-                      value={option}
-                      checked={value === option}
-                      onChange={() => onChange(option)}
-                    />
-                    <Label htmlFor={option} className="text-gray-200">
-                      {option === "jobOpportunities"
-                        ? "Job opportunities"
-                        : option.charAt(0).toUpperCase() + option.slice(1)}
-                    </Label>
-                  </div>
-                )
-              )}
-            </div>
-          )}
-        />
-        {errors.hopes && (
-          <span className="text-red-500 text-sm">{errors.hopes.message}</span>
+      <Controller
+        control={control}
+        name="interestedField"
+        rules={{ required: t("validation.interestedFieldRequired") }}
+        render={({ field, fieldState: { error } }) => (
+          <FormField
+            id="interestedField"
+            label={t("formFields.interestedField")}
+            required
+            error={error?.message}
+          >
+            <SelectField
+              value={field.value}
+              onChange={(value) => field.onChange(value)}
+              options={fieldOptions}
+              placeholder={t("fieldOptions.selectField")}
+            />
+          </FormField>
         )}
-      </div>
+      />
 
-      <div className="flex flex-col space-y-2 w-full">
-        <Label htmlFor="additionalInfo" className="text-gray-400 font-semibold">
-          What are you looking forward to the most?
-        </Label>
+      <Controller
+        control={control}
+        name="hopes"
+        rules={{ required: t("validation.hopesRequired") }}
+        render={({ field, fieldState: { error } }) => (
+          <FormField
+            id="hopes"
+            label={t("formFields.hopes")}
+            required
+            error={error?.message}
+          >
+            <SelectField
+              value={field.value}
+              onChange={(value) => field.onChange(value)}
+              options={hopeOptions}
+              placeholder={t("fieldOptions.selectField")}
+            />
+          </FormField>
+        )}
+      />
+
+      <FormField
+        id="additionalInfo"
+        label={t("formFields.additionalInfo")}
+        required
+        error={errors.additionalInfo?.message}
+      >
         <textarea
-          placeholder="Please your purpose of attending the event"
           id="additionalInfo"
-          rows={2}
-          className="w-full px-4 py-2 rounded-md border border-gray-100 focus:outline-none text-white bg-gray-800"
+          rows={4}
+          placeholder={t("formFields.additionalInfoPlaceholder")}
+          className="w-full px-4 py-3 rounded-md border-0 focus:ring-2 focus:ring-blue-500 text-gray-200"
+          style={{ backgroundColor: theme.gray_inputTag_background }}
           {...register("additionalInfo", {
-            required: "Please write your short answer here",
+            required: t("validation.additionalInfoRequired"),
             validate: {
               minLength: validateMinLength,
               notJustWhitespace: validateNotJustWhitespace,
@@ -204,43 +144,36 @@ export const StepTwoForm = () => {
             },
           })}
         />
-        {errors.additionalInfo && (
-          <span className="text-red-500 text-sm">
-            {errors.additionalInfo.message}
-          </span>
-        )}
-      </div>
+      </FormField>
 
-      <div className="flex flex-col space-y-2 w-full">
-        <Controller
-          control={control}
-          name="consent"
-          defaultValue={false}
-          rules={{ required: "You must agree to proceed" }}
-          render={({ field: { onChange, value } }) => (
-            <div className="flex items-start bg-gray-700 p-4 border-gray-500 rounded">
-              <CustomRadio
-                type="checkbox"
-                id="consent"
-                checked={value}
-                onChange={(e) => onChange(e.target.checked)}
-                className="form-checkbox h-6 w-6 text-blue-400 border-gray-300 rounded focus:ring-blue-500 inline-block mr-2 mt-1"
-                // label="I understand that my information will be used for event registration purposes only."
-              />
-              <Label
-                htmlFor="consent"
-                className="text-gray-500 ml-2 mt-1 text-ms leading-tight"
-              >
-                I understand that my information will be used for event
-                registration purposes only.
-              </Label>
+      <Controller
+        control={control}
+        name="consent"
+        defaultValue={false}
+        rules={{ required: t("validation.consentRequired") }}
+        render={({ field: { onChange, value }, fieldState: { error } }) => (
+          <>
+            <div className="bg-gray-800 bg-opacity-60 p-2 rounded-md border border-gray-700">
+              <label className="flex items-start">
+                <input
+                  type="checkbox"
+                  checked={value}
+                  onChange={(e) => onChange(e.target.checked)}
+                  className="mt-1 mr-3 h-5 w-5 text-blue-500 rounded border-gray-400 focus:ring-blue-500"
+                />
+                <span>
+                  <span className="text-gray-300 text-sm">
+                    {t("formFields.consent")}
+                  </span>
+                </span>
+              </label>
             </div>
-          )}
-        />
-        {errors.consent && (
-          <span className="text-red-500 text-sm">{errors.consent.message}</span>
+            {error && (
+              <p className="mt-2 text-sm text-red-500">{error.message}</p>
+            )}
+          </>
         )}
-      </div>
+      />
     </div>
   );
 };

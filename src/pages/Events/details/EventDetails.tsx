@@ -188,106 +188,108 @@ export default function EventDetails() {
           <BackButton size="md" onClick={() => console.log("went back")} />
         </div>
         {event.imageUrls?.length === 1 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-3 flex flex-col items-start justify-start  gap-4 mb-4">
-            <div className="col-span-2 flex flex-col gap-4">
-              <div
-                className="col-span-3 relative h-72 sm:h-[500px] cursor-pointer overflow-hidden rounded-[8px] border border-[#505050]"
-                onClick={() => openGallery(0)}
-              >
-                <img
-                  src={event.imageUrls[0]}
-                  alt={event.title}
-                  className="rounded-lg shadow-lg w-full h-full object-cover"
-                />
+          <>
+            <div className="grid grid-cols-1 sm:grid-cols-3 flex flex-col items-start justify-start  gap-4 mb-4">
+              <div className="col-span-2 flex flex-col gap-4">
+                <div
+                  className="col-span-3 relative h-72 sm:h-[500px] cursor-pointer overflow-hidden rounded-[8px] border border-[#505050]"
+                  onClick={() => openGallery(0)}
+                >
+                  <img
+                    src={event.imageUrls[0]}
+                    alt={event.title}
+                    className="rounded-lg shadow-lg w-full h-full object-cover"
+                  />
+                </div>
               </div>
-            </div>
-            <div className="col-span-1 flex flex-col items-start justify-start gap-2 p-5 sm:p-[22px] w-full h-full rounded-[8px] border border-[#505050] bg-[#141414] overflow-hidden">
-              <div className="mb-6 flex-grow">
-                <h1 className="text-3xl text-blue-600 font-bold mt-1">
-                  {event.title}
-                </h1>
-                <p>
-                  <strong>By: {event.author}</strong>
-                </p>
-              </div>
-              <div className="text-blue-100 w-full">
-                <div className="mb-2 font-bold w-full">
-                  <p className="mb-2 flex items-center">
-                    <FaCalendarAlt className="inline-block mr-3 mb-1" />
-                    {formattedDate}
-                    <button
-                      onClick={handleAddToCalendar}
-                      className="inline-block ml-2 mb-1 text-lg text-blue-600 hover:text-blue-200 py-1 px-2 rounded-full"
-                      aria-label="Add to Calendar"
+              <div className="col-span-1 flex flex-col items-start justify-start gap-2 p-5 sm:p-[22px] w-full h-full rounded-[8px] border border-[#505050] bg-[#141414] overflow-hidden">
+                <div className="mb-6 flex-grow">
+                  <h1 className="text-3xl text-blue-600 font-bold mt-1">
+                    {event.title}
+                  </h1>
+                  <p>
+                    <strong>By: {event.author}</strong>
+                  </p>
+                </div>
+                <div className="text-blue-100 w-full">
+                  <div className="mb-2 font-bold w-full">
+                    <p className="mb-2 flex items-center">
+                      <FaCalendarAlt className="inline-block mr-3 mb-1" />
+                      {formattedDate}
+                      <button
+                        onClick={handleAddToCalendar}
+                        className="inline-block ml-2 mb-1 text-lg text-blue-600 hover:text-blue-200 py-1 px-2 rounded-full"
+                        aria-label="Add to Calendar"
+                      >
+                        <BsArrowUpRightCircle />
+                      </button>
+                    </p>
+                    <p className="flex items-center mb-2">
+                      <BsPeopleFill className="inline-block mr-3 mb-1" />
+                      <strong>{event.seats}</strong>
+                    </p>
+                    <p className="flex items-center mb-2">
+                      <FaBowlFood className="inline-block mr-3 mb-1" />
+                      <strong>{event.snacks}</strong>
+                    </p>
+                    <p className="flex items-center mb-2">
+                      <FaParking className="inline-block mr-3 mb-1" />
+                      <strong>
+                        {event.parking ? " Available" : " Not Available"}
+                      </strong>
+                    </p>
+                    <p className="font-bold flex items-center mb-2">
+                      <FaLocationDot className="inline-block mr-3 mb-1" />
+                      {event.location}
+                    </p>
+                    <FaMapMarkedAlt className="inline-block mr-3 mb-1" />
+                    <a
+                      href={`https://map.kakao.com/link/search/${encodeURIComponent(
+                        event.location
+                      )}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mr-3 mb-3 text-blue-500 hover:underline"
                     >
-                      <BsArrowUpRightCircle />
-                    </button>
-                  </p>
-                  <p className="flex items-center mb-2">
-                    <BsPeopleFill className="inline-block mr-3 mb-1" />
-                    <strong>{event.seats}</strong>
-                  </p>
-                  <p className="flex items-center mb-2">
-                    <FaBowlFood className="inline-block mr-3 mb-1" />
-                    <strong>{event.snacks}</strong>
-                  </p>
-                  <p className="flex items-center mb-2">
-                    <FaParking className="inline-block mr-3 mb-1" />
-                    <strong>
-                      {event.parking ? " Available" : " Not Available"}
-                    </strong>
-                  </p>
-                  <p className="font-bold flex items-center mb-2">
-                    <FaLocationDot className="inline-block mr-3 mb-1" />
-                    {event.location}
-                  </p>
-                  <FaMapMarkedAlt className="inline-block mr-3 mb-1" />
-                  <a
-                    href={`https://map.kakao.com/link/search/${encodeURIComponent(
-                      event.location
-                    )}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="mr-3 mb-3 text-blue-500 hover:underline"
-                  >
-                    View on Kakao Map
-                  </a>
+                      View on Kakao Map
+                    </a>
 
-                  <div className="flex flex-col w-full gap-2">
-                    {" "}
-                    {/* Added flex-col and w-full */}
-                    <div className="flex items-center mt-2 w-full">
-                      <div className="inline-flex items-center px-3 py-1 text-xs sm:text-sm bg-gray-700/80 text-gray-200 rounded-md border border-gray-600 shadow-sm">
-                        <span className="font-medium mr-1">Registered:</span>
-                        <span className="text-white font-semibold">
-                          {registeredCount}/{event?.maxSeats ?? 0}
-                        </span>
+                    <div className="flex flex-col w-full gap-2">
+                      {" "}
+                      {/* Added flex-col and w-full */}
+                      <div className="flex items-center mt-2 w-full">
+                        <div className="inline-flex items-center px-3 py-1 text-xs sm:text-sm bg-gray-700/80 text-gray-200 rounded-md border border-gray-600 shadow-sm">
+                          <span className="font-medium mr-1">Registered:</span>
+                          <span className="text-white font-semibold">
+                            {registeredCount}/{event?.maxSeats ?? 0}
+                          </span>
+                        </div>
                       </div>
-                    </div>
-                    <div className="w-full">
-                      <EventButton
-                        type={
-                          event?.date
-                            ? new Date(event.date.seconds * 1000) > new Date()
-                              ? "upcoming"
+                      <div className="w-full">
+                        <EventButton
+                          type={
+                            event?.date
+                              ? new Date(event.date.seconds * 1000) > new Date()
+                                ? "upcoming"
+                                : "past"
                               : "past"
-                            : "past"
-                        }
-                        id={event?.id}
-                        title={event?.title}
-                        date={event?.date}
-                        author={event?.author}
-                        imageUrl={event.imageUrls?.[0]}
-                        eventRoom={event?.eventRoom}
-                        location={event?.location}
-                        isFull={registeredCount >= (event?.maxSeats ?? 0)}
-                      />
+                          }
+                          id={event?.id}
+                          title={event?.title}
+                          date={event?.date}
+                          author={event?.author}
+                          imageUrl={event.imageUrls?.[0]}
+                          eventRoom={event?.eventRoom}
+                          location={event?.location}
+                          isFull={registeredCount >= (event?.maxSeats ?? 0)}
+                        />
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
+          </>
         ) : (
           // Ko'plab rasmlar bo'lgan holatda
           <div className="grid grid-cols-1 flex flex-col items-start justify-start sm:grid-cols-3 gap-4 mb-4">

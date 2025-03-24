@@ -8,6 +8,7 @@ import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import theme from "@/tools/theme";
 import { Spin } from "antd";
+import { FormLabel } from "@/components/FormLabel";
 
 export default function SpeakersRegister() {
   const [formData, setFormData] = useState({
@@ -45,7 +46,7 @@ export default function SpeakersRegister() {
     }));
   };
 
-  const { i18n, t } = useTranslation("speakers" as any);
+  const { i18n, t } = useTranslation("speakers");
 
   const onSubmit: SubmitHandler<SpeakerRegistration> = async (data) => {
     try {
@@ -153,16 +154,13 @@ export default function SpeakersRegister() {
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             <div className="space-y-4">
               <div className="flex flex-col space-y-2 w-full">
-                <label
+                <FormLabel
+                  id="fullName"
                   htmlFor="fullName"
-                  className="block mb-2"
-                  style={{ color: theme.gray_label_tag_color }}
-                >
-                  {/* Full Name * */}
-                  {t("formFields.fullName")}
-                </label>{" "}
+                  labelText={t("formFields.fullName")}
+                />
                 <CustomInput
-                  id="fullname"
+                  id="fullName"
                   placeholder="Botirov Nodirbek"
                   error={errors.fullname?.message}
                   isValid={watch("fullname")?.length >= 4}
@@ -175,15 +173,12 @@ export default function SpeakersRegister() {
                   })}
                 />
               </div>
-              <div>
-                <label
-                  htmlFor="fullName"
-                  className="block mb-2"
-                  style={{ color: theme.gray_label_tag_color }}
-                >
-                  {/* Current Job Position */}
-                  {t("formFields.jobPosition")}
-                </label>
+              <div className="flex flex-col space-y-2 w-full">
+                <FormLabel
+                  id="jobPosition"
+                  htmlFor="jobPosition"
+                  labelText={t("formFields.jobPosition")}
+                />
                 <CustomInput
                   id="jobPosition"
                   placeholder="Senior Ai Engineer"
@@ -200,14 +195,11 @@ export default function SpeakersRegister() {
               </div>
               {/* <div> */}
               <div className="flex flex-col space-y-2 w-full">
-                <label
-                  htmlFor="fullName"
-                  className="block mb-2"
-                  style={{ color: theme.gray_label_tag_color }}
-                >
-                  {/* Phone Number */}
-                  {t("formFields.phone")}
-                </label>
+                <FormLabel
+                  id="phone"
+                  htmlFor="phone"
+                  labelText={t("formFields.phone")}
+                />
                 <CustomInput
                   id="phone"
                   placeholder="010-1234-5678"
@@ -224,14 +216,12 @@ export default function SpeakersRegister() {
                 />
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label
+                <div className="flex flex-col space-y-2 w-full">
+                  <FormLabel
+                    id="yearsOfExperience"
                     htmlFor="yearsOfExperience"
-                    className="block  mb-2"
-                    style={{ color: theme.gray_label_tag_color }}
-                  >
-                    {t("formFields.yearsOfExperience")}
-                  </label>
+                    labelText={t("formFields.yearsOfExperience")}
+                  />
                   <select
                     id="yearsOfExperience"
                     {...register("yearsOfExperience", {
@@ -241,7 +231,7 @@ export default function SpeakersRegister() {
                     value={formData.yearsOfExperience}
                     onChange={handleChange}
                     required
-                    className="w-full border border-gray-700 rounded-md py-3 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full border border-gray-700 rounded-md py-2.5 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     style={{ backgroundColor: theme.gray_inputTag_background }}
                   >
                     <option value="">
@@ -270,15 +260,12 @@ export default function SpeakersRegister() {
                   )}
                 </div>
 
-                <div>
-                  <label
-                    htmlFor="formFields.expertiseField"
-                    className="block mb-2"
-                    style={{ color: theme.gray_label_tag_color }}
-                  >
-                    {/* Field of Expertise * */}
-                    {t("formFields.expertiseField")}
-                  </label>
+                <div className="flex flex-col space-y-2 w-full">
+                  <FormLabel
+                    id="expertiseField"
+                    htmlFor="expertiseField"
+                    labelText={t("formFields.expertiseField")}
+                  />
                   <select
                     id="expertiseField"
                     {...register("expertiseField", {
@@ -288,7 +275,7 @@ export default function SpeakersRegister() {
                     value={formData.expertiseField}
                     onChange={handleChange}
                     required
-                    className="w-full border border-gray-700 rounded-md py-3 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full border border-gray-700 rounded-md py-2.5 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     style={{ backgroundColor: theme.gray_inputTag_background }}
                   >
                     <option value="">
@@ -314,14 +301,12 @@ export default function SpeakersRegister() {
                 </div>
               </div>
 
-              <div>
-                <label
+              <div className="flex flex-col space-y-2 w-full">
+                <FormLabel
+                  id="topics"
                   htmlFor="topics"
-                  className="block mb-2"
-                  style={{ color: theme.gray_label_tag_color }}
-                >
-                  {t("formFields.topics")}
-                </label>
+                  labelText={t("formFields.topics")}
+                />
                 <textarea
                   id="topics"
                   {...register("topics", {
@@ -347,15 +332,12 @@ export default function SpeakersRegister() {
                 )}
               </div>
 
-              <div>
-                <label
+              <div className="flex flex-col space-y-2 w-full">
+                <FormLabel
                   id="linkedinUrl"
                   htmlFor="linkedinUrl"
-                  className="block mb-2"
-                  style={{ color: theme.gray_label_tag_color }}
-                >
-                  {t("formFields.linkedinUrl")}
-                </label>
+                  labelText={t("formFields.linkedinUrl")}
+                />
                 <CustomInput
                   id="linkedinUrl"
                   placeholder="linkedin.com"
@@ -374,14 +356,12 @@ export default function SpeakersRegister() {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label
+                <div className="flex flex-col space-y-2 w-full">
+                  <FormLabel
+                    id="githubUrl"
                     htmlFor="githubUrl"
-                    className="block mb-2"
-                    style={{ color: theme.gray_label_tag_color }}
-                  >
-                    {t("formFields.githubUrl")}
-                  </label>
+                    labelText={t("formFields.githubUrl")}
+                  />
                   <CustomInput
                     id="githubUrl"
                     placeholder="github.com"
@@ -399,14 +379,12 @@ export default function SpeakersRegister() {
                   />
                 </div>
 
-                <div>
-                  <label
-                    htmlFor="formFields.portfolioUrl"
-                    className="block mb-2"
-                    style={{ color: theme.gray_label_tag_color }}
-                  >
-                    {t("formFields.portfolioUrl")}
-                  </label>
+                <div className="flex flex-col space-y-2 w-full">
+                  <FormLabel
+                    id="portfolioUrl"
+                    htmlFor="portfolioUrl"
+                    labelText={t("formFields.portfolioUrl")}
+                  />
                   <CustomInput
                     id="portfolioUrl"
                     placeholder="portfolio.com"
@@ -429,7 +407,7 @@ export default function SpeakersRegister() {
             <div className="pt-4">
               <button
                 type="submit"
-                className="w-full hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-md transition duration-300 transform hover:scale-105"
+                className="w-full hover:bg-blue-700 text-white font-bold py-2.5 px-6 rounded-md transition duration-300 transform hover:scale-105"
                 style={{ backgroundColor: theme.blue_dark_background }}
               >
                 {/* Submit Application */}

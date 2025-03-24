@@ -61,8 +61,8 @@ export interface EventForServer {
 
 export interface RegistrationFormData {
   id?: string;
-  firstname: string;
-  lastname: string;
+  firstName: string;
+  lastName: string;
   email: string;
   phone: string;
   jobTitle: string;
