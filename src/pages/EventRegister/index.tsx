@@ -12,8 +12,9 @@ import { getAuth } from "firebase/auth";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import { db } from "@/firebase/firebaseConfig";
 import Modal from "@/components/ui/modal";
-import RightSideDetails from "./RightsideDetails";
+
 import { useTranslation } from "react-i18next";
+import RightSideDetails from "./RightSideDetails";
 
 type FirstStepFields = Pick<
   RegistrationFormData,

@@ -138,7 +138,7 @@ export const StepOneForm = () => {
             required: t("validation.phoneRequired"),
             pattern: {
               value: /^\d{3}-\d{4}-\d{4}$/,
-              message: t("validation.phoneInvalid"),
+              message: t("validation.phoneFormat"),
             },
           })}
         />
