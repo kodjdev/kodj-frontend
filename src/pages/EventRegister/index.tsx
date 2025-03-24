@@ -28,6 +28,7 @@ export default function EventRegister() {
   const navigate = useNavigate();
   const [messageApi, contextHolder] = message.useMessage();
   const { user, loading: authLoading } = useAuth();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const methods = useForm<RegistrationFormData>({
     mode: "onTouched",
@@ -92,7 +93,11 @@ export default function EventRegister() {
   };
 
   const onSubmit: SubmitHandler<RegistrationFormData> = async (data) => {
+    if (isSubmitting) return;
+
     try {
+      setIsSubmitting(true);
+
       const auth = getAuth();
       const user = auth.currentUser;
 
@@ -118,17 +123,20 @@ export default function EventRegister() {
 
       const idToken = await user.getIdToken();
 
-      const response = await fetch(import.meta.env.VITE_FIREBASE_REGISTER_EVENT_FUNCTION_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${idToken}`,
-        },
-        body: JSON.stringify({
-          ...data,
-          eventId: id,
-        }),
-      });
+      const response = await fetch(
+        import.meta.env.VITE_FIREBASE_REGISTER_EVENT_FUNCTION_URL,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${idToken}`,
+          },
+          body: JSON.stringify({
+            ...data,
+            eventId: id,
+          }),
+        }
+      );
 
       if (response.ok) {
         setIsModalOpen(true);
@@ -147,6 +155,8 @@ export default function EventRegister() {
     } catch (error) {
       console.error("Error registering user: ", error);
       alert("An error occurred. Please try again later.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -273,8 +283,9 @@ export default function EventRegister() {
                       <CustomButton
                         type="submit"
                         icon={<FaArrowUpRightFromSquare className="text-xs" />}
+                        disabled={isSubmitting}
                       >
-                        Register
+                        {isSubmitting ? "Submitting" : "Register"}
                       </CustomButton>
                     ) : (
                       <CustomButton

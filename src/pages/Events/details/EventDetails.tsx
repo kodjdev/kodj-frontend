@@ -191,7 +191,7 @@ export default function EventDetails() {
           <div className="grid grid-cols-1 sm:grid-cols-3 flex flex-col items-start justify-start  gap-4 mb-4">
             <div className="col-span-2 flex flex-col gap-4">
               <div
-                className="col-span-2 relative h-72 sm:h-[500px] cursor-pointer overflow-hidden rounded-[8px] border border-[#505050]"
+                className="col-span-3 relative h-72 sm:h-[500px] cursor-pointer overflow-hidden rounded-[8px] border border-[#505050]"
                 onClick={() => openGallery(0)}
               >
                 <img

@@ -1,3 +1,5 @@
+import { db } from "@/firebase/firebaseConfig";
+import { collection, getDocs, limit, orderBy, query } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -16,12 +18,76 @@ export default function TimeFrame() {
     seconds: 0,
   });
 
-  const {t} = useTranslation();
+  const [event, setEvent] = useState<{ name: string; date: Date } | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  const { t } = useTranslation();
+
+  const fetchUpcomingEvent = async () => {
+    try {
+      setLoading(true);
+      const eventRef = collection(db, "upcomingEvents");
+      const q = query(eventRef, orderBy("date", "asc"), limit(1));
+      const querySnapshot = await getDocs(q);
+      if (!querySnapshot.empty) {
+        const eventDoc = querySnapshot.docs[0];
+        const eventData = eventDoc.data();
+        const eventDate = eventData.date.toDate();
+
+        if (eventDate.getTime() > new Date().getTime()) {
+          setEvent({
+            name: eventData.title || "Upcoming Event",
+            date: eventDate,
+          });
+        } else {
+          setEvent(null);
+        }
+      } else {
+        setEvent(null);
+      }
+    } catch (error) {
+      console.error("Error fetching upcoming event:", error);
+      setEvent(null);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
+    fetchUpcomingEvent();
+
+    const setDailyRefresh = () => {
+      const now = new Date();
+      const night = new Date(
+        now.getFullYear(),
+        now.getMonth(),
+        now.getDate() + 1,
+        0,
+        0,
+        0
+      );
+
+      const timeToMidnight = night.getTime() - now.getTime();
+
+      const refreshTimeout = setTimeout(() => {
+        fetchUpcomingEvent();
+        setDailyRefresh();
+      }, timeToMidnight);
+
+      return refreshTimeout;
+    };
+    // we start the daily refresh here
+    const refreshTimeout = setDailyRefresh();
+
+    return () => clearTimeout(refreshTimeout);
+  }, []);
+
+  useEffect(() => {
+    if (!event) return;
+
     const timer = setInterval(() => {
       const now = new Date().getTime();
-      const distance = targetDate.getTime() - now;
+      const distance = event.date.getTime() - now;
 
       if (distance <= 0) {
         clearInterval(timer);
@@ -40,7 +106,15 @@ export default function TimeFrame() {
     }, 1000);
 
     return () => clearInterval(timer);
-  }, []);
+  }, [event]);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col w-full max-w-full sm:max-w-[1440px] pt-4 sm:pt-8 pb-4 sm:pb-8 px-4 sm:px-8 mt-4 sm:mt-[30px] mb-4 sm:mb-[30px] rounded-[8px] border border-[#505050] bg-[#141414]">
@@ -78,7 +152,7 @@ export default function TimeFrame() {
               {t("timerPage.untilNext")}
             </p>
             <p className="text-gray-500 font-bold text-[20px] sm:text-[28px] leading-none">
-            {eventName}
+              {event?.name || ""}
             </p>
           </div>
         </div>
