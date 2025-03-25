@@ -130,7 +130,7 @@ export const StepOneForm = () => {
         />
         <CustomInput
           id="phone"
-          placeholder="010-1234-5678"
+          placeholder="01012345678"
           type="tel"
           error={errors.phone?.message}
           isValid={watch("phone")?.length >= 12}
