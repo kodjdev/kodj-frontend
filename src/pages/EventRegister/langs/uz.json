@@ -50,7 +50,7 @@
       "emailRequired": "Elektron pochta kiritish majburiy",
       "emailInvalid": "Noto'g'ri elektron pochta formati",
       "phoneRequired": "Telefon raqami kiritish majburiy",
-      "phoneFormat": "Telefon raqami formati: 010-1234-5678",
+      "phoneFormat": "Telefon raqami formati: 01012345678",
       "notifyRequired": "Iltimos, variantni tanlang",
       "interestedFieldRequired": "Iltimos, variantni tanlang",
       "hopesRequired": "Iltimos, variantni tanlang",

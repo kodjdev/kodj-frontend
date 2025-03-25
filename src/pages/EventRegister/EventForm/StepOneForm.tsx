@@ -137,7 +137,7 @@ export const StepOneForm = () => {
           {...register("phone", {
             required: t("validation.phoneRequired"),
             pattern: {
-              value: /^\d{3}-\d{4}-\d{4}$/,
+              value: /^\d{3}\d{4}\d{4}$/,
               message: t("validation.phoneFormat"),
             },
           })}

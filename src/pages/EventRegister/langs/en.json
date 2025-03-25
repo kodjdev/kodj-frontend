@@ -50,7 +50,7 @@
       "emailRequired": "Email is required",
       "emailInvalid": "Invalid email address",
       "phoneRequired": "Phone number is required",
-      "phoneFormat": "Phone number format: 010-1234-5678",
+      "phoneFormat": "Phone number format: 01012345678",
       "notifyRequired": "Please select an option",
       "interestedFieldRequired": "Please select an option",
       "hopesRequired": "Please select an option",
