@@ -2,8 +2,8 @@ import { Card, CardTitle, CardDescription, CardContent } from "./EventCard";
 import { BiSolidCalendar, BiGroup } from "react-icons/bi";
 import { motion } from "framer-motion";
 import { FaPlus } from "react-icons/fa";
-import { Image } from "antd";
 import { EventCardProps } from "../../types";
+import { Image } from "antd";
 
 export default function EventContainer({
   title,
@@ -47,13 +47,13 @@ export default function EventContainer({
     >
       <Card>
         <div className="w-full aspect-video overflow-hidden">
-          <img
+          <Image
             width="100%"
             height="100%"
             src={imageUrl ?? ""}
             alt={title ?? "Image"}
             className="object-center"
-            // preview={false}
+            preview={false}
             loading="lazy"
             onLoad={(e) => {
               (e.target as HTMLImageElement).classList.add('laoded')

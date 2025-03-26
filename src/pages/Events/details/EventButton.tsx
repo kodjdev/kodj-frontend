@@ -2,9 +2,9 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { message } from "antd";
 import { FaAlignCenter, FaArrowUpRightFromSquare } from "react-icons/fa6";
-import LoginConfirmModal from "../../../components/LoginConfirmModal";
+import LoginConfirmModal from "@/components/LoginConfirmModal";
 import { Timestamp } from "firebase/firestore";
-import { useAuth } from "../../../context/useAuth";
+import { useAuth } from "@/context/useAuth";
 import { Button } from "@/components/Button/Button";
 
 interface EventButtonProps {

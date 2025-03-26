@@ -16,8 +16,7 @@ export type Event = {
   parking?: boolean;
   seats?: string;
   snacks?: boolean;
-  imageUrl?: string;
-  imageUrls?: string[];
+  imageUrls: string[];
   speakers?: Speaker[];
   schedule?: EventTimeline[];
   maxSeats?: number;

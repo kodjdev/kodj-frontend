@@ -15,6 +15,7 @@ import {
   getDocs,
   orderBy,
   query,
+  Timestamp,
   where,
 } from "firebase/firestore";
 import { db, storage } from "../../../firebase/firebaseConfig";
@@ -171,7 +172,7 @@ export default function EventDetails() {
     return <div>Event not found.</div>;
   }
 
-  const date = new Date(event.date.toMillis());
+  const date = new Date(event.date.seconds * 1000);
 
   // we extract year, month, and day
   const year = date.getFullYear();
@@ -276,7 +277,7 @@ export default function EventDetails() {
                           }
                           id={event?.id}
                           title={event?.title}
-                          date={event?.date}
+                          date={event?.date ? Timestamp.fromDate(new Date(event.date.seconds * 1000)) : undefined}
                           author={event?.author}
                           imageUrl={event.imageUrls?.[0]}
                           eventRoom={event?.eventRoom}
@@ -384,7 +385,7 @@ export default function EventDetails() {
                         }
                         id={event?.id}
                         title={event?.title}
-                        date={event?.date}
+                        date={event?.date ? Timestamp.fromDate(new Date(event.date.seconds * 1000)) : undefined}
                         author={event?.author}
                         imageUrl={event.imageUrls?.[0]}
                         eventRoom={event?.eventRoom}

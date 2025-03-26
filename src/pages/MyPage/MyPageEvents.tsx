@@ -98,9 +98,9 @@ export default function MyPageEvents({
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {pastEvents.map((event) => {
-              const imageUrl = Array.isArray(event.imageUrl)
-                ? event.imageUrl[0]
-                : event.imageUrl || "/placeholder.jpg";
+              const imageUrl = Array.isArray(event.imageUrls)
+                ? event.imageUrls[0]
+                : event.imageUrls || "/placeholder.jpg";
 
               return (
                 <motion.div

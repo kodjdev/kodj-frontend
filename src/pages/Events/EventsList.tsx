@@ -88,7 +88,7 @@ export default function EventsList() {
             : event.date ? new Date(event.date.seconds * 1000).toDateString() : "Date not available"
         }
         author={event.author}
-        imageUrl={event.imageUrl}
+        imageUrl={event.imageUrl || ""}
         isUpcoming={isUpcoming}
         registeredCount={event.registeredCount}
         maxSeats={event.maxSeats}

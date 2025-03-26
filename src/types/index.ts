@@ -112,7 +112,7 @@ export interface NewsItem {
   author?: string;
   images?: string[];
   description?: string;
-  lastEdited?: Timestamp;
+  lastEdited: Timestamp;
 }
 
 export interface Speaker {

@@ -34,8 +34,12 @@ const Calendar: React.FC<CalendarProps> = ({ upcomingEvents, pastEvents }) => {
     let date: Date;
     if (event.date instanceof Timestamp) {
       date = event.date.toDate();
+    } else if (typeof event.date === "string") {
+      date = new Date(event.date);
+    } else if (event.date && 'seconds' in event.date) {
+      date = new Date(event.date.seconds * 1000);
     } else {
-      date = event.date ? new Date(event.date) : new Date();
+      date = new Date();
     }
     const dateKey = date.toDateString();
 

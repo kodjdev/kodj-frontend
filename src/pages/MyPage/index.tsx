@@ -130,6 +130,7 @@ export default function MyPage() {
               id: reg.eventId || "",
               title: reg.eventDetails.title,
               date: formatEventDate(eventDate),
+              imageUrls: eventData?.images || [], 
               // date: eDate.toDateString(),
               location: reg.eventDetails.eventLocation,
               images: eventData?.images || "No img found",

@@ -23,6 +23,7 @@ export default function NewsList() {
       const newsData: NewsItem[] = querySnapshot.docs.map((doc) => ({
         id: doc.id,
         title: doc.data().title,
+        lastEdited: doc.data().lastEdited,
       }));
       setNews(newsData);
       setLoading(false);

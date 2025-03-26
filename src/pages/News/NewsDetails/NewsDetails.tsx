@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
-import { db } from "../../../firebase/firebaseConfig";
+import { db } from "@/firebase/firebaseConfig";
 import { doc, getDoc, Timestamp } from "firebase/firestore";
 import { useParams } from "react-router-dom";
 import { getDownloadURL, getStorage, ref } from "firebase/storage";
-import { NewsItem } from "../../../types";
+import { NewsItem } from "@/types";
 import { Spin } from "antd";
 import { BackButton } from "@/components/Button/BackButton";
+
 
 export default function NewsDetails() {
   const { category, id } = useParams<{ category: string; id: string }>();
@@ -159,7 +160,7 @@ export default function NewsDetails() {
 
                     <div className="mt-4 text-sm text-gray-400 pt-40">
                       {item.lastEdited
-                        ? formatDate(item.lastEdited)
+                        ? formatDate(item.lastEdited as Timestamp)
                         : "No date available"}
                     </div>
                   </div>
