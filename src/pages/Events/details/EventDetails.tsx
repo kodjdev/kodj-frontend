@@ -34,7 +34,7 @@ export default function EventDetails() {
 
   const location = useLocation();
   const eventCache = useRecoilValue(eventCacheAtom);
-  const passedEvent = location.state?.eventData
+  const passedEvent = location.state?.eventData;
 
   const [event, setEvent] = useState<EventForServer | null>(null);
   const [speakers, setSpeakers] = useState<Speaker[]>([]);
@@ -46,7 +46,6 @@ export default function EventDetails() {
   const [partialLoading, setPartialLoading] = useState(false);
   const [error, setError] = useState("");
 
-
   useEffect(() => {
     let isMounted = true;
     const fetchEventsData = async () => {
@@ -56,27 +55,30 @@ export default function EventDetails() {
         return;
       }
       try {
-        const cachedEvent = id in eventCache ? eventCache[id as keyof typeof eventCache] : passedEvent;
+        const cachedEvent =
+          id && eventCache && id in eventCache ? eventCache[id] : passedEvent;
 
         if (cachedEvent) {
           if (isMounted) {
             console.log("Using cached/passed event:", cachedEvent);
-            if(cachedEvent && typeof cachedEvent === "object"){
-              setEvent({...cachedEvent, id} as EventForServer);
-            }
+            setEvent(cachedEvent as EventForServer);
             setPartialLoading(true);
           }
         } else {
           // agar passedData yoki cachedata bo'sh bo'lsa firebasedan fetch qilamiz
-          const collectionName = type === "upcoming" ? "upcomingEvents" : "pastEvents";
+          const collectionName =
+            type === "upcoming" ? "upcomingEvents" : "pastEvents";
           console.log(`Fetching from ${collectionName} with ID: ${id}`);
-          
+
           const eventDocRef = doc(db, collectionName, id);
           const eventDocSnap = await getDoc(eventDocRef);
-          
+
           if (eventDocSnap.exists()) {
             if (isMounted) {
-              const eventData = { ...eventDocSnap.data(), id } as EventForServer;
+              const eventData = {
+                ...eventDocSnap.data(),
+                id,
+              } as EventForServer;
               console.log("Firebase event data:", eventData);
               setEvent(eventData);
             }
@@ -88,39 +90,69 @@ export default function EventDetails() {
         // parallel fetch qilamiz
         Promise.all([
           // agar cacheda bo'lsa  skip qilamiz
-          cachedEvent ? Promise.resolve({ data: () => cachedEvent, exists: (): boolean => true }) : getDoc(doc(db, type === "upcoming" ? "upcomingEvents" : "pastEvents", id)),
-          getDocs(query(collection(db, "registrations"), where("eventId", "==", id))),
-          getDocs(query(collection(db, "speakers"), where("speakersId", "==", id))),
-          getDocs(query(collection(db, "eventTimeline"), where("eventId", "==", id), orderBy("startTime", "asc")))
-        ]).then(([eventDoc, regSnapshot, speakersSnapshot, timelineSnapshot]) => {
+          cachedEvent
+            ? Promise.resolve({
+                data: () => cachedEvent,
+                exists: (): boolean => true,
+              })
+            : getDoc(
+                doc(
+                  db,
+                  type === "upcoming" ? "upcomingEvents" : "pastEvents",
+                  id
+                )
+              ),
+          getDocs(
+            query(collection(db, "registrations"), where("eventId", "==", id))
+          ),
+          getDocs(
+            query(collection(db, "speakers"), where("speakersId", "==", id))
+          ),
+          getDocs(
+            query(
+              collection(db, "eventTimeline"),
+              where("eventId", "==", id),
+              orderBy("startTime", "asc")
+            )
+          ),
+        ]).then(
+          ([eventDoc, regSnapshot, speakersSnapshot, timelineSnapshot]) => {
+            setRegisteredCount(regSnapshot.size);
+            setSpeakers(
+              speakersSnapshot.docs.map(
+                (doc) => ({ ...doc.data(), id: doc.id } as Speaker)
+              )
+            );
+            setEventSchedule(
+              timelineSnapshot.docs.map((doc) => doc.data() as EventTimeline)
+            );
 
-          setRegisteredCount(regSnapshot.size);
-          setSpeakers(speakersSnapshot.docs.map(doc => ({ ...doc.data(), id: doc.id }) as Speaker));
-          setEventSchedule(timelineSnapshot.docs.map(doc => doc.data() as EventTimeline));
+            // const eventData = cachedEvent || (eventDoc && 'data' in eventDoc ? eventDoc.data() : null);
 
-          // const eventData = cachedEvent || (eventDoc && 'data' in eventDoc ? eventDoc.data() : null);
+            let eventData: EventForServer | null = null;
+            if (cachedEvent) {
+              eventData = cachedEvent;
+            } else if (
+              eventDoc &&
+              typeof (eventDoc as any).data === "function"
+            ) {
+              const data = (eventDoc as any).data();
+              if (data) {
+                eventData = { ...data, id: id };
+              }
+            }
 
-          let eventData: EventForServer | null = null;
-          if (cachedEvent) {
-            eventData = cachedEvent;
-          } else if (eventDoc && typeof (eventDoc as any).data === 'function') {
-            const data = (eventDoc as any).data();
-            if (data) {
-              eventData = { ...data, id: id };
+            setPartialLoading(false);
+
+            if (eventData?.images?.length) {
+              loadImagesProgressively(eventData.images);
             }
           }
-
-          setPartialLoading(false);
-
-          if (eventData?.images?.length) {
-            loadImagesProgressively(eventData.images);
-          }
-        })
+        );
 
         if (isMounted) {
           setLoading(false);
         }
-
       } catch (error) {
         console.error("Error fetching event details:", error);
         if (isMounted) {
@@ -128,40 +160,43 @@ export default function EventDetails() {
           setLoading(false);
         }
       }
-    }
+    };
     fetchEventsData();
 
     return () => {
       isMounted = false;
-    }
-
+    };
   }, [id, type, eventCache, passedEvent]);
 
   // rasmlarni yuklash uhchun method
-  const loadImagesProgressively = async (imagePaths: string[]): Promise<void> => {
+  const loadImagesProgressively = async (
+    imagePaths: string[]
+  ): Promise<void> => {
     // birinchi rasmni yuklaymiz
     if (imagePaths.length > 0) {
       try {
         const mainImageUrl = await getDownloadURL(ref(storage, imagePaths[0]));
-        setEvent(prev => {
+        setEvent((prev) => {
           if (!prev) return prev;
           return {
             ...prev,
-            imageUrls: [mainImageUrl]
-          }
+            imageUrls: [mainImageUrl],
+          };
         });
 
         // qolganinini esa backgroundda yuklaymiz
         if (imagePaths.length > 1) {
           Promise.all(
-            imagePaths.slice(1).map(path => getDownloadURL(ref(storage, path)))
-          ).then(urls => {
-            setEvent(prev => {
+            imagePaths
+              .slice(1)
+              .map((path) => getDownloadURL(ref(storage, path)))
+          ).then((urls) => {
+            setEvent((prev) => {
               if (!prev) return prev;
               return {
                 ...prev,
-                imageUrls: [...(prev.imageUrls || []), ...urls]
-              }
+                imageUrls: [...(prev.imageUrls || []), ...urls],
+              };
             });
           });
         }
@@ -330,7 +365,13 @@ export default function EventDetails() {
                           }
                           id={event?.id}
                           title={event?.title}
-                          date={event?.date ? Timestamp.fromDate(new Date(event.date.seconds * 1000)) : undefined}
+                          date={
+                            event?.date
+                              ? Timestamp.fromDate(
+                                  new Date(event.date.seconds * 1000)
+                                )
+                              : undefined
+                          }
                           author={event?.author}
                           imageUrl={event.imageUrls?.[0]}
                           eventRoom={event?.eventRoom}
@@ -438,7 +479,13 @@ export default function EventDetails() {
                         }
                         id={event?.id}
                         title={event?.title}
-                        date={event?.date ? Timestamp.fromDate(new Date(event.date.seconds * 1000)) : undefined}
+                        date={
+                          event?.date
+                            ? Timestamp.fromDate(
+                                new Date(event.date.seconds * 1000)
+                              )
+                            : undefined
+                        }
                         author={event?.author}
                         imageUrl={event.imageUrls?.[0]}
                         eventRoom={event?.eventRoom}

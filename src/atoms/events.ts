@@ -1,4 +1,4 @@
-import { EventTimeline, Speaker } from "@/types";
+import { EventForServer, EventTimeline, Speaker } from "@/types";
 import { Timestamp } from "firebase/firestore";
 import { atom, useRecoilState } from "recoil";
 
@@ -36,7 +36,7 @@ export const upcomingEventsAtom = atom<Event[]>({
   default: [],
 });
 
-export const eventCacheAtom = atom({
+export const eventCacheAtom = atom<Record<string, EventForServer>>({
   key: 'eventCache',
   default: {} 
 });

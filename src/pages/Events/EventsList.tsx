@@ -2,10 +2,10 @@ import EventCard from "../../components/Event/EventContainer";
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { Spin } from "antd";
-import { pastEventsAtom, upcomingEventsAtom } from "@/atoms/events";
+import { eventCacheAtom, pastEventsAtom, upcomingEventsAtom } from "@/atoms/events";
 import { useEventFetcher } from "@/hooks/event/useEventFetch";
-import { useRecoilValue } from "recoil";
-import { Event } from "@/types";
+import { useRecoilValue, useSetRecoilState } from "recoil";
+import { Event, EventForServer } from "@/types";
 
 export default function EventsList() {
   const { fetchEventsData, moveOldEvents } = useEventFetcher();
@@ -13,6 +13,8 @@ export default function EventsList() {
   // ** Read-Only** faqat (atomdan oqiymiz)
   const upcomingEvents = useRecoilValue(upcomingEventsAtom);
   const pastEvents = useRecoilValue(pastEventsAtom);
+
+  const setEventCache = useSetRecoilState(eventCacheAtom);
 
   const [loading, setLoading] = useState(true);
 
@@ -64,6 +66,21 @@ export default function EventsList() {
     };
   }, [fetchEventsData, moveOldEvents, shouldRunMoveOldEvents]);
 
+
+  // caching events uchun
+  useEffect(() => {
+    // event load bo;lganda eventlarni cache qilamiz
+    if (upcomingEvents.length > 0 || pastEvents.length > 0) {
+      const newCache: Record<string, EventForServer> = {};
+
+      [...upcomingEvents, ...pastEvents].forEach(event => {
+        newCache[event.id] = event as EventForServer;
+      });
+
+      setEventCache(newCache);
+    }
+  }, [upcomingEvents, pastEvents, setEventCache]);
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-black bg-opacity-50 text-blue-600 text-md">
@@ -77,7 +94,7 @@ export default function EventsList() {
     <Link
       to={`/events/${isUpcoming ? "upcoming" : "past"}/details/${event.id}`}
       key={event.id}
-      state={{eventData: event, speakers: [], eventSchedule: []}}
+      state={{ eventData: event, speakers: [], eventSchedule: [] }}
     >
       {" "}
       <EventCard
