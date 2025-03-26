@@ -206,10 +206,18 @@ export default function EventDetails() {
     }
   };
 
-  if (loading) {
+  if (error) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-red-500">{error}</div>
+      </div>
+    );
+  }
+
+  if (loading || partialLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-black bg-opacity-50 text-blue-600 text-md">
-        <Spin tip="Wait a little bit" size="large"></Spin>
+        <Spin tip={loading ? "Wait a little bit" : "Loading additional data..."} size="large"></Spin>
       </div>
     );
   }

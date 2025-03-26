@@ -1,6 +1,6 @@
 import { EventForServer, EventTimeline, Speaker } from "@/types";
 import { Timestamp } from "firebase/firestore";
-import { atom, useRecoilState } from "recoil";
+import { atom } from "recoil";
 
 export type Event = {
   speakerId?: string;
