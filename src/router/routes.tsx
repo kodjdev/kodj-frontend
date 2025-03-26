@@ -1,6 +1,5 @@
 import { HomePage, LoginPage, About } from "../pages";
 import React, { Suspense } from "react";
-import EventsList from "../pages/Events/EventsList.tsx";
 import ForgotPassword from "../components/ForgotPassword.tsx";
 import ComponentLoading from "../components/ComponentLoading.tsx";
 
@@ -11,7 +10,9 @@ import {
   NewsDetails,
   NewsList,
   SpeakerRegistrationForm,
+  EventsList
 } from "./lazyComponents";
+
 import EditMyPage from "@/pages/MyPage/EditMyPage.tsx";
 
 interface RouteType {
@@ -61,7 +62,11 @@ export const routes: RouteType[] = [
   },
   {
     path: "/events",
-    component: <EventsList />,
+    component: (
+      <Suspense fallback={<ComponentLoading/>}>
+        <EventsList />
+      </Suspense>
+    ),
     auth: false,
   },
   {

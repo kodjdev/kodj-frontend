@@ -47,13 +47,17 @@ export default function EventContainer({
     >
       <Card>
         <div className="w-full aspect-video overflow-hidden">
-          <Image
+          <img
             width="100%"
             height="100%"
             src={imageUrl ?? ""}
             alt={title ?? "Image"}
             className="object-center"
-            preview={false}
+            // preview={false}
+            loading="lazy"
+            onLoad={(e) => {
+              (e.target as HTMLImageElement).classList.add('laoded')
+            }}
             // className="object-cover w-full h-full"
           />
         </div>
@@ -67,14 +71,14 @@ export default function EventContainer({
           <div className="flex items-center">
             <BiSolidCalendar className="inline-block text-white mr-2" />
             <CardDescription className="text-sm sm:text-md text-white text-left">
-              {date}
+            {typeof date === 'string' ? date : date?.seconds?.toString()}
             </CardDescription>
           </div>
           <div className="flex items-center justify-between">
             <div className="flex items-center">
               <BiGroup className="inline-block text-white mr-2" />
               <CardDescription className="text-sm sm:text-md text-white text-left">
-                {/* {date} */}
+                {/* {typeof date === 'string' ? date : date?.seconds?.toString()} */}
                 <span className="mr-1">Registered:</span>
                 <span className="text-white">
                   {registeredCount || 0}/{maxSeats ?? 0}

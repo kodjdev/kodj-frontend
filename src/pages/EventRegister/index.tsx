@@ -22,12 +22,19 @@ type FirstStepFields = Pick<
 >;
 
 const formatDate = (
-  firebaseDate: { seconds: number; nanoseconds: number } | string
+  firebaseDate: { seconds: number; nanoseconds: number } | string | undefined
 ): FormattedDateTime => {
-  if (typeof firebaseDate === "string") {
+  if (!firebaseDate) {
     return {
       date: "No date found",
       time: "No time found",
+    };
+  }
+
+  if (typeof firebaseDate === "string") {
+    return {
+      date: firebaseDate,
+      time: "Time not specified",
     };
   }
 

@@ -8,7 +8,7 @@ export type Event = {
   docId?: string;
   title: string;
   description?: string;
-  date?: Timestamp | null | string; 
+  date: string | Timestamp | { seconds: number } | null;
   location?: string;
   eventRoom?: string;
   images?: string[];

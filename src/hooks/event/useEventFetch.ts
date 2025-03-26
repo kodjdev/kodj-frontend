@@ -1,7 +1,7 @@
 import { pastEventsAtom, upcomingEventsAtom } from "@/atoms/events";
 import { db, storage } from "@/firebase/firebaseConfig";
 import { EventForServer } from "@/types";
-import { collection, getDocs, query, where } from "firebase/firestore";
+import { collection, getDocs, limit, query, where } from "firebase/firestore";
 import { getDownloadURL, ref } from "firebase/storage";
 import { useCallback } from "react";
 import { useSetRecoilState } from "recoil";
@@ -15,10 +15,13 @@ export function useEventFetcher() {
       const upcomingEventCollectionRef = collection(db, "upcomingEvents");
       const pastEventCollectionRef = collection(db, "pastEvents");
 
+      const limitedUpcomingEventCollectionRef = query(upcomingEventCollectionRef, limit(10));
+      const limitedPastEventCollectionRef = query(pastEventCollectionRef, limit(10));
+
       // parallel tarzda 2 ta endpointga fetch call qilamiz
       const [upcomingEventSnapshot, pastEventSnapshot] = await Promise.all([
-        getDocs(upcomingEventCollectionRef),
-        getDocs(pastEventCollectionRef),
+        getDocs(limitedUpcomingEventCollectionRef),
+        getDocs(limitedPastEventCollectionRef),
       ]);
 
       if (upcomingEventSnapshot.empty || pastEventSnapshot.empty) {
@@ -28,83 +31,100 @@ export function useEventFetcher() {
       const upcomingEventsData = upcomingEventSnapshot.docs.map((doc) => {
         const eventData = doc.data() as EventForServer;
         eventData.id = doc.id;
+
+        eventData.imageUrl = "";
+        eventData.registeredCount = 0;
+
+        if(!eventData.rawDate || !(eventData.rawDate instanceof Date)){
+          eventData.rawDate = eventData.date.toDate();
+        }
+
         return eventData;
       });
 
       const pastEventsData = pastEventSnapshot.docs.map((doc) => {
         const eventData = doc.data() as EventForServer;
         eventData.id = doc.id;
+
+        eventData.imageUrl = "";
+        eventData.registeredCount = 0;
+
+        if(!eventData.rawDate || !(eventData.rawDate instanceof Date)){
+          eventData.rawDate = eventData.date.toDate();
+        }
+
         return eventData;
       });
 
-      // we fetch registration count and image for an event
-      const fetchEventDetails = async (eventData: EventForServer) => {
+     // sort qilamiz eventlarni oldinroq
+     const sortedUpcomingEvents= [...upcomingEventsData].sort(
+        (a, b) => (a.rawDate as Date).getTime() - (b.rawDate as Date).getTime()
+      );
+      const sortedPastEventsData = [...pastEventsData].sort(
+        (a, b) => (b.rawDate as Date).getTime() - (a.rawDate as Date).getTime()
+      );
+
+      setUpcomingEvents(sortedUpcomingEvents);
+      setPastEvents(sortedPastEventsData);
+
+      // qoshimcha malumotlarni backgrounda fetch qilamiz
+      const enhanceEvent = async (eventData: EventForServer) => {
         if (!eventData.images?.length) return eventData;
 
         try {
-          //we fetch registration count
-          const registrationsQuery = query(
-            collection(db, "registrations"),
-            where("eventId", "==", eventData.id)
-          );
-          const registrationSnapshot = await getDocs(registrationsQuery);
-          eventData.registeredCount = registrationSnapshot.size;
-
-          // then we fetch image URL
-          const imageRef = ref(storage, eventData.images[0]);
-          eventData.imageUrl = await getDownloadURL(imageRef);
-
-          return eventData;
+          // parallel tarzda 2 ta fetch call qilamiz
+          const [registrationSnapshot, imageUrl] = await Promise.all([
+            // fetch qilamiz registrationlarni
+            getDocs(query(
+              collection(db, "registrations"),
+              where("eventId", "==", eventData.id)
+            )),
+            
+            // image urlni fetch qilamiz
+            eventData.images[0] ? getDownloadURL(ref(storage, eventData.images[0])) : Promise.resolve("")
+          ]);
+          
+          return {
+            ...eventData,
+            registeredCount: registrationSnapshot.size,
+            imageUrl: imageUrl
+          };
         } catch (error) {
-          console.error(
-            `Error fetching details for event ${eventData.id}:`,
-            error
-          );
-          eventData.imageUrl = "";
-          eventData.registeredCount = 0;
+          console.error(`Error enhancing event ${eventData.id}:`, error);
           return eventData;
         }
       };
 
-      // then we process upcoming and past events in parallel
-      const [processedUpcomingEvents, processedPastEvents] = await Promise.all([
-        Promise.all(upcomingEventsData.map(fetchEventDetails)),
-        Promise.all(pastEventsData.map(fetchEventDetails)),
-      ]);
+      // upcoming eventlarni batch qilib fetch qilamiz
+      const enhanceEventsBatch = async (events: EventForServer[], isUpcoming: boolean, batchSize = 2) => {
+        const result = [...events];
+        for (let i = 0; i < events.length; i += batchSize) {
+          const batch = events.slice(i, i + batchSize);
+          const enhancedBatch = await Promise.all(batch.map(enhanceEvent));
+          
+          // har bir eventni enhanced versiyasini result arrayiga joylaymiz
+          enhancedBatch.forEach((enhancedEvent, index) => {
+            result[i + index] = enhancedEvent;
+          });
 
-      // then we filter out any invalid events based on event type
-      const filteredUpcomingEvents = processedUpcomingEvents.filter(
-        (event): event is EventForServer =>
-          event !== undefined && typeof event !== "string"
-      );
-
-      const filteredPastEvents = processedPastEvents.filter(
-        (event): event is EventForServer =>
-          event !== undefined && typeof event !== "string"
-      );
-
-      filteredUpcomingEvents.forEach((event) => {
-        if (!event.rawDate || !(event.rawDate instanceof Date)) {
-          event.rawDate = event.date.toDate();
+          if(isUpcoming){
+            setUpcomingEvents([...result]);
+          } else {
+            setPastEvents([...result]);
+          }
         }
-      });
+        return result;
+      };
 
-      filteredPastEvents.forEach((event) => {
-        if (!event.rawDate || !(event.rawDate instanceof Date)) {
-          event.rawDate = event.date.toDate();
-        }
-      });
+      // backgroundda eventlarni enahnce qilamiz
+      Promise.all([
+       enhanceEventsBatch(sortedUpcomingEvents, true),
+       enhanceEventsBatch(sortedPastEventsData, false)
+      ]).then(([enhancedUpcoming, enhancedPast]) => {
+        setUpcomingEvents(enhancedUpcoming);
+        setPastEvents(enhancedPast);
+      })
 
-      filteredUpcomingEvents.sort(
-        (a, b) => (a.rawDate as Date).getTime() - (b.rawDate as Date).getTime()
-      );
-      filteredPastEvents.sort(
-        (a, b) => (b.rawDate as Date).getTime() - (a.rawDate as Date).getTime()
-      );
-
-      setUpcomingEvents(filteredUpcomingEvents);
-      setPastEvents(filteredPastEvents);
-      // setLoading(false);
     } catch (error) {
       console.error("Error fetching events data: ", error);
     }

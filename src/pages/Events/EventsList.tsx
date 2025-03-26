@@ -1,10 +1,11 @@
 import EventCard from "../../components/Event/EventContainer";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { Spin } from "antd";
 import { pastEventsAtom, upcomingEventsAtom } from "@/atoms/events";
 import { useEventFetcher } from "@/hooks/event/useEventFetch";
 import { useRecoilValue } from "recoil";
+import { Event } from "@/types";
 
 export default function EventsList() {
   const { fetchEventsData, moveOldEvents } = useEventFetcher();
@@ -15,29 +16,8 @@ export default function EventsList() {
 
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const initializeData = async () => {
-      try {
-        await fetchEventsData();
-
-        if (shouldRunMoveOldEventsToday()) {
-          await moveOldEvents;
-          localStorage.setItem("moveOldEventsLastRun", Date.now().toString());
-        }
-      } catch (error) {
-        console.log("Error initializing data: ", error);
-      } finally {
-        setLoading(false);
-      }
-      // // this method will now run for all users
-      // await moveOldEvents();
-      // await fetchdata();
-    };
-
-    initializeData();
-  }, [fetchEventsData, moveOldEvents]);
-
-  const shouldRunMoveOldEventsToday = () => {
+  // memozie qildik, chunki bir marta calucalte qilishimiz yetadi
+  const shouldRunMoveOldEvents = useMemo(() => {
     const currTime = new Date();
 
     // this checks for the 10:00 pm time
@@ -55,9 +35,34 @@ export default function EventsList() {
 
     const lastRun = new Date(Number(lastRunEventString));
     // if last run is today, we skip
-    const isSameDay = lastRun.toDateString() === currTime.toDateString();
-    return !isSameDay;
-  };
+    return lastRun.toDateString() === currTime.toDateString();
+  }, []);
+
+  useEffect(() => {
+    let isMounted = true;
+    const initializeData = async () => {
+      try {
+        await fetchEventsData();
+
+        if (shouldRunMoveOldEvents) {
+          await moveOldEvents();
+          localStorage.setItem("moveOldEventsLastRun", Date.now().toString());
+        }
+      } catch (error) {
+        console.log("Error initializing data: ", error);
+      } finally {
+        if (isMounted) {
+          setLoading(false);
+        }
+      }
+    };
+
+    initializeData();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [fetchEventsData, moveOldEvents, shouldRunMoveOldEvents]);
 
   if (loading) {
     return (
@@ -66,6 +71,30 @@ export default function EventsList() {
       </div>
     );
   }
+
+  // 2 xil turdagi eventlarni render qilish uchun custom function
+  const renderEventCard = (event: Event, isUpcoming: boolean) => (
+    <Link
+      to={`/events/${isUpcoming ? "upcoming" : "past"}/details/${event.id}`}
+      key={event.id}
+    >
+      {" "}
+      <EventCard
+        title={event.title}
+        description={event.description}
+        date={
+          typeof event.date === "string"
+            ? event.date
+            : event.date ? new Date(event.date.seconds * 1000).toDateString() : "Date not available"
+        }
+        author={event.author}
+        imageUrl={event.imageUrl}
+        isUpcoming={isUpcoming}
+        registeredCount={event.registeredCount}
+        maxSeats={event.maxSeats}
+      />
+    </Link>
+  );
 
   return (
     <div className="container mx-auto py-8">
@@ -82,28 +111,7 @@ export default function EventsList() {
         {upcomingEvents && upcomingEvents.length > 0 ? (
           <>
             {upcomingEvents &&
-              upcomingEvents.map((event, index) => (
-                <Link
-                  to={`/events/upcoming/details/${event.id}`}
-                  key={event.id}
-                >
-                  <EventCard
-                    key={index}
-                    title={event.title}
-                    description={event.description}
-                    date={
-                      typeof event.date === "string"
-                        ? event.date
-                        : event.date ? new Date(event.date.seconds * 1000).toDateString() : "Date not available"
-                    }
-                    author={event.author}
-                    imageUrl={event.imageUrl}
-                    isUpcoming={true}
-                    registeredCount={event.registeredCount}
-                    maxSeats={event.maxSeats}
-                  />
-                </Link>
-              ))}
+              upcomingEvents.map((event) => renderEventCard(event, true))}
             <EventCard isPlaceholder />
           </>
         ) : (
@@ -122,24 +130,7 @@ export default function EventsList() {
       </h4>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 justify-center md:justify-start pb-40">
         {pastEvents && pastEvents.length > 0 ? (
-          pastEvents.map((event) => (
-            <Link to={`/events/past/details/${event.id}`} key={event.id}>
-              <EventCard
-                title={event.title}
-                description={event.description}
-                date={
-                  typeof event.date === "string"
-                    ? event.date
-                    : event.date ? new Date(event.date.seconds * 1000).toDateString() : "Date not available"
-                }
-                author={event.author}
-                imageUrl={event.imageUrl}
-                isUpcoming={false}
-                registeredCount={event.registeredCount}
-                maxSeats={event.maxSeats}
-              />
-            </Link>
-          ))
+          pastEvents.map((event) => renderEventCard(event, false))
         ) : (
           <EventCard isPlaceholder />
         )}

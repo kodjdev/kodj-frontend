@@ -1,14 +1,20 @@
-import { Timestamp } from "firebase/firestore";
+
+
+interface Timestamp {
+  toDate(): Date | undefined;
+  seconds: number;
+  nanoseconds: number;
+}
 
 export interface Event {
   id: string;
   title: string;
   description?: string;
-  date?: string | Timestamp;
+  date: string | Timestamp | { seconds: number } | null;
   location?: string;
   author?: string;
   images?: string[];
-  imageUrl?: string[] | string;
+  imageUrl?: string;
   events?: string;
   docId?: string;
   maxSeats?: number;
@@ -16,6 +22,9 @@ export interface Event {
   eventRoom?: string,
   parking?: boolean,
   seats?: string
+  isUpcoming?: boolean;
+  registeredCount?: number;
+  isPlaceholder?: boolean;
 }
 
 export interface EventDetails {
@@ -139,9 +148,10 @@ export interface FirebaseTimestamp {
 }
 
 export interface EventCardProps {
+  id?: string;
   title?: string;
   description?: string;
-  date?: string;
+  date?: string | { seconds: number };
   author?: string;
   imageUrl?: string;
   isPlaceholder?: boolean;
