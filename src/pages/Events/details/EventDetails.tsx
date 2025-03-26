@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaCalendarAlt, FaMapMarkedAlt, FaParking } from "react-icons/fa";
 import { FaLocationDot, FaNoteSticky } from "react-icons/fa6";
-import Speakers from "../../../components/Event/Speakers";
-import EventSchedule from "../../../components/Event/EventSchedule";
+import Speakers from "@/components/Event/Speakers";
+import EventSchedule from "@/components/Event/EventSchedule";
 import { FaBowlFood } from "react-icons/fa6";
 import { BsPeopleFill } from "react-icons/bs";
 import { BsArrowUpRightCircle } from "react-icons/bs";
@@ -18,17 +18,23 @@ import {
   Timestamp,
   where,
 } from "firebase/firestore";
-import { db, storage } from "../../../firebase/firebaseConfig";
-import { ref, getDownloadURL } from "firebase/storage";
-import { EventForServer, EventTimeline, Speaker } from "../../../types";
+import { db, storage } from "@/firebase/firebaseConfig";
+import { EventForServer, EventTimeline, Speaker } from "@/types";
 import { Spin } from "antd";
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import EventButton from "./EventButton";
-import KakaoMap from "../../../components/KakaoMap";
+import KakaoMap from "@/components/KakaoMap";
 import { BackButton } from "@/components/Button/BackButton";
+import { useRecoilValue } from "recoil";
+import { getDownloadURL, ref } from "firebase/storage";
+import { eventCacheAtom } from "@/atoms/events";
 
 export default function EventDetails() {
   const { id, type } = useParams<{ id: string; type: string }>();
+
+  const location = useLocation();
+  const eventCache = useRecoilValue(eventCacheAtom);
+  const passedEvent = location.state?.eventData
 
   const [event, setEvent] = useState<EventForServer | null>(null);
   const [speakers, setSpeakers] = useState<Speaker[]>([]);
@@ -37,86 +43,133 @@ export default function EventDetails() {
   const [selectedImage, setSelectedImage] = useState(0);
   const [loading, setLoading] = useState(true);
   const [registeredCount, setRegisteredCount] = useState(0);
+  const [partialLoading, setPartialLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  const fetchEventData = async () => {
-    if (!id) {
-      console.error("No event ID provided in the URL.");
-      setLoading(false);
-      return;
-    }
-
-    try {
-      const collectionName =
-        type === "upcoming" ? "upcomingEvents" : "pastEvents";
-      const eventDocRef = doc(db, collectionName, id);
-      const eventDoc = await getDoc(eventDocRef);
-
-      // console.log('Fetching event with ID:', id);
-
-      if (eventDoc.exists()) {
-        const eventData = eventDoc.data() as EventForServer;
-        eventData.id = eventDoc.id;
-
-        const registrationsQuery = query(
-          collection(db, "registrations"),
-          where("eventId", "==", id)
-        );
-
-        const registrationSnapshot = await getDocs(registrationsQuery);
-        setRegisteredCount(registrationSnapshot.size);
-
-        // Fetch image URLs
-        if (eventData.images && eventData.images.length > 0) {
-          const imageUrls = await Promise.all(
-            eventData.images.map(async (imagePath) => {
-              const imageRef = ref(storage, imagePath);
-              const url = await getDownloadURL(imageRef);
-              return url;
-            })
-          );
-          eventData.imageUrls = imageUrls;
-        }
-
-        const speakersQuery = query(
-          collection(db, "speakers"),
-          where("speakersId", "==", id)
-        );
-
-        const speakersSnapshot = await getDocs(speakersQuery);
-        const speakersData: Speaker[] = speakersSnapshot.docs.map((doc) => ({
-          ...doc.data(),
-          id: doc.id,
-        })) as Speaker[];
-        setSpeakers(speakersData);
-
-        const eventTimeLineQuery = query(
-          collection(db, "eventTimeline"),
-          where("eventId", "==", id),
-          orderBy("startTime", "asc")
-        );
-
-        const eventTimeLineSnapshot = await getDocs(eventTimeLineQuery);
-        const eventScheduleData: EventTimeline[] =
-          eventTimeLineSnapshot.docs.map((doc) => doc.data() as EventTimeline);
-        setEventSchedule(eventScheduleData);
-
-        setEvent(eventData);
-        setLoading(false);
-      } else {
-        console.error("No such document!");
-        setLoading(false);
-      }
-    } catch (error) {
-      console.error("Error fetching event data: ", error);
-      setLoading(false);
-    }
-  };
 
   useEffect(() => {
-    if (id) {
-      fetchEventData();
+    let isMounted = true;
+    const fetchEventsData = async () => {
+      if (!id) {
+        setError("No Event ID is found");
+        setLoading(false);
+        return;
+      }
+      try {
+        const cachedEvent = id in eventCache ? eventCache[id as keyof typeof eventCache] : passedEvent;
+
+        if (cachedEvent) {
+          if (isMounted) {
+            console.log("Using cached/passed event:", cachedEvent);
+            if(cachedEvent && typeof cachedEvent === "object"){
+              setEvent({...cachedEvent, id} as EventForServer);
+            }
+            setPartialLoading(true);
+          }
+        } else {
+          // agar passedData yoki cachedata bo'sh bo'lsa firebasedan fetch qilamiz
+          const collectionName = type === "upcoming" ? "upcomingEvents" : "pastEvents";
+          console.log(`Fetching from ${collectionName} with ID: ${id}`);
+          
+          const eventDocRef = doc(db, collectionName, id);
+          const eventDocSnap = await getDoc(eventDocRef);
+          
+          if (eventDocSnap.exists()) {
+            if (isMounted) {
+              const eventData = { ...eventDocSnap.data(), id } as EventForServer;
+              console.log("Firebase event data:", eventData);
+              setEvent(eventData);
+            }
+          } else {
+            setError(`Event not found with ID: ${id}`);
+          }
+        }
+
+        // parallel fetch qilamiz
+        Promise.all([
+          // agar cacheda bo'lsa  skip qilamiz
+          cachedEvent ? Promise.resolve({ data: () => cachedEvent, exists: (): boolean => true }) : getDoc(doc(db, type === "upcoming" ? "upcomingEvents" : "pastEvents", id)),
+          getDocs(query(collection(db, "registrations"), where("eventId", "==", id))),
+          getDocs(query(collection(db, "speakers"), where("speakersId", "==", id))),
+          getDocs(query(collection(db, "eventTimeline"), where("eventId", "==", id), orderBy("startTime", "asc")))
+        ]).then(([eventDoc, regSnapshot, speakersSnapshot, timelineSnapshot]) => {
+
+          setRegisteredCount(regSnapshot.size);
+          setSpeakers(speakersSnapshot.docs.map(doc => ({ ...doc.data(), id: doc.id }) as Speaker));
+          setEventSchedule(timelineSnapshot.docs.map(doc => doc.data() as EventTimeline));
+
+          // const eventData = cachedEvent || (eventDoc && 'data' in eventDoc ? eventDoc.data() : null);
+
+          let eventData: EventForServer | null = null;
+          if (cachedEvent) {
+            eventData = cachedEvent;
+          } else if (eventDoc && typeof (eventDoc as any).data === 'function') {
+            const data = (eventDoc as any).data();
+            if (data) {
+              eventData = { ...data, id: id };
+            }
+          }
+
+          setPartialLoading(false);
+
+          if (eventData?.images?.length) {
+            loadImagesProgressively(eventData.images);
+          }
+        })
+
+        if (isMounted) {
+          setLoading(false);
+        }
+
+      } catch (error) {
+        console.error("Error fetching event details:", error);
+        if (isMounted) {
+          setError("Failed to load event details. Please try again.");
+          setLoading(false);
+        }
+      }
     }
-  }, [id]);
+    fetchEventsData();
+
+    return () => {
+      isMounted = false;
+    }
+
+  }, [id, type, eventCache, passedEvent]);
+
+  // rasmlarni yuklash uhchun method
+  const loadImagesProgressively = async (imagePaths: string[]): Promise<void> => {
+    // birinchi rasmni yuklaymiz
+    if (imagePaths.length > 0) {
+      try {
+        const mainImageUrl = await getDownloadURL(ref(storage, imagePaths[0]));
+        setEvent(prev => {
+          if (!prev) return prev;
+          return {
+            ...prev,
+            imageUrls: [mainImageUrl]
+          }
+        });
+
+        // qolganinini esa backgroundda yuklaymiz
+        if (imagePaths.length > 1) {
+          Promise.all(
+            imagePaths.slice(1).map(path => getDownloadURL(ref(storage, path)))
+          ).then(urls => {
+            setEvent(prev => {
+              if (!prev) return prev;
+              return {
+                ...prev,
+                imageUrls: [...(prev.imageUrls || []), ...urls]
+              }
+            });
+          });
+        }
+      } catch (error) {
+        console.error("Error loading images:", error);
+      }
+    }
+  };
 
   if (loading) {
     return (

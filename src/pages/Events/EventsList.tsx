@@ -16,7 +16,7 @@ export default function EventsList() {
 
   const [loading, setLoading] = useState(true);
 
-  // memozie qildik, chunki bir marta calucalte qilishimiz yetadi
+  // memoize qildik, chunki bir marta calulate qilishimiz yetadi
   const shouldRunMoveOldEvents = useMemo(() => {
     const currTime = new Date();
 
@@ -35,7 +35,7 @@ export default function EventsList() {
 
     const lastRun = new Date(Number(lastRunEventString));
     // if last run is today, we skip
-    return lastRun.toDateString() === currTime.toDateString();
+    return lastRun.toDateString() !== currTime.toDateString();
   }, []);
 
   useEffect(() => {
@@ -77,6 +77,7 @@ export default function EventsList() {
     <Link
       to={`/events/${isUpcoming ? "upcoming" : "past"}/details/${event.id}`}
       key={event.id}
+      state={{eventData: event, speakers: [], eventSchedule: []}}
     >
       {" "}
       <EventCard
