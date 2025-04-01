@@ -8,39 +8,59 @@ import { MobileMenu } from "@/components/Header/MobilMenu";
 import FlipLogo from "@/components/FlipLogo";
 import { useLogout } from "../Modal/LogoutModal";
 
-const tabs = [
-  { id: "about", labelKey: "header.aboutUs", path: "/about" },
-  { id: "news", labelKey: "header.news", path: "/news" },
-  { id: "events", labelKey: "header.events", path: "/events" },
-  { id: "speakers", labelKey: "header.speakers", path: "/speakers" },
-  { id: "mypage", labelKey: "header.myPage", path: "/mypage" },
-  { id: "login", labelKey: "header.login", path: "/login" },
-];
-
 export default function Header() {
   const location = useLocation();
   const { i18n, t } = useTranslation();
-  const { user } = useAuth();
+  const { user, isLogin, loading } = useAuth();
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [showProfileMenu, setShowProfileMenu] = useState(false);
+  const [langMenuOpen, setLangMenuOpen] = useState(false);
+  const profileMenuRef = useRef<HTMLDivElement>(null);
+  const triggerLogoutModal = useLogout();
 
+  const generateTabs = () => {
+    const baseTabs = [
+      { id: "about", labelKey: "header.aboutUs", path: "/about" },
+      { id: "news", labelKey: "header.news", path: "/news" },
+      { id: "events", labelKey: "header.events", path: "/events" },
+      { id: "speakers", labelKey: "header.speakers", path: "/speakers" },
+    ];
+
+    isLogin
+      ? baseTabs.push({
+          id: "login",
+          labelKey: "header.login",
+          path: "/login",
+        })
+      : baseTabs.push({
+          id: "mypage",
+          labelKey: "header.myPage",
+          path: "/mypage",
+        });
+
+    return baseTabs;
+  };
+
+  const [tabs, setTabs] = useState(generateTabs());
   const [activeTab, setActiveTab] = useState(() => {
     const match = tabs.find((tab) => location.pathname.startsWith(tab.path));
     return match?.id || "";
   });
 
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [showProfileMenu, setShowProfileMenu] = useState(false);
-  const [langMenuOpen, setLangMenuOpen] = useState(false);
-  const triggerLogoutModal = useLogout();
-
-  const profileMenuRef = useRef<HTMLDivElement>(null);
-
+  // dynamically change the tabs when the state changes
   useEffect(() => {
-    setActiveTab(
-      tabs.find((tab) => location.pathname.startsWith(tab.path))?.id || ""
-    );
-  }, [location.pathname]);
+    const newTabs = generateTabs();
+    setTabs(newTabs);
 
+    // we update active tab based on current path
+    const match = newTabs.find((tab) => location.pathname.startsWith(tab.path));
+    if (match) {
+      setActiveTab(match.id);
+    }
+  }, [isLogin, location.pathname]);
+
+  // scroll effect
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 0);
@@ -54,6 +74,10 @@ export default function Header() {
     setLangMenuOpen(false);
   };
 
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <>
       <HeaderContainer
@@ -64,7 +88,6 @@ export default function Header() {
             <FlipLogo />
           </div>
         </div>
-        {/* // this is mobikle toogler  */}
         <div className="md:hidden">
           <button
             onClick={() => setIsMobileMenuOpen(true)}

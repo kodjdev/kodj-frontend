@@ -28,7 +28,7 @@ export default function MyPageEvents({
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {upcomingEvents.map((event) => {
-              const imageUrl = Array.isArray(event.images) 
+              const imageUrl = Array.isArray(event.images)
                 ? event.images[0]
                 : event.images || "/placeholder.jpg";
 

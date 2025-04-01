@@ -1,22 +1,37 @@
-/* eslint-disable */
-// @ts-nocheck
-
-import { Navigate } from "react-router-dom";
-import React from "react";
+import React, { useEffect } from "react";
 import { useAuth } from "../context/useAuth";
+import { useLocation, useNavigate } from "react-router-dom";
 
-interface ProtectedRouteProps {
-  children: React.ReactElement;
-}
+const PrivateWrapper = ({ children }: { children: React.ReactNode }) => {
+  const { isLogin, loading } = useAuth();
+  const location = useLocation();
+  const navigate = useNavigate();
 
-const PrivateWrapper: React.FC<ProtectedRouteProps> = ({ children }) => {
-  const { user } = useAuth();
+  useEffect(() => {
+    const checkAuth = async () => {
+      const token = localStorage.getItem("accessToken");
 
-  if (!user) {
-    return <Navigate to="/login" replace />;
+      console.group("Protected Route Check");
+      console.log("Is Logged In:", isLogin);
+      console.log("Loading:", loading);
+      console.log("Token:", token);
+      console.log("Current Location:", location.pathname);
+      console.groupEnd();
+
+      if (!loading) {
+        if (!isLogin && !token) {
+          navigate("/login", { state: { from: location } });
+        }
+      }
+    };
+
+    checkAuth();
+  }, [isLogin, loading, location.pathname]);
+
+  if (loading) {
+    return <div>Loading...</div>;
   }
 
-  return children;
+  return isLogin ? <>{children}</> : null;
 };
-
 export default PrivateWrapper;

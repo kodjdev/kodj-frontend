@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { auth, sendPasswordResetEmail } from "../firebase/firebaseConfig";
+import { auth, sendPasswordResetEmail } from "../../firebase/firebaseConfig";
 import { message } from "antd";
 import { HiOutlineMail } from "react-icons/hi";
 import { useNavigate } from "react-router-dom";
