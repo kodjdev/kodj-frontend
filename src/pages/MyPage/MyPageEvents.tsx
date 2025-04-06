@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { CardContent } from "../../components/Event/EventCard";
 import { Event } from "@/atoms/events";
 import { Button } from "@/components/Button/Button";
-import theme from "@/tools/theme";
+import theme from "@/tools/themeColors";
 
 interface MyPageEventsProps {
   upcomingEvents: Event[];

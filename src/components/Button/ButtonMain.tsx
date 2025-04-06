@@ -1,6 +1,6 @@
 import React, { ReactNode } from "react";
 import { twMerge } from "tailwind-merge";
-import theme from "@/tools/theme";
+import theme from "@/tools/themeColors";
 
 export interface ButtonMainProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {

@@ -1,5 +1,5 @@
 import React, { useState, createContext, useContext } from "react";
-import theme from "@/tools/theme";
+import theme from "@/tools/themeColors";
 
 interface SelectOption {
   value: string;

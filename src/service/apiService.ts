@@ -1,7 +1,7 @@
 const API_BASE_URL =
   import.meta.env.VITE_SPRING_API_URL || "http://localhost:8080/api/v1";
 
-// generic request function with authentication 
+// generic request function with authentication
 const apiRequest = async (
   endpoint: string,
   method: string = "GET",

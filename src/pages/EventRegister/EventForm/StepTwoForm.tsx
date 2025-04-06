@@ -1,7 +1,7 @@
 import { useFormContext, Controller } from "react-hook-form";
 import type { RegistrationFormData } from "@/types";
 import { useTranslation } from "react-i18next";
-import theme from "@/tools/theme";
+import theme from "@/tools/themeColors";
 import { SelectField } from "@/components/Form/SelectFields";
 import { FormField } from "@/components/Form/FormField";
 

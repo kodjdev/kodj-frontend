@@ -6,7 +6,7 @@ import React, { useState } from "react";
 import { SubmitHandler, useFormContext } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
-import theme from "@/tools/theme";
+import theme from "@/tools/themeColors";
 import { Spin } from "antd";
 import { FormLabel } from "@/components/FormLabel";
 
