@@ -1,7 +1,7 @@
 import React from "react";
 import { FaCheck } from "react-icons/fa";
-import { StepOneForm } from "@/pages/EventRegister/EventForm/StepOneForm";
-import { StepTwoForm } from "@/pages/EventRegister/EventForm/StepTwoForm";
+import { StepOneForm } from "@/pages/Events/EventRegister/EventForm/StepOneForm";
+import { StepTwoForm } from "@/pages/Events/EventRegister/EventForm/StepTwoForm";
 import { useForm, FormProvider } from "react-hook-form";
 import type { RegistrationFormData } from "@/types";
 

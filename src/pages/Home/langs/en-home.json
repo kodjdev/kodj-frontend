@@ -1,0 +1,82 @@
+{
+    "headingTitle": "We are a community of Uzbek Developers 👨‍💻 working and studying in South Korea and we connect 👨‍💻s.",
+    "featuresSection": {
+      "feature1": {
+        "title": "Join our community of developers ▶",
+        "description": "Our community members operate in Telegram. Join to get latest updates and news"
+      },
+      "feature2": {
+        "title": "We connect S.Korea with Uzbekistan ❤️",
+        "description": "We connect developers from both countries and serve the best 🤝 of both worlds."
+      }
+    },
+    "header": {
+      "aboutUs": "About Us",
+      "news": "News",
+      "events": "Events",
+      "speakers": "Speakers",
+      "myPage": "My Page",
+      "login": "Login"
+    },
+    "statisticsPage": {
+      "statisticsHeader": "Statistics",
+      "statisticsHeaderGray": "of KO'DJ",
+      "statisticsBody": {
+        "users": {
+          "title": "Meetup Speakers",
+          "description": "Visited Speakers"
+        },
+        "meetups": {
+          "title": "Meetups"
+        },
+        "registeredUsers": {
+          "title": "Registered users",
+          "description": "Current Users"
+        },
+        "planning": {
+          "title": "Planning to host coders of",
+          "description": "in 2025"
+        }
+      }
+    },
+    "timerPage": {
+      "headingTitle": "Hurry up, time is going!",
+      "timeLeft": "Time left",
+      "untilNext": "until next",
+      "days": "Days",
+      "hours": "Hours",
+      "minutes": "Minutes",
+      "seconds": "Seconds"
+    },
+    "affiliateCardsPage": {
+      "headingTitle": "Come and see ",
+      "headingTitleGray": "what we have to offer",
+      "projects": {
+        "project1": {
+          "title": "AI & ML Events",
+          "description": "A platform for discovering and sharing AI and machine learning events in Uzbekistan and South Korea."
+        },
+        "project2": {
+          "title": "DevFest Seoul 2024",
+          "description": "A community-led developer conference hosted by KODJ community, featuring talks, workshops, and networking opportunities."
+        },
+        "project3": {
+          "title": "Dev Hackathon",
+          "description": "A hackathon event for developers to collaborate and build projects using the latest technologies and tools."
+        },
+        "project4": {
+          "title": "IT Park Uzbekistan",
+          "description": "A technology park in Tashkent, Uzbekistan, providing infrastructure and support for startups and tech companies."
+        },
+        "project5": {
+          "title": "Mobile Development Meetup",
+          "description": "A community of uzbek mobile developers in South Korea, organizing meetups and events to share knowledge and network."
+        },
+        "project6": {
+          "title": "Startup Grind",
+          "description": "A global community of entrepreneurs, hosting events and programs to help startups grow and succeed."
+        }
+      }
+    }
+  }
+  

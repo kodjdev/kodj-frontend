@@ -1,9 +1,7 @@
 import {
   HomePage,
-  LoginPage,
   About,
   SignupPage,
-  UserDetailsForm,
 } from "../pages";
 import React, { Suspense } from "react";
 import ForgotPassword from "@/pages/Auth/ForgotPassword.tsx";
@@ -38,23 +36,23 @@ export const routes: RouteType[] = [
     component: <About />,
     auth: false,
   },
-  {
-    path: "/login",
-    component: <LoginPage />,
-    auth: false,
-  },
+  // {
+  //   path: "/login",
+  //   component: <LoginPage />,
+  //   auth: false,
+  // },
   {
     path: "/signup",
     component: <SignupPage />,
     auth: false,
   },
-  {
-    path: "/complete-profile",
-    component: (
-        <UserDetailsForm />
-    ),
-    auth: true
-  },
+  // {
+  //   path: "/complete-profile",
+  //   component: (
+  //       <UserDetailsForm />
+  //   ),
+  //   auth: true
+  // },
   {
     path: "/forgot-password",
     component: <ForgotPassword />,

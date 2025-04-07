@@ -3,7 +3,7 @@ import { auth, sendPasswordResetEmail } from "../../firebase/firebaseConfig";
 import { message } from "antd";
 import { HiOutlineMail } from "react-icons/hi";
 import { useNavigate } from "react-router-dom";
-import { Button } from "@/components/Button/Button";
+// import { Button } from "@/components/Button/Button";
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState("");
@@ -70,9 +70,9 @@ export default function ForgotPassword() {
                 placeholder="Enter your email"
               />
             </div>
-            <Button color="blue" disabled={loading} size="md" fullWidth={true}>
+            {/* <Button color="blue" disabled={loading} size="md" fullWidth={true}>
               {loading ? "Sending..." : "Send Code"}
-            </Button>
+            </Button> */}
             <div className="mb-20"></div>
           </form>
         </div>
