@@ -1,8 +1,8 @@
 import React from "react";
 import { cn } from "@/lib/utils";
-import theme from "@/tools/theme";
+import theme from "@/tools/themeColors";
 
-interface FormLabelProps extends React.LabelHTMLAttributes<HTMLLabelElement> {
+type FormLabelProps = React.LabelHTMLAttributes<HTMLLabelElement> & {
   id: string;
   htmlFor: string;
   labelText: string;
@@ -11,13 +11,9 @@ interface FormLabelProps extends React.LabelHTMLAttributes<HTMLLabelElement> {
   };
 }
 
-export const FormLabel: React.FC<FormLabelProps> = ({
-  id,
-  htmlFor,
-  labelText,
-  className,
-  ...props
-}) => {
+export default function FormLabel(
+  { id, htmlFor, labelText, className, ...props }: FormLabelProps
+): JSX.Element {
   return (
     <label
       id={id}
@@ -29,4 +25,4 @@ export const FormLabel: React.FC<FormLabelProps> = ({
       {labelText}
     </label>
   );
-};
+}

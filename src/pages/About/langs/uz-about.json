@@ -1,0 +1,45 @@
+{
+    "whoIsKodj": {
+      "title": "KO'DJ kim o'zi?",
+      "description": "KO'DJ bu - Koreyadagi O'zbek Dasturchilar Jamiyati bo'lib bizning tadbirlarimiz dasturchilarga imkoniyat berish, ijodkorlikni ilhomlantirish va hamkorlikni rivojlantirish uchun mo'ljallangan. Biz o'rganishning eng yaxshi usuli - bu qilishdir, va bizning tadbirlarimiz haqiqiy hayotda qo'llanilishi mumkin bo'lgan amaliy tajriba va amaliy bilimlarni taqdim etishga mo'ljallangan."
+    },
+    "why_join_us": {
+      "title": "Nega bizga qo'shilish kerak?",
+      "paragraph1": "KO'DJ da biz hamkorlik va innovatsiya kuchiga ishonamiz. Bizning tadbirlarimiz oddiy uchrashuvlardan ko'proq; ular o'zgaruvchan o'rganish, mazmunli aloqalar va yangiliklar uchun platformalardir.",
+      "paragraph2": "KO'DJ tadbirlarida ishtirok etib, siz shunchaki tadbir qatnashchisi emas, balki KO'DJ jamiyatini yangi cho'qqilarga ko'tarish harakatining bir qismiga aylanasiz. Va o'ylaymizki bu orqali ko'plab imkoniyatlar va g'oyalar ustida ishlashga KO'DJ turki bo'ladi, keling birgalikda yarataylik, o'rganaylik va rivojlanaylik."
+    },
+    "our_mission": {
+      "title": "Bizning maqsadimiz",
+      "description": "Bizning maqsadimiz hamkorlik, o'rganish va ilhom uchun platforma yaratishdir. Biz jamiyat va innovatsiyaning ijobiy o'zgarishlarni keltirib chiqarish kuchiga ishonamiz. Farq yaratish uchun birga ishlashda bizga qo'shiling."
+    },
+    "benefits": {
+      "title": "KO'DJ ga qo'shilishning qanday afzalliklari bor?",
+      "description": "KO'DJ ga qo'shilib, siz dasturchi sifatida o'sishingizga va karyerangizni rivojlantirishga yordam beradigan keng ko'lamli imtiyozlarga ega bo'lasiz. Sizning tarmoqingizni kengaytirmoqchi, yangi ko'nikmalarni o'rganmoqchi yoki ilhom topmoqchi bo'lsangiz, KO'DJ sizga taklif qilish uchun nimadir bor. Bizning tadbirlarimiz sizga texnologiya sohasida muvaffaqiyatga erishish uchun kerak bo'lgan vositalar, resurslar va qo'llab-quvvatlashni taqdim etishga mo'ljallangan."
+    },
+    "benefit_items": {
+      "networking": {
+        "title": "Tarmoqlashuv imkoniyatlari",
+        "description": "O'xshash fikrdagi shaxslar, sanoat ekspertlari va potentsial hamkorlar bilan bog'lanish orqali professional tarmoqingizni kengaytiring."
+      },
+      "expert_talks": {
+        "title": "Ekspertlar suhbatlari",
+        "description": "Texnologiya liderlari va innovatorlardan to'g'ridan-to'g'ri o'rganing, ular o'z tushunchalari, tendentsiyalari va sohadagi amaliy bilim va tajribalarini baham ko'radilar."
+      },
+      "workshops": {
+        "title": "Amaliy seminarlar",
+        "description": "Amaliy, real dunyodagi tajribani taqdim etish va qo'llanma o'rganish orqali ko'nikmalaringizni oshirish uchun mo'ljallangan interaktiv seminarlarda qatnashing."
+      },
+      "collaboration": {
+        "title": "Hamkorlik imkoniyatlari",
+        "description": "Qo'llab-quvvatlovchi va iste'dodli dasturchilar jamoasi bilan innovatsion loyihalarda hamkorlik qiling."
+      },
+      "inspiration": {
+        "title": "Ilhom va innovatsiya",
+        "description": "Yangi g'oyalarni kashf qiling, muvaffaqiyat hikoyalaridan ilhomlanib, ijodkorlikni innovatsiya qilish uchun uyg'oting."
+      },
+      "career": {
+        "title": "Karyera o'sishi",
+        "description": "Talab qilinadigan ko'nikmalarni o'rganish, mentorlik imkoniyatlarini topish va o'z sohasida oldinda bo'lish orqali karyerangizni rivojlantiring."
+      }
+    }
+  }
