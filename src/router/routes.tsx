@@ -1,11 +1,7 @@
-import {
-  HomePage,
-  About,
-  SignupPage,
-} from "../pages";
+import { HomePage, LoginPage, About } from "../pages";
 import React, { Suspense } from "react";
-import ForgotPassword from "@/pages/Auth/ForgotPassword.tsx";
-import ComponentLoading from "@/components/ComponentLoading.tsx";
+import ForgotPassword from "../components/ForgotPassword.tsx";
+import ComponentLoading from "../components/ComponentLoading.tsx";
 
 import {
   MyPage,
@@ -14,7 +10,7 @@ import {
   NewsDetails,
   NewsList,
   SpeakerRegistrationForm,
-  EventsList,
+  EventsList
 } from "./lazyComponents";
 
 import EditMyPage from "@/pages/MyPage/EditMyPage.tsx";
@@ -36,23 +32,11 @@ export const routes: RouteType[] = [
     component: <About />,
     auth: false,
   },
-  // {
-  //   path: "/login",
-  //   component: <LoginPage />,
-  //   auth: false,
-  // },
   {
-    path: "/signup",
-    component: <SignupPage />,
+    path: "/login",
+    component: <LoginPage />,
     auth: false,
   },
-  // {
-  //   path: "/complete-profile",
-  //   component: (
-  //       <UserDetailsForm />
-  //   ),
-  //   auth: true
-  // },
   {
     path: "/forgot-password",
     component: <ForgotPassword />,
@@ -79,7 +63,7 @@ export const routes: RouteType[] = [
   {
     path: "/events",
     component: (
-      <Suspense fallback={<ComponentLoading />}>
+      <Suspense fallback={<ComponentLoading/>}>
         <EventsList />
       </Suspense>
     ),
@@ -111,10 +95,10 @@ export const routes: RouteType[] = [
   {
     path: "/speakers",
     component: (
-      <Suspense fallback={<ComponentLoading />}>
-        <SpeakerRegistrationForm />
+      <Suspense fallback={<ComponentLoading/>}>
+        <SpeakerRegistrationForm/>
       </Suspense>
-    ),
+    )
   },
   {
     path: "/news",
@@ -122,7 +106,7 @@ export const routes: RouteType[] = [
       <Suspense fallback={<ComponentLoading />}>
         <NewsList />
       </Suspense>
-    ),
+    )
   },
   {
     path: "/news/:category",

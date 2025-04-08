@@ -3,12 +3,12 @@ import LanguageDetector from 'i18next-browser-languagedetector';
 import { useEffect } from 'react';
 import { initReactI18next, useTranslation } from 'react-i18next';
 
-import enNavbar from '@/pages/About/langs/en-about.json';
-import uzNavbar from '@/pages/About/langs/uz-about.json';
+import enNavbar from './en/about.json';
+import uzNavbar from './uz/about.json';
 import enSpeakers from '../pages/Speakers/langs/en.json';
 import uzSpeakers from '../pages/Speakers/langs/uz.json';
-import enEventRegister from '../pages/Events/EventRegister/langs/en.json';
-import uzEventRegister from '../pages/Events/EventRegister/langs/uz.json';
+import enEventRegister from '../pages/EventRegister/langs/en.json';
+import uzEventRegister from '../pages/EventRegister/langs/uz.json';
 
 declare module 'i18next' {
   interface CustomTypeOptions {
@@ -26,7 +26,6 @@ declare module 'i18next' {
  * {@link https://www.i18next.com/overview/configuration-options}
  * {@link https://github.com/i18next/i18next-browser-languageDetector}
  * */
-
 i18n
   .use(initReactI18next)
   .use(LanguageDetector)

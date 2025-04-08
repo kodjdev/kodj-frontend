@@ -5,29 +5,28 @@ import {
   useEffect,
   useState,
 } from "react";
+import { onAuthStateChanged, User } from "firebase/auth";
+import { auth } from "../firebase/firebaseConfig";
 import { useNavigate } from "react-router-dom";
-import apiService from "@/service/apiService";
-import {
-  CHECK_INTERVAL_MS,
-  INACTIVE_TIMEOUT_MS,
-  SESSION_TIMEOUT_MS,
-} from "@/utils/constant";
-import { User } from "@/types/index";
+import { CHECK_INTERVAL_MS, INACTIVE_TIMEOUT_MS, SESSION_TIMEOUT_MS } from "../utils/constant";
 
 interface AuthContextType {
   user: User | null;
   loading: boolean;
   isLogin: boolean;
   accessToken: string | null;
-  login: (userData: User, token: string) => void;
+  login: (user: User) => void;
   logout: () => void;
-};
+  setAccessToken: (token: string | null) => void;
+  setLogin: (isLogin: boolean) => void;
+}
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
+  // we use useNavigate hook
   const navigate = useNavigate();
 
   const [user, setUser] = useState<User | null>(null);
@@ -36,32 +35,32 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   const [accessToken, setAccessToken] = useState<string | null>(null);
   const [lastActivity, setLastActivity] = useState<number>(Date.now());
 
-  // we track the activity
-  const updateActivity = useCallback(() => {
-    const currentTime = Date.now();
-    setLastActivity(currentTime);
-    sessionStorage.setItem("lastActivity", currentTime.toString());
-  }, []);
-
   const autoLogout = useCallback(() => {
+    // agar login qilmasa tekshirmaymiz
     if (!user) return;
 
+    // const currentTime = Date.now();
     const currentTime = Date.now();
     const storedLastActivity = sessionStorage.getItem("lastActivity");
     const lastActivityTime = storedLastActivity
       ? parseInt(storedLastActivity)
       : lastActivity;
-
     if (currentTime - lastActivityTime >= INACTIVE_TIMEOUT_MS) {
+      // simply call logout()
       logout();
-      alert("You have been logged out due to inactivity!");
+      alert("You have been logged out due to inactivity !");
     } else if (currentTime - lastActivityTime >= SESSION_TIMEOUT_MS) {
       logout();
       alert("Your session has expired, Please login again.");
     }
   }, [lastActivity, user]);
 
-  // user activity event listeners
+  const updateActivity = useCallback(() => {
+    const currentTime = Date.now();
+    setLastActivity(currentTime);
+    sessionStorage.setItem("lastActivity", currentTime.toString());
+  }, []);
+
   useEffect(() => {
     if (user) {
       const events = [
@@ -73,13 +72,18 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
         "touchstart",
       ];
 
-      const handleActivity = () => updateActivity();
+      const handleActivity = () => {
+        updateActivity();
+      };
 
       events.forEach((event) => {
         window.addEventListener(event, handleActivity);
       });
 
-      const intervalId = setInterval(autoLogout, CHECK_INTERVAL_MS);
+      // buyerda biz activeligini har minutda tekshiramiz
+      const intervalId = setInterval(() => {
+        autoLogout();
+      }, CHECK_INTERVAL_MS);
 
       return () => {
         events.forEach((event) => {
@@ -91,82 +95,39 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   }, [user, autoLogout, updateActivity]);
 
   useEffect(() => {
-    const initializeAuth = async () => {
-      const storedToken = localStorage.getItem("accessToken");
-
-      if (storedToken) {
-        try {
-          // we fetch the user details with the token
-          const userData = await apiService.getUserDetails(storedToken);
-
-          setUser({
-            id: userData.id.toString(),
-            email: userData.email,
-            name: userData.name,
-            role: userData.role,
-          });
-          setAccessToken(storedToken);
-          setLogin(true);
-          sessionStorage.setItem("user", JSON.stringify(userData));
-        } catch (error) {
-          console.error("Authentication initialization error:", error);
-          logout();
-        } finally {
-          setLoading(false);
-        }
+    const unsubcribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+      setLoading(false);
+      setLogin(!!currentUser);
+      if (currentUser) {
+        sessionStorage.setItem("user", JSON.stringify(currentUser));
       } else {
-        setLoading(false);
+        sessionStorage.removeItem("user");
       }
-    };
+    });
 
-    initializeAuth();
+    return () => unsubcribe();
   }, []);
 
-  const login = useCallback(
-    async (userData: User, token: string) => {
-      try {
-        // store token
-        setAccessToken(token);
-        localStorage.setItem("accessToken", token);
+  const login = (user: User) => {
+    setUser(user);
+    setLogin(true);
+    setLastActivity(Date.now());
+    sessionStorage.setItem("user", JSON.stringify(user));
+    sessionStorage.setItem("lastActivity", Date.now().toString());
+    updateActivity();
+  };
 
-        // set user and login state
-        setUser(userData);
-        setLogin(true);
-
-        setLastActivity(Date.now());
-        sessionStorage.setItem("user", JSON.stringify(userData));
-        sessionStorage.setItem("lastActivity", Date.now().toString());
-
-        navigate("/mypage");
-      } catch (error) {
-        console.error("Login error:", error);
-        logout();
-      }
-    },
-    [navigate]
-  );
-
-
-  const logout = useCallback(async () => {
-    try {
-      // we call backend logout endpoint: i need to check the logout 
-      await apiService.logout();
-    } catch (error) {
-      console.error("Logout error:", error);
-    } finally {
-      // clear qilamiz
-      setUser(null);
-      setLogin(false);
-      setAccessToken(null);
-      setLastActivity(0);
-
-      sessionStorage.clear();
-      localStorage.removeItem("accessToken");
-
-      navigate("/login");
-    }
-  }, [navigate]);
- 
+  const logout = async () => {
+    await auth.signOut();
+    // requestLogout();
+    setUser(null);
+    setLogin(false);
+    setAccessToken(null);
+    setLastActivity(0);
+    sessionStorage.clear();
+    navigate("/login");
+  };
 
   return (
     <AuthContext.Provider
@@ -175,8 +136,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
         loading,
         isLogin,
         accessToken,
-        login,
         logout,
+        login,
+        setAccessToken,
+        setLogin,
       }}
     >
       {children}
