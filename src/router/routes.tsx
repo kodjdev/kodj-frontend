@@ -1,23 +1,15 @@
-import {
-  HomePage,
-  About,
-  SignupPage,
-} from "../pages";
+import { HomePage } from "../pages";
 import React, { Suspense } from "react";
 import ForgotPassword from "@/pages/Auth/ForgotPassword.tsx";
 import ComponentLoading from "@/components/ComponentLoading.tsx";
 
 import {
-  MyPage,
   EventDetails,
   EventRegister,
   NewsDetails,
   NewsList,
   SpeakerRegistrationForm,
-  EventsList,
 } from "./lazyComponents";
-
-import EditMyPage from "@/pages/MyPage/EditMyPage.tsx";
 
 interface RouteType {
   path: string;
@@ -31,21 +23,21 @@ export const routes: RouteType[] = [
     component: <HomePage />,
     auth: false,
   },
-  {
-    path: "/about",
-    component: <About />,
-    auth: false,
-  },
+  // {
+  //   path: "/about",
+  //   component: <About />,
+  //   auth: false,
+  // },
   // {
   //   path: "/login",
   //   component: <LoginPage />,
   //   auth: false,
   // },
-  {
-    path: "/signup",
-    component: <SignupPage />,
-    auth: false,
-  },
+  // {
+  //   path: "/signup",
+  //   component: <SignupPage />,
+  //   auth: false,
+  // },
   // {
   //   path: "/complete-profile",
   //   component: (
@@ -58,38 +50,38 @@ export const routes: RouteType[] = [
     component: <ForgotPassword />,
     auth: false,
   },
-  {
-    path: "/mypage",
-    component: (
-      <Suspense fallback={<ComponentLoading />}>
-        <MyPage />
-      </Suspense>
-    ),
-    auth: true,
-  },
-  {
-    path: "/mypage/editProfile",
-    component: (
-      <Suspense fallback={<ComponentLoading />}>
-        <EditMyPage />
-      </Suspense>
-    ),
-    auth: true,
-  },
-  {
-    path: "/events",
-    component: (
-      <Suspense fallback={<ComponentLoading />}>
-        <EventsList />
-      </Suspense>
-    ),
-    auth: false,
-  },
-  {
-    path: "/events:type",
-    component: <EventsList />,
-    auth: false,
-  },
+  // {
+  //   path: "/mypage",
+  //   component: (
+  //     <Suspense fallback={<ComponentLoading />}>
+  //       <MyPage />
+  //     </Suspense>
+  //   ),
+  //   auth: true,
+  // },
+  // {
+  //   path: "/mypage/editProfile",
+  //   component: (
+  //     <Suspense fallback={<ComponentLoading />}>
+  //       <EditMyPage />
+  //     </Suspense>
+  //   ),
+  //   auth: true,
+  // },
+  // {
+  //   path: "/events",
+  //   component: (
+  //     <Suspense fallback={<ComponentLoading />}>
+  //       <EventsList />
+  //     </Suspense>
+  //   ),
+  //   auth: false,
+  // },
+  // {
+  //   path: "/events:type",
+  //   component: <EventsList />,
+  //   auth: false,
+  // },
   {
     path: "/events/:type/details/:id",
     component: (

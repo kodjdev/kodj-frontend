@@ -83,19 +83,22 @@ const typography = {
   // Heading styles
   headings: {
     desktop: {
-      h1: { fontSize: 64, fontWeight: 700, lineHeight: "120%", letterSpacing: 0.25 },
+      h1: { fontSize: 57, fontWeight: 700, lineHeight: "120%", letterSpacing: 0.25 },
       h2: { fontSize: 40, fontWeight: 600, lineHeight: "130%", letterSpacing: 0.25 },
       h3: { fontSize: 32, fontWeight: 600, lineHeight: "130%", letterSpacing: 0.25 },
+      h4: { fontSize: 24, fontWeight: 500, lineHeight: "130%", letterSpacing: 0.25 },
     },
     tablet: {
       h1: { fontSize: 48, fontWeight: 700, lineHeight: "120%", letterSpacing: 0.25 },
       h2: { fontSize: 40, fontWeight: 600, lineHeight: "130%", letterSpacing: 0.25 },
       h3: { fontSize: 32, fontWeight: 600, lineHeight: "130%", letterSpacing: 0.25 },
+      h4: { fontSize: 24, fontWeight: 500, lineHeight: "130%", letterSpacing: 0.25 },
     },
     mobile: {
       h1: { fontSize: 40, fontWeight: 700, lineHeight: "120%", letterSpacing: 0.25 },
       h2: { fontSize: 32, fontWeight: 600, lineHeight: "130%", letterSpacing: 0.25 },
       h3: { fontSize: 24, fontWeight: 600, lineHeight: "130%", letterSpacing: 0.25 },
+      h4: { fontSize: 20, fontWeight: 500, lineHeight: "130%", letterSpacing: 0.25 },
     },
   },
   
@@ -171,10 +174,12 @@ const spacing = {
   xxxl: "64px",
 };
 
+// border: 1px solid #FFF;
+
 /**
  * Border radius system
  */
-const borderRadius = {
+const cardBorder = {
   none: "0",
   sm: "4px",
   md: "8px",
@@ -182,7 +187,11 @@ const borderRadius = {
   xl: "16px",
   xxl: "24px",
   pill: "9999px",
-};
+
+  color: "#FFF"
+}
+
+ 
 
 /**
  * Shadow system
@@ -325,10 +334,11 @@ const utils = {
 const breakpoints = {
   mobile: "480px",
   tablet: "768px",
-  laptop: "1024px",
+  laptop: "1140px",
   desktop: "1280px",
   largeDesktop: "1440px",
 };
+
 
 /**
  * Main theme object
@@ -338,7 +348,7 @@ const themeColors = {
   colors,
   typography,
   spacing,
-  borderRadius,
+  cardBorder,
   shadows,
   sizes,
   animation,

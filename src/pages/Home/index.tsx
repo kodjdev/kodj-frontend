@@ -1,7 +1,5 @@
-// import { CardHoverEffect } from "../../components/HoverCards";
-// import StatisticsPage from "./Statistics";
-// import { MainCard } from "./MainCard/MainCard";
-// import TimeFrame from "./TimeFrame";
+import MainCard from "./MainCard/MainCard";
+import Statistics from "./Statistics";
 
 // export default function Home() {
 //   return (
@@ -13,3 +11,20 @@
 //     </div>
 //   );
 // }
+
+/**
+ *  Default route - Home Page
+ *
+ * @description This is the home page of the application.
+ *
+ *
+ */
+
+export default function Home() {
+  return (
+    <>
+      <MainCard />
+      <Statistics />
+    </>
+  );
+}

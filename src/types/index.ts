@@ -13,7 +13,6 @@ export interface User {
   role?: string;
 }
 
-
 export interface Event {
   id: string;
   title: string;
