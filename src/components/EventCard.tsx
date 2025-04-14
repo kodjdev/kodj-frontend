@@ -100,12 +100,9 @@ const LogoContainer = styled.div`
 /**
  * EventCard component - Organism
  *
- * Displays information about a meetup event including:
- * - Event details (title, location, date)
- * - Speaker information with avatars and talk titles
- * - Sponsoring organization logos
- *
- * @returns {JSX.Element} A styled event card component
+ * This component is used to display event information, 
+ * including the event title, date, speakers, and their respective talks.
+ * It is styled to fit within a card layout.
  */
 
 export default function EventCard() {

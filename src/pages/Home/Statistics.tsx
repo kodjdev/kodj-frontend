@@ -13,6 +13,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { FaUserGroup } from "react-icons/fa6";
+import themeColors from "@/tools/themeColors";
 
 type MeetupDataItem = {
   date: string;
@@ -55,15 +56,15 @@ const Spinner = styled.div`
 `;
 
 const Header = styled.h2`
-  font-size: 2.25rem;
-  font-weight: bold;
+  font-size: ${themeColors.typography.headings.desktop.h2.fontSize}px;
+  font-weight: ${themeColors.typography.headings.desktop.h2.fontWeight};
   color: white;
-  margin-bottom: 30px;
-  margin-top: 90px;
+  margin-top: 10px;
+  margin-bottom: -0.5rem;
 `;
 
 const GrayText = styled.span`
-  color: #6b7280;
+  color: ${themeColors.colors.gray.main};
 `;
 
 const StatsContainer = styled(motion.div)`
@@ -72,11 +73,10 @@ const StatsContainer = styled(motion.div)`
   width: 100%;
   max-width: 1440px;
   padding: 2rem 1rem;
-  margin-top: 1rem;
   margin-bottom: 1rem;
   border-radius: 8px;
-  border: 1px solid #505050;
-  background-color: #141414;
+  border: 0.5px solid ${themeColors.colors.gray.main};
+  background-color: ${themeColors.colors.gray.dark};
 
   @media (min-width: 640px) {
     padding: 2rem;
@@ -146,7 +146,7 @@ const CardContent = styled.div`
 
 const IconWrapper = styled(motion.div)`
   font-size: 2.5rem;
-  color: #3b82f6;
+  color: ${themeColors.colors.primary.main};
 
   @media (min-width: 1024px) {
     margin-top: -60px;
@@ -167,13 +167,13 @@ const PlusSign = styled.span`
 `;
 
 const CardDescription = styled.p`
-  color: #9ca3af;
+  color: ${themeColors.colors.gray.main};
   text-align: center;
 `;
 
 const ChartBadge = styled.span`
-  background-color: #dbeafe;
-  color: #1e40af;
+  background-color: ${themeColors.colors.primary.main};
+  color: ${themeColors.colors.neutral.white};
   font-size: 0.75rem;
   font-weight: 500;
   padding: 0.25rem 0.625rem;
@@ -196,7 +196,7 @@ const ChartContainer = styled.div`
 
 const UsersFooter = styled.div`
   display: flex;
-  color: #9ca3af;
+  color: ${themeColors.colors.gray.main};
   font-size: 0.75rem;
   margin-top: 1rem;
 `;
@@ -223,7 +223,7 @@ const CircleCount = styled.div`
 `;
 
 const CircleDescription = styled.div`
-  color: #6b7280;
+  color: ${themeColors.colors.gray.main};
   font-size: 0.875rem;
 `;
 

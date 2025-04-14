@@ -8,13 +8,13 @@ import themeColors from "@/tools/themeColors";
 
 const MainCardContainer = styled.div`
   position: relative;
-  z-index: 10;
+  z-index: 1;
   max-width: 1440px;
   margin: 0 auto;
 `;
 
 const ContentWrapper = styled.div`
-  padding: 0 32px;
+  padding: 0 30px;
   position: relative;
   z-index: 10;
 `;
@@ -23,11 +23,10 @@ const Heading = styled.h4`
   font-size: ${themeColors.typography.headings.tablet.h4.fontSize}px;
   font-weight: ${themeColors.typography.headings.desktop.h4.fontWeight};
   line-height: ${themeColors.typography.headings.desktop.h4.lineHeight};
-  max-width: 64rem;
+  max-width: 90%;
   margin: 0 auto;
   text-align: center;
-  // letter-spacing: -0.025em;
-  margin: 0 ${themeColors.spacing.xs};
+  letter-spacing: -0.025em;
   color: ${themeColors.colors.gray.main};
 `;
 
@@ -42,6 +41,13 @@ const FeaturesGrid = styled.div`
 
   @media (min-width: 1024px) {
     grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (min-width: 1024px) {
+    grid-template-columns: repeat(2, 1fr);
+    & > div:first-child {
+      border-right: 0.5px solid ${themeColors.cardBorder.color};
+    }
   }
 `;
 
@@ -72,11 +78,11 @@ const FeatureTitleText = styled.p`
 `;
 
 const FeatureDescriptionText = styled.p`
-  font-size: 0.875rem;
+  font-size: ${themeColors.typography.body.small.fontSize}px;
+  color: ${themeColors.colors.gray.main};
   max-width: 24rem;
   text-align: left;
   margin: 0.5rem 0;
-  color: white;
   font-weight: normal;
 
   @media (min-width: 768px) {
@@ -123,7 +129,7 @@ const CanvasWrapper = styled.canvas`
  *
  */
 
-export default function MainCard() {
+export default function CommunityCard() {
   const { t } = useTranslation("home");
 
   const features = [
@@ -144,7 +150,7 @@ export default function MainCard() {
   return (
     <MainCardContainer>
       <ContentWrapper>
-          <KodTitle />
+        <KodTitle />
         <Heading>{t("headingTitle")}</Heading>
       </ContentWrapper>
 
@@ -219,7 +225,6 @@ export const Globe = () => {
         { location: [41.2995, 69.2401], size: 0.1 },
       ],
       onRender: (state) => {
-        // Called on every animation frame.
         // `state` will be an empty object, return updated params.
         state.phi = phi;
         phi += 0.01;

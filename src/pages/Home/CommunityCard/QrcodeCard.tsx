@@ -61,7 +61,7 @@ const ExpandedImageContainer = styled(motion.div)`
 `;
 
 const ExpandedImage = styled.img`
-  border-radius: 0.375rem;
+  border-radius: 1rem;
 `;
 
 export default function QrCodeCard()  {

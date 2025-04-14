@@ -29,6 +29,10 @@ const ContentWrapper = styled.div`
   padding: ${themeColors.spacing.xl || "60px"}
     ${themeColors.spacing.lg || "40px"};
   width: 100%;
+
+  @media (max-width: ${themeColors.breakpoints.mobile}) {
+    padding: 26px;
+  }
 `;
 
 /**

@@ -9,7 +9,7 @@ import {
 } from "react-icons/fa6";
 
 const FooterContainer = styled.footer`
-  background-color: ${themeColor.colors.neutral.black};
+  background-color: ${themeColor.colors.gray.dark};
   color: ${themeColor.colors.neutral.white};
   padding: ${themeColor.spacing.lg} ${themeColor.spacing.xl};
   padding-bottom: ${themeColor.spacing.xxxl};
@@ -22,6 +22,7 @@ const FooterContainer = styled.footer`
 `;
 
 const CopyrightText = styled.p`
+  margin-top: 35px;
   font-size: ${themeColor.typography.body.small.fontSize}px;
   margin-bottom: ${themeColor.spacing.md};
 `;

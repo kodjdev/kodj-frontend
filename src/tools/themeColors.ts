@@ -42,7 +42,7 @@ const colors = {
   
   gray: {
     main: "#858585", // Text gray
-    dark: "#6B6B6B",
+    dark: "#141414", // Dark gray
     text: "#888888",
     line: "#C8C8C8",
     background: "#292929",
@@ -356,8 +356,6 @@ const themeColors = {
   utils,
   breakpoints,
   
-  // Legacy properties for backward compatibility
-  // These will help with gradual migration to the atomic system
   modal_width_alert: sizes.modal.alert,
   modal_width: sizes.modal.default,
   modal_width_large: sizes.modal.large,

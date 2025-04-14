@@ -5,10 +5,9 @@ const TitleContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 48px 0 24px;
+  margin: 20px 0 24px;
   position: relative;
-  z-index: ${themeColors.zIndex.nav}; 
-  width: 100%;
+  z-index: ${themeColors.zIndex.nav}; // Pre-defined your z-index system
 `;
 
 const MainTitle = styled.h1`
@@ -19,14 +18,17 @@ const MainTitle = styled.h1`
   letter-spacing: ${themeColors.typography.headings.desktop.h1.letterSpacing}px;
   text-align: center;
   margin: 0;
-  padding: 0;
-  // overflow: hidden;
+  padding: 0 10px;
   width: 100%;
-  white-space: nowrap;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
 
   @media (max-width: ${themeColors.breakpoints.tablet}) {
     font-size: ${themeColors.typography.headings.tablet.h1.fontSize}px;
-    white-space: normal; 
+    white-space: normal;
   }
 
   @media (max-width: ${themeColors.breakpoints.mobile}) {
@@ -37,17 +39,28 @@ const MainTitle = styled.h1`
 
 const StaticTitle = styled.span`
   color: ${themeColors.colors.neutral.white};
+  display: inline-block;
+
+  @media (max-width: ${themeColors.breakpoints.mobile}) {
+    hyphens: auto;
+    word-break: break-word;
+  }
 `;
 
 const HighlightWord = styled.span`
   color: ${themeColors.colors.primary.main};
+  display: inline-block;
+
+  @media (max-width: ${themeColors.breakpoints.mobile}) {
+    margin-top: 5px;
+  }
 `;
 
 /**
  *
  * HomeTitle Component - Part of the Home page
  * This component displays the main title of the home page.
- * 
+ *
  */
 
 export default function HomeTitle() {

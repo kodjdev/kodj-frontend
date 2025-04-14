@@ -11,7 +11,9 @@ const HeaderOuterContainer = styled.header`
   background-color: ${themeColors.colors.neutral.black || "#000"};
   color: ${themeColors.colors.neutral.white || "white"};
   width: 100%;
-  z-index: ${themeColors.zIndex.nav || 10};
+  min-width: 320px;
+  z-index: 1000;
+  overflow-x: hidden;
 `;
 
 const HeaderInnerContainer = styled.div`
@@ -19,9 +21,14 @@ const HeaderInnerContainer = styled.div`
   align-items: center;
   justify-content: space-between;
   max-width: ${themeColors.breakpoints.laptop || "1140px"};
-  padding: 10px ${themeColors.spacing.md } 20px;
+  padding: 10px ${themeColors.spacing.md} 20px;
   margin: 0 auto;
+  margin-bottom: -15px;
   width: 100%;
+
+  @media (max-width: ${themeColors.breakpoints.mobile}) {
+    padding: 10px 20px;
+  }
 `;
 
 const LogoContainer = styled.div`
@@ -35,7 +42,15 @@ const Logo = styled.img`
 
 const Navigation = styled.nav`
   display: flex;
-  gap: ${themeColors.spacing.xl || "2rem"};
+  justify-content: flex-end;
+  align-items: center;
+  flex-grow: 1;
+  flex-basis: 0;
+  flex-wrap: nowrap;
+  margin-left: ${themeColors.spacing.xl };
+  margin-right: ${themeColors.spacing.xl };
+  padding: 0 ${themeColors.spacing.xl };
+  gap: ${themeColors.spacing.xl };
 
   @media (max-width: ${themeColors.breakpoints.mobile || "768px"}) {
     display: none; // mobile uchun esa hamburger menyu qilishim kerak
@@ -105,9 +120,9 @@ export default function Header() {
         </Navigation>
 
         <AuthButtons>
-          <Button asLink to="/signup" variant="text" size="md">
+          {/* <Button asLink to="/signup" variant="text" size="md">
             Sign up
-          </Button>
+          </Button> */}
           <Button asLink to="/login" variant="light" size="sm">
             Login
           </Button>
