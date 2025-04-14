@@ -108,7 +108,7 @@ const LogoContainer = styled.div`
  * @returns {JSX.Element} A styled event card component
  */
 
-export default function EventCard(): JSX.Element {
+export default function EventCard() {
   return (
     <Card>
       <Header>

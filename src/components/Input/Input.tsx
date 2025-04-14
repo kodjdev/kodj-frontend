@@ -25,7 +25,7 @@ const StyledInput = styled.input`
   background-color: ${themeColor.colors.gray.inputTag};
   color: ${themeColor.colors.neutral.white};
   border: none;
-  border-radius: ${themeColor.borderRadius.md};
+  border-radius: ${themeColor.cardBorder.md};
   padding: ${themeColor.spacing.md};
   font-size: ${themeColor.typography.body.medium.fontSize}px;
   height: 48px;
@@ -53,17 +53,15 @@ const ErrorMessage = styled.span`
   margin-top: ${themeColor.spacing.xs};
 `;
 
+
 /**
- * Input component - Molecule
+ * Input component - Atom Component
  *
  * A form input control that combines multiple atomic elements (label, input field, and error message)
  * into a cohesive form control.
  *
- * @param label - Optional descriptive text label for the input
- * @param error - Optional error message displayed when validation fails
- * @param fullWidth - Whether the input should expand to fill its container width
- * @param rest - Standard HTML input attributes (type, placeholder, onChange, etc.)
- * @returns {JSX.Element} A complete input field component with proper styling and behavior
+ * @returns a styled input component with optional label and error message.
+ * 
  */
 
 export default function Input({
@@ -71,8 +69,7 @@ export default function Input({
   error,
   fullWidth = false,
   ...rest
-}: InputProps): JSX.Element {
-  // Use a ref hook inside the component if needed
+}: InputProps) {
   const inputRef = React.useRef<HTMLInputElement>(null);
 
   return (
@@ -83,3 +80,4 @@ export default function Input({
     </InputContainer>
   );
 }
+

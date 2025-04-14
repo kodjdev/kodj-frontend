@@ -1,5 +1,5 @@
 import React, { createContext, useState, ReactNode, useContext } from "react";
-import Modal from "@/components/ui/modal";
+// import Modal from "@/components/ui/modal";
 
 export type ModalContextType = {
   openModal: (type: string, content?: React.ReactNode) => void;
@@ -62,11 +62,29 @@ export const ModalProvider: React.FC<{ children: ReactNode }> = ({
 // bu modal global modal bo'lib , barcha modalni bir joyda chiqaradi
 const GlobalModal: React.FC<GlobalModalProps> = ({ onClose, children }) => {
   return (
-    <Modal onClose={onClose}>
-      <div className="bg-gray-800" onClick={(e) => e.stopPropagation()}>
-        {children}
+    // <Modal onClose={onClose}>
+    //   <div className="bg-gray-800" onClick={(e) => e.stopPropagation()}>
+    //     {children}
+    //   </div>
+    // </Modal>
+    <div
+      className="fixed inset-0 flex items-center justify-center z-50"
+      onClick={onClose}
+    >
+      <div
+        className="bg-gray-800 rounded-lg shadow-lg p-4"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="text-white">{children}</div>
+        <button
+          className="mt-4 px-4 py-2 bg-blue-600 text-white rounded"
+          onClick={onClose}
+        >
+          Close
+        </button>
       </div>
-    </Modal>
+      <div className="fixed inset-0 bg-black opacity-50"></div>
+    </div>
   );
 };
 

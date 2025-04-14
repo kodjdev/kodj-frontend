@@ -66,11 +66,11 @@ const FormActions = styled.div`
  * This component displays a multi-step registration form with progress indicator,
  * input fields for user details, and a section for event information.
  * 
- * @returns {JSX.Element} A styled registration form with input fields and button
+ * @returns A styled registration form with input fields and button
  */
 
 
-export default function RegistrationForm(): JSX.Element {
+export default function RegistrationForm() {
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",

@@ -13,7 +13,7 @@ type FormLabelProps = React.LabelHTMLAttributes<HTMLLabelElement> & {
 
 export default function FormLabel(
   { id, htmlFor, labelText, className, ...props }: FormLabelProps
-): JSX.Element {
+) {
   return (
     <label
       id={id}

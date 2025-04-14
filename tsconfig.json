@@ -30,7 +30,6 @@
     }
   },
   "include": [
-    // we include all the code we want typed:
     "src",
     "src/types/custom.d.ts",
     "vite.config.ts"

@@ -1,8 +1,7 @@
-// Input/ProgressStepper.tsx
 import React from "react";
 import styled from "styled-components";
 import themeColor from "@/tools/themeColors";
-import CheckIcon from "../Icons/CheckIcon";
+import CheckIcon from "@/components/Icons/CheckIcon";
 
 export type ProgressStepperProps = {
   steps: number;
@@ -56,20 +55,19 @@ const StepItem = styled.div<{ status: "completed" | "active" | "pending" }>`
 `;
 
 /**
- * ProgressShow component - Molecule
+ * 
+ * ProgressShow component - Molecule Component
  *
  * A visual stepper component that displays progress through a multi-step process.
- * @param steps - Total number of steps in the process
- * @param activeStep - The current active step (zero-based index)
- * @param className - Optional CSS class name for additional styling
- * @returns {JSX.Element} A horizontal stepper showing progress through multiple steps
+ * @returns A styled stepper with progress indicators with check icons
+ * 
  */
 
 export default function ProgressShow({
   steps,
   activeStep,
   className,
-}: ProgressStepperProps): JSX.Element {
+}: ProgressStepperProps) {
   return (
     <StepperContainer className={className}>
       {Array.from({ length: steps }).map((_, index) => {

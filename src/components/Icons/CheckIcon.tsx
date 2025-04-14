@@ -9,7 +9,7 @@ export default function CheckIcon({
   width = 24, 
   height = 24, 
   color = 'currentColor' 
-}: CheckIconProps): JSX.Element {
+}: CheckIconProps){
   return (
     <svg 
       width={width} 
