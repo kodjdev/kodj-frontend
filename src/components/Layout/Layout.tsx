@@ -1,8 +1,8 @@
 import React from "react";
 import styled from "styled-components";
-import Header from "@/components/Header";
 import Footer from "@/components/Footer/Footer";
 import themeColors from "@/tools/themeColors";
+import Header from "@/components/Header/index";
 
 const LayoutContainer = styled.div`
   display: flex;

@@ -23,8 +23,9 @@ const colors = {
     dark: "#2542EB",
     light: "#576ADE",
     disabled: "#2C6EA8",
+    hover: "#1A8CD9",
   },
-  
+
   secondary: {
     main: "#6E3678", // Purple
     dark: "#572A5E",
@@ -33,13 +34,13 @@ const colors = {
     hover: "#F4EAF6",
     background: "#FAF8FB",
   },
-  
+
   neutral: {
     black: "#000000",
     white: "#FFFFFF",
     white_dark: "#E0E0E0",
   },
-  
+
   gray: {
     main: "#858585", // Text gray
     dark: "#141414", // Dark gray
@@ -48,8 +49,9 @@ const colors = {
     background: "#292929",
     inputTag: "#5B5B5B",
     label: "#969696",
+    hover: "#6B6B6B",
   },
-  
+
   // Status colors
   status: {
     error: {
@@ -66,7 +68,7 @@ const colors = {
       main: "#F2A024", // Yellow
     },
   },
-  
+
   // Utility colors
   utility: {
     overlay: "rgba(0, 0, 0, 0.065)",
@@ -83,25 +85,85 @@ const typography = {
   // Heading styles
   headings: {
     desktop: {
-      h1: { fontSize: 57, fontWeight: 700, lineHeight: "120%", letterSpacing: 0.25 },
-      h2: { fontSize: 40, fontWeight: 600, lineHeight: "130%", letterSpacing: 0.25 },
-      h3: { fontSize: 32, fontWeight: 600, lineHeight: "130%", letterSpacing: 0.25 },
-      h4: { fontSize: 24, fontWeight: 500, lineHeight: "130%", letterSpacing: 0.25 },
+      h1: {
+        fontSize: 57,
+        fontWeight: 700,
+        lineHeight: "120%",
+        letterSpacing: 0.25,
+      },
+      h2: {
+        fontSize: 40,
+        fontWeight: 600,
+        lineHeight: "130%",
+        letterSpacing: 0.25,
+      },
+      h3: {
+        fontSize: 32,
+        fontWeight: 600,
+        lineHeight: "130%",
+        letterSpacing: 0.25,
+      },
+      h4: {
+        fontSize: 24,
+        fontWeight: 500,
+        lineHeight: "130%",
+        letterSpacing: 0.25,
+      },
     },
     tablet: {
-      h1: { fontSize: 48, fontWeight: 700, lineHeight: "120%", letterSpacing: 0.25 },
-      h2: { fontSize: 40, fontWeight: 600, lineHeight: "130%", letterSpacing: 0.25 },
-      h3: { fontSize: 32, fontWeight: 600, lineHeight: "130%", letterSpacing: 0.25 },
-      h4: { fontSize: 24, fontWeight: 500, lineHeight: "130%", letterSpacing: 0.25 },
+      h1: {
+        fontSize: 48,
+        fontWeight: 700,
+        lineHeight: "120%",
+        letterSpacing: 0.25,
+      },
+      h2: {
+        fontSize: 40,
+        fontWeight: 600,
+        lineHeight: "130%",
+        letterSpacing: 0.25,
+      },
+      h3: {
+        fontSize: 32,
+        fontWeight: 600,
+        lineHeight: "130%",
+        letterSpacing: 0.25,
+      },
+      h4: {
+        fontSize: 24,
+        fontWeight: 500,
+        lineHeight: "130%",
+        letterSpacing: 0.25,
+      },
     },
     mobile: {
-      h1: { fontSize: 40, fontWeight: 700, lineHeight: "120%", letterSpacing: 0.25 },
-      h2: { fontSize: 32, fontWeight: 600, lineHeight: "130%", letterSpacing: 0.25 },
-      h3: { fontSize: 24, fontWeight: 600, lineHeight: "130%", letterSpacing: 0.25 },
-      h4: { fontSize: 20, fontWeight: 500, lineHeight: "130%", letterSpacing: 0.25 },
+      h1: {
+        fontSize: 40,
+        fontWeight: 700,
+        lineHeight: "120%",
+        letterSpacing: 0.25,
+      },
+      h2: {
+        fontSize: 32,
+        fontWeight: 600,
+        lineHeight: "130%",
+        letterSpacing: 0.25,
+      },
+      h3: {
+        fontSize: 24,
+        fontWeight: 600,
+        lineHeight: "130%",
+        letterSpacing: 0.25,
+      },
+      h4: {
+        fontSize: 20,
+        fontWeight: 500,
+        lineHeight: "130%",
+        letterSpacing: 0.25,
+      },
     },
   },
-  
+
   // Body text styles
   body: {
     large: { fontSize: 18, lineHeight: "140%", letterSpacing: 0 },
@@ -109,14 +171,14 @@ const typography = {
     small: { fontSize: 14, lineHeight: "140%", letterSpacing: 0 },
     xsmall: { fontSize: 12, lineHeight: "140%", letterSpacing: 0.4 },
   },
-  
+
   // Menu text
-  menu: { 
-    fontSize: 14, 
-    lineHeight: "150%", 
-    letterSpacing: 0.1 
+  menu: {
+    fontSize: 14,
+    lineHeight: "150%",
+    letterSpacing: 0.1,
   },
-  
+
   // Preset styles (from original theme)
   presets: {
     font8: { fontSize: 8, letterSpacing: -0.2, lineHeight: "9px" },
@@ -188,10 +250,8 @@ const cardBorder = {
   xxl: "24px",
   pill: "9999px",
 
-  color: "#FFF"
-}
-
- 
+  color: "#FFF",
+};
 
 /**
  * Shadow system
@@ -201,15 +261,16 @@ const shadows = {
   // Elevation shadows
   elevation: {
     low: "0px 1.5px 1px -0.5px rgba(110, 54, 120, 0.05), 0px 2.5px 1px -0.5px rgba(110, 54, 120, 0.03)",
-    medium: "0px 3px 4px -2px rgba(110, 54, 120, 0.04), 0px 3px 3px -2px rgba(110, 54, 120, 0.02), 0px 3px 8px -2px rgba(110, 54, 120, 0.1)",
+    medium:
+      "0px 3px 4px -2px rgba(110, 54, 120, 0.04), 0px 3px 3px -2px rgba(110, 54, 120, 0.02), 0px 3px 8px -2px rgba(110, 54, 120, 0.1)",
     high: "0px 2px 4px rgba(110, 54, 120, 0.2), 0px 1px 18px rgba(110, 54, 120, 0.12), 0px 6px 10px rgba(110, 54, 120, 0.14)",
   },
-  
+
   // Direction-specific shadows
   directional: {
     up: "0px -3px 4px -2px rgba(110, 54, 120, 0.04), 0px -3px 3px -2px rgba(110, 54, 120, 0.02), 0px -3px 8px -2px rgba(110, 54, 120, 0.1)",
   },
-  
+
   // Inset shadows for interactive elements
   inset: {
     purple: "inset 2px 2px 5px -2px rgba(0, 0, 0, 0.15)",
@@ -219,7 +280,7 @@ const shadows = {
       gray: " inset 1px 1px 2.5px -1px rgba(0, 0, 0, 0.075)",
     },
   },
-  
+
   // Special case shadows
   special: {
     colorButton: "1px 1.5px 2.5px -1px rgba(110, 54, 120, 0.15)",
@@ -235,7 +296,7 @@ const sizes = {
     default: "335px" as PixelValue,
     large: "755px" as PixelValue,
   },
-  
+
   button: {
     default: {
       height: "48px",
@@ -254,7 +315,7 @@ const sizes = {
       padding: "0 32px",
     },
   },
-  
+
   // Original variant sizes (for backward compatibility)
   variants: {
     default: "h-6 px-4 py-2 text-sm font-medium",
@@ -262,7 +323,7 @@ const sizes = {
     md: "h-12 px-8 rounded-md text-md",
     lg: "h-10 px-8 rounded-md text-base",
   },
-  
+
   // Original radius sizes (for backward compatibility)
   radiusSizes: {
     none: "rounded-none",
@@ -285,7 +346,7 @@ const animation = {
     medium: "300ms",
     slow: "500ms",
   },
-  duration_num: 150, 
+  duration_num: 150,
   easing: {
     standard: "cubic-bezier(0.4, 0, 0.2, 1)",
     accelerate: "cubic-bezier(0.4, 0, 1, 1)",
@@ -312,15 +373,16 @@ const utils = {
   cursor: (disabled?: boolean): CSS => {
     return { cursor: disabled ? "not-allowed" : "pointer" };
   },
-  
+
   overlay: (activated: boolean): CSS => ({
-    background: "linear-gradient(to left, transparent 50%, rgba(0,0,0,0.065) 50%) right",
+    background:
+      "linear-gradient(to left, transparent 50%, rgba(0,0,0,0.065) 50%) right",
     backgroundSize: "200%",
     transition: ".25s ease-out",
     pointerEvents: "none",
     backgroundPosition: activated ? "left" : "right",
   }),
-  
+
   ellipsis: {
     whiteSpace: "nowrap",
     overflow: "hidden",
@@ -339,7 +401,6 @@ const breakpoints = {
   largeDesktop: "1440px",
 };
 
-
 /**
  * Main theme object
  * Exports all design tokens organized for atomic design system
@@ -355,30 +416,30 @@ const themeColors = {
   zIndex,
   utils,
   breakpoints,
-  
+
   modal_width_alert: sizes.modal.alert,
   modal_width: sizes.modal.default,
   modal_width_large: sizes.modal.large,
-  
+
   black: colors.neutral.black,
   black_40: colors.utility.black_40,
   black_60: colors.utility.black_60,
-  
+
   blue: colors.primary.main,
   blue_dark: colors.primary.dark,
   blue_disabled: colors.primary.disabled,
   blue_text: colors.primary.light,
-  
+
   white: colors.neutral.white,
   white_dark: colors.neutral.white_dark,
-  
+
   purple: colors.secondary.main,
   purple_disabled: colors.secondary.disabled,
   purple_dark: colors.secondary.dark,
   purple_light: colors.secondary.light,
   purple_background: colors.secondary.background,
   purple_hover: colors.secondary.hover,
-  
+
   gray: colors.gray.main,
   gray_dark: colors.gray.dark,
   gray_text: colors.gray.text,
@@ -386,22 +447,22 @@ const themeColors = {
   gray_background: colors.gray.background,
   gray_inputTag_background: colors.gray.inputTag,
   gray_label_tag_color: colors.gray.label,
-  
+
   red_text: colors.status.error.text,
   red_button: colors.status.error.button,
   red_background: colors.status.error.background,
   red_background_light: colors.status.error.light,
-  
+
   blue_dark_background: colors.primary.main,
-  
+
   green_button: colors.status.success.button,
   green_background: colors.status.success.background,
-  
+
   yellow: colors.status.warning.main,
-  
+
   variantSizes: sizes.variants,
   radiusSizes: sizes.radiusSizes,
-  
+
   font8: typography.presets.font8,
   font8_medium: typography.presets.font8_medium,
   font10: typography.presets.font10,
@@ -415,7 +476,7 @@ const themeColors = {
   font18: typography.presets.font18,
   font20: typography.presets.font20,
   font28: typography.presets.font28,
-  
+
   shadow: shadows.elevation.low,
   shadow_3: shadows.elevation.medium,
   shadow_3_up: shadows.directional.up,
@@ -425,16 +486,16 @@ const themeColors = {
   shadow_gray_input_inset: shadows.inset.input.gray,
   shadow_clicked: shadows.elevation.high,
   shadow_color_button: shadows.special.colorButton,
-  
+
   duration: animation.duration.fast,
   duration_num: animation.duration_num,
-  
+
   zIndex_nav: zIndex.nav,
   zIndex_background: zIndex.background,
   zIndex_headerBar: zIndex.headerBar,
   zIndex_modal: zIndex.modal,
   zIndex_alert: zIndex.alert,
-  
+
   cursor: utils.cursor,
   overlay: utils.overlay,
   ellipsis: utils.ellipsis,
