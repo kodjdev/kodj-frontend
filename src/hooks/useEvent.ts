@@ -1,4 +1,4 @@
-import { Event } from "@/types";
+import { Event } from "../types";
 import { useEffect, useState } from "react";
 
 export default function useEvents(type: "past" | "upcoming") {

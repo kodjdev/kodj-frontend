@@ -1,7 +1,7 @@
 import { HomePage } from "../pages";
 import React, { Suspense } from "react";
-import ForgotPassword from "@/pages/Auth/ForgotPassword.tsx";
-import ComponentLoading from "@/components/ComponentLoading.tsx";
+import ForgotPassword from "../components/ForgotPassword.tsx";
+import ComponentLoading from "../components/ComponentLoading.tsx";
 
 import {
   EventDetails,
@@ -103,10 +103,10 @@ export const routes: RouteType[] = [
   {
     path: "/speakers",
     component: (
-      <Suspense fallback={<ComponentLoading />}>
-        <SpeakerRegistrationForm />
+      <Suspense fallback={<ComponentLoading/>}>
+        <SpeakerRegistrationForm/>
       </Suspense>
-    ),
+    )
   },
   {
     path: "/news",
@@ -114,7 +114,7 @@ export const routes: RouteType[] = [
       <Suspense fallback={<ComponentLoading />}>
         <NewsList />
       </Suspense>
-    ),
+    )
   },
   {
     path: "/news/:category",

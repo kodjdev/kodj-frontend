@@ -1,0 +1,81 @@
+{
+  "headingTitle": "Biz Janubiy Koreyada ishlayotgan va o‘qiyotgan o‘zbek dasturchilar hamjamiyatimiz va biz dasturchilarni bog‘laymiz.",
+  "featuresSection": {
+    "feature1": {
+      "title": "Dasturchilar hamjamiyatimizga qo‘shiling ▶",
+      "description": "Jamiyatimiz a’zolari Telegram’da faoliyat yuritadilar. Yangiliklar va xabarlardan xabardor bo‘lish uchun qo‘shiling."
+    },
+    "feature2": {
+      "title": "Biz Janubiy Koreya va O‘zbekistonni bog‘laymiz ❤️",
+      "description": "Biz ikkala davlat dasturchilarini birlashtiramiz va har ikki dunyoning eng yaxshi tomonlarini taklif etamiz."
+    }
+  },
+  "header": {
+    "aboutUs": "Biz Haqimizda",
+    "news": "Yangiliklar",
+    "events": "Tadbirlar",
+    "speakers": "Spikerlar",
+    "myPage": "Mening Sahifam",
+    "login": "Kirish"
+  },
+  "statisticsPage": {
+    "statisticsHeader": "KO'DJ",
+    "statisticsHeaderGray": "Statistikasi",
+    "statisticsBody": {
+      "users": {
+        "title": "Meetup Speakerlar",
+        "description": "Tashrif buyurgan Speakerlar"
+      },
+      "meetups": {
+        "title": "Meetuplar"
+      },
+      "registeredUsers": {
+        "title": "Ro‘yxatdan o‘tgan foydalanuvchilar",
+        "description": "Joriy Foydalanuvchilar"
+      },
+      "planning": {
+        "title": "Dasturchilarni qabul qilishni rejalashtirish",
+        "description": "2025 yilda"
+      }
+    }
+  },
+  "timerPage": {
+    "headingTitle": "Tezroq, vaqt o‘tib ketmoqda!",
+    "timeLeft": "Qoldi",
+    "untilNext": "keyingi",
+    "days": "Kun",
+    "hours": "Soat",
+    "minutes": "Daqiqa",
+    "seconds": "Sekund"
+  },
+  "affiliateCardsPage": {
+    "headingTitle": "Biz sizga ",
+    "headingTitleGray": "nima taklif etamiz",
+    "projects": {
+      "project1": {
+        "title": "AI & ML Tadbirlar",
+        "description": "O‘zbekiston va Janubiy Koreyada AI va mashina o‘qish tadbirlarini topish va ulashish uchun platforma."
+      },
+      "project2": {
+        "title": "DevFest Seoul 2024",
+        "description": "KODJ jamoasi tomonidan tashkil etilgan dasturchilar konferentsiyasi, maqolalar, ishlab chiqishlar va tarmoq imkoniyatlari."
+      },
+      "project3": {
+        "title": "Dev Hackathon",
+        "description": "Dasturchilar uchun hackathon tadbiri, yangi texnologiyalardan foydalanib loyihalar yaratish uchun hamkorlik qilish."
+      },
+      "project4": {
+        "title": "IT Park O‘zbekiston",
+        "description": "Toshkentda joylashgan texnologiya parki, startaplar va texnologiya kompaniyalariga infratuzilma va qo‘llab-quvvatlash ta’minlash."
+      },
+      "project5": {
+        "title": "Mobil Dasturlash Meetup",
+        "description": "Janubiy Koreyadagi o‘zbek mobil dasturchilar jamoasi, bilimlarni almashish va tarmoqlash uchun meetuplar va tadbirlar tashkil qiladi."
+      },
+      "project6": {
+        "title": "Startup Grind",
+        "description": "Startaplar o‘sish va muvaffaqiyatga erishish uchun tadbirlar va dasturlar tashkil etadigan global starup loyihalar qilish jamoasi."
+      }
+    }
+  }
+}
