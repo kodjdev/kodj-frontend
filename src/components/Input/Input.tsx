@@ -1,12 +1,7 @@
-import React, { InputHTMLAttributes } from "react";
-import styled from "styled-components";
-import themeColor from "@/tools/themeColors";
-
-export type InputProps = InputHTMLAttributes<HTMLInputElement> & {
-  label?: string;
-  error?: string;
-  fullWidth?: boolean;
-};
+import * as React from "react";
+import { cva, type VariantProps } from "class-variance-authority";
+import { cn } from "../../lib/utils";
+import theme from "@/tools/theme";
 
 const InputContainer = styled.div<{ fullWidth?: boolean }>`
   display: flex;

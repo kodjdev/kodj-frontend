@@ -29,7 +29,6 @@ declare module "i18next" {
  * {@link https://www.i18next.com/overview/configuration-options}
  * {@link https://github.com/i18next/i18next-browser-languageDetector}
  * */
-
 i18n
   .use(initReactI18next)
   .use(LanguageDetector)

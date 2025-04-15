@@ -1,10 +1,9 @@
 import { motion } from "framer-motion";
 import { FaPeopleGroup } from "react-icons/fa6";
-import sardorImage from "@/static/assets/avatars/sardor.png"; 
-import behzodImg from "@/static/assets/avatars/bekhzod.png";
-import javokhirImg from "@/static/assets/avatars/javokhir.jpg";
-import oybekImg from "@/static/assets/avatars/oybek.jpg";
-
+import sardorImage from "@/assets/avatars/sardor.png";
+import behzodImg from "@/assets/avatars/bekhzod.png";
+import javokhirImg from "@/assets/avatars/javokhir.jpg"
+import oybekImg from "@/assets/avatars/oybek.jpg"
 
 const organizers = [
   {
