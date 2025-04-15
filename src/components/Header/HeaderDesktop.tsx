@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { Link, NavLink as RouterNavLink } from "react-router-dom";
-import kodjLogo from "@/static/assets/avatars/kodj_new.jpg";
+import kodjLogo from "@/static/assets/kodj_new.jpg";
 import themeColors from "@/tools/themeColors";
 import Button from "@/components/Button/Button";
 import { HeaderProps } from "@/types";

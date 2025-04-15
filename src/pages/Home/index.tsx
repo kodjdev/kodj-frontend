@@ -1,17 +1,7 @@
 import EventBenefits from "./EventBenefits";
 import Statistics from "./Statistics";
 import CommunityCard from "./CommunityCard/CommunityCard";
-
-// export default function Home() {
-//   return (
-//     <div >
-//       <MainCard />
-//       <StatisticsPage />
-//       <TimeFrame />
-//       <CardHoverEffect />
-//     </div>
-//   );
-// }
+import TimeFrame from "./TimeFrame";
 
 /**
  *  Default route - Home Page Root File
@@ -25,7 +15,9 @@ export default function Home() {
     <>
       <CommunityCard />
       <Statistics />
-      <EventBenefits/>
+      <EventBenefits />
+      <TimeFrame />
+      {/* <CardHoverEffect /> */}
     </>
   );
 }

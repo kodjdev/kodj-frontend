@@ -394,7 +394,8 @@ const utils = {
  * Breakpoints for responsive design
  */
 const breakpoints = {
-  mobile: "480px",
+  mobileMin: "480px",
+  mobile: "640px",
   tablet: "768px",
   laptop: "1140px",
   desktop: "1280px",

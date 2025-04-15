@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import styled from "styled-components";
-import telegram from "@/static/assets/avatars/kodj_telegram.jpg";
+import telegram from "@/static/assets/kodj_telegram.jpg";
 
 const CardContainer = styled.div`
   display: flex;

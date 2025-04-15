@@ -5,21 +5,21 @@ import { initReactI18next, useTranslation } from "react-i18next";
 
 import uzHome from "@/pages/Home/langs/uz-home.json";
 import enHome from "@/pages/Home/langs/en-home.json";
-import enNavbar from "@/pages/About/langs/en-about.json";
-import uzNavbar from "@/pages/About/langs/uz-about.json";
+// import enNavbar from "@/pages/About/langs/en-about.json";
+// import uzNavbar from "@/pages/About/langs/uz-about.json";
 import enSpeakers from "@/pages/Speakers/langs/en.json";
 import uzSpeakers from "@/pages/Speakers/langs/uz.json";
-import enEventRegister from "@/pages/Events/EventRegister/langs/en.json";
-import uzEventRegister from "@/pages/Events/EventRegister/langs/uz.json";
+// import enEventRegister from "@/pages/Events/EventRegister/langs/en.json";
+// import uzEventRegister from "@/pages/Events/EventRegister/langs/uz.json";
 
 declare module "i18next" {
   interface CustomTypeOptions {
     defaultNS: "about";
     resources: {
       home: typeof enHome;
-      navbar: typeof enNavbar;
-      about: typeof enNavbar;
-      eventRegister: typeof enEventRegister;
+      // navbar: typeof enNavbar;
+      // about: typeof enNavbar;
+      // eventRegister: typeof enEventRegister;
       speakers: typeof enSpeakers;
     };
   }
@@ -36,18 +36,18 @@ i18n
     resources: {
       en: {
         home: enHome,
-        navbar: enNavbar,
-        about: enNavbar,
-        eventRegister: enEventRegister,
+        // navbar: enNavbar,
+        // about: enNavbar,
+        // eventRegister: enEventRegister,
         // events: enEvents,
         // news: enNews,
         speakers: enSpeakers,
       },
       uz: {
         home: uzHome,
-        navbar: uzNavbar,
-        about: uzNavbar,
-        eventRegister: uzEventRegister,
+        // navbar: uzNavbar,
+        // about: uzNavbar,
+        // eventRegister: uzEventRegister,
         // aboutUs: enAboutUs,
         // events: enEvents,
         // news: enNews,

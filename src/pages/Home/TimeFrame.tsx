@@ -1,83 +1,220 @@
-import { db } from "@/firebase/firebaseConfig";
-import { collection, getDocs, limit, orderBy, query } from "firebase/firestore";
 import { useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
+import styled from "styled-components";
+import themeColors from "@/tools/themeColors";
 
-function formatTime(value: number) {
-  return value < 10 ? `0${value}` : value.toString();
-}
+type TimeLeftType = {
+  days: number;
+  hours: number;
+  minutes: number;
+  seconds: number;
+};
+
+type EventType = {
+  name: string;
+  date: Date;
+};
+
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 100%;
+  padding: 30px 25px 30px 25px;
+  margin: 1rem 0;
+  border-radius: 8px;
+  border: 0.5px solid ${themeColors.cardBorder.color};
+  background-color: ${themeColors.colors.gray.dark};
+  margin-top: 30px;
+  margin-bottom: 50px;
+
+  @media (min-width: ${themeColors.breakpoints.mobile}) {
+    max-width: ${themeColors.breakpoints.mobile}
+    padding: 2rem 2rem 2rem 2rem;
+    margin: 1.875rem 0;
+  }
+`;
+
+const ContentWrapper = styled.div`
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+
+  @media (min-width: ${themeColors.breakpoints.mobile}) {
+    flex-direction: row;
+    gap: 0;
+  }
+`;
+
+const LeftSection = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.625rem;
+  width: 100%;
+  flex-shrink: 0;
+  white-space: nowrap;
+
+  @media (min-width: ${themeColors.breakpoints.mobile}) {
+    width: 486px;
+  }
+`;
+
+const AlertContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+`;
+
+const IconWrapper = styled.div`
+  width: 1.5rem;
+  height: 1.5rem;
+  flex-shrink: 0;
+`;
+
+const AlertText = styled.p`
+  color: ${themeColors.colors.gray.text};
+  font-size: 18px;
+  line-height: 1;
+  margin: 0;
+`;
+
+const TimeInfoContainer = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem;
+`;
+
+const TimeLeftText = styled.p`
+  color: ${themeColors.colors.neutral.white};
+  font-weight: ${themeColors.typography.headings.desktop.h2}
+  font-size: 20px;
+  line-height: 41.6px;
+  margin: 0 5px;
+
+  @media (min-width: ${themeColors.breakpoints.mobile}) {
+    font-size: 28px;
+  }
+`;
+
+const UntilNextText = styled.p`
+  color: ${themeColors.colors.gray.main};
+  font-weight: ${themeColors.typography.headings.desktop.h2};
+  font-size: 20px;
+  line-height: 1;
+  margin: 0 0.5rem;
+
+  @media (min-width: ${themeColors.breakpoints.mobile}) {
+    font-size: 28px;
+  }
+`;
+
+const EventNameText = styled.p`
+  color: ${themeColors.colors.gray.main};
+  font-weight: bold;
+  font-size: 20px;
+  line-height: 1;
+  margin: 0;
+
+  @media (min-width: ${themeColors.breakpoints.mobile}) {
+    font-size: 28px;
+  }
+`;
+
+const TimerContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+
+  @media (min-width: ${themeColors.breakpoints.mobile}) {
+    gap: 0.625rem;
+  }
+`;
+
+const TimeUnit = styled.div`
+  text-align: center;
+`;
+
+const TimeValue = styled.p`
+  color: ${themeColors.colors.neutral.white};
+  font-size: 40px;
+  font-weight: normal;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 0;
+
+  @media (min-width: ${themeColors.breakpoints.mobile}) {
+    font-size: 70px;
+  }
+`;
+
+const TimeLabel = styled.p`
+  color: ${themeColors.colors.gray.main};
+  font-size: 15px;
+  font-weight: ${themeColors.typography.headings.desktop.h4}
+  text-transform: uppercase;
+  margin: 0;
+`;
+
+const Separator = styled.span`
+  color: ${themeColors.colors.neutral.white};
+  font-size: 40px;
+  font-weight: normal;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 0;
+  display: none;
+
+  @media (min-width: ${themeColors.breakpoints.mobile}) {
+    display: inline-block;
+    font-size: 70px;
+  }
+`;
+
+const LoadingContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+`;
+
+const LoadingSpinner = styled.div`
+  animation: spin 1s linear infinite;
+  border-radius: 50%;
+  height: 2rem;
+  width: 2rem;
+  border: 2px solid transparent;
+  border-bottom-color: ${themeColors.colors.neutral.white};
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+`;
 
 export default function TimeFrame() {
-  const [timeLeft, setTimeLeft] = useState({
+  const [timeLeft, setTimeLeft] = useState<TimeLeftType>({
     days: 0,
     hours: 0,
     minutes: 0,
     seconds: 0,
   });
 
-  const [event, setEvent] = useState<{ name: string; date: Date } | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
+  // hardcoded sample data, useEventFetch define
+  // bolgandan keyin integrate qilamiz
+  const [event] = useState<EventType>({
+    name: "Developers Meetup",
+    date: new Date(Date.now() + 15 * 24 * 60 * 60 * 1000), // 15 days from now
+  });
 
-  const { t } = useTranslation();
-
-  const fetchUpcomingEvent = async () => {
-    try {
-      setLoading(true);
-      const eventRef = collection(db, "upcomingEvents");
-      const q = query(eventRef, orderBy("date", "asc"), limit(1));
-      const querySnapshot = await getDocs(q);
-      if (!querySnapshot.empty) {
-        const eventDoc = querySnapshot.docs[0];
-        const eventData = eventDoc.data();
-        const eventDate = eventData.date.toDate();
-
-        if (eventDate.getTime() > new Date().getTime()) {
-          setEvent({
-            name: eventData.title || "Upcoming Event",
-            date: eventDate,
-          });
-        } else {
-          setEvent(null);
-        }
-      } else {
-        setEvent(null);
-      }
-    } catch (error) {
-      console.error("Error fetching upcoming event:", error);
-      setEvent(null);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchUpcomingEvent();
-
-    const setDailyRefresh = () => {
-      const now = new Date();
-      const night = new Date(
-        now.getFullYear(),
-        now.getMonth(),
-        now.getDate() + 1,
-        0,
-        0,
-        0
-      );
-
-      const timeToMidnight = night.getTime() - now.getTime();
-
-      const refreshTimeout = setTimeout(() => {
-        fetchUpcomingEvent();
-        setDailyRefresh();
-      }, timeToMidnight);
-
-      return refreshTimeout;
-    };
-    // we start the daily refresh here
-    const refreshTimeout = setDailyRefresh();
-
-    return () => clearTimeout(refreshTimeout);
-  }, []);
+  const [loading, setLoading] = useState<boolean>(false);
+  //   const { t } = useTranslation();
 
   useEffect(() => {
     if (!event) return;
@@ -107,19 +244,19 @@ export default function TimeFrame() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
-      </div>
+      <LoadingContainer>
+        <LoadingSpinner />
+      </LoadingContainer>
     );
   }
 
   return (
-    <div className="flex flex-col w-full max-w-full sm:max-w-[1440px] pt-4 sm:pt-8 pb-4 sm:pb-8 px-4 sm:px-8 mt-4 sm:mt-[30px] mb-4 sm:mb-[30px] rounded-[8px] border border-[#505050] bg-[#141414]">
-      <div className="flex w-full flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0">
-        {/* //chap tomon */}
-        <div className="flex flex-col items-start gap-[10px] w-full sm:w-[486px] flex-shrink-0 whitespace-nowrap">
-          <div className="flex items-center space-x-3">
-            <div className="w-6 h-6 flex-shrink-0">
+    <Container>
+      <ContentWrapper>
+        {/* chap tomon */}
+        <LeftSection>
+          <AlertContainer>
+            <IconWrapper>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="25"
@@ -132,76 +269,50 @@ export default function TimeFrame() {
                   fill="#FF0202"
                 />
               </svg>
-            </div>
-            <p className="text-gray-500 font-inter text-[18px] leading-none">
-              {/* Hurry up, time is going! */}
-              {t("timerPage.headingTitle")}
-            </p>
-          </div>
-          {/* // time left untl next */}
-          <div className="flex flex-wrap items-baseline gap-2">
-            <p className="text-white font-bold text-[20px] sm:text-[28px] leading-none">
-              {/* Time left */}
-              {t("timerPage.timeLeft")}
-            </p>
-            <p className="text-gray-500 font-bold text-[20px] sm:text-[28px] leading-none mx-2">
-              {/* until next */}
-              {t("timerPage.untilNext")}
-            </p>
-            <p className="text-gray-500 font-bold text-[20px] sm:text-[28px] leading-none">
-              {event?.name || ""}
-            </p>
-          </div>
-        </div>
-        {/* // ong tomon time displaye */}
-        <div className="flex items-center gap-2 sm:gap-[10px] flex-wrap justify-center">
-          <div className="text-center">
-            <p className="text-white font-inter text-[40px] sm:text-[70px] font-normal uppercase tracking-[0.5px] m-0">
-              {formatTime(timeLeft.days)}
-            </p>
-            <p className="text-[#6B7380] font-inter text-[16px] font-extrabold uppercase m-0">
-              {/* Days */}
-              {t("timerPage.days")}
-            </p>
-          </div>
-          <span className="text-white font-inter text-[40px] sm:text-[70px] font-normal uppercase tracking-[0.5px] m-0 hidden sm:inline-block">
-            ·
-          </span>
-          <div className="text-center">
-            <p className="text-white font-inter text-[40px] sm:text-[70px] font-normal uppercase tracking-[0.5px] m-0">
-              {formatTime(timeLeft.hours)}
-            </p>
-            <p className="text-[#6B7380] font-inter text-[16px] font-extrabold uppercase m-0">
-              {/* Hours */}
-              {t("timerPage.hours")}
-            </p>
-          </div>
-          <span className="text-white font-inter text-[40px] sm:text-[70px] font-normal uppercase tracking-[0.5px] m-0 hidden sm:inline-block">
-            ·
-          </span>
-          <div className="text-center">
-            <p className="text-white font-inter text-[40px] sm:text-[70px] font-normal uppercase tracking-[0.5px] m-0">
-              {formatTime(timeLeft.minutes)}
-            </p>
-            <p className="text-[#6B7380] font-inter text-[16px] font-semibold uppercase tracking-[0.48px] m-0">
-              {/* Minutes */}
-              {t("timerPage.minutes")}
-            </p>
-          </div>
-          <span className="text-white font-inter text-[40px] sm:text-[70px] font-normal uppercase tracking-[0.5px] m-0 hidden sm:inline-block">
-            ·
-          </span>
-          <div className="text-center">
-            <p className="text-white font-inter text-[40px] sm:text-[70px] font-normal uppercase tracking-[0.5px] m-0">
-              {formatTime(timeLeft.seconds)}
-            </p>
-            <p className="text-[#6B7380] font-inter text-[16px] font-light uppercase tracking-[0.48px] m-0">
-              {/* Seconds */}
-              {t("timerPage.seconds")}
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
+            </IconWrapper>
+            <AlertText>Hurry up, time is running out.</AlertText>
+          </AlertContainer>
+
+          <TimeInfoContainer>
+            <TimeLeftText>Time left until the next</TimeLeftText>
+            <UntilNextText>MeetUp.</UntilNextText>
+            <EventNameText>{event?.name || ""}</EventNameText>
+          </TimeInfoContainer>
+        </LeftSection>
+
+        {/* ong tomon - timer qismi */}
+        <TimerContainer>
+          <TimeUnit>
+            <TimeValue>{formatTime(timeLeft.days)}</TimeValue>
+            <TimeLabel>DAY</TimeLabel>
+          </TimeUnit>
+
+          <Separator>·</Separator>
+
+          <TimeUnit>
+            <TimeValue>{formatTime(timeLeft.hours)}</TimeValue>
+            <TimeLabel>HOUR</TimeLabel>
+          </TimeUnit>
+
+          <Separator>·</Separator>
+
+          <TimeUnit>
+            <TimeValue>{formatTime(timeLeft.minutes)}</TimeValue>
+            <TimeLabel>MINUT</TimeLabel>
+          </TimeUnit>
+
+          <Separator>·</Separator>
+
+          <TimeUnit>
+            <TimeValue>{formatTime(timeLeft.seconds)}</TimeValue>
+            <TimeLabel>SECOND</TimeLabel>
+          </TimeUnit>
+        </TimerContainer>
+      </ContentWrapper>
+    </Container>
   );
+}
+
+function formatTime(value: number): string {
+  return value < 10 ? `0${value}` : value.toString();
 }
