@@ -1,13 +1,13 @@
 import React, { ButtonHTMLAttributes } from "react";
 import styled, { css } from "styled-components";
-import { Link, LinkProps } from "react-router-dom"; // Import Link and LinkProps
+import { Link, LinkProps } from "react-router-dom";
 import themeColor from "@/tools/themeColors";
 
 type ButtonVariant = "primary" | "secondary" | "text" | "light";
 
 type ButtonProps = Omit<ButtonHTMLAttributes<HTMLButtonElement>, "type"> & {
   variant?: ButtonVariant;
-  size?: "sm" | "md" | "lg";
+  size?: "sm" | "md" | "lg" | "mini";
   fullWidth?: boolean;
   asLink?: boolean;
   to?: LinkProps["to"];
@@ -19,7 +19,7 @@ type ButtonProps = Omit<ButtonHTMLAttributes<HTMLButtonElement>, "type"> & {
 
 const StyledButton = styled("button")<{
   variant: ButtonVariant;
-  size: "sm" | "md" | "lg";
+  size: "sm" | "md" | "lg" | "mini";
   fullWidth?: boolean;
   disabled?: boolean;
   as?: typeof Link;
@@ -60,6 +60,12 @@ const StyledButton = styled("button")<{
           padding: 0 24px;
           font-size: ${themeColor.typography.body.large.fontSize || 16}px;
         `;
+      case "mini":
+        return css`
+          height: 30px;
+          padding: 10px 24px;
+          font-size: ${themeColor.typography.body.xsmall.fontSize || 14}px;
+        `;
       default: // 'md'
         return css`
           height: 44px;
@@ -83,11 +89,9 @@ const StyledButton = styled("button")<{
       case "text":
         return css`
           background-color: transparent;
-          color: ${themeColor.colors.neutral.white ||
-          "white"}; // Ensure white text for header
-
+          color: ${themeColor.colors.neutral.white || "white"};
           &:hover:not(:disabled) {
-            background-color: rgba(255, 255, 255, 0.1); // Subtle white hover
+            background-color: rgba(255, 255, 255, 0.1);
           }
         `;
       case "light": // for login or light-themed buttons

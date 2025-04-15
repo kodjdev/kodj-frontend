@@ -9,6 +9,14 @@ type CardContainerProps = {
   height?: string;
 };
 
+type CardDescriptionProps = {
+  color?: string;
+};
+
+type CardIconProps = {
+  spacingBottom?: string;
+};
+
 type CardProps = React.HTMLAttributes<HTMLDivElement> & {
   icon?: React.ReactNode;
   title?: string;
@@ -40,10 +48,6 @@ const CardContainer = styled.div<CardContainerProps>`
   }
 `;
 
-interface CardIconProps {
-  spacingBottom?: string;
-}
-
 const CardIcon = styled.div<CardIconProps>`
   margin-bottom: ${(props) => props.spacingBottom || "16px"};
 `;
@@ -54,10 +58,6 @@ const CardTitle = styled.h3`
   font-weight: ${themeColors.typography.headings.desktop.h4.fontWeight};
   margin: 0 0 12px 0;
 `;
-
-interface CardDescriptionProps {
-  color?: string;
-}
 
 const CardDescription = styled.p<CardDescriptionProps>`
   color: ${(props) => props.color || themeColors.colors.gray.main};

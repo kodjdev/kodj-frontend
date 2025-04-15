@@ -1,19 +1,25 @@
+export type HeaderProps = {
+  handleLangChange: (lang: string) => void;
+  currentLang: string;
+  langMenuOpen: boolean;
+  toggleLangMenu: () => void;
+};
 
 
-interface Timestamp {
+export type Timestamp = {
   toDate(): Date | undefined;
   seconds: number;
   nanoseconds: number;
-}
+};
 
-export interface User {
+export type User = {
   id: string;
   email: string;
   name?: string;
   role?: string;
-}
+};
 
-export interface Event {
+export type Event = {
   id: string;
   title: string;
   description?: string;
@@ -26,22 +32,22 @@ export interface Event {
   docId?: string;
   maxSeats?: number;
   imageUrls: string[];
-  eventRoom?: string,
-  parking?: boolean,
-  seats?: string
+  eventRoom?: string;
+  parking?: boolean;
+  seats?: string;
   isUpcoming?: boolean;
   registeredCount?: number;
   isPlaceholder?: boolean;
-}
+};
 
-export interface EventDetails {
+export type EventDetails = {
   title: string;
   date: {
     seconds: number;
     nanoseconds: number;
   };
   eventLocation: string;
-}
+};
 
 export interface UpcomingEventsRegistration {
   id?: number;
@@ -56,7 +62,7 @@ export interface EventForServer {
   speakerId?: string;
   id: string;
   title: string;
-  headerTitle?: string,
+  headerTitle?: string;
   description: string;
   date: Timestamp;
   location: string;
@@ -98,7 +104,7 @@ export interface SpeakerRegistration {
   jobPosition: string;
   expertiseField: string;
   phone: string;
-  topics: string,
+  topics: string;
   portfolioUrl: string;
   githubUrl: string;
   linkedinUrl: string;
