@@ -6,22 +6,18 @@ import RootLayout from "@/pages/layout";
 import { RecoilRoot } from "recoil";
 import { ModalProvider } from "./components/Modal/ModalProvider";
 
-function App() {
+export default function App() {
   return (
-    <>
-      <ModalProvider>
-        <RecoilRoot>
-          <ErrorBoundary>
-            <BrowserRouter>
-              <RootLayout>
-                <RouterPage />
-              </RootLayout>
-            </BrowserRouter>
-          </ErrorBoundary>
-        </RecoilRoot>
-      </ModalProvider>
-    </>
+    <ModalProvider>
+      <RecoilRoot>
+        <ErrorBoundary>
+          <BrowserRouter>
+            <RootLayout>
+              <RouterPage />
+            </RootLayout>
+          </BrowserRouter>
+        </ErrorBoundary>
+      </RecoilRoot>
+    </ModalProvider>
   );
 }
-
-export default App;

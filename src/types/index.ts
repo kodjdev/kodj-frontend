@@ -1,10 +1,11 @@
+import { type } from "os";
+
 export type HeaderProps = {
   handleLangChange: (lang: string) => void;
   currentLang: string;
   langMenuOpen: boolean;
   toggleLangMenu: () => void;
 };
-
 
 export type Timestamp = {
   toDate(): Date | undefined;
@@ -49,16 +50,16 @@ export type EventDetails = {
   eventLocation: string;
 };
 
-export interface UpcomingEventsRegistration {
+export type UpcomingEventsRegistration = {
   id?: number;
   firstName: string;
   lastName: string;
   email: string;
   phone: string;
   event: Event[];
-}
+};
 
-export interface EventForServer {
+export type EventForServer = {
   speakerId?: string;
   id: string;
   title: string;
@@ -79,9 +80,9 @@ export interface EventForServer {
   maxSeats?: number;
   registeredCount?: number;
   rawDate?: Date;
-}
+};
 
-export interface RegistrationFormData {
+export type RegistrationFormData = {
   id?: string;
   firstName: string;
   lastName: string;
@@ -96,9 +97,9 @@ export interface RegistrationFormData {
   hopes: string;
   additionalInfo: string;
   eventId: string;
-}
+};
 
-export interface SpeakerRegistration {
+export type SpeakerRegistration = {
   email: string;
   fullname: string;
   jobPosition: string;
@@ -109,15 +110,15 @@ export interface SpeakerRegistration {
   githubUrl: string;
   linkedinUrl: string;
   yearsOfExperience: string;
-}
+};
 
-export interface PastEventDetailsProps {
+export type PastEventDetailsProps = {
   params: Promise<{
     id: string;
   }>;
-}
+};
 
-export interface NewsItem {
+export type NewsItem = {
   id: string;
   uniqueId?: string;
   category?: string;
@@ -126,9 +127,9 @@ export interface NewsItem {
   images?: string[];
   description?: string;
   lastEdited: Timestamp;
-}
+};
 
-export interface Speaker {
+export type Speaker = {
   id?: string;
   category?: string;
   date?: Timestamp;
@@ -136,9 +137,9 @@ export interface Speaker {
   name: string;
   position: string;
   speakerImg: string;
-}
+};
 
-export interface EventTimeline {
+export type EventTimeline = {
   eventId: string;
   speakerName?: string;
   category: string;
@@ -148,19 +149,19 @@ export interface EventTimeline {
   location: string;
   speakerId: number;
   subject: string;
-}
+};
 
-export interface FormattedDateTime {
+export type FormattedDateTime = {
   date: string;
   time: string;
-}
+};
 
-export interface FirebaseTimestamp {
+export type FirebaseTimestamp = {
   seconds: number;
   nanoseconds: number;
-}
+};
 
-export interface EventCardProps {
+export type EventCardProps = {
   id?: string;
   title?: string;
   description?: string;
@@ -171,11 +172,11 @@ export interface EventCardProps {
   isUpcoming?: boolean;
   registeredCount?: number;
   maxSeats?: number;
-}
+};
 
-export interface StatisticsProps {
+export type StatisticsProps = {
   speakerCount: number;
   meetupData: Array<{ date: string; value: number }>;
   currentUsers: number;
   maxUsers: number;
-}
+};
