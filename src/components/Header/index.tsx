@@ -6,7 +6,7 @@ import { useTranslation } from "react-i18next";
 import { useState } from "react";
 
 /**
- * Header Root Component
+ * Header Root Component:
  *
  * Here we wrap the mobile and desktop headers.
  * This root components renders either the desktop or mobile

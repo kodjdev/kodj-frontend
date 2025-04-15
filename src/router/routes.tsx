@@ -1,10 +1,8 @@
 import { HomePage } from "../pages";
 import React, { Suspense } from "react";
-import ForgotPassword from "../components/ForgotPassword.tsx";
 import ComponentLoading from "../components/ComponentLoading.tsx";
 
 import {
-  EventDetails,
   EventRegister,
   NewsDetails,
   NewsList,
@@ -45,11 +43,11 @@ export const routes: RouteType[] = [
   //   ),
   //   auth: true
   // },
-  {
-    path: "/forgot-password",
-    component: <ForgotPassword />,
-    auth: false,
-  },
+  // {
+  //   path: "/forgot-password",
+  //   component: <ForgotPassword />,
+  //   auth: false,
+  // },
   // {
   //   path: "/mypage",
   //   component: (
@@ -82,15 +80,15 @@ export const routes: RouteType[] = [
   //   component: <EventsList />,
   //   auth: false,
   // },
-  {
-    path: "/events/:type/details/:id",
-    component: (
-      <Suspense fallback={<ComponentLoading />}>
-        <EventDetails />
-      </Suspense>
-    ),
-    auth: false,
-  },
+  // {
+  //   path: "/events/:type/details/:id",
+  //   component: (
+  //     <Suspense fallback={<ComponentLoading />}>
+  //       <EventDetails />
+  //     </Suspense>
+  //   ),
+  //   auth: false,
+  // },
   {
     path: "/events/upcoming/details/:id/register",
     component: (

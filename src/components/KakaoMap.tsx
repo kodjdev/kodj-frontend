@@ -1,9 +1,9 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
-interface KakaoMapProps {
+type KakaoMapProps = {
   address: string;
   eventRoom?: string;
-}
+};
 
 declare global {
   interface Window {
@@ -11,12 +11,18 @@ declare global {
   }
 }
 
-const KakaoMap: React.FC<KakaoMapProps> = ({ address, eventRoom }) => {
+/**
+ * Kakao Map Component
+ * 
+ * This will draw the map elements using the kakao map sdk.
+ */
+
+export default function KakaoMap({ address, eventRoom }: KakaoMapProps) {
   const mapRef = useRef<HTMLDivElement>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // kakao sscript load bo'lganidan keyin mapni initialize qilamiz
+    // kakao script load bo'lganidan keyin mapni initialize qilamiz
     const initMap = () => {
       if (!mapRef.current || !window.kakao?.maps) {
         console.error("Kakao Maps SDK not loaded");
@@ -148,6 +154,4 @@ const KakaoMap: React.FC<KakaoMapProps> = ({ address, eventRoom }) => {
       style={{ width: "100%", height: "450px" }}
     />
   );
-};
-
-export default KakaoMap;
+}
