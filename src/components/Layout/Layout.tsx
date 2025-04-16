@@ -29,9 +29,15 @@ const ContentWrapper = styled.div`
   padding: ${themeColors.spacing.xl || "60px"}
     ${themeColors.spacing.lg || "40px"};
   width: 100%;
+  box-sizing: border-box;
 
   @media (max-width: ${themeColors.breakpoints.mobile}) {
-    padding: 26px;
+    padding-left: ${themeColors.spacing.lg || "16px"};
+    padding-right: ${themeColors.spacing.lg || "16px"};
+  }
+  @media (min-width: ${themeColors.breakpoints.tablet}) {
+    padding: ${themeColors.spacing.xl || "60px"}
+      ${themeColors.spacing.lg || "40px"};
   }
 `;
 

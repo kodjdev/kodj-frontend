@@ -70,18 +70,19 @@ const GrayText = styled.span`
 const StatsContainer = styled(motion.div)`
   display: flex;
   flex-direction: column;
-  width: 100%;
-  max-width: 1440px;
-  padding: 2rem 1rem;
+  max-width: ${themeColors.breakpoints.laptop || "1140px"};
+  padding: 5rem 1rem;
+  margin: 0 auto;
   margin-bottom: 1rem;
   border-radius: 8px;
   border: 0.5px solid ${themeColors.colors.gray.main};
   background-color: ${themeColors.colors.gray.dark};
+  overflow: hidden;
 
   @media (min-width: 640px) {
     padding: 2rem;
-    margin-top: 30px;
-    margin-bottom: 30px;
+    // margin-top: 30px;
+    // margin-bottom: 30px;
   }
 `;
 
@@ -90,6 +91,7 @@ const GridContainer = styled.div`
   grid-template-columns: 1fr;
   gap: 1rem;
   width: 100%;
+  max-width: 100%;
 
   @media (min-width: 768px) {
     grid-template-columns: repeat(2, 1fr);

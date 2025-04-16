@@ -18,7 +18,7 @@ const HeaderOuterContainer = styled.header`
   color: ${themeColors.colors.neutral.white || "white"};
   width: 100%;
   min-width: 320px;
-  z-index: 1000;
+  z-index: 1001;
   overflow-x: hidden;
 `;
 
@@ -26,9 +26,14 @@ const HeaderInnerContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 20px;
+  padding: 10px ${themeColors.spacing.md || "16px"};
   margin: 0 auto;
   width: 100%;
+  box-sizing: border-box;
+  @media (max-width: ${themeColors.breakpoints.mobile}) {
+    padding-left: ${themeColors.spacing.lg || "16px"};
+    padding-right: ${themeColors.spacing.lg || "16px"};
+ }
 `;
 
 const LogoContainer = styled.div`
@@ -52,19 +57,19 @@ const HamburgerButton = styled.button`
   justify-content: center;
   width: 40px;
   height: 40px;
-  z-index: 1001;
+  z-index: 1002;
 `;
 
 const MobileMenu = styled.div<MobileMenuProps>`
   position: fixed;
   top: 0;
-  right: 0;
+  left: 0;
   width: 100%;
   height: 100vh;
   background-color: ${themeColors.colors.neutral.black};
   display: flex;
   flex-direction: column;
-  padding: 80px 20px 20px;
+  padding: 60px 20px 20px;
   transform: ${({ isOpen }) => (isOpen ? "translateX(0)" : "translateX(100%)")};
   transition: transform 0.3s ease-in-out;
   z-index: 1000;
@@ -110,6 +115,7 @@ const LanguageTitle = styled.p`
 const LanguageOptions = styled.div`
   display: flex;
   gap: 12px;
+  flex-wrap: wrap;
 `;
 
 const LanguageButton = styled.button<{ isActive: boolean }>`
@@ -133,6 +139,10 @@ const LanguageButton = styled.button<{ isActive: boolean }>`
   &:hover {
     background-color: ${({ isActive }) =>
       isActive ? themeColors.colors.primary.main : "rgba(255, 255, 255, 0.1)"};
+  }
+  @media (max-width: ${themeColors.breakpoints.mobile}) {
+    padding-left: 12px;
+    padding-right: 12px;
   }
 `;
 

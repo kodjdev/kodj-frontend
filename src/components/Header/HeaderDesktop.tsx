@@ -30,6 +30,7 @@ const HeaderInnerContainer = styled.div`
   margin: 0 auto;
   margin-bottom: -15px;
   width: 100%;
+  box-sizing: border-box;
 `;
 
 const LogoContainer = styled.div`
