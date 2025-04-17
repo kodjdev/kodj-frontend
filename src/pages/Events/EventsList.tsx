@@ -12,7 +12,6 @@ import EventCard from "@/components/Card/EventCard";
 const Container = styled.div`
   max-width: ${themeColors.breakpoints.desktop};
   margin: 0 auto;
-  padding: 0 ${themeColors.spacing.lg};
 `;
 
 const SectionHeader = styled.div`
@@ -42,7 +41,8 @@ const SectionTitleGray = styled.h2`
 const SectionSubtitle = styled.h4`
   font-weight: ${themeColors.typography.headings.desktop.h4.fontWeight};
   color: ${themeColors.colors.neutral.white};
-  margin-bottom: ${themeColors.spacing.xxl};
+  margin-top: ${themeColors.spacing.lg};
+  margin-bottom: ${themeColors.spacing.lg};
 `;
 
 const EventsGrid = styled.div`
@@ -90,7 +90,7 @@ const FilterButton = styled.button<{ isActive: boolean }>`
         ? themeColors.colors.primary.main
         : themeColors.colors.gray.line};
   border-radius: ${themeColors.radiusSizes.two_xl};
-  padding: ${themeColors.spacing.sm} ${themeColors.spacing.lg};
+  padding: ${themeColors.spacing.xs} ${themeColors.spacing.sm};
   font-size: ${themeColors.typography.body.small.fontSize}px;
   font-weight: ${themeColors.font14.fontWeight};
   cursor: pointer;

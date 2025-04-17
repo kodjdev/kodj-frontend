@@ -33,7 +33,7 @@ const HeaderInnerContainer = styled.div`
   @media (max-width: ${themeColors.breakpoints.mobile}) {
     padding-left: ${themeColors.spacing.lg || "16px"};
     padding-right: ${themeColors.spacing.lg || "16px"};
- }
+  }
 `;
 
 const LogoContainer = styled.div`

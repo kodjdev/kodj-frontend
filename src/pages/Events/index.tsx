@@ -7,7 +7,7 @@ import EventsList from "./EventsList";
 const PageContainer = styled.div`
   background-color: ${themeColors.colors.neutral.black};
   min-height: 100vh;
-  padding: 2rem 0;
+  padding: 1rem 0;
 `;
 
 const LoadingContainer = styled.div`
@@ -20,42 +20,42 @@ const LoadingContainer = styled.div`
   font-size: 1rem;
 `;
 
-const TitleContainer = styled.div`
-  text-align: center;
-  margin-bottom: 3rem;
-`;
+// const TitleContainer = styled.div`
+//   text-align: center;
+//   margin-bottom: 3rem;
+// `;
 
-const MainTitle = styled.h1`
-  font-size: 3rem;
-  font-weight: 700;
-  color: ${themeColors.colors.neutral.white};
-  margin-top: 0;
-  margin-bottom: 1rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-`;
+// const MainTitle = styled.h1`
+//   font-size: 3rem;
+//   font-weight: 700;
+//   color: ${themeColors.colors.neutral.white};
+//   margin-top: 0;
+//   margin-bottom: 1rem;
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+//   gap: 0.5rem;
+// `;
 
-const BlueArrow = styled.span`
-  color: ${themeColors.colors.primary.main};
-  font-weight: bold;
-`;
+// const BlueArrow = styled.span`
+//   color: ${themeColors.colors.primary.main};
+//   font-weight: bold;
+// `;
 
-const Subtitle = styled.p`
-  font-size: 1.25rem;
-  color: ${themeColors.colors.gray.main};
-  margin: 0;
-`;
+// const Subtitle = styled.p`
+//   font-size: 1.25rem;
+//   color: ${themeColors.colors.gray.main};
+//   margin: 0;
+// `;
 
-const HighlightedText = styled.span`
-  color: ${themeColors.colors.primary.main};
-  font-weight: 600;
-`;
+// const HighlightedText = styled.span`
+//   color: ${themeColors.colors.primary.main};
+//   font-weight: 600;
+// `;
 
-const GrayText = styled.span`
-  color: ${themeColors.colors.gray.main};
-`;
+// const GrayText = styled.span`
+//   color: ${themeColors.colors.gray.main};
+// `;
 
 /**
  * Main Events Page Root Component
@@ -67,7 +67,7 @@ const GrayText = styled.span`
 export default function EventsPage() {
   return (
     <PageContainer>
-      <TitleContainer>
+      {/* <TitleContainer>
         <MainTitle>
           <BlueArrow>&gt;</BlueArrow> Events
         </MainTitle>
@@ -75,7 +75,7 @@ export default function EventsPage() {
           Check out our <HighlightedText>upcoming</HighlightedText> and{" "}
           <GrayText>past events</GrayText>
         </Subtitle>
-      </TitleContainer>
+      </TitleContainer> */}
 
       <Suspense
         fallback={

@@ -67,7 +67,7 @@ export default function useFetchEvent() {
       try {
         const response = await axios.get<
           ApiResponse<PageResponse<MeetupResponse>>
-        >("http://localhost:8080/api/meetups", {
+        >("http://127.0.0.1:8080/api/v1/meetups", {
           params: {
             page,
             size,
@@ -76,8 +76,9 @@ export default function useFetchEvent() {
         });
 
         const apiResponse = response.data;
+        console.log("API Response:", apiResponse);
 
-        if (apiResponse.success) {
+        if (apiResponse.statusCode === 200) {
           const pageData = apiResponse.data;
           setEvents(pageData.content);
 
@@ -126,7 +127,7 @@ export default function useFetchEvent() {
 
       try {
         const response = await axios.get<ApiResponse<MeetupResponse>>(
-          `http://localhost:8080/api/meetups/${id}`
+          `http://127.0.0.1:8080/api/v1/meetups/${id}`
         );
         const apiResponse = response.data;
 
