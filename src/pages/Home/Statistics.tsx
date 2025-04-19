@@ -75,14 +75,12 @@ const StatsContainer = styled(motion.div)`
   margin: 0 auto;
   margin-bottom: 1rem;
   border-radius: 8px;
-  border: 0.5px solid ${themeColors.colors.gray.main};
+  border: 1px solid ${themeColors.cardBorder.color};
   background-color: ${themeColors.colors.gray.dark};
   overflow: hidden;
 
   @media (min-width: 640px) {
     padding: 2rem;
-    // margin-top: 30px;
-    // margin-bottom: 30px;
   }
 `;
 

@@ -34,11 +34,9 @@ type CardProps = React.HTMLAttributes<HTMLDivElement> & {
 const CardContainer = styled.div<CardContainerProps>`
   background-color: ${(props) => props.backgroundColor || "#161616"};
   border-radius: 8px;
-  border: 0.5px solid ${themeColors.cardBorder.color};
+  border: 1px solid ${themeColors.cardBorder.color};
   padding: ${(props) => props.padding || "24px"};
-  transition:
-    transform 0.2s ease,
-    box-shadow 0.2s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
   height: ${(props) => props.height || "auto"};
 
   &:hover {
@@ -64,6 +62,11 @@ const CardDescription = styled.p<CardDescriptionProps>`
   font-size: ${themeColors.typography.body.small.fontSize}px;
   line-height: 1.5;
   margin: 0;
+  whiteSpace: "normal",
+  overflow: "hidden",
+  textOverflow: "ellipsis",
+  maxWidth: "100%",
+  wordBreak: "break-word"
 `;
 
 /**
@@ -107,3 +110,6 @@ export default function Card({
     </CardContainer>
   );
 }
+
+Card.Title = CardTitle;
+Card.Description = CardDescription;

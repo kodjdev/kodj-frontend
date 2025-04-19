@@ -1,8 +1,10 @@
 import styled from "styled-components";
 import themeColors from "@/tools/themeColors";
 import Card from "./Card";
+import { FaCalendarAlt, FaUsers } from "react-icons/fa";
 
-export interface EventCardProps {
+export type EventCardProps = {
+  isFreeEvent?: boolean;
   isPlaceholder?: boolean;
   title?: string;
   description?: string;
@@ -13,14 +15,16 @@ export interface EventCardProps {
   registeredCount?: number;
   maxSeats?: number;
   className?: string;
-}
+};
 
 const CardImage = styled.img`
   width: 100%;
-  height: 180px;
+  height: 200px;
+  display: block;
+  margin: 0;
   object-fit: cover;
-  border-radius: 4px;
-  margin-bottom: 16px;
+  border-radius: 4px 4px 0 0;
+  margin-bottom: 0;
 `;
 
 const PlaceholderContent = styled.div`
@@ -33,45 +37,48 @@ const PlaceholderContent = styled.div`
   font-weight: 500;
 `;
 
-const AuthorText = styled.div`
+const CardContent = styled.div`
+  border-radius: 0 0 4px 4px;
+  padding: 16px;
+`;
+
+const DateText = styled.p`
   color: ${themeColors.colors.gray.main};
   font-size: ${themeColors.typography.body.small.fontSize}px;
-  margin-top: 8px;
-  font-style: italic;
-`;
-
-const DateText = styled.div`
-  color: ${themeColors.colors.primary.main};
-  font-size: ${themeColors.typography.body.small.fontSize}px;
-  margin-top: 12px;
-  font-weight: 500;
-`;
-
-const RegistrationInfo = styled.div`
+  font-weight: 400;
   display: flex;
-  justify-content: space-between;
-  margin-top: 16px;
-  border-top: 1px solid ${themeColors.colors.gray.dark};
-  padding-top: 12px;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  margin-bottom: 0;
 `;
 
 const InfoItem = styled.div`
   color: ${themeColors.colors.gray.main};
   font-size: ${themeColors.typography.body.small.fontSize}px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
 `;
 
-const Badge = styled.span<{ isUpcoming?: boolean }>`
-  display: inline-block;
+const RegistrationInfo = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: space-between;
+  border-top: none;
+  padding-top: 0;
+`;
+
+const IsPaidEvent = styled.div`
+  background-color: #1a3365;
+  color: #4f9bf8;
   padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 12px;
-  font-weight: 500;
-  margin-bottom: 12px;
-  background-color: ${(props) =>
-    props.isUpcoming
-      ? themeColors.colors.primary.main
-      : themeColors.colors.gray.dark};
-  color: ${themeColors.colors.neutral.white};
+  border-radius: 6px;
+  font-weight: ${themeColors.typography.headings.desktop.h4.fontWeight};
+  font-size: ${themeColors.typography.body.small.fontSize}px;
+  display: flex;
+  align-items: center;
 `;
 
 /**
@@ -88,6 +95,7 @@ export default function EventCard({
   imageUrl,
   date,
   isUpcoming,
+  isFreeEvent,
   registeredCount,
   maxSeats,
   className,
@@ -108,31 +116,49 @@ export default function EventCard({
 
   return (
     <Card
-      backgroundColor="#161616"
+      padding="0"
+      backgroundColor="transparent"
       hoverEffect={true}
       className={className}
       {...props}
     >
-      {isUpcoming !== undefined && (
-        <Badge isUpcoming={isUpcoming}>
-          {isUpcoming ? "Upcoming" : "Past Event"}
-        </Badge>
-      )}
-
       {imageUrl && <CardImage src={imageUrl} alt={title || "Event"} />}
 
-      {date && <DateText>{date}</DateText>}
+      <CardContent>
+        {title && <Card.Title>{title}</Card.Title>}
 
-      {author && <AuthorText>by {author}</AuthorText>}
+        {description && (
+          <Card.Description color={themeColors.colors.gray.text}>
+            {description.length > 150
+              ? `${description.substring(0, 150).trim()}...`
+              : description}
+          </Card.Description>
+        )}
 
-      {(registeredCount !== undefined || maxSeats) && (
-        <RegistrationInfo>
-          {registeredCount !== undefined && (
-            <InfoItem>Registered: {registeredCount}</InfoItem>
-          )}
-          {maxSeats && <InfoItem>Max seats: {maxSeats}</InfoItem>}
-        </RegistrationInfo>
-      )}
+        {date && (
+          <DateText>
+            <FaCalendarAlt />
+            {date}
+          </DateText>
+        )}
+
+        {(registeredCount !== undefined || maxSeats) && (
+          <RegistrationInfo>
+            {registeredCount !== undefined && maxSeats && (
+              <InfoItem>
+                <FaUsers style={{ marginRight: "4px" }} />
+                Registered: {registeredCount}/{maxSeats}
+              </InfoItem>
+            )}
+            {isFreeEvent && (
+              <IsPaidEvent>
+                <span style={{ marginRight: "6px" }}>#</span>
+                Free
+              </IsPaidEvent>
+            )}
+          </RegistrationInfo>
+        )}
+      </CardContent>
     </Card>
   );
 }

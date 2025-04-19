@@ -55,12 +55,12 @@ const StepItem = styled.div<{ status: "completed" | "active" | "pending" }>`
 `;
 
 /**
- * 
+ *
  * ProgressShow component - Molecule Component
  *
  * A visual stepper component that displays progress through a multi-step process.
  * @returns A styled stepper with progress indicators with check icons
- * 
+ *
  */
 
 export default function ProgressShow({

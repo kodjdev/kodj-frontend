@@ -21,7 +21,7 @@ const Container = styled.div`
   padding: 32px 48px;
   margin: 1rem auto;
   border-radius: 8px;
-  border: 0.5px solid ${themeColors.cardBorder.color};
+  border: 1px solid ${themeColors.cardBorder.color};
   background-color: ${themeColors.colors.gray.dark};
   overflow: hidden;
   @media (min-width: ${themeColors.breakpoints.mobile}) {
@@ -210,7 +210,7 @@ const LoadingSpinner = styled.div`
   border-radius: 50%;
   height: 2rem;
   width: 2rem;
-  border: 2px solid transparent;
+  border: 1px solid transparent;
   border-bottom-color: ${themeColors.colors.neutral.white};
 
   @keyframes spin {

@@ -9,6 +9,17 @@ import themeColors from "@/tools/themeColors";
 import useFetchEvent from "@/hooks/event/useFetchEvent";
 import EventCard from "@/components/Card/EventCard";
 
+enum EventFilter {
+  ALL = "all",
+  UPCOMING = "upcoming",
+  PAST = "past",
+}
+
+type EventFiltersProps = {
+  onFilterChange?: (filter: EventFilter) => void;
+  defaultFilter?: EventFilter;
+};
+
 const Container = styled.div`
   max-width: ${themeColors.breakpoints.desktop};
   margin: 0 auto;
@@ -19,7 +30,7 @@ const SectionHeader = styled.div`
   flex-wrap: wrap;
   align-items: baseline;
   gap: ${themeColors.spacing.sm};
-  margin-bottom: ${themeColors.spacing.xl};
+  margin-bottom: ${themeColors.spacing.lg};
 `;
 
 const SectionTitle = styled.h2`
@@ -38,26 +49,19 @@ const SectionTitleGray = styled.h2`
   margin: 0 ${themeColors.spacing.sm};
 `;
 
-const SectionSubtitle = styled.h4`
-  font-weight: ${themeColors.typography.headings.desktop.h4.fontWeight};
-  color: ${themeColors.colors.neutral.white};
-  margin-top: ${themeColors.spacing.lg};
-  margin-bottom: ${themeColors.spacing.lg};
-`;
-
 const EventsGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(1, minmax(0, 1fr));
-  gap: ${themeColors.spacing.xxl};
+  gap: ${themeColors.spacing.xl};
   justify-content: center;
-  padding-bottom: 10rem;
+  padding-bottom: 80px;
 
   @media (min-width: ${themeColors.breakpoints.mobile}) {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   @media (min-width: ${themeColors.breakpoints.laptop}) {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     justify-content: flex-start;
   }
 `;
@@ -84,36 +88,35 @@ const FilterButton = styled.button<{ isActive: boolean }>`
     props.isActive
       ? themeColors.colors.neutral.white
       : themeColors.colors.gray.main};
-  border: 1px solid
-    ${(props) =>
-      props.isActive
-        ? themeColors.colors.primary.main
-        : themeColors.colors.gray.line};
+  border: 1px solid ${themeColors.cardBorder.color};
   border-radius: ${themeColors.radiusSizes.two_xl};
-  padding: ${themeColors.spacing.xs} ${themeColors.spacing.sm};
+  padding: 6px 10px;
   font-size: ${themeColors.typography.body.small.fontSize}px;
-  font-weight: ${themeColors.font14.fontWeight};
+  font-weight: ${themeColors.font16.lineHeight};
   cursor: pointer;
   transition: all 0.2s ease;
-
-  &:hover {
-    background-color: ${(props) =>
-      props.isActive
-        ? themeColors.colors.primary.dark
-        : themeColors.colors.utility.overlay};
-  }
+  outline: none !important;
+  box-shadow: none !important;
 `;
 
-enum EventFilter {
-  ALL = "all",
-  UPCOMING = "upcoming",
-  PAST = "past",
-}
+const StyledLink = styled(Link)`
+  text-decoration: none;
+`;
+
+const filterOptions = [
+  { value: EventFilter.ALL, label: "All" },
+  { value: EventFilter.UPCOMING, label: "Upcoming Events" },
+  { value: EventFilter.PAST, label: "Past Events" },
+];
+
 /**
  * EventsList Component
  * Displays a list of upcoming and past events fetched from the server
  */
-export default function EventsList() {
+export default function EventsList({
+  onFilterChange,
+  defaultFilter,
+}: EventFiltersProps) {
   const { fetchAllEvents } = useFetchEvent();
 
   const upcomingEvents = useRecoilValue(upcomingEventsAtom);
@@ -122,7 +125,7 @@ export default function EventsList() {
 
   const [loading, setLoading] = useState(true);
   const [activeFilter, setActiveFilter] = useState<EventFilter>(
-    EventFilter.ALL
+    (defaultFilter = EventFilter.ALL)
   );
   useEffect(() => {
     let isMounted = true;
@@ -146,30 +149,45 @@ export default function EventsList() {
     };
   }, [fetchAllEvents]);
 
+  const handleFilterChange = (filter: EventFilter) => {
+    setActiveFilter(filter);
+    if (onFilterChange) {
+      onFilterChange(filter);
+    }
+  };
+
+  const formatDate = (dateValue: string | { seconds: number } | null) => {
+    if (!dateValue) return "Date not available";
+
+    const date =
+      typeof dateValue === "object" && "seconds" in dateValue
+        ? new Date(dateValue.seconds * 1000)
+        : new Date(dateValue as string);
+
+    return date.toDateString();
+  };
+
   // method to render event cards
   const renderEventCard = (event: Event, isUpcoming: boolean) => (
-    <Link
+    <StyledLink
       to={`/events/${isUpcoming ? "upcoming" : "past"}/details/${event.id}`}
       key={event.id}
       state={{ eventData: event, speakers: [], eventSchedule: [] }}
     >
       <EventCard
-        title={event.title}
-        description={event.description}
-        date={
-          typeof event.date === "string"
-            ? event.date
-            : event.date
-            ? new Date(event.date.seconds * 1000).toDateString()
-            : "Date not available"
+        isFreeEvent={true}
+        title={event.title || "Upcoming Event N7"}
+        description={
+          event.description ||
+          "asdsds sds dsd as a bout a eneasdasd asdsad asdsda asd asd w tech event"
         }
-        author={event.author}
+        date={formatDate(event.date)}
+        author={event.author || "KO'DJ"}
         imageUrl={event.imageUrl || ""}
-        isUpcoming={isUpcoming}
-        registeredCount={event.registeredCount}
-        maxSeats={event.maxSeats}
+        registeredCount={event.registeredCount || 50}
+        maxSeats={event.maxSeats || 60}
       />
-    </Link>
+    </StyledLink>
   );
 
   if (loading) {
@@ -183,57 +201,42 @@ export default function EventsList() {
   return (
     <Container>
       <EventFilterContainer>
-        <FilterButton
-          isActive={activeFilter === EventFilter.ALL}
-          onClick={() => setActiveFilter(EventFilter.ALL)}
-        >
-          All
-        </FilterButton>
-        <FilterButton
-          isActive={activeFilter === EventFilter.UPCOMING}
-          onClick={() => setActiveFilter(EventFilter.UPCOMING)}
-        >
-          Upcoming Events
-        </FilterButton>
-        <FilterButton
-          isActive={activeFilter === EventFilter.PAST}
-          onClick={() => setActiveFilter(EventFilter.PAST)}
-        >
-          Past Events
-        </FilterButton>
+        {filterOptions.map((option) => (
+          <FilterButton
+            key={option.value}
+            isActive={activeFilter === option.value}
+            onClick={() => handleFilterChange(option.value)}
+          >
+            {option.label}
+          </FilterButton>
+        ))}
       </EventFilterContainer>
-
-      {(activeFilter === EventFilter.ALL ||
-        activeFilter === EventFilter.UPCOMING) && (
-        <>
-          <SectionHeader>
-            <SectionTitle>Upcoming</SectionTitle>
-            <SectionTitleGray>Events</SectionTitleGray>
-          </SectionHeader>
-          <SectionSubtitle>
-            Check out our upcoming events below:
-          </SectionSubtitle>
-          <EventsGrid>
-            {upcomingEvents && upcomingEvents.length > 0 ? (
-              <>
-                {upcomingEvents.map((event) => renderEventCard(event, true))}
-                <EventCard isPlaceholder />
-              </>
-            ) : (
-              <EventCard isPlaceholder />
-            )}
-          </EventsGrid>
-        </>
-      )}
-
-      {(activeFilter === EventFilter.ALL ||
-        activeFilter === EventFilter.PAST) && (
+      <SectionHeader>
+        <SectionTitle>
+          {activeFilter === EventFilter.PAST ? "Past" : "Upcoming"}
+        </SectionTitle>
+        <SectionTitleGray>Events</SectionTitleGray>
+      </SectionHeader>
+      <EventsGrid>
+        {activeFilter === EventFilter.ALL ||
+        activeFilter === EventFilter.UPCOMING ? (
+          upcomingEvents && upcomingEvents.length > 0 ? (
+            <>{upcomingEvents.map((event) => renderEventCard(event, true))}</>
+          ) : (
+            <EventCard isPlaceholder />
+          )
+        ) : pastEvents && pastEvents.length > 0 ? (
+          pastEvents.map((event) => renderEventCard(event, false))
+        ) : (
+          <EventCard isPlaceholder />
+        )}
+      </EventsGrid>
+      {activeFilter === EventFilter.ALL && (
         <>
           <SectionHeader>
             <SectionTitle>Past</SectionTitle>
             <SectionTitleGray>Events</SectionTitleGray>
           </SectionHeader>
-          <SectionSubtitle>Check out our past events below:</SectionSubtitle>
           <EventsGrid>
             {pastEvents && pastEvents.length > 0 ? (
               pastEvents.map((event) => renderEventCard(event, false))

@@ -250,7 +250,7 @@ const cardBorder = {
   xxl: "24px",
   pill: "9999px",
 
-  color: "#FFF",
+  color: "#505050",
 };
 
 /**
