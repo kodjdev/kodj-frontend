@@ -17,20 +17,20 @@ type EventType = {
 const Container = styled.div`
   display: flex;
   flex-direction: column;
-  width: 100%;
-  max-width: 100%;
-  padding: 30px 25px 30px 25px;
-  margin: 1rem 0;
+  max-width: ${themeColors.breakpoints.laptop};
+  padding: 32px 48px;
+  margin: 1rem auto;
   border-radius: 8px;
-  border: 0.5px solid ${themeColors.cardBorder.color};
+  border: 1px solid ${themeColors.cardBorder.color};
   background-color: ${themeColors.colors.gray.dark};
-  margin-top: 30px;
-  margin-bottom: 50px;
-
+  overflow: hidden;
   @media (min-width: ${themeColors.breakpoints.mobile}) {
-    max-width: ${themeColors.breakpoints.mobile}
-    padding: 2rem 2rem 2rem 2rem;
-    margin: 1.875rem 0;
+    padding: 32px;
+  }
+
+  @media (min-width: ${themeColors.breakpoints.tablet}) {
+    padding: 32px 48px;
+    max-width: ${themeColors.breakpoints.laptop};
   }
 `;
 
@@ -55,7 +55,6 @@ const LeftSection = styled.div`
   gap: 0.625rem;
   width: 100%;
   flex-shrink: 0;
-  white-space: nowrap;
 
   @media (min-width: ${themeColors.breakpoints.mobile}) {
     width: 486px;
@@ -83,14 +82,21 @@ const AlertText = styled.p`
 
 const TimeInfoContainer = styled.div`
   display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
+  flex-direction: column;
+  align-items: flex-start;
   gap: 0.5rem;
+  width: 100%;
+
+  @media (min-width: ${themeColors.breakpoints.mobile}) {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: baseline;
+  }
 `;
 
 const TimeLeftText = styled.p`
   color: ${themeColors.colors.neutral.white};
-  font-weight: ${themeColors.typography.headings.desktop.h2}
+  font-weight: ${themeColors.typography.headings.desktop.h2};
   font-size: 20px;
   line-height: 41.6px;
   margin: 0 5px;
@@ -125,14 +131,24 @@ const EventNameText = styled.p`
 `;
 
 const TimerContainer = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); // 2 columns on small screens
+  gap: 0.25rem;
+  width: 100%;
+  margin-top: 1rem;
 
   @media (min-width: ${themeColors.breakpoints.mobile}) {
-    gap: 0.625rem;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: auto;
+    gap: 1rem;
+    margin-top: 0;
+  }
+
+  @media (min-width: ${themeColors.breakpoints.tablet}) {
+    gap: 1.5rem;
   }
 `;
 
@@ -142,21 +158,27 @@ const TimeUnit = styled.div`
 
 const TimeValue = styled.p`
   color: ${themeColors.colors.neutral.white};
-  font-size: 40px;
+  font-size: 30px;
   font-weight: normal;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   margin: 0;
 
   @media (min-width: ${themeColors.breakpoints.mobile}) {
+    font-size: 50px;
+    letter-spacing: 0.5px;
+  }
+
+  @media (min-width: ${themeColors.breakpoints.tablet}) {
     font-size: 70px;
+    text-transform: uppercase;
   }
 `;
 
 const TimeLabel = styled.p`
   color: ${themeColors.colors.gray.main};
   font-size: 15px;
-  font-weight: ${themeColors.typography.headings.desktop.h4}
+  font-weight: ${themeColors.typography.headings.desktop.h4};
   text-transform: uppercase;
   margin: 0;
 `;
@@ -167,7 +189,7 @@ const Separator = styled.span`
   font-weight: normal;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  margin: 0;
+  margin: 0 -20px;
   display: none;
 
   @media (min-width: ${themeColors.breakpoints.mobile}) {
@@ -188,7 +210,7 @@ const LoadingSpinner = styled.div`
   border-radius: 50%;
   height: 2rem;
   width: 2rem;
-  border: 2px solid transparent;
+  border: 1px solid transparent;
   border-bottom-color: ${themeColors.colors.neutral.white};
 
   @keyframes spin {

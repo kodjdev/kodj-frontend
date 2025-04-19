@@ -2,6 +2,7 @@ import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import styled from "styled-components";
 import telegram from "@/static/assets/kodj_telegram.jpg";
+import themeColors from "@/tools/themeColors";
 
 const CardContainer = styled.div`
   display: flex;
@@ -17,7 +18,7 @@ const ImageContainer = styled(motion.div)`
 `;
 
 const QRImage = styled.img`
-  width: 280px;
+  width: 300px;
   height: 300px;
   aspect-ratio: 1;
   object-fit: cover;
@@ -38,23 +39,24 @@ const ExpandedOverlay = styled(motion.div)`
 
 const ExpandedImageContainer = styled(motion.div)`
   position: relative;
-  width: 90%;
-  height: 90%;
+  width: 80%;
+  max-width: 500px; // Added max-width
+  max-height: 500px; // Added max-height
   display: flex;
   align-items: center;
   justify-content: center;
 
-  @media (min-width: 640px) {
+  @media (min-width: ${themeColors.breakpoints.mobile}) {
     width: 60%;
     height: 60%;
   }
 
-  @media (min-width: 768px) {
+  @media (min-width: ${themeColors.breakpoints.tablet}) {
     width: 50%;
     height: 50%;
   }
 
-  @media (min-width: 1024px) {
+  @media (min-width: ${themeColors.breakpoints.laptop}) {
     width: 40%;
     height: 40%;
   }
@@ -62,9 +64,12 @@ const ExpandedImageContainer = styled(motion.div)`
 
 const ExpandedImage = styled.img`
   border-radius: 1rem;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
 `;
 
-export default function QrCodeCard()  {
+export default function QrCodeCard() {
   const [isExpanded, setIsExpanded] = useState(false);
 
   // Toggle expanded view
@@ -79,7 +84,7 @@ export default function QrCodeCard()  {
         initial={{ filter: "blur(8px)" }}
         whileHover={{ filter: "blur(0px)" }}
       >
-        <QRImage src={telegram} alt="telegram" width={280} height={300} />
+        <QRImage src={telegram} alt="telegram" width={300} height={300} />
       </ImageContainer>
 
       <AnimatePresence>
@@ -102,4 +107,4 @@ export default function QrCodeCard()  {
       </AnimatePresence>
     </CardContainer>
   );
-};
+}

@@ -64,7 +64,7 @@ const Title = styled.h2`
 `;
 
 const JoinButton = styled(Button)`
-  border: 0.5px solid ${themeColors.colors.neutral.white};
+  border: 1px solid ${themeColors.cardBorder.color};
   border-radius: 8px;
   transition: all 0.2s ease;
 

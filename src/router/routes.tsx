@@ -7,13 +7,14 @@ import {
   NewsDetails,
   NewsList,
   SpeakerRegistrationForm,
+  EventsPage,
 } from "./lazyComponents";
 
-interface RouteType {
+type RouteType = {
   path: string;
   component: React.ReactElement;
   auth?: boolean;
-}
+};
 
 export const routes: RouteType[] = [
   {
@@ -66,15 +67,15 @@ export const routes: RouteType[] = [
   //   ),
   //   auth: true,
   // },
-  // {
-  //   path: "/events",
-  //   component: (
-  //     <Suspense fallback={<ComponentLoading />}>
-  //       <EventsList />
-  //     </Suspense>
-  //   ),
-  //   auth: false,
-  // },
+  {
+    path: "/events",
+    component: (
+      <Suspense fallback={<ComponentLoading />}>
+        <EventsPage />
+      </Suspense>
+    ),
+    auth: false,
+  },
   // {
   //   path: "/events:type",
   //   component: <EventsList />,
@@ -101,10 +102,10 @@ export const routes: RouteType[] = [
   {
     path: "/speakers",
     component: (
-      <Suspense fallback={<ComponentLoading/>}>
-        <SpeakerRegistrationForm/>
+      <Suspense fallback={<ComponentLoading />}>
+        <SpeakerRegistrationForm />
       </Suspense>
-    )
+    ),
   },
   {
     path: "/news",
@@ -112,7 +113,7 @@ export const routes: RouteType[] = [
       <Suspense fallback={<ComponentLoading />}>
         <NewsList />
       </Suspense>
-    )
+    ),
   },
   {
     path: "/news/:category",

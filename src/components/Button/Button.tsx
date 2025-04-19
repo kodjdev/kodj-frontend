@@ -62,8 +62,8 @@ const StyledButton = styled("button")<{
         `;
       case "mini":
         return css`
-          height: 30px;
-          padding: 10px 24px;
+          height: 18px;
+          padding: 7px 20px;
           font-size: ${themeColor.typography.body.xsmall.fontSize || 14}px;
         `;
       default: // 'md'

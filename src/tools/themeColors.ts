@@ -192,7 +192,7 @@ const typography = {
     font10_bold: { fontSize: 10, fontWeight: 700, lineHeight: "12px" },
     font12: { fontSize: 12, letterSpacing: 0.4, lineHeight: "14px" },
     font12_bold: { fontSize: 12, fontWeight: 700, lineHeight: "14px" },
-    font14: { fontSize: 14, lineHeight: "16px" },
+    font14: { fontSize: 14, lineHeight: "16px", fontWeight: 600 },
     font14_bold: { fontSize: 14, fontWeight: 700, lineHeight: "16px" },
     font16: { fontSize: 16, letterSpacing: -0.4, lineHeight: "19px" },
     font16_bold: {
@@ -250,7 +250,7 @@ const cardBorder = {
   xxl: "24px",
   pill: "9999px",
 
-  color: "#FFF",
+  color: "#505050",
 };
 
 /**
@@ -316,24 +316,42 @@ const sizes = {
     },
   },
 
-  // Original variant sizes (for backward compatibility)
   variants: {
-    default: "h-6 px-4 py-2 text-sm font-medium",
-    sm: "h-8 px-3 rounded-md text-xs",
-    md: "h-12 px-8 rounded-md text-md",
-    lg: "h-10 px-8 rounded-md text-base",
+    default: {
+      height: "1.5rem", // h-6
+      padding: "0.5rem 1rem", // px-4 py-2
+      fontSize: "0.875rem", // text-sm
+      fontWeight: "500", // font-medium
+    },
+    sm: {
+      height: "2rem", // h-8
+      padding: "0.375rem 0.75rem", // px-3
+      borderRadius: "0.375rem", // rounded-md
+      fontSize: "0.75rem", // text-xs
+    },
+    md: {
+      height: "3rem", // h-12
+      padding: "0.5rem 2rem", // px-8
+      borderRadius: "0.375rem", // rounded-md
+      fontSize: "1rem", // text-md
+    },
+    lg: {
+      height: "2.5rem", // h-10
+      padding: "0.5rem 2rem", // px-8
+      borderRadius: "0.375rem", // rounded-md
+      fontSize: "1rem", // text-base
+    },
   },
 
-  // Original radius sizes (for backward compatibility)
   radiusSizes: {
-    none: "rounded-none",
-    sm: "rounded-sm",
-    md: "rounded-md",
-    lg: "rounded-lg",
-    xl: "rounded-xl",
-    two_xl: "rounded-2xl",
-    three_xl: "rounded-3xl",
-    full: "rounded-full",
+    none: "0",
+    sm: "0.125rem",
+    md: "0.375rem",
+    lg: "0.5rem",
+    xl: "0.75rem",
+    two_xl: "1rem",
+    three_xl: "2.5rem", // This was already using pixels
+    full: "9999px",
   },
 };
 
