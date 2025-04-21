@@ -1,60 +1,57 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from 'react';
 
 type KakaoMapProps = {
-  address: string;
-  eventRoom?: string;
+    address: string;
+    eventRoom?: string;
 };
 
 declare global {
-  interface Window {
-    kakao: any;
-  }
+    interface Window {
+        kakao: any;
+    }
 }
 
 /**
  * Kakao Map Component
- * 
+ *
  * This will draw the map elements using the kakao map sdk.
  */
 
 export default function KakaoMap({ address, eventRoom }: KakaoMapProps) {
-  const mapRef = useRef<HTMLDivElement>(null);
-  const [error, setError] = useState<string | null>(null);
+    const mapRef = useRef<HTMLDivElement>(null);
+    const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    // kakao script load bo'lganidan keyin mapni initialize qilamiz
-    const initMap = () => {
-      if (!mapRef.current || !window.kakao?.maps) {
-        console.error("Kakao Maps SDK not loaded");
-        setError("Map initialization failed");
-        return;
-      }
+    useEffect(() => {
+        // kakao script load bo'lganidan keyin mapni initialize qilamiz
+        const initMap = () => {
+            if (!mapRef.current || !window.kakao?.maps) {
+                console.error('Kakao Maps SDK not loaded');
+                setError('Map initialization failed');
+                return;
+            }
 
-      try {
-        const geocoder = new window.kakao.maps.services.Geocoder();
+            try {
+                const geocoder = new window.kakao.maps.services.Geocoder();
 
-        geocoder.addressSearch(address, (result: any[], status: any) => {
-          if (status === window.kakao.maps.services.Status.OK) {
-            console.log("Geocoding successful");
-            const coords = new window.kakao.maps.LatLng(
-              result[0].y,
-              result[0].x
-            );
+                geocoder.addressSearch(address, (result: any[], status: any) => {
+                    if (status === window.kakao.maps.services.Status.OK) {
+                        console.log('Geocoding successful');
+                        const coords = new window.kakao.maps.LatLng(result[0].y, result[0].x);
 
-            const mapOptions = {
-              center: coords,
-              level: 3,
-            };
+                        const mapOptions = {
+                            center: coords,
+                            level: 3,
+                        };
 
-            const map = new window.kakao.maps.Map(mapRef.current, mapOptions);
+                        const map = new window.kakao.maps.Map(mapRef.current, mapOptions);
 
-            new window.kakao.maps.Marker({
-              position: coords,
-              map: map,
-            });
+                        new window.kakao.maps.Marker({
+                            position: coords,
+                            map: map,
+                        });
 
-            const locationContent = document.createElement("div");
-            locationContent.innerHTML = `
+                        const locationContent = document.createElement('div');
+                        locationContent.innerHTML = `
               <div style="
                 background: white;
                 padding: 10px 15px;
@@ -70,16 +67,16 @@ export default function KakaoMap({ address, eventRoom }: KakaoMapProps) {
               </div>
             `;
 
-            new window.kakao.maps.CustomOverlay({
-              content: locationContent,
-              map: map,
-              position: coords,
-              yAnchor: 2.2,
-            });
+                        new window.kakao.maps.CustomOverlay({
+                            content: locationContent,
+                            map: map,
+                            position: coords,
+                            yAnchor: 2.2,
+                        });
 
-            if (eventRoom) {
-              const eventRoomDiv = document.createElement("div");
-              eventRoomDiv.innerHTML = `
+                        if (eventRoom) {
+                            const eventRoomDiv = document.createElement('div');
+                            eventRoomDiv.innerHTML = `
                 <div style="
                   position: absolute;
                   top: 10px;
@@ -104,54 +101,50 @@ export default function KakaoMap({ address, eventRoom }: KakaoMapProps) {
                 </div>
               `;
 
-              // we append it to map contayner
-              mapRef.current?.appendChild(eventRoomDiv);
+                            // we append it to map contayner
+                            mapRef.current?.appendChild(eventRoomDiv);
+                        }
+                    } else {
+                        console.error('Geocoding failed:', status);
+                        setError('Failed to locate address');
+                    }
+                });
+            } catch (err) {
+                console.error('Map initialization error:', err);
+                setError('Failed to initialize map');
             }
-          } else {
-            console.error("Geocoding failed:", status);
-            setError("Failed to locate address");
-          }
-        });
-      } catch (err) {
-        console.error("Map initialization error:", err);
-        setError("Failed to initialize map");
-      }
-    };
+        };
 
-    // we check if Kakao is loaded, if not wait for it
-    if (window.kakao?.maps) {
-      initMap();
-    } else {
-      const checkKakao = setInterval(() => {
+        // we check if Kakao is loaded, if not wait for it
         if (window.kakao?.maps) {
-          clearInterval(checkKakao);
-          initMap();
-        }
-      }, 100);
+            initMap();
+        } else {
+            const checkKakao = setInterval(() => {
+                if (window.kakao?.maps) {
+                    clearInterval(checkKakao);
+                    initMap();
+                }
+            }, 100);
 
-      // 5 sekundan keyin clearn qilamiz agar script load bo'lmasa
-      setTimeout(() => {
-        clearInterval(checkKakao);
-        if (!window.kakao?.maps) {
-          setError("Kakao Maps failed to load");
+            // 5 sekundan keyin clearn qilamiz agar script load bo'lmasa
+            setTimeout(() => {
+                clearInterval(checkKakao);
+                if (!window.kakao?.maps) {
+                    setError('Kakao Maps failed to load');
+                }
+            }, 5000);
         }
-      }, 5000);
+    }, [address, eventRoom]);
+
+    if (error) {
+        return <div className="text-red-500 p-4 border border-red-300 rounded">{error}</div>;
     }
-  }, [address, eventRoom]);
 
-  if (error) {
     return (
-      <div className="text-red-500 p-4 border border-red-300 rounded">
-        {error}
-      </div>
+        <div
+            ref={mapRef}
+            className="w-full h-52 sm:h-60 rounded-md overflow-hidden mb-4"
+            style={{ width: '100%', height: '450px' }}
+        />
     );
-  }
-
-  return (
-    <div
-      ref={mapRef}
-      className="w-full h-52 sm:h-60 rounded-md overflow-hidden mb-4"
-      style={{ width: "100%", height: "450px" }}
-    />
-  );
 }
