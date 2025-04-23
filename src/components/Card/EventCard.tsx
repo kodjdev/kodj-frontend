@@ -82,14 +82,12 @@ const IsPaidEvent = styled.div`
 `;
 
 /**
- * EventCard Molecule Component
+ * EventCard - Molecule Component
  * @param isPlaceholder - Whether to show placeholder content instead of event details
  * @param title - Event title
  * @param description - Event description
- * @param author - Event organizer/author
  * @param imageUrl - URL for event cover image
  * @param date - Event date
- * @param isUpcoming - Whether event is upcoming or past
  * @param isFreeEvent - Whether event is free or paid
  * @param registeredCount - Number of registered attendees
  * @param maxSeats - Maximum number of available seats
@@ -99,10 +97,8 @@ export default function EventCard({
     isPlaceholder,
     title,
     description,
-    author,
     imageUrl,
     date,
-    isUpcoming,
     isFreeEvent,
     registeredCount,
     maxSeats,

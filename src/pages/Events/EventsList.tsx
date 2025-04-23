@@ -110,7 +110,7 @@ const filterOptions = [
  * @param {Function} onFilterChange - Callback function to handle filter changes.
  * @param {EventFilter} defaultFilter - Default filter to be applied on load.
  */
-export default function EventsList({ onFilterChange, defaultFilter }: EventFiltersProps) {
+export default function EventsList({ onFilterChange, defaultFilter = EventFilter.ALL }: EventFiltersProps) {
     const { fetchAllEvents } = useFetchEvent();
 
     const upcomingEvents = useRecoilValue(upcomingEventsAtom);
@@ -118,7 +118,7 @@ export default function EventsList({ onFilterChange, defaultFilter }: EventFilte
     // const setEventCache = useSetRecoilState(eventCacheAtom);
 
     const [loading, setLoading] = useState(true);
-    const [activeFilter, setActiveFilter] = useState<EventFilter>((defaultFilter = EventFilter.ALL));
+    const [activeFilter, setActiveFilter] = useState<EventFilter>(defaultFilter);
     useEffect(() => {
         let isMounted = true;
 
