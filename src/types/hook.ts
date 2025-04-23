@@ -1,4 +1,3 @@
-// Types
 export type MeetupResponse = {
     id: number;
     title: string;
@@ -7,10 +6,10 @@ export type MeetupResponse = {
     location: string;
     maxSeats: number;
     provided: string;
-    meetupDate: string; // "yyyy-MM-dd"
+    meetupDate: string;
     organizerId: number;
-    startTime: string; // "yyyy-MM-dd HH:mm:ss"
-    endTime: string; // "yyyy-MM-dd HH:mm:ss"
+    startTime: string;
+    endTime: string;
     imageName: string;
     imageURL: string;
 };

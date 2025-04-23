@@ -3,13 +3,18 @@
 
 import { Navigate } from 'react-router-dom';
 import React from 'react';
-import { useAuth } from '../context/useAuth';
+import { useAuth } from '@/context/useAuth';
 
-interface ProtectedRouteProps {
+type ProtectedRouteProps = {
     children: React.ReactElement;
-}
+};
 
-const PrivateWrapper: React.FC<ProtectedRouteProps> = ({ children }) => {
+/**
+ * ProtectedRoute - A component that protects routes based on authentication status.
+ * @param {ProtectedRouteProps} props - The props for the ProtectedRoute component.
+ * @returns {React.ReactElement} - The protected route or a redirect to the login page.
+ */
+export default function ProtectedRoute({ children }: ProtectedRouteProps) {
     const { user } = useAuth();
 
     if (!user) {
@@ -17,6 +22,4 @@ const PrivateWrapper: React.FC<ProtectedRouteProps> = ({ children }) => {
     }
 
     return children;
-};
-
-export default PrivateWrapper;
+}

@@ -1,8 +1,6 @@
-import { HomePage } from '../pages';
 import React, { Suspense } from 'react';
-import ComponentLoading from '../components/ComponentLoading.tsx';
-
-import { EventRegister, NewsDetails, NewsList, SpeakerRegistrationForm, EventsPage } from './lazyComponents';
+import ComponentLoading from '@/components/ComponentLoading.tsx';
+import { Home, EventsPage } from '@/router/lazyComponents.tsx';
 
 type RouteType = {
     path: string;
@@ -10,57 +8,17 @@ type RouteType = {
     auth?: boolean;
 };
 
+/**
+ * Routes - An array of route objects for the application.
+ * @description This array defines the routes for the application, including the path,
+ * component to render, and authentication requirements.
+ */
 export const routes: RouteType[] = [
     {
         path: '/',
-        component: <HomePage />,
+        component: <Home />,
         auth: false,
     },
-    // {
-    //   path: "/about",
-    //   component: <About />,
-    //   auth: false,
-    // },
-    // {
-    //   path: "/login",
-    //   component: <LoginPage />,
-    //   auth: false,
-    // },
-    // {
-    //   path: "/signup",
-    //   component: <SignupPage />,
-    //   auth: false,
-    // },
-    // {
-    //   path: "/complete-profile",
-    //   component: (
-    //       <UserDetailsForm />
-    //   ),
-    //   auth: true
-    // },
-    // {
-    //   path: "/forgot-password",
-    //   component: <ForgotPassword />,
-    //   auth: false,
-    // },
-    // {
-    //   path: "/mypage",
-    //   component: (
-    //     <Suspense fallback={<ComponentLoading />}>
-    //       <MyPage />
-    //     </Suspense>
-    //   ),
-    //   auth: true,
-    // },
-    // {
-    //   path: "/mypage/editProfile",
-    //   component: (
-    //     <Suspense fallback={<ComponentLoading />}>
-    //       <EditMyPage />
-    //     </Suspense>
-    //   ),
-    //   auth: true,
-    // },
     {
         path: '/events',
         component: (
@@ -69,60 +27,5 @@ export const routes: RouteType[] = [
             </Suspense>
         ),
         auth: false,
-    },
-    // {
-    //   path: "/events:type",
-    //   component: <EventsList />,
-    //   auth: false,
-    // },
-    // {
-    //   path: "/events/:type/details/:id",
-    //   component: (
-    //     <Suspense fallback={<ComponentLoading />}>
-    //       <EventDetails />
-    //     </Suspense>
-    //   ),
-    //   auth: false,
-    // },
-    {
-        path: '/events/upcoming/details/:id/register',
-        component: (
-            <Suspense fallback={<ComponentLoading />}>
-                <EventRegister />
-            </Suspense>
-        ),
-        auth: true, // Protected route
-    },
-    {
-        path: '/speakers',
-        component: (
-            <Suspense fallback={<ComponentLoading />}>
-                <SpeakerRegistrationForm />
-            </Suspense>
-        ),
-    },
-    {
-        path: '/news',
-        component: (
-            <Suspense fallback={<ComponentLoading />}>
-                <NewsList />
-            </Suspense>
-        ),
-    },
-    {
-        path: '/news/:category',
-        component: (
-            <Suspense fallback={<ComponentLoading />}>
-                <NewsList />,
-            </Suspense>
-        ),
-    },
-    {
-        path: '/news/:category/:id',
-        component: (
-            <Suspense fallback={<ComponentLoading />}>
-                <NewsDetails />,
-            </Suspense>
-        ),
     },
 ];

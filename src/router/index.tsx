@@ -3,9 +3,14 @@
 
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { routes } from './routes';
-import PrivateWrapper from './ProtectedRoute';
-import Error from '../components/Error';
+import ProtectedRoute from '@/router/ProtectedRoute';
+import Error from '@/components/Error/Error';
+import ErrorBoundary from '@/components/Error/ErrorBoundary';
 
+/**
+ * RouterPage - This component is responsible for rendering the application's routes.
+ * @param {Readonly<{ children: React.ReactNode }>} props - The props for the RouterPage component.
+ */
 export default function RouterPage() {
     return (
         <Routes>
@@ -13,10 +18,17 @@ export default function RouterPage() {
                 <Route
                     path={path}
                     key={path}
-                    element={auth ? <PrivateWrapper>{component}</PrivateWrapper> : component}
+                    element={
+                        auth ? (
+                            <ErrorBoundary>
+                                <PrivateWrapper>{component}</PrivateWrapper>
+                            </ErrorBoundary>
+                        ) : (
+                            <ErrorBoundary> {component}</ErrorBoundary>
+                        )
+                    }
                 />
             ))}
-            {/* // unhandled routes will be moved to 404 page error handling component */}
             <Route path="*" element={<Error />} />
         </Routes>
     );
