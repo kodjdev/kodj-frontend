@@ -15,7 +15,6 @@
     "@types/react-virtualized": "^9.22.2",
     "antd": "^5.22.2",
     "axios": "^1.8.4",
-    "clsx": "^2.1.1",
     "cobe": "^0.6.3",
     "firebase": "^11.0.2",
     "firebase-admin": "^13.0.1",
