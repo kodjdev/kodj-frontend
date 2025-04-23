@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
@@ -65,7 +64,12 @@ const ArrowIcon = styled(FiArrowLeft)`
     margin-right: 0.5rem;
 `;
 
-const Error: React.FC = () => {
+/**
+ * Error - Util Component
+ * @description This component is used to display a 404
+ * error page when the user navigates to a non-existent route.
+ */
+export default function Error() {
     return (
         <ErrorPageContainer>
             <ContentWrapper>
@@ -88,6 +92,4 @@ const Error: React.FC = () => {
             </ContentWrapper>
         </ErrorPageContainer>
     );
-};
-
-export default Error;
+}
