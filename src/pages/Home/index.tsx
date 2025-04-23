@@ -1,23 +1,21 @@
-import EventBenefits from "./EventBenefits";
-import Statistics from "./Statistics";
-import CommunityCard from "./CommunityCard/CommunityCard";
-import TimeFrame from "./TimeFrame";
+import EventBenefits from '@/pages/Home/EventBenefits';
+import Statistics from '@/pages/Home/Statistics';
+import CommunityCard from '@/pages/Home/CommunityCard/CommunityCard';
+import TimeFrame from '@/pages/Home/TimeFrame';
 
 /**
- *  Default route - Home Page Root File
- *  where we will build up the all sub components
- *
- * @description This is the home page of the application.
+ * Home - Home Page Component
+ * @description This component is the main entry point for the home page.
+ * It serves as a landing page for users and provides an overview of the application.
  */
-
-export default function Home() {
-  return (
-    <>
-      <CommunityCard />
-      <Statistics />
-      <EventBenefits />
-      <TimeFrame />
-      {/* <CardHoverEffect /> */}
-    </>
-  );
+export default function HomePage() {
+    return (
+        <>
+            <CommunityCard />
+            <Statistics />
+            <EventBenefits />
+            <TimeFrame />
+            {/* <CardHoverEffect /> */}
+        </>
+    );
 }

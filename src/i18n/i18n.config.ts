@@ -5,21 +5,14 @@ import { initReactI18next, useTranslation } from 'react-i18next';
 
 import uzHome from '@/pages/Home/langs/uz-home.json';
 import enHome from '@/pages/Home/langs/en-home.json';
-// import enNavbar from "@/pages/About/langs/en-about.json";
-// import uzNavbar from "@/pages/About/langs/uz-about.json";
-import enSpeakers from '@/pages/Speakers/langs/en.json';
-import uzSpeakers from '@/pages/Speakers/langs/uz.json';
-// import enEventRegister from "@/pages/Events/EventRegister/langs/en.json";
-// import uzEventRegister from "@/pages/Events/EventRegister/langs/uz.json";
+import enSpeakers from '@/pages/Speakers/langs/en-speakers.json';
+import uzSpeakers from '@/pages/Speakers/langs/uz-speakers.json';
 
 declare module 'i18next' {
     interface CustomTypeOptions {
         defaultNS: 'about';
         resources: {
             home: typeof enHome;
-            // navbar: typeof enNavbar;
-            // about: typeof enNavbar;
-            // eventRegister: typeof enEventRegister;
             speakers: typeof enSpeakers;
         };
     }
@@ -35,21 +28,10 @@ i18n.use(initReactI18next)
         resources: {
             en: {
                 home: enHome,
-                // navbar: enNavbar,
-                // about: enNavbar,
-                // eventRegister: enEventRegister,
-                // events: enEvents,
-                // news: enNews,
                 speakers: enSpeakers,
             },
             uz: {
                 home: uzHome,
-                // navbar: uzNavbar,
-                // about: uzNavbar,
-                // eventRegister: uzEventRegister,
-                // aboutUs: enAboutUs,
-                // events: enEvents,
-                // news: enNews,
                 speakers: uzSpeakers,
             },
         },
@@ -57,7 +39,7 @@ i18n.use(initReactI18next)
         interpolation: {
             escapeValue: false,
         },
-        ns: ['home', 'about', 'navbar', 'speakers', 'eventRegister'],
+        ns: ['home', 'speakers'],
         defaultNS: 'about',
         detection: {
             order: ['localStorage', 'navigator'],
