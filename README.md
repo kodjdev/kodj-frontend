@@ -107,7 +107,6 @@ kodj_web_react/
 │   ├── i18n/          # i18n configuration
 │   ├── utils/         # Constants and utils functions
 │   ├── static/        # Static assets
-│   ├── firebase/      # Firebase configuration
 │   ├── hooks/         # Custom React hooks
 │   ├── i18n/          # Internationalization
 │   ├── pages/         # Application pages
@@ -117,8 +116,6 @@ kodj_web_react/
 │   │   └── ...
 │   ├── tools/         # Predefined Colors and Styles
 │   └── router/        # Routing configuration
-├── .env               # Dev environment variables
-├── .env.prod          # Prod environment variables
 └── vite.config.ts     # Vite configuration
 ```
 
@@ -136,20 +133,6 @@ npm run lint
 
 # Format code
 npm run format
-```
-
-## 🌐 Environment Variables
-
-Create a `.env` file in the root directory:
-
-```
-VITE_FIREBASE_API_KEY = your_env_var
-VITE_FIREBASE_AUTH_DOMAIN = your_env_var
-VITE_FIREBASE_PROJECT_ID = your_env_var
-VITE_FIREBASE_STORAGE_BUCKET = your_env_var
-VITE_FIREBASE_MESSAGING_SENDER_ID = your_env_var
-VITE_FIREBASE_APP_ID = your_env_var
-VITE_USE_EMULATORS = false or true
 ```
 
 ## 📚 Available Scripts
