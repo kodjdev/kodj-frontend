@@ -8,6 +8,7 @@ import { pastEventsAtom, upcomingEventsAtom } from '@/atoms/events';
 import themeColors from '@/tools/themeColors';
 import useFetchEvent from '@/hooks/event/useFetchEvent';
 import EventCard from '@/components/Card/EventCard';
+import Button from '@/components/Button/Button';
 
 enum EventFilter {
     ALL = 'all',
@@ -81,18 +82,23 @@ const EventFilterContainer = styled.div`
     margin-bottom: ${themeColors.spacing.lg};
 `;
 
-const FilterButton = styled.button<{ isActive: boolean }>`
-    background-color: ${(props) => (props.isActive ? themeColors.colors.primary.main : 'transparent')};
-    color: ${(props) => (props.isActive ? themeColors.colors.neutral.white : themeColors.colors.gray.main)};
+const FilterButton = styled(Button)<{ isActive: boolean }>`
+    background-color: ${(props) => (props.isActive ? themeColors.colors.primary.main : 'transparent')}!important;
+    color: ${(props) => (props.isActive ? themeColors.colors.neutral.white : themeColors.colors.gray.main)} !important;
     border: 1px solid ${themeColors.cardBorder.color};
     border-radius: ${themeColors.radiusSizes.two_xl};
     padding: 6px 10px;
+    height: auto;
     font-size: ${themeColors.typography.body.small.fontSize}px;
     font-weight: ${themeColors.font16.lineHeight};
-    cursor: pointer;
-    transition: all 0.2s ease;
+    text-transform: none;
     outline: none !important;
     box-shadow: none !important;
+
+    @media (max-width: ${themeColors.breakpoints.mobile}) {
+        font-size: ${themeColors.typography.body.xsmall.fontSize}px;
+        padding: 3px 6px !important;
+    }
 `;
 
 const StyledLink = styled(Link)`
@@ -168,10 +174,8 @@ export default function EventsList({ onFilterChange, defaultFilter = EventFilter
         >
             <EventCard
                 isFreeEvent={true}
-                title={event.title || 'Upcoming Event N7'}
-                description={
-                    event.description || 'asdsds sds dsd as a bout a eneasdasd asdsad asdsda asd asd w tech event'
-                }
+                title={event.title}
+                description={event.description}
                 date={formatDate(event.date)}
                 author={event.author || "KO'DJ"}
                 imageUrl={event.imageUrl || ''}
@@ -194,6 +198,8 @@ export default function EventsList({ onFilterChange, defaultFilter = EventFilter
             <EventFilterContainer>
                 {filterOptions.map((option) => (
                     <FilterButton
+                        variant={activeFilter === option.value ? 'primary' : 'text'}
+                        size="sm"
                         key={option.value}
                         isActive={activeFilter === option.value}
                         onClick={() => handleFilterChange(option.value)}

@@ -5,17 +5,32 @@ import themeColor from '@/tools/themeColors';
 
 type ButtonVariant = 'primary' | 'secondary' | 'text' | 'light';
 
-type ButtonProps = Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'type'> & {
+type BaseButtonProps = {
     variant?: ButtonVariant;
     size?: 'sm' | 'md' | 'lg' | 'mini';
     fullWidth?: boolean;
-    asLink?: boolean;
-    to?: LinkProps['to'];
+    children?: React.ReactNode;
+    disabled?: boolean;
+    htmlType?: ButtonHTMLAttributes<HTMLButtonElement>['type'];
+} & Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'type'>;
+
+type LinkButtonProps = {
+    asLink: true;
+    to: LinkProps['to'];
     replace?: LinkProps['replace'];
     state?: LinkProps['state'];
-    htmlType?: ButtonHTMLAttributes<HTMLButtonElement>['type'];
-    children?: React.ReactNode;
 };
+
+// when we use it with a regular button case
+type RegularButtonProps = {
+    asLink?: false;
+    to?: never;
+    replace?: never;
+    state?: never;
+};
+
+// discriminated union
+type ButtonProps = BaseButtonProps & (LinkButtonProps | RegularButtonProps);
 
 const StyledButton = styled('button')<{
     variant: ButtonVariant;
@@ -118,7 +133,6 @@ const StyledButton = styled('button')<{
 
 /**
  * Button component - Atom Component
- * @returns A button or Link element with specified styles.
  * @param variant - Visual style variant ("primary" | "secondary" | "text" | "light")
  * @param size - Button size ("sm" | "md" | "lg" | "mini")
  * @param fullWidth - Whether button should expand to fill container width
@@ -130,14 +144,15 @@ const StyledButton = styled('button')<{
  * @param htmlType - HTML button type attribute ("button" | "submit" | "reset")
  * @param disabled - Whether the button is disabled
  * @param rest - Additional HTML button or Link props
+ * @returns A button or Link element with specified styles.
  */
 export default function Button({
     variant = 'primary',
     size = 'md',
     fullWidth = false,
     children,
-    asLink = false, // Default to rendering as a button
-    to, // 'to' is only used if asLink is true
+    asLink = false,
+    to,
     replace,
     state,
     htmlType = 'button',
@@ -152,32 +167,14 @@ export default function Button({
     };
 
     if (asLink) {
-        if (to === undefined) {
-            console.warn("Button: 'to' prop is required when 'asLink' is true.");
-            to = '/';
-        }
-        // Props specific to Link component
-        const linkProps = { to, replace, state };
-
         return (
-            <StyledButton
-                as={Link}
-                {...commonStyledProps}
-                {...linkProps} // ink-specific props pass qilamiz
-                {...rest} //  Remaining compatible props larni pass qilamiz
-            >
+            <StyledButton as={Link} {...commonStyledProps} {...{ to, replace, state }} {...rest}>
                 {children}
             </StyledButton>
         );
     }
-
     return (
-        <StyledButton
-            as="button"
-            type={htmlType} // we use htmlType for the button's type attribute
-            {...commonStyledProps}
-            {...rest} // qolgan compatible props larni pass qilamiz
-        >
+        <StyledButton as="button" type={htmlType} {...commonStyledProps} {...rest}>
             {children}
         </StyledButton>
     );
