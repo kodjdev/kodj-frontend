@@ -54,5 +54,5 @@ export default () => {
         if (!['uz', 'en'].includes(i18nInstance.language)) {
             i18nInstance.changeLanguage('en');
         }
-    }, []);
+    }, [i18nInstance]);
 };

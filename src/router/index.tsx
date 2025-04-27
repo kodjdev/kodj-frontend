@@ -2,7 +2,7 @@
 // @ts-nocheck
 
 import { Navigate, Route, Routes } from 'react-router-dom';
-import { routes } from '@router/routes';
+import { routes } from '@/router/routes';
 import ProtectedRoute from '@/router/ProtectedRoute';
 import Error from '@/components/Error/Error';
 import ErrorBoundary from '@/components/Error/ErrorBoundary';
