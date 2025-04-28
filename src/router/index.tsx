@@ -6,6 +6,7 @@ import { routes } from '@/router/routes';
 import ProtectedRoute from '@/router/ProtectedRoute';
 import Error from '@/components/Error/Error';
 import ErrorBoundary from '@/components/Error/ErrorBoundary';
+import { GoogleOAuthProvider } from '@react-oauth/google';
 
 /**
  * RouterPage - This component is responsible for rendering the application's routes.
@@ -13,23 +14,25 @@ import ErrorBoundary from '@/components/Error/ErrorBoundary';
  */
 export default function RouterPage() {
     return (
-        <Routes>
-            {routes.map(({ path, component, auth }) => (
-                <Route
-                    path={path}
-                    key={path}
-                    element={
-                        auth ? (
-                            <ErrorBoundary>
-                                <PrivateWrapper>{component}</PrivateWrapper>
-                            </ErrorBoundary>
-                        ) : (
-                            <ErrorBoundary> {component}</ErrorBoundary>
-                        )
-                    }
-                />
-            ))}
-            <Route path="*" element={<Error />} />
-        </Routes>
+        <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
+            <Routes>
+                {routes.map(({ path, component, auth }) => (
+                    <Route
+                        path={path}
+                        key={path}
+                        element={
+                            auth ? (
+                                <ErrorBoundary>
+                                    <PrivateWrapper>{component}</PrivateWrapper>
+                                </ErrorBoundary>
+                            ) : (
+                                <ErrorBoundary> {component}</ErrorBoundary>
+                            )
+                        }
+                    />
+                ))}
+                <Route path="*" element={<Error />} />
+            </Routes>
+        </GoogleOAuthProvider>
     );
 }

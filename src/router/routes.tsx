@@ -1,6 +1,7 @@
 import React, { Suspense } from 'react';
 import ComponentLoading from '@/components/ComponentLoading.tsx';
 import { Home, EventsPage } from '@/router/lazyComponents.tsx';
+import LoginRoot from '@/pages/Auth';
 
 type RouteType = {
     path: string;
@@ -26,6 +27,11 @@ export const routes: RouteType[] = [
                 <EventsPage />
             </Suspense>
         ),
+        auth: false,
+    },
+    {
+        path: '/login',
+        component: <LoginRoot />,
         auth: false,
     },
 ];
