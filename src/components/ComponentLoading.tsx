@@ -27,7 +27,11 @@ const Spinner = styled(motion.div)`
     border-radius: 50%;
     animation: ${spin} 1s linear infinite;
 `;
-
+/**
+ * ComponentLoading - A loading spinner component
+ * @description This component displays a loading spinner while content is being fetched or processed.
+ * It uses Framer Motion for animation and styled-components for styling.
+ */
 export default function ComponentLoading() {
     return (
         <LoadingWrapper>
