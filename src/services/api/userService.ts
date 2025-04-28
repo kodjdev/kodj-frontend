@@ -1,6 +1,6 @@
 import useFetch from '@/hooks/useFetch/useFetch';
-import { UserCount, UserData, UserDetails } from '@/types/auth';
 import { ApiResponse } from '@/types/hook';
+import { UserCount, UserData, UserDetails } from '@/types/user';
 
 /**
  * User Service - User Management

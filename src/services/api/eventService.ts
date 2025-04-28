@@ -4,7 +4,7 @@ import {
     EventRegistrationResponse,
     SpeakerRegistrationData,
     SpeakerRegistrationResponse,
-} from '@/types/auth';
+} from '@/types/user';
 import { ApiResponse } from '@/types/hook';
 
 /**
