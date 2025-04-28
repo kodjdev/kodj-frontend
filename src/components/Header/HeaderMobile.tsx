@@ -4,7 +4,7 @@ import { Link, NavLink as RouterNavLink } from 'react-router-dom';
 import themeColors from '@/tools/themeColors';
 import Button from '@/components/Button/Button';
 import { HeaderProps } from '@/types';
-import kodjLogo from '@/static/members/kodj_new.jpg';
+import kodjLogo from '@/static/team/kodj_new.jpg';
 
 type MobileMenuProps = {
     isOpen: boolean;
