@@ -14,25 +14,23 @@ import { GoogleOAuthProvider } from '@react-oauth/google';
  */
 export default function RouterPage() {
     return (
-        <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
-            <Routes>
-                {routes.map(({ path, component, auth }) => (
-                    <Route
-                        path={path}
-                        key={path}
-                        element={
-                            auth ? (
-                                <ErrorBoundary>
-                                    <PrivateWrapper>{component}</PrivateWrapper>
-                                </ErrorBoundary>
-                            ) : (
-                                <ErrorBoundary> {component}</ErrorBoundary>
-                            )
-                        }
-                    />
-                ))}
-                <Route path="*" element={<Error />} />
-            </Routes>
-        </GoogleOAuthProvider>
+        <Routes>
+            {routes.map(({ path, component, auth }) => (
+                <Route
+                    path={path}
+                    key={path}
+                    element={
+                        auth ? (
+                            <ErrorBoundary>
+                                <PrivateWrapper>{component}</PrivateWrapper>
+                            </ErrorBoundary>
+                        ) : (
+                            <ErrorBoundary> {component}</ErrorBoundary>
+                        )
+                    }
+                />
+            ))}
+            <Route path="*" element={<Error />} />
+        </Routes>
     );
 }
