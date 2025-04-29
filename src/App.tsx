@@ -4,17 +4,23 @@ import RouterPage from '@/router/index';
 import ErrorBoundary from '@/components/Error/ErrorBoundary';
 import { RecoilRoot } from 'recoil';
 import RootLayout from '@/pages/RootLayout';
+import { GoogleOAuthProvider } from '@react-oauth/google';
+import React from 'react';
 
-export default function App() {
+const App: React.FC = () => {
     return (
         <RecoilRoot>
             <ErrorBoundary>
                 <BrowserRouter>
-                    <RootLayout>
-                        <RouterPage />
-                    </RootLayout>
+                    <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
+                        <RootLayout>
+                            <RouterPage />
+                        </RootLayout>
+                    </GoogleOAuthProvider>
                 </BrowserRouter>
             </ErrorBoundary>
         </RecoilRoot>
     );
-}
+};
+
+export default App;

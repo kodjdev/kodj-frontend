@@ -96,7 +96,7 @@ export default function AuthProvider({ children }: AuthProviderProps) {
 
     const loadUserData = async (token: string) => {
         try {
-            const response = await fetchData({
+            const response = await fetchData<User>({
                 endpoint: '/users/details',
                 method: 'GET',
                 customHeaders: {
@@ -120,7 +120,7 @@ export default function AuthProvider({ children }: AuthProviderProps) {
             const refreshToken = localStorage.getItem('refresh_token');
             if (!refreshToken) return false;
 
-            const response = await fetchData({
+            const response = await fetchData<{ accessToken: string; refreshToken: string }>({
                 endpoint: '/auth/refresh-token',
                 method: 'GET',
                 customHeaders: {
@@ -167,7 +167,7 @@ export default function AuthProvider({ children }: AuthProviderProps) {
     // validate the OTP and complete login
     const validateOTP = async (email: string, otp: string) => {
         try {
-            const response = await fetchData({
+            const response = await fetchData<{ accessToken: string; refreshToken: string }>({
                 endpoint: '/auth/otp',
                 method: 'POST',
                 data: { email, otp },
@@ -185,12 +185,19 @@ export default function AuthProvider({ children }: AuthProviderProps) {
         }
     };
 
-    const loginWithGoogle = async (credential: string) => {
+    const loginWithGoogle = async (idToken: string) => {
+        console.log('AuthProvider: Received ID token:', idToken.substring(0, 20) + '...');
         try {
-            const response = await fetchData({
+            // http://localhost:8080/login/oauth2/code/google
+            console.log('AuthProvider: Inside loginWithGoogle, calling fetchData...');
+
+            const response = await fetchData<{ accessToken: string; refreshToken: string }>({
                 endpoint: '/auth/google/sign-in',
                 method: 'POST',
-                data: credential,
+                data: idToken, // raw id token
+                customHeaders: {
+                    'Content-Type': 'text/plain',
+                },
             });
 
             if (response.data && response.data.accessToken) {
