@@ -1,11 +1,11 @@
-import useFetch from '@/hooks/useFetch/useFetch';
 import {
     EventRegistrationData,
     EventRegistrationResponse,
     SpeakerRegistrationData,
     SpeakerRegistrationResponse,
 } from '@/types/user';
-import { ApiResponse } from '@/types/hook';
+import useAxios from '@/hooks/useAxios/useAxios';
+import { ApiResponse } from '@/types/fetch';
 
 /**
  * Event Service - Event Management
@@ -15,24 +15,30 @@ import { ApiResponse } from '@/types/hook';
  * It includes functions for event registration, speaker registration, and moving past events.
  */
 export const useEventService = () => {
-    const fetchData = useFetch();
+    const fetchData = useAxios();
 
     return {
         registerEvent: async (formData: EventRegistrationData): Promise<ApiResponse<EventRegistrationResponse>> => {
-            return fetchData({
+            return fetchData<EventRegistrationResponse>({
                 endpoint: '/events/register',
                 method: 'POST',
                 data: formData,
+                customHeaders: {
+                    'Content-Type': 'multipart/form-data',
+                },
             });
         },
 
         registerSpeaker: async (
             speakerData: SpeakerRegistrationData,
         ): Promise<ApiResponse<SpeakerRegistrationResponse>> => {
-            return fetchData({
+            return fetchData<SpeakerRegistrationResponse>({
                 endpoint: '/speakers/register',
                 method: 'POST',
                 data: speakerData,
+                customHeaders: {
+                    'Content-Type': 'multipart/form-data',
+                },
             });
         },
     };

@@ -1,5 +1,5 @@
-import useFetch from '@/hooks/useFetch/useFetch';
-import { ApiResponse } from '@/types/hook';
+import useAxios from '@/hooks/useAxios/useAxios';
+import { ApiResponse } from '@/types/fetch';
 import { UserCount, UserData, UserDetails } from '@/types/user';
 
 /**
@@ -10,31 +10,32 @@ import { UserCount, UserData, UserDetails } from '@/types/user';
  * It includes functions for user details retrieval, registration, and user count.
  */
 export const useUserService = () => {
-    const fetchData = useFetch();
+    const fetchData = useAxios();
 
     return {
         getUserDetails: async (token: string): Promise<ApiResponse<UserDetails>> => {
-            return fetchData({
+            return fetchData<UserDetails>({
                 endpoint: '/users/details',
                 method: 'GET',
                 customHeaders: {
                     Authorization: `Bearer ${token}`,
-                    'Content-Type': 'application/json',
                 },
             });
         },
 
         registerUser: async (userData: UserData): Promise<ApiResponse<UserDetails>> => {
-            return fetchData({
+            return fetchData<UserDetails>({
                 endpoint: '/users',
                 method: 'POST',
                 data: userData,
-                formData: true,
+                customHeaders: {
+                    'Content-Type': 'multipart/form-data',
+                },
             });
         },
 
         getTotalUserCount: async (): Promise<ApiResponse<UserCount>> => {
-            return fetchData({
+            return fetchData<UserCount>({
                 endpoint: '/users/count',
                 method: 'GET',
             });

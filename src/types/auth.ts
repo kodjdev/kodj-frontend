@@ -17,8 +17,8 @@ export type ApiResponse<T = unknown> = {
 };
 
 export type TokenResponse = {
-    accessToken: string;
-    refreshToken: string;
+    access_token: string;
+    refresh_token: string;
 };
 
 export type AuthContextType = {

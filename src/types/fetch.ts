@@ -2,6 +2,8 @@ export type ApiResponse<T = unknown> = {
     data: T;
     message?: string;
     status?: number;
+    access_token?: string;
+    refresh_token?: string;
 };
 
 export type RequestData = Record<string, unknown> | string | FormData | null | undefined;
