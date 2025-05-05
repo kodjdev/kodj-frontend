@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useLocation } from 'react-router-dom';
-import Signup from '@/pages/Auth/Signup';
-import Login from '@/pages/Auth/Login';
+import Signup from '@/pages/Auth/Signup/Signup';
+import Login from '@/pages/Auth/Login/Login';
 
 const AuthWrapper = styled.div`
     width: 100%;

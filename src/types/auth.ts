@@ -1,4 +1,6 @@
 import { ReactNode } from 'react';
+import { RegisterFormData } from './fetch';
+import { EventRegistrationResponse } from './user';
 
 export type User = {
     id: string;
@@ -26,6 +28,7 @@ export type AuthContextType = {
     isAuthenticated: boolean;
     isLoading: boolean;
     login: (email: string, password: string) => Promise<ApiResponse>;
+    register: (formData: RegisterFormData) => Promise<ApiResponse<EventRegistrationResponse>>;
     validateOTP: (email: string, otp: string) => Promise<ApiResponse<TokenResponse>>;
     loginWithGoogle: (credential: string) => Promise<ApiResponse<TokenResponse>>;
     signUpWithGoogle: (credential: string) => Promise<ApiResponse>;

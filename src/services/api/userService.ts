@@ -1,6 +1,6 @@
 import useAxios from '@/hooks/useAxios/useAxios';
 import { ApiResponse } from '@/types/fetch';
-import { UserCount, UserData, UserDetails } from '@/types/user';
+import { UserCount, UserDetails } from '@/types/user';
 
 /**
  * User Service - User Management
@@ -19,17 +19,6 @@ export const useUserService = () => {
                 method: 'GET',
                 customHeaders: {
                     Authorization: `Bearer ${token}`,
-                },
-            });
-        },
-
-        registerUser: async (userData: UserData): Promise<ApiResponse<UserDetails>> => {
-            return fetchData<UserDetails>({
-                endpoint: '/users',
-                method: 'POST',
-                data: userData,
-                customHeaders: {
-                    'Content-Type': 'multipart/form-data',
                 },
             });
         },

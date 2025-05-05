@@ -17,3 +17,16 @@ export type FetchOption<TResponseData = unknown> = {
     onSuccess?: (data: ApiResponse<TResponseData>) => void;
     formData?: boolean;
 };
+
+export type LoginCredentials = {
+    email: string;
+    password: string;
+};
+
+export type RegisterFormData = {
+    email: string;
+    password: string;
+    username: string;
+    name: string;
+    phone: string;
+};

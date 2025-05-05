@@ -24,7 +24,9 @@ export const AuthContext = createContext<AuthContextType>({
     isAuthenticated: false,
     isLoading: true,
     login: async () => ({ data: null }),
-    register: async () => ({ data: null }),
+    register: async () => ({
+        data: { registrationId: '', eventId: '', status: 'pending', success: false, message: '', otpSent: false },
+    }),
     validateOTP: async () => ({ data: { access_token: '', refresh_token: '' } }),
     loginWithGoogle: async () => ({ data: { access_token: '', refresh_token: '' } }),
     signUpWithGoogle: async () => ({ data: null }),
@@ -175,11 +177,12 @@ export default function AuthProvider({ children }: AuthProviderProps) {
     // for raw email registration
     const register = async (formData: RegisterFormData) => {
         try {
-            return await fetchData<ApiResponse<EventRegistrationResponse>>({
+            const response = await fetchData<EventRegistrationResponse>({
                 endpoint: '/auth/register',
                 method: 'POST',
                 data: formData,
             });
+            return response;
         } catch (error) {
             console.error('Registration error:', error);
             throw error;
