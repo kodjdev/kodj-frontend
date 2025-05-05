@@ -147,7 +147,14 @@ const LanguageOption = styled.button<{ isActive: boolean }>`
  * @param langMenuOpen - Boolean indicating if language menu is open
  * @param toggleLangMenu - Function to toggle language menu visibility
  */
-export default function HeaderDesktop({ handleLangChange, currentLang, langMenuOpen, toggleLangMenu }: HeaderProps) {
+export default function HeaderDesktop({
+    handleLangChange,
+    currentLang,
+    langMenuOpen,
+    toggleLangMenu,
+    isAuthenticated,
+    onLogout,
+}: HeaderProps) {
     return (
         <HeaderOuterContainer>
             <HeaderInnerContainer>
@@ -161,6 +168,7 @@ export default function HeaderDesktop({ handleLangChange, currentLang, langMenuO
                     <NavLink to="/about">About Us</NavLink>
                     <NavLink to="/news">News</NavLink>
                     <NavLink to="/events">Events</NavLink>
+                    {isAuthenticated ? <NavLink to="mypage">MyPage</NavLink> : ''}
                 </Navigation>
 
                 <AuthButtons>
@@ -175,9 +183,15 @@ export default function HeaderDesktop({ handleLangChange, currentLang, langMenuO
                             </LanguageOption>
                         </LanguageMenu>
                     </LanguageToggle>
-                    <Button asLink to="/login" variant="light" size="mini">
-                        login
-                    </Button>
+                    {isAuthenticated ? (
+                        <Button asLink to="/login" variant="light" size="mini" onClick={onLogout}>
+                            logout
+                        </Button>
+                    ) : (
+                        <Button asLink to="/login" variant="light" size="mini">
+                            login
+                        </Button>
+                    )}
                 </AuthButtons>
             </HeaderInnerContainer>
         </HeaderOuterContainer>

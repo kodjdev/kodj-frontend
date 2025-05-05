@@ -143,7 +143,7 @@ const LanguageButton = styled.button<{ isActive: boolean }>`
  * @param handleLangChange - Callback function to handle language changes
  * @param currentLang - Current active language code
  */
-export default function HeaderMobile({ handleLangChange, currentLang }: HeaderProps) {
+export default function HeaderMobile({ handleLangChange, currentLang, isAuthenticated, onLogout }: HeaderProps) {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     const toggleMenu = () => {
@@ -187,16 +187,29 @@ export default function HeaderMobile({ handleLangChange, currentLang }: HeaderPr
                     </LanguageSection>
 
                     <MobileAuthButtons>
-                        <Button
-                            asLink
-                            to="/login"
-                            variant="light"
-                            size="md"
-                            onClick={() => setIsMenuOpen(false)}
-                            style={{ width: '100%' }}
-                        >
-                            Login
-                        </Button>
+                        {isAuthenticated ? (
+                            <Button
+                                asLink
+                                to="/login"
+                                variant="light"
+                                size="md"
+                                onClick={onLogout}
+                                style={{ width: '100%' }}
+                            >
+                                Logout
+                            </Button>
+                        ) : (
+                            <Button
+                                asLink
+                                to="/login"
+                                variant="light"
+                                size="md"
+                                onClick={() => setIsMenuOpen(false)}
+                                style={{ width: '100%' }}
+                            >
+                                Login
+                            </Button>
+                        )}
                     </MobileAuthButtons>
                 </MobileMenu>
             </HeaderInnerContainer>

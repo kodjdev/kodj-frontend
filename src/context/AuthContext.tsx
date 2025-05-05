@@ -1,6 +1,11 @@
-import useFetch from '@/hooks/useFetch/useFetch';
-import { AuthContextType } from '@/types/auth';
+import useAxios from '@/hooks/useAxios/useAxios';
+import { ApiResponse, AuthContextType } from '@/types/auth';
 import { createContext, useState, useEffect, ReactNode } from 'react';
+
+export type TokenResponse = {
+    access_token: string;
+    refresh_token: string;
+};
 
 export type User = {
     id: string;
@@ -17,8 +22,8 @@ export const AuthContext = createContext<AuthContextType>({
     isAuthenticated: false,
     isLoading: true,
     login: async () => ({ data: null }),
-    validateOTP: async () => ({ data: { accessToken: '', refreshToken: '' } }),
-    loginWithGoogle: async () => ({ data: { accessToken: '', refreshToken: '' } }),
+    validateOTP: async () => ({ data: { access_token: '', refresh_token: '' } }),
+    loginWithGoogle: async () => ({ data: { access_token: '', refresh_token: '' } }),
     signUpWithGoogle: async () => ({ data: null }),
     logout: async () => {},
     refreshTokens: async () => false,
@@ -40,7 +45,7 @@ type AuthProviderProps = {
 export default function AuthProvider({ children }: AuthProviderProps) {
     const [user, setUser] = useState<User | null>(null);
     const [isLoading, setIsLoading] = useState(true);
-    const fetchData = useFetch();
+    const fetchData = useAxios();
 
     // we check if user is authenticated on initial load
     useEffect(() => {
@@ -150,7 +155,6 @@ export default function AuthProvider({ children }: AuthProviderProps) {
         setUser(null);
     };
 
-    // login with email/password
     const login = async (email: string, password: string) => {
         try {
             return await fetchData({
@@ -164,19 +168,19 @@ export default function AuthProvider({ children }: AuthProviderProps) {
         }
     };
 
-    // validate the OTP and complete login
+    // OTP validation to complete the login
     const validateOTP = async (email: string, otp: string) => {
         try {
-            const response = await fetchData<{ accessToken: string; refreshToken: string }>({
+            const response = await fetchData<TokenResponse>({
                 endpoint: '/auth/otp',
                 method: 'POST',
                 data: { email, otp },
             });
 
-            if (response.data && response.data.accessToken) {
-                localStorage.setItem('access_token', response.data.accessToken);
-                localStorage.setItem('refresh_token', response.data.refreshToken);
-                await loadUserData(response.data.accessToken);
+            if (response.data && response.data.access_token) {
+                localStorage.setItem('access_token', response.data.access_token);
+                localStorage.setItem('refresh_token', response.data.refresh_token);
+                // await loadUserData(response.data.access_token);
             }
             return response;
         } catch (error) {
@@ -185,27 +189,34 @@ export default function AuthProvider({ children }: AuthProviderProps) {
         }
     };
 
-    const loginWithGoogle = async (idToken: string) => {
-        console.log('AuthProvider: Received ID token:', idToken.substring(0, 20) + '...');
+    const loginWithGoogle = async (idToken: string): Promise<ApiResponse<TokenResponse>> => {
         try {
-            // http://localhost:8080/login/oauth2/code/google
-            console.log('AuthProvider: Inside loginWithGoogle, calling fetchData...');
-
-            const response = await fetchData<{ accessToken: string; refreshToken: string }>({
-                endpoint: '/auth/google/sign-in',
+            const response = await fetch(`http://127.0.0.1:8080/api/v1/auth/google/sign-in`, {
                 method: 'POST',
-                data: idToken, // raw id token
-                customHeaders: {
-                    'Content-Type': 'text/plain',
+                headers: {
+                    'Content-Type': 'application/json',
                 },
+                body: idToken,
+                credentials: 'include',
             });
 
-            if (response.data && response.data.accessToken) {
-                localStorage.setItem('access_token', response.data.accessToken);
-                localStorage.setItem('refresh_token', response.data.refreshToken);
-                await loadUserData(response.data.accessToken);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
-            return response;
+
+            const responseData = await response.json();
+
+            if (responseData.data.access_token) {
+                localStorage.setItem('access_token', responseData.data.access_token);
+                localStorage.setItem('refresh_token', responseData.data.refresh_token);
+                console.log('setting up the tokens', responseData.data.access_token, responseData.data.refresh_token);
+                await loadUserData(responseData.access_token);
+            }
+
+            return {
+                data: responseData,
+                status: response.status,
+            };
         } catch (error) {
             console.error('Google login error:', error);
             throw error;
@@ -225,17 +236,9 @@ export default function AuthProvider({ children }: AuthProviderProps) {
         }
     };
 
-    const logout = async () => {
-        try {
-            await fetchData({
-                endpoint: '/logout',
-                method: 'POST',
-            });
-        } catch (error) {
-            console.error('Logout error:', error);
-        } finally {
-            clearTokens();
-        }
+    const logout = async (): Promise<void> => {
+        clearTokens();
+        window.location.reload();
     };
 
     const value = {
