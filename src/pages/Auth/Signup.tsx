@@ -7,9 +7,9 @@ import { HiOutlineMail, HiOutlineLockClosed, HiOutlineEyeOff, HiOutlineEye } fro
 import Input from '@/components/Input/Input';
 import Button from '@/components/Button/Button';
 import { GoogleLogin } from '@react-oauth/google';
-import useAuth from '@/context/useAuth';
 import useApiService from '@/services';
 import { EventDetails } from '@/types';
+import useAuth from '@/context/useAuth';
 
 type GoogleCredentialResponse = {
     credential: string;
@@ -22,8 +22,8 @@ type SignupProps = {
 };
 
 const FormContainer = styled.div`
-    width: 100%;
-    max-width: 450px;
+    width: 420px;
+    max-width: 100%;
     padding: 40px;
     background-color: ${themeColors.gray_dark};
     border-radius: 8px;
@@ -55,11 +55,13 @@ const Heading = styled.h2`
 const Form = styled.form`
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 12px;
 `;
 
 const InputGroup = styled.div`
     position: relative;
+    margin-top: -20px;
+    margin-bottom: 12px;
 `;
 
 const PasswordVisibilityToggle = styled.div`
@@ -244,6 +246,7 @@ export default function Signup({ toggleAuthMode, returnUrl, eventDetails }: Sign
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
                         required
                         fullWidth={true}
+                        style={{ backgroundColor: 'transparent', border: '1px solid gray' }}
                     />
                 </InputGroup>
 
@@ -256,6 +259,7 @@ export default function Signup({ toggleAuthMode, returnUrl, eventDetails }: Sign
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
                         required
                         fullWidth={true}
+                        style={{ backgroundColor: 'transparent', border: '1px solid gray' }}
                     />
                     <PasswordVisibilityToggle onClick={togglePasswordVisibility}>
                         {showPassword ? <HiOutlineEyeOff size={20} /> : <HiOutlineEye size={20} />}
@@ -271,6 +275,7 @@ export default function Signup({ toggleAuthMode, returnUrl, eventDetails }: Sign
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => setConfirmPassword(e.target.value)}
                         required
                         fullWidth={true}
+                        style={{ backgroundColor: 'transparent', border: '1px solid gray' }}
                     />
                 </InputGroup>
 

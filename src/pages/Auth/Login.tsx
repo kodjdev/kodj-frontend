@@ -7,8 +7,8 @@ import { HiOutlineMail, HiOutlineLockClosed, HiOutlineEyeOff, HiOutlineEye } fro
 import Input from '@/components/Input/Input';
 import Button from '@/components/Button/Button';
 import { CredentialResponse, GoogleLogin } from '@react-oauth/google';
-import useAuth from '@/context/useAuth';
 import { EventDetails } from '@/types';
+import useAuth from '@/context/useAuth';
 
 type LoginProps = {
     toggleAuthMode: () => void;
@@ -17,8 +17,8 @@ type LoginProps = {
 };
 
 const FormContainer = styled.div`
-    width: 100%;
-    max-width: 450px;
+    width: 420px;
+    max-width: 100%;
     padding: 40px;
     background-color: ${themeColors.gray_dark};
     border-radius: 8px;
@@ -50,7 +50,7 @@ const Heading = styled.h2`
 const Form = styled.form`
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 12px;
 `;
 
 const InputGroup = styled.div`
@@ -73,7 +73,8 @@ const ForgotPasswordLink = styled.a`
     text-align: right;
     text-decoration: none;
     display: block;
-    margin-top: 8px;
+    margin-top: -20px;
+    margin-bottom: 12px;
     cursor: pointer;
 
     &:hover {
@@ -194,22 +195,27 @@ export default function Login({ toggleAuthMode, returnUrl, eventDetails }: Login
     };
 
     const handleGoogleLoginSuccess = async (credentialResponse: CredentialResponse) => {
-        console.log('Google login success:', credentialResponse);
         try {
             if (!credentialResponse.credential) {
                 throw new Error('No credential received from Google');
             }
-            console.log('Type of loginWithGoogle:', typeof loginWithGoogle);
 
-            // returned object credentialResponse.credential contains the ID token (JWT)
-            // then we pass the ID token directly to the backend
-            console.log('Login Component: Calling loginWithGoogle with ID token...');
+            messageApi.loading('Authenticating with Google...');
+            const response = await loginWithGoogle(credentialResponse.credential);
 
-            await loginWithGoogle(credentialResponse.credential);
-            messageApi.success('Successfully logged in with Google');
+            if (response && response.data) {
+                messageApi.success('Successfully logged in with Google');
+
+                setTimeout(() => {
+                    window.location.reload();
+                    navigate('/mypage');
+                }, 1000);
+            } else {
+                messageApi.error('Authentication failed - invalid response');
+                console.error('Invalid auth response:', response);
+            }
         } catch (error) {
-            console.error('Error logging in with Google:', error);
-            messageApi.error('Failed to authenticate with Google');
+            messageApi.error(error instanceof Error ? error.message : 'Failed to authenticate with Google');
         }
     };
 
@@ -247,6 +253,7 @@ export default function Login({ toggleAuthMode, returnUrl, eventDetails }: Login
                         required
                         fullWidth={true}
                         disabled={otpSent}
+                        style={{ backgroundColor: 'transparent', border: '1px solid gray' }}
                     />
                 </InputGroup>
 
@@ -260,6 +267,7 @@ export default function Login({ toggleAuthMode, returnUrl, eventDetails }: Login
                             onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
                             required
                             fullWidth={true}
+                            style={{ backgroundColor: 'transparent', border: '1px solid gray' }}
                         />
                         <PasswordVisibilityToggle onClick={togglePasswordVisibility}>
                             {showPassword ? <HiOutlineEyeOff size={20} /> : <HiOutlineEye size={20} />}
@@ -275,6 +283,7 @@ export default function Login({ toggleAuthMode, returnUrl, eventDetails }: Login
                             onChange={(e: React.ChangeEvent<HTMLInputElement>) => setOtp(e.target.value)}
                             required
                             fullWidth={true}
+                            style={{ backgroundColor: 'transparent', border: '1px solid gray' }}
                         />
                     </InputGroup>
                 )}
@@ -292,30 +301,14 @@ export default function Login({ toggleAuthMode, returnUrl, eventDetails }: Login
                 <span>OR</span>
             </Divider>
 
-            {/* <StyledButton
-                onClick={() => loginWithGoogleOauth()}
-                fullWidth={true}
-                size="md"
-                color="white"
-                style={{
-                    backgroundColor: 'white',
-                    color: `${themeColors.colors.neutral.black}`,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                }}
-            >
-                <img
-                    src="https://developers.google.com/identity/images/g-logo.png"
-                    alt="Google"
-                    style={{ height: '20px', marginRight: '10px' }}
-                />
-                Continue with Google
-            </StyledButton> */}
-
-            <div style={{ display: 'flex', justifyContent: 'center' }}>
-                <GoogleLogin onSuccess={handleGoogleLoginSuccess} onError={handleGoogleLoginError} />
-            </div>
+            <GoogleLogin
+                onSuccess={handleGoogleLoginSuccess}
+                onError={handleGoogleLoginError}
+                useOneTap
+                text="signup_with"
+                shape="rectangular"
+                width="100%"
+            />
 
             <AccountPrompt>
                 <AccountText>No account yet?</AccountText>

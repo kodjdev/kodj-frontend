@@ -2,36 +2,46 @@ import React, { Suspense } from 'react';
 import ComponentLoading from '@/components/ComponentLoading.tsx';
 import { Home, EventsPage } from '@/router/lazyComponents.tsx';
 import LoginRoot from '@/pages/Auth';
+import MyPage from '@/pages/MyPage';
+
+type PathTypes = {
+    path: string;
+    element: React.ReactElement;
+};
 
 type RouteType = {
-    path: string;
-    component: React.ReactElement;
-    auth?: boolean;
+    public: PathTypes[];
+    protected: PathTypes[];
 };
 
 /**
  * Routes - An array of route objects for the application.
  * @description This array defines the routes for the application, including the path,
- * component to render, and authentication requirements.
+ * component to render.
  */
-export const routes: RouteType[] = [
-    {
-        path: '/',
-        component: <Home />,
-        auth: false,
-    },
-    {
-        path: '/events',
-        component: (
-            <Suspense fallback={<ComponentLoading />}>
-                <EventsPage />
-            </Suspense>
-        ),
-        auth: false,
-    },
-    {
-        path: '/login',
-        component: <LoginRoot />,
-        auth: false,
-    },
-];
+export const routes: RouteType = {
+    public: [
+        {
+            path: '/',
+            element: <Home />,
+        },
+        {
+            path: '/events',
+            element: (
+                <Suspense fallback={<ComponentLoading />}>
+                    <EventsPage />
+                </Suspense>
+            ),
+        },
+        {
+            path: '/login',
+            element: <LoginRoot />,
+        },
+    ],
+    protected: [
+        {
+            path: '/mypage',
+            element: <MyPage />,
+        },
+    ],
+};
