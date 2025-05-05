@@ -3,6 +3,7 @@ import ComponentLoading from '@/components/ComponentLoading.tsx';
 import { Home, EventsPage } from '@/router/lazyComponents.tsx';
 import LoginRoot from '@/pages/Auth';
 import MyPage from '@/pages/MyPage';
+import CompleteProfile from '@/pages/Auth/CompleteAccount';
 
 type PathTypes = {
     path: string;
@@ -36,6 +37,10 @@ export const routes: RouteType = {
         {
             path: '/login',
             element: <LoginRoot />,
+        },
+        {
+            path: '/completeAccount',
+            element: <CompleteProfile />,
         },
     ],
     protected: [

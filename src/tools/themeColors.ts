@@ -44,6 +44,7 @@ const colors = {
     gray: {
         main: '#858585', // Text gray
         dark: '#141414', // Dark gray
+        light: '#27272C', // light gray
         text: '#888888',
         line: '#C8C8C8',
         background: '#292929',
@@ -459,6 +460,7 @@ const themeColors = {
 
     gray: colors.gray.main,
     gray_dark: colors.gray.dark,
+    gray_light: colors.gray.light,
     gray_text: colors.gray.text,
     gray_line: colors.gray.line,
     gray_background: colors.gray.background,

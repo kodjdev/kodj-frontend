@@ -8,7 +8,7 @@ import { ApiResponse } from '@/types/fetch';
 type AxiosOptions<T> = {
     endpoint: string;
     method?: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
-    data?: Record<string, unknown> | null;
+    data?: Record<string, unknown> | string | null;
     params?: Record<string, string | number | boolean>;
     customHeaders?: Record<string, string>;
     onSuccess?: (response: ApiResponse<T>) => void;
@@ -68,7 +68,14 @@ export default function useAxios() {
                 };
 
                 if (data) {
-                    config.data = data;
+                    if (typeof data === 'object' && Object.keys(data).includes('credential')) {
+                        config.data = {
+                            credential: data.credential,
+                        };
+                    } else {
+                        // for normal use we do proper json stringification
+                        config.data = data;
+                    }
                 }
 
                 const response: AxiosResponse = await axiosInstance(config);
@@ -110,6 +117,6 @@ export default function useAxios() {
                 throw error;
             }
         },
-        [navigate, setError],
+        [navigate, setError, axiosInstance],
     );
 }

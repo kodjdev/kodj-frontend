@@ -1,5 +1,7 @@
 import useAxios from '@/hooks/useAxios/useAxios';
 import { ApiResponse, AuthContextType } from '@/types/auth';
+import { RegisterFormData } from '@/types/fetch';
+import { EventRegistrationResponse } from '@/types/user';
 import { createContext, useState, useEffect, ReactNode } from 'react';
 
 export type TokenResponse = {
@@ -22,6 +24,7 @@ export const AuthContext = createContext<AuthContextType>({
     isAuthenticated: false,
     isLoading: true,
     login: async () => ({ data: null }),
+    register: async () => ({ data: null }),
     validateOTP: async () => ({ data: { access_token: '', refresh_token: '' } }),
     loginWithGoogle: async () => ({ data: { access_token: '', refresh_token: '' } }),
     signUpWithGoogle: async () => ({ data: null }),
@@ -46,58 +49,6 @@ export default function AuthProvider({ children }: AuthProviderProps) {
     const [user, setUser] = useState<User | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const fetchData = useAxios();
-
-    // we check if user is authenticated on initial load
-    useEffect(() => {
-        const initAuth = async () => {
-            setIsLoading(true);
-            try {
-                const token = localStorage.getItem('access_token');
-
-                if (token && isTokenValid(token)) {
-                    await loadUserData(token);
-                } else {
-                    const refreshToken = localStorage.getItem('refresh_token');
-                    if (refreshToken) {
-                        const success = await refreshTokens();
-                        if (!success) {
-                            clearTokens();
-                        }
-                    } else {
-                        setUser(null);
-                    }
-                }
-            } catch (error) {
-                console.error('Auth initialization error:', error);
-                clearTokens();
-            } finally {
-                setIsLoading(false);
-            }
-        };
-
-        initAuth();
-    }, []);
-
-    const isTokenValid = (token: string): boolean => {
-        if (!token) {
-            console.warn('No token provided for validation');
-            return false;
-        }
-
-        try {
-            const base64Url = token.split('.')[1];
-            const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-            const payload = JSON.parse(window.atob(base64));
-
-            const currentTime = Math.floor(Date.now() / 1000);
-            const isValid = payload.exp > currentTime;
-
-            return isValid;
-        } catch (error) {
-            console.error('Token validation error:', error);
-            return false;
-        }
-    };
 
     const loadUserData = async (token: string) => {
         try {
@@ -149,21 +100,88 @@ export default function AuthProvider({ children }: AuthProviderProps) {
         }
     };
 
+    // we check if user is authenticated on initial load
+    useEffect(() => {
+        const initAuth = async () => {
+            setIsLoading(true);
+            try {
+                const token = localStorage.getItem('access_token');
+
+                if (token && isTokenValid(token)) {
+                    await loadUserData(token);
+                } else {
+                    const refreshToken = localStorage.getItem('refresh_token');
+                    if (refreshToken) {
+                        const success = await refreshTokens();
+                        if (!success) {
+                            clearTokens();
+                        }
+                    } else {
+                        setUser(null);
+                    }
+                }
+            } catch (error) {
+                console.error('Auth initialization error:', error);
+                clearTokens();
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        initAuth();
+    }, [loadUserData, refreshTokens]);
+
+    const isTokenValid = (token: string): boolean => {
+        if (!token) {
+            console.warn('No token provided for validation');
+            return false;
+        }
+
+        try {
+            const base64Url = token.split('.')[1];
+            const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+            const payload = JSON.parse(window.atob(base64));
+
+            const currentTime = Math.floor(Date.now() / 1000);
+            const isValid = payload.exp > currentTime;
+
+            return isValid;
+        } catch (error) {
+            console.error('Token validation error:', error);
+            return false;
+        }
+    };
+
     const clearTokens = () => {
         localStorage.removeItem('access_token');
         localStorage.removeItem('refresh_token');
         setUser(null);
     };
 
+    // for raw login
     const login = async (email: string, password: string) => {
         try {
-            return await fetchData({
+            return await fetchData<TokenResponse>({
                 endpoint: '/auth/login',
                 method: 'POST',
                 data: { email, password },
             });
         } catch (error) {
             console.error('Login error:', error);
+            throw error;
+        }
+    };
+
+    // for raw email registration
+    const register = async (formData: RegisterFormData) => {
+        try {
+            return await fetchData<ApiResponse<EventRegistrationResponse>>({
+                endpoint: '/auth/register',
+                method: 'POST',
+                data: formData,
+            });
+        } catch (error) {
+            console.error('Registration error:', error);
             throw error;
         }
     };
@@ -191,32 +209,24 @@ export default function AuthProvider({ children }: AuthProviderProps) {
 
     const loginWithGoogle = async (idToken: string): Promise<ApiResponse<TokenResponse>> => {
         try {
-            const response = await fetch(`http://127.0.0.1:8080/api/v1/auth/google/sign-in`, {
+            const response = await fetchData<TokenResponse>({
+                endpoint: '/auth/google/sign-in',
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
+                data: idToken,
+                customHeaders: {
+                    /* we override the default application/json */
+                    'Content-Type': 'text/plain',
                 },
-                body: idToken,
-                credentials: 'include',
             });
 
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+            if (response.data && response.data.access_token) {
+                localStorage.setItem('access_token', response.data.access_token);
+                localStorage.setItem('refresh_token', response.data.refresh_token);
+                console.log('setting up the tokens', response.data.access_token, response.data.refresh_token);
+                // await loadUserData(response.data.access_token);
             }
 
-            const responseData = await response.json();
-
-            if (responseData.data.access_token) {
-                localStorage.setItem('access_token', responseData.data.access_token);
-                localStorage.setItem('refresh_token', responseData.data.refresh_token);
-                console.log('setting up the tokens', responseData.data.access_token, responseData.data.refresh_token);
-                await loadUserData(responseData.access_token);
-            }
-
-            return {
-                data: responseData,
-                status: response.status,
-            };
+            return response;
         } catch (error) {
             console.error('Google login error:', error);
             throw error;
@@ -229,6 +239,9 @@ export default function AuthProvider({ children }: AuthProviderProps) {
                 endpoint: '/auth/google/sign-up',
                 method: 'POST',
                 data: credential,
+                customHeaders: {
+                    'Content-Type': 'text/plain',
+                },
             });
         } catch (error) {
             console.error('Google sign up error:', error);
@@ -246,6 +259,7 @@ export default function AuthProvider({ children }: AuthProviderProps) {
         isAuthenticated: !!user,
         isLoading,
         login,
+        register,
         validateOTP,
         loginWithGoogle,
         signUpWithGoogle,
