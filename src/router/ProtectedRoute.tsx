@@ -3,7 +3,7 @@
 
 import { Navigate } from 'react-router-dom';
 import React from 'react';
-import { useAuth } from '@/context/useAuth';
+import useAuth from '@/context/useAuth';
 
 type ProtectedRouteProps = {
     children: React.ReactElement;
@@ -15,10 +15,10 @@ type ProtectedRouteProps = {
  * @returns {React.ReactElement} - The protected route or a redirect to the login page.
  */
 export default function ProtectedRoute({ children }: ProtectedRouteProps) {
-    const { user } = useAuth();
+    const { isAuthenticated } = useAuth();
 
-    if (!user) {
-        return <Navigate to="/login" replace />;
+    if (!isAuthenticated) {
+        return <Navigate to="/login" replace state={{ from: location.pathname }} />;
     }
 
     return children;

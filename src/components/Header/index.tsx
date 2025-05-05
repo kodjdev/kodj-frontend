@@ -4,10 +4,10 @@ import HeaderMobile from '@/components/Header/HeaderMobile';
 import themeColors from '@/tools/themeColors';
 import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
+import useAuth from '@/context/useAuth';
 
 /**
  * Header Root Component:
- *
  * Here we wrap the mobile and desktop headers.
  * This root components renders either the desktop or mobile
  * header based on the viewport width.
@@ -15,6 +15,7 @@ import { useState } from 'react';
 export default function Header() {
     const [langMenuOpen, setLangMenuOpen] = useState(false);
     const { i18n } = useTranslation();
+    const { isAuthenticated, logout } = useAuth();
 
     const isMobile = useMediaQuery({
         query: `(max-width: ${themeColors.breakpoints.mobile})`,
@@ -29,12 +30,18 @@ export default function Header() {
         setLangMenuOpen(!langMenuOpen);
     };
 
+    const authProps = {
+        isAuthenticated: !!isAuthenticated,
+        onLogout: logout,
+    };
+
     return isMobile ? (
         <HeaderMobile
             handleLangChange={handleLanguageChange}
             currentLang={i18n.language}
             langMenuOpen={langMenuOpen}
             toggleLangMenu={toggleMenu}
+            {...authProps}
         />
     ) : (
         <HeaderDesktop
@@ -42,6 +49,7 @@ export default function Header() {
             currentLang={i18n.language}
             langMenuOpen={langMenuOpen}
             toggleLangMenu={toggleMenu}
+            {...authProps}
         />
     );
 }

@@ -52,12 +52,14 @@ export type EventForServer = BaseEvent & {
 };
 
 export type EventDetails = {
+    id: string;
     title: string;
     date: {
         seconds: number;
         nanoseconds: number;
     };
     eventLocation: string;
+    description?: string;
 };
 
 export type EventCardProps = Pick<
@@ -151,6 +153,8 @@ export type HeaderProps = {
     currentLang: string;
     langMenuOpen: boolean;
     toggleLangMenu: () => void;
+    isAuthenticated: boolean;
+    onLogout: () => void;
 };
 
 export type PastEventDetailsProps = {

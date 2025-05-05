@@ -6,6 +6,7 @@ export type InputProps = InputHTMLAttributes<HTMLInputElement> & {
     label?: string;
     error?: string;
     fullWidth?: boolean;
+    icon: React.ReactNode;
 };
 
 const InputContainer = styled.div<{ fullWidth?: boolean }>`
@@ -25,10 +26,10 @@ const StyledInput = styled.input`
     background-color: ${themeColor.colors.gray.inputTag};
     color: ${themeColor.colors.neutral.white};
     border: none;
+    padding: 0 ${themeColor.spacing.sm};
     border-radius: ${themeColor.cardBorder.md};
-    padding: ${themeColor.spacing.md};
     font-size: ${themeColor.typography.body.medium.fontSize}px;
-    height: 48px;
+    height: 50px;
     width: 100%;
     box-shadow: ${themeColor.shadows.inset.input.gray};
 
@@ -47,6 +48,24 @@ const StyledInput = styled.input`
     }
 `;
 
+const InputWrapper = styled.div`
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+`;
+
+const IconWrapper = styled.div`
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform: translateY(-50%);
+    color: ${themeColor.colors.gray.text};
+`;
+
 const ErrorMessage = styled.span`
     color: ${themeColor.colors.status.error.text};
     font-size: ${themeColor.typography.body.xsmall.fontSize}px;
@@ -55,18 +74,27 @@ const ErrorMessage = styled.span`
 
 /**
  * Input component - Atom Component
- * @param label Optional descriptive text label for the input
- * @param error Optional error message displayed when validation fails
- * @param fullWidth Whether the input should expand to fill its container width (Defaults to false).
- * @param rest Standard HTML input attributes (type, placeholder, onChange, etc.)
+ * A form input control that combines multiple atomic elements (label, input field, and error message)
+ * into a cohesive form control.
+ * @returns a styled input component with optional label and error message.
  */
-export default function Input({ label, error, fullWidth = false, ...rest }: InputProps) {
+export default function Input({ icon, label, error, fullWidth = false, ...rest }: InputProps) {
     const inputRef = React.useRef<HTMLInputElement>(null);
 
     return (
         <InputContainer fullWidth={fullWidth}>
-            {label && <Label>{label}</Label>}
-            <StyledInput ref={inputRef} {...rest} />
+            <InputWrapper>
+                {icon && <IconWrapper>{icon}</IconWrapper>}
+                {label && <Label>{label}</Label>}
+                <StyledInput
+                    ref={inputRef}
+                    {...rest}
+                    style={{
+                        ...rest.style,
+                        paddingLeft: icon ? '45px' : '14px',
+                    }}
+                />
+            </InputWrapper>
             {error && <ErrorMessage>{error}</ErrorMessage>}
         </InputContainer>
     );

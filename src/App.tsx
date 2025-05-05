@@ -1,20 +1,26 @@
 import '@/App.css';
 import { BrowserRouter } from 'react-router-dom';
 import RouterPage from '@/router/index';
-import ErrorBoundary from '@/components/Error/ErrorBoundary';
 import { RecoilRoot } from 'recoil';
 import RootLayout from '@/pages/RootLayout';
+import { GoogleOAuthProvider } from '@react-oauth/google';
+import React from 'react';
+import AuthProvider from '@/context/AuthContext';
 
-export default function App() {
+const App: React.FC = () => {
     return (
         <RecoilRoot>
-            <ErrorBoundary>
-                <BrowserRouter>
-                    <RootLayout>
-                        <RouterPage />
-                    </RootLayout>
-                </BrowserRouter>
-            </ErrorBoundary>
+            <BrowserRouter>
+                <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
+                    <AuthProvider>
+                        <RootLayout>
+                            <RouterPage />
+                        </RootLayout>
+                    </AuthProvider>
+                </GoogleOAuthProvider>
+            </BrowserRouter>
         </RecoilRoot>
     );
-}
+};
+
+export default App;

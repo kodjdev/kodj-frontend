@@ -6,7 +6,7 @@ import { Event } from '@/types';
 import { useRecoilValue } from 'recoil';
 import { pastEventsAtom, upcomingEventsAtom } from '@/atoms/events';
 import themeColors from '@/tools/themeColors';
-import useFetchEvent from '@/hooks/event/useFetchEvent';
+import useFetchEvent from '@/hooks/useFetchEvent/useFetchEvent';
 import EventCard from '@/components/Card/EventCard';
 import Button from '@/components/Button/Button';
 
