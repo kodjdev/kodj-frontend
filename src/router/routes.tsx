@@ -1,9 +1,9 @@
-import React, { Suspense } from 'react';
-import ComponentLoading from '@/components/ComponentLoading.tsx';
+import React from 'react';
 import { Home, EventsPage } from '@/router/lazyComponents.tsx';
 import LoginRoot from '@/pages/Auth';
 import MyPage from '@/pages/MyPage';
 import CompleteProfile from '@/pages/Auth/CompleteAccount';
+import EventDetails from '@/pages/Events/EventDetails/EventDetails';
 
 type PathTypes = {
     path: string;
@@ -28,11 +28,11 @@ export const routes: RouteType = {
         },
         {
             path: '/events',
-            element: (
-                <Suspense fallback={<ComponentLoading />}>
-                    <EventsPage />
-                </Suspense>
-            ),
+            element: <EventsPage />,
+        },
+        {
+            path: '/events/:type/details/:eventId',
+            element: <EventDetails />,
         },
         {
             path: '/login',

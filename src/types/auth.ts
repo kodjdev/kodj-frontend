@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { RegisterFormData } from './fetch';
+import { ApiResponse, RegisterFormData } from './fetch';
 import { EventRegistrationResponse } from './user';
 
 export type User = {
@@ -10,12 +10,6 @@ export type User = {
     lastName?: string;
     imageURL?: string;
     role?: string;
-};
-
-export type ApiResponse<T = unknown> = {
-    data: T;
-    message?: string;
-    status?: number;
 };
 
 export type TokenResponse = {

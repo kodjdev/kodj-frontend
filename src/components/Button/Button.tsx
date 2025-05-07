@@ -52,6 +52,7 @@ const StyledButton = styled('button')<{
     width: ${(props) => (props.fullWidth ? '100%' : 'auto')};
     text-transform: uppercase;
     text-decoration: none;
+    box-sizing: border-box;
 
     ${(props) =>
         props.disabled &&
@@ -77,7 +78,7 @@ const StyledButton = styled('button')<{
                 `;
             case 'mini':
                 return css`
-                    height: 18px;
+                    height: 32px;
                     padding: 7px 20px;
                     font-size: ${themeColor.typography.body.xsmall.fontSize || 14}px;
                 `;

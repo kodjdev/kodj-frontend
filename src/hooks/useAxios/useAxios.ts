@@ -84,8 +84,8 @@ export default function useAxios() {
                 // format the response to match expected API response structure
                 const apiResponse: ApiResponse<T> = {
                     data: response.data,
-                    status: response.status,
-                    message: 'success',
+                    statusCode: response.status,
+                    message: response.data.message || 'success',
                 };
 
                 console.log('useAxios: Parsed response data:', apiResponse);
