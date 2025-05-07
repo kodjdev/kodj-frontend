@@ -1,3 +1,5 @@
+import { Speaker } from './speakers';
+
 export type Timestamp = {
     toDate(): Date | undefined;
     seconds: number;
@@ -125,16 +127,6 @@ export type SpeakerRegistration = {
     githubUrl: string;
     linkedinUrl: string;
     yearsOfExperience: string;
-};
-
-export type Speaker = {
-    id?: string;
-    category?: string;
-    date?: Timestamp;
-    linkedinUrl: string;
-    name: string;
-    position: string;
-    speakerImg: string;
 };
 
 export type NewsItem = {

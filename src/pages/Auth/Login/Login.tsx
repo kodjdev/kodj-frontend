@@ -20,11 +20,16 @@ const FormContainer = styled.div`
     width: 420px;
     max-width: 100%;
     padding: 40px;
-    background-color: ${themeColors.gray_dark};
+    background-color: ${themeColors.gray_light};
     border-radius: 8px;
     box-shadow:
         0 10px 15px -3px rgba(0, 0, 0, 0.1),
         0 4px 6px -2px rgba(0, 0, 0, 0.05);
+
+    @media (max-width: ${themeColors.breakpoints.mobile}) {
+        width: 100%;
+        padding: 22px;
+    }
 `;
 
 const EventNotification = styled.div`
@@ -207,7 +212,7 @@ export default function Login({ toggleAuthMode, returnUrl, eventDetails }: Login
                 messageApi.success('Successfully logged in with Google');
 
                 setTimeout(() => {
-                    window.location.reload();
+                    // window.location.reload();
                     navigate('/mypage');
                 }, 1000);
             } else {
@@ -292,7 +297,7 @@ export default function Login({ toggleAuthMode, returnUrl, eventDetails }: Login
                     <ForgotPasswordLink onClick={navigateToForgotPassword}>Forgot Password</ForgotPasswordLink>
                 )}
 
-                <StyledButton color="blue" size="md" fullWidth={true}>
+                <StyledButton color="blue" size="md" fullWidth={true} as="button">
                     {otpSent ? 'VERIFY OTP' : 'LOGIN'}
                 </StyledButton>
             </Form>
@@ -305,7 +310,7 @@ export default function Login({ toggleAuthMode, returnUrl, eventDetails }: Login
                 onSuccess={handleGoogleLoginSuccess}
                 onError={handleGoogleLoginError}
                 useOneTap
-                text="signup_with"
+                text="signin_with"
                 shape="rectangular"
                 width="100%"
             />

@@ -3,17 +3,13 @@ import styled from 'styled-components';
 import themeColors from '@/tools/themeColors';
 import { useNavigate } from 'react-router-dom';
 import { message } from 'antd';
-import { HiOutlineMail, HiOutlineLockClosed, HiOutlineEyeOff, HiOutlineEye } from 'react-icons/hi';
+import { HiOutlineMail, HiOutlineLockClosed, HiOutlineEyeOff, HiOutlineEye, HiOutlinePhone } from 'react-icons/hi';
 import Input from '@/components/Input/Input';
 import Button from '@/components/Button/Button';
 import { GoogleLogin } from '@react-oauth/google';
-import useApiService from '@/services';
 import { EventDetails } from '@/types';
 import useAuth from '@/context/useAuth';
-
-type GoogleCredentialResponse = {
-    credential: string;
-};
+import useGoogleSignupFlow from '@/hooks/useGoogleSignup';
 
 type SignupProps = {
     toggleAuthMode: () => void;
@@ -25,7 +21,7 @@ const FormContainer = styled.div`
     width: 420px;
     max-width: 100%;
     padding: 40px;
-    background-color: ${themeColors.gray_dark};
+    background-color: ${themeColors.gray_light};
     border-radius: 8px;
     box-shadow:
         0 10px 15px -3px rgba(0, 0, 0, 0.1),
@@ -142,19 +138,33 @@ const StyledButton = styled(Button)`
  */
 export default function Signup({ toggleAuthMode, returnUrl, eventDetails }: SignupProps) {
     const navigate = useNavigate();
-    const { user, signUpWithGoogle } = useAuth();
+    const { user, register } = useAuth();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [messageApi, contextHolder] = message.useMessage();
-    const userService = useApiService();
+    const [phone, setPhone] = useState('');
+
+    const {
+        contextHolder: googleContextHolder,
+        handleGoogleSignupSuccess,
+        handleGoogleSignupError,
+    } = useGoogleSignupFlow();
 
     const handleSuccessfulAuth = () => {
-        if (returnUrl && eventDetails) {
-            navigate(returnUrl, { state: eventDetails });
-        } else {
-            navigate('/mypage');
+        try {
+            if (!phone.trim()) {
+                messageApi.error('Phone number is required');
+                return;
+            }
+            if (returnUrl && eventDetails) {
+                navigate(returnUrl, { state: eventDetails });
+            } else {
+                navigate('/mypage');
+            }
+        } catch (error) {
+            console.error('Error happened here: ', error);
         }
     };
 
@@ -177,10 +187,13 @@ export default function Signup({ toggleAuthMode, returnUrl, eventDetails }: Sign
                 password,
                 username: email.split('@')[0],
                 name: email.split('@')[0],
+                phone: phone,
             };
 
-            await userService.registerUser(userData);
-            messageApi.success('Account created! Please check your email for verification');
+            const response = await register(userData);
+            if (response && response.status === 200) {
+                messageApi.success('Account created! Please check your email for verification');
+            }
 
             // switch to login mode after successful signup
             setTimeout(() => {
@@ -196,32 +209,6 @@ export default function Signup({ toggleAuthMode, returnUrl, eventDetails }: Sign
         }
     };
 
-    const handleGoogleSuccess = async (credentialResponse: GoogleCredentialResponse) => {
-        try {
-            const response = await signUpWithGoogle(credentialResponse.credential);
-
-            if (response.data) {
-                messageApi.success('Google account connected successfully!');
-
-                navigate('/complete-profile', {
-                    state: {
-                        userData: response.data,
-                        returnUrl,
-                        eventDetails,
-                        isGoogleSignUp: true,
-                    },
-                });
-            }
-        } catch (error) {
-            console.error('Google authentication error:', error);
-            if (error instanceof Error) {
-                messageApi.error(error.message || 'Failed to authenticate with Google');
-            } else {
-                messageApi.error('Failed to authenticate with Google');
-            }
-        }
-    };
-
     const togglePasswordVisibility = () => {
         setShowPassword(!showPassword);
     };
@@ -229,6 +216,7 @@ export default function Signup({ toggleAuthMode, returnUrl, eventDetails }: Sign
     return (
         <FormContainer>
             {contextHolder}
+            {googleContextHolder}
             {returnUrl && (
                 <EventNotification>
                     Sign up to continue registration for: <br />
@@ -278,8 +266,20 @@ export default function Signup({ toggleAuthMode, returnUrl, eventDetails }: Sign
                         style={{ backgroundColor: 'transparent', border: '1px solid gray' }}
                     />
                 </InputGroup>
+                <InputGroup>
+                    <Input
+                        icon={<HiOutlinePhone size={20} />}
+                        type="tel"
+                        placeholder="Phone Number (required)"
+                        value={phone}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPhone(e.target.value)}
+                        required
+                        fullWidth={true}
+                        style={{ backgroundColor: 'transparent', border: '1px solid gray' }}
+                    />
+                </InputGroup>
 
-                <StyledButton color="blue" size="md" fullWidth={true}>
+                <StyledButton color="blue" size="md" fullWidth={true} as="button">
                     SIGN UP
                 </StyledButton>
             </Form>
@@ -289,10 +289,8 @@ export default function Signup({ toggleAuthMode, returnUrl, eventDetails }: Sign
             </Divider>
 
             <GoogleLogin
-                onSuccess={() => handleGoogleSuccess}
-                onError={() => {
-                    messageApi.error('Google login failed. Please try again.');
-                }}
+                onSuccess={handleGoogleSignupSuccess}
+                onError={handleGoogleSignupError}
                 useOneTap
                 text="signup_with"
                 shape="rectangular"

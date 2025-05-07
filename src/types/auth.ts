@@ -1,24 +1,29 @@
 import { ReactNode } from 'react';
+import { ApiResponse, RegisterFormData } from './fetch';
+import { EventRegistrationResponse } from './user';
 
 export type User = {
-    id: string;
-    email: string;
-    username: string;
-    firstName?: string;
-    lastName?: string;
-    imageURL?: string;
-    role?: string;
-};
-
-export type ApiResponse<T = unknown> = {
-    data: T;
-    message?: string;
-    status?: number;
+    data: {
+        id: number;
+        username: string;
+        email: string;
+        firstName: string | null;
+        lastName: string | null;
+        oauthProvider: string;
+        imageUrl: string;
+        imageName: string;
+        region: string | null;
+        bio: string | null;
+        category: string | null;
+        createdAt: string;
+    };
 };
 
 export type TokenResponse = {
-    access_token: string;
-    refresh_token: string;
+    data: {
+        access_token: string;
+        refresh_token: string;
+    };
 };
 
 export type AuthContextType = {
@@ -26,6 +31,7 @@ export type AuthContextType = {
     isAuthenticated: boolean;
     isLoading: boolean;
     login: (email: string, password: string) => Promise<ApiResponse>;
+    register: (formData: RegisterFormData) => Promise<ApiResponse<EventRegistrationResponse>>;
     validateOTP: (email: string, otp: string) => Promise<ApiResponse<TokenResponse>>;
     loginWithGoogle: (credential: string) => Promise<ApiResponse<TokenResponse>>;
     signUpWithGoogle: (credential: string) => Promise<ApiResponse>;

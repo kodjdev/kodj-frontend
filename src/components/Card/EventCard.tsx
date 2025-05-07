@@ -15,6 +15,7 @@ export type EventCardProps = {
     registeredCount?: number;
     maxSeats?: number;
     className?: string;
+    children?: React.ReactNode;
 };
 
 const CardImage = styled.img`
@@ -103,6 +104,7 @@ export default function EventCard({
     registeredCount,
     maxSeats,
     className,
+    children,
     ...props
 }: EventCardProps) {
     if (isPlaceholder) {
@@ -149,6 +151,7 @@ export default function EventCard({
                         )}
                     </RegistrationInfo>
                 )}
+                {children}
             </CardContent>
         </Card>
     );

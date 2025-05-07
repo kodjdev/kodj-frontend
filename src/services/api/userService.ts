@@ -1,6 +1,7 @@
 import useAxios from '@/hooks/useAxios/useAxios';
 import { ApiResponse } from '@/types/fetch';
-import { UserCount, UserData, UserDetails } from '@/types/user';
+import { UserCount, UserDetails } from '@/types/user';
+import { useMemo } from 'react';
 
 /**
  * User Service - User Management
@@ -12,33 +13,24 @@ import { UserCount, UserData, UserDetails } from '@/types/user';
 export const useUserService = () => {
     const fetchData = useAxios();
 
-    return {
-        getUserDetails: async (token: string): Promise<ApiResponse<UserDetails>> => {
-            return fetchData<UserDetails>({
-                endpoint: '/users/details',
-                method: 'GET',
-                customHeaders: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
-        },
+    return useMemo(() => {
+        return {
+            getUserDetails: async (token: string): Promise<ApiResponse<UserDetails>> => {
+                return fetchData<UserDetails>({
+                    endpoint: '/users/details',
+                    method: 'GET',
+                    customHeaders: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+            },
 
-        registerUser: async (userData: UserData): Promise<ApiResponse<UserDetails>> => {
-            return fetchData<UserDetails>({
-                endpoint: '/users',
-                method: 'POST',
-                data: userData,
-                customHeaders: {
-                    'Content-Type': 'multipart/form-data',
-                },
-            });
-        },
-
-        getTotalUserCount: async (): Promise<ApiResponse<UserCount>> => {
-            return fetchData<UserCount>({
-                endpoint: '/users/count',
-                method: 'GET',
-            });
-        },
-    };
+            getTotalUserCount: async (): Promise<ApiResponse<UserCount>> => {
+                return fetchData<UserCount>({
+                    endpoint: '/users/count',
+                    method: 'GET',
+                });
+            },
+        };
+    }, [fetchData]);
 };

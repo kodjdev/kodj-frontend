@@ -6,6 +6,8 @@ import {
 } from '@/types/user';
 import useAxios from '@/hooks/useAxios/useAxios';
 import { ApiResponse } from '@/types/fetch';
+import { EventDetailsResponse, UserRegisteredEventsResponse } from '@/types/event';
+import { useMemo } from 'react';
 
 /**
  * Event Service - Event Management
@@ -17,29 +19,46 @@ import { ApiResponse } from '@/types/fetch';
 export const useEventService = () => {
     const fetchData = useAxios();
 
-    return {
-        registerEvent: async (formData: EventRegistrationData): Promise<ApiResponse<EventRegistrationResponse>> => {
-            return fetchData<EventRegistrationResponse>({
-                endpoint: '/events/register',
-                method: 'POST',
-                data: formData,
-                customHeaders: {
-                    'Content-Type': 'multipart/form-data',
-                },
-            });
-        },
+    return useMemo(() => {
+        return {
+            registerEvent: async (formData: EventRegistrationData): Promise<ApiResponse<EventRegistrationResponse>> => {
+                return fetchData<EventRegistrationResponse>({
+                    endpoint: '/meetups',
+                    method: 'POST',
+                    data: formData,
+                    customHeaders: {
+                        'Content-Type': 'multipart/form-data',
+                    },
+                });
+            },
 
-        registerSpeaker: async (
-            speakerData: SpeakerRegistrationData,
-        ): Promise<ApiResponse<SpeakerRegistrationResponse>> => {
-            return fetchData<SpeakerRegistrationResponse>({
-                endpoint: '/speakers/register',
-                method: 'POST',
-                data: speakerData,
-                customHeaders: {
-                    'Content-Type': 'multipart/form-data',
-                },
-            });
-        },
-    };
+            registerSpeaker: async (
+                speakerData: SpeakerRegistrationData,
+            ): Promise<ApiResponse<SpeakerRegistrationResponse>> => {
+                return fetchData<SpeakerRegistrationResponse>({
+                    endpoint: '/speakers/register',
+                    method: 'POST',
+                    data: speakerData,
+                    customHeaders: {
+                        'Content-Type': 'multipart/form-data',
+                    },
+                });
+            },
+            getEventDetails: async (meetupId: string | number): Promise<ApiResponse<EventDetailsResponse>> => {
+                return fetchData<EventDetailsResponse>({
+                    endpoint: `/meetups/${meetupId}/details`,
+                    method: 'GET',
+                });
+            },
+            getUserRegisteredEvents: async (token: string): Promise<ApiResponse<UserRegisteredEventsResponse>> => {
+                return fetchData<UserRegisteredEventsResponse>({
+                    endpoint: '/users/meetups',
+                    method: 'GET',
+                    customHeaders: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+            },
+        };
+    }, [fetchData]);
 };
