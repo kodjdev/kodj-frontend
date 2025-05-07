@@ -1,6 +1,11 @@
 import { KeynoteSession, MeetupRegistration, Note, Review } from './api';
 import { Speaker } from './speakers';
 
+export type UserRegisteredEventsResponse = {
+    upcomingEvents: Event[];
+    pastEvents: Event[];
+};
+
 export type Event = {
     id: string;
     title: string;
@@ -18,16 +23,7 @@ export type Event = {
     eventSchedule?: KeynoteSession[];
 };
 
-// export type EventDetailsResponse = {
-//     availableSeats: number;
-//     speakers: Speaker[];
-//     keynoteSessions: KeynoteSession[];
-//     meetupRegistrations: MeetupRegistration[];
-//     notes: Note[];
-//     reviews: Review[];
-// };
-
-export type EventDetailsResponseData = {
+export type EventDetailsResponse = {
     availableSeats: number;
     speakers: Speaker[];
     keynoteSessions: KeynoteSession[];
@@ -36,8 +32,8 @@ export type EventDetailsResponseData = {
     reviews: Review[];
 };
 
-export type EventDetailsResponse = {
+export type EventDetailsApiWrapper = {
     message: string;
-    data: EventDetailsResponseData;
+    data: EventDetailsResponse;
     statusCode: number;
 };

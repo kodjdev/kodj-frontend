@@ -1,7 +1,7 @@
 import React from 'react';
 import { Home, EventsPage } from '@/router/lazyComponents.tsx';
 import LoginRoot from '@/pages/Auth';
-import MyPage from '@/pages/MyPage';
+import MyPage from '@/pages/MyPage/index';
 import CompleteProfile from '@/pages/Auth/CompleteAccount';
 import EventDetails from '@/pages/Events/EventDetails/EventDetails';
 

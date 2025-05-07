@@ -25,6 +25,11 @@ const FormContainer = styled.div`
     box-shadow:
         0 10px 15px -3px rgba(0, 0, 0, 0.1),
         0 4px 6px -2px rgba(0, 0, 0, 0.05);
+
+    @media (max-width: ${themeColors.breakpoints.mobile}) {
+        width: 100%;
+        padding: 22px;
+    }
 `;
 
 const EventNotification = styled.div`
@@ -207,7 +212,7 @@ export default function Login({ toggleAuthMode, returnUrl, eventDetails }: Login
                 messageApi.success('Successfully logged in with Google');
 
                 setTimeout(() => {
-                    window.location.reload();
+                    // window.location.reload();
                     navigate('/mypage');
                 }, 1000);
             } else {

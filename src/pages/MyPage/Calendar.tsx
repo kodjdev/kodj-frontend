@@ -8,55 +8,62 @@ type CalendarProps = {
 };
 
 const CalendarContainer = styled.div`
-    background-color: ${themeColors.gray_dark};
-    border-radius: 8px;
-    padding: 16px;
+    background-color: transparent;
+    padding: 0 ${themeColors.spacing.sm};
 `;
 
 const CalendarHeader = styled.div`
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 16px;
+    margin-bottom: ${themeColors.spacing.sm};
 `;
 
 const MonthTitle = styled.h3`
-    color: ${themeColors.white};
-    font-size: 18px;
+    color: ${themeColors.colors.neutral.white};
+    font-size: ${themeColors.typography.body.small.fontSize}px;
+    font-weight: bold;
     margin: 0;
 `;
 
 const CalendarNavigation = styled.div`
     display: flex;
-    gap: 12px;
+    gap: ${themeColors.spacing.xl};
 `;
 
 const NavButton = styled.button`
     background: none;
     border: none;
-    color: ${themeColors.gray};
+    color: ${themeColors.colors.gray.main};
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 4px;
+    padding: ${themeColors.spacing.xs};
+    transition: color 0.2s ease;
 
     &:hover {
-        color: ${themeColors.white};
+        color: ${themeColors.colors.primary.main};
     }
 `;
 
 const DaysGrid = styled.div`
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: 8px;
+    gap: 6px;
+    max-height: 280px;
+    padding-top: 10px;
+    margin-left: -${themeColors.spacing.md};
+    margin-right: -${themeColors.spacing.md};
+    width: calc(100% + ${themeColors.spacing.md} * 2);
 `;
 
 const DayOfWeek = styled.div`
-    color: ${themeColors.gray};
-    font-size: 12px;
+    color: ${themeColors.colors.gray.label};
+    font-size: ${themeColors.typography.body.xsmall.fontSize}px;
     text-align: center;
-    margin-bottom: 8px;
+    margin-bottom: 2px;
+    font-weight: 500;
 `;
 
 const Day = styled.div<{ isCurrentMonth: boolean; isSelected: boolean; isToday: boolean }>`
@@ -65,19 +72,30 @@ const Day = styled.div<{ isCurrentMonth: boolean; isSelected: boolean; isToday: 
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 14px;
-    border-radius: 50%;
+    font-size: ${themeColors.typography.body.xsmall.fontSize}px;
+    border-radius: 4px;
     cursor: pointer;
     background-color: ${({ isSelected }) => (isSelected ? themeColors.colors.primary.main : 'transparent')};
     color: ${({ isCurrentMonth, isToday, isSelected }) => {
-        if (isSelected) return themeColors.white;
-        if (!isCurrentMonth) return themeColors.gray_dark;
-        if (isToday) return themeColors.blue;
-        return themeColors.gray;
+        if (isSelected) return themeColors.colors.neutral.white;
+        if (!isCurrentMonth) return themeColors.colors.gray.dark;
+        if (isToday) return themeColors.colors.primary.main;
+        return themeColors.colors.gray.main;
     }};
+    transition: background-color 0.2s ease;
+
+    max-width: 36px;
+    max-height: 36px;
+    margin: 0 auto;
 
     &:hover {
-        background-color: ${({ isSelected }) => (isSelected ? themeColors.blue : themeColors.black_40)};
+        background-color: ${({ isSelected }) =>
+            isSelected ? themeColors.colors.primary.light : themeColors.colors.gray.dark};
+    }
+
+    @media (max-width: 768px) {
+        max-width: 32px;
+        max-height: 32px;
     }
 `;
 
@@ -99,7 +117,9 @@ export default function Calendar({ currentMonth, onChangeMonth }: CalendarProps)
     const prevMonthDays = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 0).getDate();
     const days = [];
 
-    for (let i = firstDayOfMonth - 1; i >= 0; i--) {
+    const startDay = firstDayOfMonth === 0 ? 6 : firstDayOfMonth - 1;
+
+    for (let i = startDay - 1; i >= 0; i--) {
         days.push({
             day: prevMonthDays - i,
             isCurrentMonth: false,
@@ -114,13 +134,16 @@ export default function Calendar({ currentMonth, onChangeMonth }: CalendarProps)
         today.getMonth() === currentMonth.getMonth() &&
         today.getFullYear() === currentMonth.getFullYear();
 
-    const selectedDay = 14;
+    const selectedDay = today.getDate();
 
     for (let i = 1; i <= daysInMonth; i++) {
         days.push({
             day: i,
             isCurrentMonth: true,
-            isSelected: i === selectedDay,
+            isSelected:
+                i === selectedDay &&
+                today.getMonth() === currentMonth.getMonth() &&
+                today.getFullYear() === currentMonth.getFullYear(),
             isToday: isToday(i),
         });
     }
@@ -136,6 +159,7 @@ export default function Calendar({ currentMonth, onChangeMonth }: CalendarProps)
             });
         }
     }
+
     const monthName = currentMonth.toLocaleString('default', { month: 'long', year: 'numeric' });
     const daysOfWeek = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'];
 
@@ -145,10 +169,10 @@ export default function Calendar({ currentMonth, onChangeMonth }: CalendarProps)
                 <MonthTitle>{monthName}</MonthTitle>
                 <CalendarNavigation>
                     <NavButton onClick={prevMonth}>
-                        <FaChevronLeft size={14} />
+                        <FaChevronLeft size={10} />
                     </NavButton>
                     <NavButton onClick={nextMonth}>
-                        <FaChevronRight size={14} />
+                        <FaChevronRight size={10} />
                     </NavButton>
                 </CalendarNavigation>
             </CalendarHeader>
