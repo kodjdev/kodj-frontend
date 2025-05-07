@@ -6,7 +6,7 @@ import {
 } from '@/types/user';
 import useAxios from '@/hooks/useAxios/useAxios';
 import { ApiResponse } from '@/types/fetch';
-import { EventDetailsResponse } from '@/types/event';
+import { EventDetailsResponse, UserRegisteredEventsResponse } from '@/types/event';
 import { useMemo } from 'react';
 
 /**
@@ -48,6 +48,15 @@ export const useEventService = () => {
                 return fetchData<EventDetailsResponse>({
                     endpoint: `/meetups/${meetupId}/details`,
                     method: 'GET',
+                });
+            },
+            getUserRegisteredEvents: async (token: string): Promise<ApiResponse<UserRegisteredEventsResponse>> => {
+                return fetchData<UserRegisteredEventsResponse>({
+                    endpoint: '/users/meetups',
+                    method: 'GET',
+                    customHeaders: {
+                        Authorization: `Bearer ${token}`,
+                    },
                 });
             },
         };
