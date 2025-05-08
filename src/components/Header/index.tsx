@@ -5,6 +5,8 @@ import themeColors from '@/tools/themeColors';
 import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
 import useAuth from '@/context/useAuth';
+import ConfirmModal from '@/components/Modal/ModalTypes/ConfirmModal';
+import useModal from '@/hooks/useModal';
 
 /**
  * Header Root Component:
@@ -16,6 +18,7 @@ export default function Header() {
     const [langMenuOpen, setLangMenuOpen] = useState(false);
     const { i18n } = useTranslation();
     const { isAuthenticated, logout } = useAuth();
+    const { isOpen, openModal, closeModal } = useModal();
 
     const isMobile = useMediaQuery({
         query: `(max-width: ${themeColors.breakpoints.mobile})`,
@@ -30,26 +33,56 @@ export default function Header() {
         setLangMenuOpen(!langMenuOpen);
     };
 
-    const authProps = {
-        isAuthenticated: !!isAuthenticated,
-        onLogout: logout,
+    const handleLogoutClick = () => {
+        if (isAuthenticated) {
+            openModal();
+        }
     };
 
-    return isMobile ? (
-        <HeaderMobile
-            handleLangChange={handleLanguageChange}
-            currentLang={i18n.language}
-            langMenuOpen={langMenuOpen}
-            toggleLangMenu={toggleMenu}
-            {...authProps}
-        />
-    ) : (
-        <HeaderDesktop
-            handleLangChange={handleLanguageChange}
-            currentLang={i18n.language}
-            langMenuOpen={langMenuOpen}
-            toggleLangMenu={toggleMenu}
-            {...authProps}
-        />
+    const handleConfirmedLogout = async () => {
+        closeModal();
+
+        setTimeout(async () => {
+            await logout();
+        }, 50);
+    };
+
+    const authProps = {
+        isAuthenticated: !!isAuthenticated,
+        onLogout: handleLogoutClick,
+    };
+
+    return (
+        <>
+            {isMobile ? (
+                <HeaderMobile
+                    handleLangChange={handleLanguageChange}
+                    currentLang={i18n.language}
+                    langMenuOpen={langMenuOpen}
+                    toggleLangMenu={toggleMenu}
+                    {...authProps}
+                />
+            ) : (
+                <HeaderDesktop
+                    handleLangChange={handleLanguageChange}
+                    currentLang={i18n.language}
+                    langMenuOpen={langMenuOpen}
+                    toggleLangMenu={toggleMenu}
+                    {...authProps}
+                />
+            )}
+            {
+                <ConfirmModal
+                    isOpen={isOpen}
+                    onClose={closeModal}
+                    title={'Confirm Logout'}
+                    message={'Are you sure you want to log out?'}
+                    onConfirm={handleConfirmedLogout}
+                    confirmLabel={'Yes, log out'}
+                    cancelLabel={'Cancel'}
+                    size="sm"
+                />
+            }
+        </>
     );
 }
