@@ -4,6 +4,7 @@ import { ApiResponse, RegisterFormData } from '@/types/fetch';
 import { EventRegistrationResponse } from '@/types/user';
 import { createContext, useState, useEffect, ReactNode, useCallback } from 'react';
 import { User } from '@/types/auth';
+import { useNavigate } from 'react-router-dom';
 
 type Tokens = {
     access_token: string;
@@ -46,6 +47,7 @@ export default function AuthProvider({ children }: AuthProviderProps) {
     const [user, setUser] = useState<User | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const fetchData = useAxios();
+    const navigate = useNavigate();
 
     const clearTokens = () => {
         localStorage.removeItem('access_token');
@@ -132,21 +134,23 @@ export default function AuthProvider({ children }: AuthProviderProps) {
 
     // we check if user is authenticated on initial load
     useEffect(() => {
-        let isMounted = false;
+        let isMounted = true;
 
         const initAuth = async () => {
-            if (!isMounted) return;
             setIsLoading(true);
             try {
                 const token = localStorage.getItem('access_token');
 
                 if (token && isTokenValid(token)) {
-                    await loadUserData(token);
+                    const userData = await loadUserData(token);
+                    if (isMounted && userData) {
+                        setUser(userData);
+                    }
                 } else {
                     const refreshToken = localStorage.getItem('refresh_token');
                     if (refreshToken) {
                         const success = await refreshTokens();
-                        if (!success) {
+                        if (!success && isMounted) {
                             clearTokens();
                         }
                     } else if (isMounted) {
@@ -281,7 +285,7 @@ export default function AuthProvider({ children }: AuthProviderProps) {
 
     const logout = useCallback(async (): Promise<void> => {
         clearTokens();
-        window.location.reload();
+        navigate('/login');
     }, [clearTokens]);
 
     const value = {
