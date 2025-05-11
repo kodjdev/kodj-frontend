@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import themeColors from '@/tools/themeColors';
 import { Event } from '@/types/event';
-import { useEventService } from '@/services/api/eventService';
+import { useEventService } from '@/services/api/registerEventService';
 import EventCard from '@/components/Card/EventCard';
 
 const TabsContainer = styled.div`

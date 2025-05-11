@@ -1,4 +1,4 @@
-import { useEventService } from '@/services/api/eventService';
+import { useEventService } from '@/services/api/registerEventService';
 import { useUserService } from '@/services/api/userService';
 
 /**

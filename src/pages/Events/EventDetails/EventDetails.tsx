@@ -6,13 +6,13 @@ import { useLocation, useParams } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
 import { EventTimeline } from '@/pages/Events/EventDetails/EventTimeline';
 import { EventLocation } from '@/pages/Events/EventDetails/EventLocation';
-import { useEventService } from '@/services/api/eventService';
 import ComponentLoading from '@/components/ComponentLoading';
 import Button from '@/components/Button/Button';
 import { MeetupRegistrationStatus } from '@/types/enums';
 import Speakers from '@/components/Speakers';
 import { Event, EventDetailsResponse } from '@/types/event';
 import { ApiResponse } from '@/types/fetch';
+import { useEventFetchService } from '@/services/api/fetchEventService';
 
 type ApiEventDetailsResponse = {
     message?: string;
@@ -203,7 +203,7 @@ export default function EventDetails() {
     );
     const [activeTab, setActiveTab] = useState<'details' | 'schedule' | 'speakers' | 'location'>('details');
 
-    const eventService = useEventService();
+    const eventFetchService = useEventFetchService();
 
     useEffect(() => {
         if (!eventId) {
@@ -222,7 +222,7 @@ export default function EventDetails() {
 
             try {
                 setLoading(true);
-                const response = await eventService.getEventDetails(eventId);
+                const response = await eventFetchService.getEventDetails(eventId);
                 if (response?.statusCode && response.statusCode >= 200 && response.statusCode < 300) {
                     setEventDetails(response.data as unknown as ApiEventDetailsResponse);
 
