@@ -16,12 +16,6 @@ export type SpeakerRegistrationData = {
     presentationUrl?: string;
 };
 
-export type ApiResponse<T> = {
-    success: boolean;
-    data: T;
-    message?: string;
-};
-
 export type EventRegistrationResponse = {
     registrationId: string;
     eventId: string;

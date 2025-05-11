@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import themeColors from '@/tools/themeColors';
 import { Event } from '@/types/event';
-import { useEventService } from '@/services/api/registerEventService';
+import { useRegisterEventService } from '@/services/apiService/registerEventService';
 import EventCard from '@/components/Card/EventCard';
 
 const TabsContainer = styled.div`
@@ -61,7 +61,7 @@ export default function EventTabs() {
         pastEvents: [],
     });
     const [isLoading, setIsLoading] = useState<boolean>(true);
-    const eventService = useEventService();
+    const eventService = useRegisterEventService();
 
     useEffect(() => {
         const fetchEvents = async () => {

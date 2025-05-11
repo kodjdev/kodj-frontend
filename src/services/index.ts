@@ -1,5 +1,6 @@
-import { useEventService } from '@/services/api/registerEventService';
-import { useUserService } from '@/services/api/userService';
+import { useUserService } from '@/services/apiService/userService';
+import { useFetchEventService } from '@/services/apiService/fetchEventService';
+import { useRegisterEventService } from '@/services/apiService/registerEventService';
 
 /**
  * API Service - Centralized API Service
@@ -10,10 +11,12 @@ import { useUserService } from '@/services/api/userService';
  */
 export default function useApiService() {
     const userService = useUserService();
-    const eventService = useEventService();
+    const eventFetchService = useFetchEventService();
+    const eventRegisterService = useRegisterEventService();
 
     return {
         ...userService,
-        ...eventService,
+        ...eventFetchService,
+        ...eventRegisterService,
     };
 }

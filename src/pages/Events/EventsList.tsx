@@ -8,7 +8,7 @@ import { pastEventsAtom, upcomingEventsAtom } from '@/atoms/events';
 import themeColors from '@/tools/themeColors';
 import EventCard from '@/components/Card/EventCard';
 import Button from '@/components/Button/Button';
-import { useEventFetchService } from '@/services/api/fetchEventService';
+import useApiService from '@/services';
 
 enum EventFilter {
     ALL = 'all',
@@ -117,7 +117,7 @@ const filterOptions = [
  * @param {EventFilter} defaultFilter - Default filter to be applied on load.
  */
 export default function EventsList({ onFilterChange, defaultFilter = EventFilter.ALL }: EventFiltersProps) {
-    const eventFetchService = useEventFetchService();
+    const eventFetchService = useApiService();
 
     const upcomingEvents = useRecoilValue(upcomingEventsAtom);
     const pastEvents = useRecoilValue(pastEventsAtom);

@@ -10,10 +10,10 @@ import { EventDetailsResponse } from '@/types/event';
 /**
  * Fetch Event Service - For Event Fetching
  * This file contains functions to fetch events from the API.
- * @module eventFetchService
+ * @module useFetchEventService
  * @description This module provides functions to fetch events from the API.
  */
-export const useEventFetchService = () => {
+export const useFetchEventService = () => {
     const fetchData = useAxios();
     const setUpcomingEvents = useSetRecoilState(upcomingEventsAtom);
     const setPastEvents = useSetRecoilState(pastEventsAtom);

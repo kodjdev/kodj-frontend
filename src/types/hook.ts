@@ -15,7 +15,9 @@ export type MeetupResponse = {
 };
 
 export type PageResponse<T> = {
-    content: T[];
+    data: {
+        content: T[];
+    };
     totalPages: number;
     totalElements: number;
     size: number;
@@ -23,13 +25,6 @@ export type PageResponse<T> = {
     first: boolean;
     last: boolean;
     empty: boolean;
-};
-
-export type ApiResponse<T> = {
-    statusCode: number;
-    success: boolean;
-    message: string;
-    data: T;
 };
 
 export type PaginationState = {

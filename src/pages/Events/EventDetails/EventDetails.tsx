@@ -12,7 +12,7 @@ import { MeetupRegistrationStatus } from '@/types/enums';
 import Speakers from '@/components/Speakers';
 import { Event, EventDetailsResponse } from '@/types/event';
 import { ApiResponse } from '@/types/fetch';
-import { useEventFetchService } from '@/services/api/fetchEventService';
+import useApiService from '@/services';
 
 type ApiEventDetailsResponse = {
     message?: string;
@@ -203,7 +203,7 @@ export default function EventDetails() {
     );
     const [activeTab, setActiveTab] = useState<'details' | 'schedule' | 'speakers' | 'location'>('details');
 
-    const eventFetchService = useEventFetchService();
+    const eventFetchService = useApiService();
 
     useEffect(() => {
         if (!eventId) {
