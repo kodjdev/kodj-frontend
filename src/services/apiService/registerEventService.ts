@@ -12,7 +12,7 @@ import { useMemo } from 'react';
 /**
  * Register Event Service - Event Management
  * This file contains functions to interact with the API for event management.
- * @module eventService
+ * @module useRegisterEventService
  * @description This module provides functions to interact with the API for event management.
  * It includes functions for event registration, speaker registration, and moving past events.
  */
