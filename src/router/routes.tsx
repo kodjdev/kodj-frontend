@@ -1,5 +1,15 @@
 import React from 'react';
-import { Home, EventsPage, LoginRoot, MyPage, CompleteProfile, EventDetails, AboutUs } from '@/router/lazyComponents';
+import {
+    Home,
+    EventsPage,
+    LoginRoot,
+    MyPage,
+    CompleteProfile,
+    EventDetails,
+    AboutUs,
+    News,
+    NewsDetail,
+} from '@/router/lazyComponents';
 
 type PathTypes = {
     path: string;
@@ -25,6 +35,14 @@ export const routes: RouteType = {
         {
             path: '/about',
             element: <AboutUs />,
+        },
+        {
+            path: '/news',
+            element: <News />,
+        },
+        {
+            path: '/news/:id',
+            element: <NewsDetail />,
         },
         {
             path: '/events',

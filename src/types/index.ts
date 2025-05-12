@@ -129,17 +129,6 @@ export type SpeakerRegistration = {
     yearsOfExperience: string;
 };
 
-export type NewsItem = {
-    id: string;
-    uniqueId?: string;
-    category?: string;
-    title: string;
-    author?: string;
-    images?: string[];
-    description?: string;
-    lastEdited: Timestamp;
-};
-
 export type HeaderProps = {
     handleLangChange: (lang: string) => void;
     currentLang: string;
