@@ -13,6 +13,7 @@ import Speakers from '@/components/Speakers';
 import { Event, EventDetailsResponse } from '@/types/event';
 import { ApiResponse } from '@/types/fetch';
 import useApiService from '@/services';
+import useFormatDate from '@/hooks/useFormatDate';
 
 type ApiEventDetailsResponse = {
     message?: string;
@@ -203,6 +204,7 @@ export default function EventDetails() {
     );
     const [activeTab, setActiveTab] = useState<'details' | 'schedule' | 'speakers' | 'location'>('details');
 
+    const { formatDate } = useFormatDate();
     const eventFetchService = useApiService();
 
     useEffect(() => {
@@ -324,17 +326,6 @@ export default function EventDetails() {
                 locationRef.current?.scrollIntoView(scrollOptions);
                 break;
         }
-    };
-
-    const formatDate = (dateValue: string | { seconds: number } | null) => {
-        if (!dateValue) return 'Date not available';
-
-        const date =
-            typeof dateValue === 'object' && 'seconds' in dateValue
-                ? new Date(dateValue.seconds * 1000)
-                : new Date(dateValue as string);
-
-        return date.toDateString();
     };
 
     const descriptionParagraphs = Array.isArray(eventData.description)

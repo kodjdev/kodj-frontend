@@ -6,6 +6,7 @@ import themeColors from '@/tools/themeColors';
 import Card from '@/components/Card/Card';
 import { NewsItem, sampleNews } from '@/pages/News/fakeData';
 import useApiService from '@/services';
+import useFormatDate from '@/hooks/useFormatDate';
 
 const Container = styled.div`
     max-width: ${themeColors.breakpoints.desktop};
@@ -135,6 +136,8 @@ export default function NewsList() {
     const [activeCategory, setActiveCategory] = useState<'all' | 'TECH' | 'MEETUP' | 'SOCIAL'>('all');
     const [news, setNews] = useState<NewsItem[]>([]);
     const [loading, setLoading] = useState(true);
+
+    const { formatDate } = useFormatDate();
     const newsService = useApiService();
 
     useEffect(() => {
@@ -179,15 +182,6 @@ export default function NewsList() {
 
         fetchNews();
     }, []);
-
-    const formatDate = (dateString: string) => {
-        const date = new Date(dateString);
-        return date.toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-        });
-    };
 
     return (
         <Container>

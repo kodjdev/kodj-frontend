@@ -8,6 +8,7 @@ import { NewsItem, sampleNews } from '@/pages/News/fakeData';
 import useApiService from '@/services';
 import { useRecoilState } from 'recoil';
 import errorAtom from '@/atoms/errors';
+import useFormatDate from '@/hooks/useFormatDate';
 
 const Container = styled.div`
     max-width: ${themeColors.breakpoints.desktop};
@@ -124,9 +125,11 @@ export default function NewsDetail() {
     const { id } = useParams<{ id: string }>();
     const [newsItem, setNewsItem] = useState<NewsItem | null>(null);
     const [loading, setLoading] = useState(true);
-    const newsService = useApiService();
 
     const [newsError, setNewsError] = useRecoilState(errorAtom);
+
+    const { formatDate } = useFormatDate();
+    const newsService = useApiService();
 
     useEffect(() => {
         const fetchNewsItem = async () => {
@@ -201,15 +204,6 @@ export default function NewsDetail() {
             default:
                 return category;
         }
-    };
-
-    const formatDate = (dateString: string) => {
-        const date = new Date(dateString);
-        return date.toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-        });
     };
 
     return (

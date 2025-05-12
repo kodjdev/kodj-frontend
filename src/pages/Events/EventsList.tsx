@@ -9,6 +9,7 @@ import themeColors from '@/tools/themeColors';
 import EventCard from '@/components/Card/EventCard';
 import Button from '@/components/Button/Button';
 import useApiService from '@/services';
+import useFormatDate from '@/hooks/useFormatDate';
 
 enum EventFilter {
     ALL = 'all',
@@ -126,6 +127,8 @@ export default function EventsList({ onFilterChange, defaultFilter = EventFilter
     const [loading, setLoading] = useState(true);
     const [activeFilter, setActiveFilter] = useState<EventFilter>(defaultFilter);
 
+    const { formatDate } = useFormatDate();
+
     useEffect(() => {
         let isMounted = true;
 
@@ -171,18 +174,6 @@ export default function EventsList({ onFilterChange, defaultFilter = EventFilter
         }
     };
 
-    const formatDate = (dateValue: string | { seconds: number } | null) => {
-        if (!dateValue) return 'Date not available';
-
-        const date =
-            typeof dateValue === 'object' && 'seconds' in dateValue
-                ? new Date(dateValue.seconds * 1000)
-                : new Date(dateValue as string);
-
-        return date.toDateString();
-    };
-
-    // method to render event cards
     const renderEventCard = (event: Event, isUpcoming: boolean) => (
         <StyledLink
             to={`/events/${isUpcoming ? 'upcoming' : 'past'}/details/${event.id}`}

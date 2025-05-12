@@ -18,12 +18,29 @@ export default function useFormatDate(defaultOptions?: FormatOptions) {
         [defaultOptions],
     );
 
-    const validateDate = (dateString: string, context: string = 'date'): Date | null => {
+    const validateDate = (
+        dateValue: string | { seconds: number } | null | undefined,
+        context: string = 'date',
+    ): Date | null => {
         try {
-            const date = new Date(dateString);
+            if (dateValue == null) {
+                console.warn(`${context} value is null or undefined`);
+                return null;
+            }
+
+            let date: Date;
+
+            if (typeof dateValue === 'string') {
+                date = new Date(dateValue);
+            } else if (typeof dateValue === 'object' && 'seconds' in dateValue) {
+                date = new Date(dateValue.seconds * 1000);
+            } else {
+                console.warn(`Unsupported ${context} format:`, dateValue);
+                return null;
+            }
 
             if (isNaN(date.getTime())) {
-                console.warn(`Invalid ${context} string:`, dateString);
+                console.warn(`Invalid ${context} value:`, dateValue);
                 return null;
             }
 
@@ -36,12 +53,12 @@ export default function useFormatDate(defaultOptions?: FormatOptions) {
 
     /**
      * Format a date string to a localized string
-     * @param dateString The date string to format
+     * @param dateValue The date value to format
      * @param options Optional formatting options that override the defaults
      * @returns Formatted date string
      */
-    const formatDate = (dateString: string, options?: FormatOptions) => {
-        const date = validateDate(dateString);
+    const formatDate = (dateValue: string | { seconds: number } | null | undefined, options?: FormatOptions) => {
+        const date = validateDate(dateValue);
         if (!date) return 'Invalid date';
 
         try {
