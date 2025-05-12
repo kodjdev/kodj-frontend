@@ -160,9 +160,6 @@ export default function NewsList() {
                 if (response.statusCode === 200 && response.data) {
                     setNews(response.data);
                 }
-                if (response.statusCode === 200 && response.data) {
-                    setNews(response.data);
-                }
                 // as of now for demo purpose, later i will remove it since we handle in api service
                 else if (response.statusCode === 403) {
                     console.warn('Access forbidden (403), using fallback data');
