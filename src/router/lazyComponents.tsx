@@ -11,3 +11,5 @@ export const MyPage = React.lazy(() => import('@/pages/MyPage/index'));
 export const CompleteProfile = React.lazy(() => import('@/pages/Auth/CompleteAccount'));
 export const EventDetails = React.lazy(() => import('@/pages/Events/EventDetails/EventDetails'));
 export const AboutUs = React.lazy(() => import('@/pages/About'));
+export const News = React.lazy(() => import('@/pages/News/index'));
+export const NewsDetail = React.lazy(() => import('@/pages/News/NewsDetails/NewsDetails'));
