@@ -15,7 +15,9 @@ export type MeetupResponse = {
 };
 
 export type PageResponse<T> = {
-    content: T[];
+    data: {
+        content: T[];
+    };
     totalPages: number;
     totalElements: number;
     size: number;
@@ -23,13 +25,6 @@ export type PageResponse<T> = {
     first: boolean;
     last: boolean;
     empty: boolean;
-};
-
-export type ApiResponse<T> = {
-    statusCode: number;
-    success: boolean;
-    message: string;
-    data: T;
 };
 
 export type PaginationState = {
@@ -49,4 +44,16 @@ export type UseFetchEventsOptions = {
     id?: number;
     onSuccess?: (data: PageResponse<MeetupResponse> | MeetupResponse) => void;
     onError?: (error: unknown) => void;
+};
+
+export type FormatOptions = {
+    locale?: string;
+    year?: 'numeric' | '2-digit';
+    month?: 'numeric' | '2-digit' | 'long' | 'short' | 'narrow';
+    day?: 'numeric' | '2-digit';
+    hour?: 'numeric' | '2-digit';
+    minute?: 'numeric' | '2-digit';
+    second?: 'numeric' | '2-digit';
+    weekday?: 'long' | 'short' | 'narrow';
+    timeZoneName?: 'long' | 'short';
 };

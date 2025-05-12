@@ -2,8 +2,9 @@ import { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import themeColors from '@/tools/themeColors';
 import { Event } from '@/types/event';
-import { useEventService } from '@/services/api/eventService';
+import { useRegisterEventService } from '@/services/apiService/registerEventService';
 import EventCard from '@/components/Card/EventCard';
+import useFormatDate from '@/hooks/useFormatDate';
 
 const TabsContainer = styled.div`
     margin-bottom: ${themeColors.spacing.lg};
@@ -41,19 +42,6 @@ const NoEventsMessage = styled.div`
     font-size: ${themeColors.typography.body.medium.fontSize}px;
 `;
 
-// Helper function to format the date
-export const formatDate = (dateString: string): string => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
-        weekday: 'short',
-        day: 'numeric',
-        month: 'short',
-        year: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
-    });
-};
-
 export default function EventTabs() {
     const [activeTab, setActiveTab] = useState<'upcoming' | 'past'>('upcoming');
     const [events, setEvents] = useState<{ upcomingEvents: Event[]; pastEvents: Event[] }>({
@@ -61,7 +49,9 @@ export default function EventTabs() {
         pastEvents: [],
     });
     const [isLoading, setIsLoading] = useState<boolean>(true);
-    const eventService = useEventService();
+
+    const { formatDate } = useFormatDate();
+    const eventService = useRegisterEventService();
 
     useEffect(() => {
         const fetchEvents = async () => {

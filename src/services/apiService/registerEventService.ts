@@ -6,17 +6,17 @@ import {
 } from '@/types/user';
 import useAxios from '@/hooks/useAxios/useAxios';
 import { ApiResponse } from '@/types/fetch';
-import { EventDetailsResponse, UserRegisteredEventsResponse } from '@/types/event';
+import { UserRegisteredEventsResponse } from '@/types/event';
 import { useMemo } from 'react';
 
 /**
- * Event Service - Event Management
+ * Register Event Service - Event Management
  * This file contains functions to interact with the API for event management.
- * @module eventService
+ * @module useRegisterEventService
  * @description This module provides functions to interact with the API for event management.
  * It includes functions for event registration, speaker registration, and moving past events.
  */
-export const useEventService = () => {
+export const useRegisterEventService = () => {
     const fetchData = useAxios();
 
     return useMemo(() => {
@@ -44,12 +44,7 @@ export const useEventService = () => {
                     },
                 });
             },
-            getEventDetails: async (meetupId: string | number): Promise<ApiResponse<EventDetailsResponse>> => {
-                return fetchData<EventDetailsResponse>({
-                    endpoint: `/meetups/${meetupId}/details`,
-                    method: 'GET',
-                });
-            },
+
             getUserRegisteredEvents: async (token: string): Promise<ApiResponse<UserRegisteredEventsResponse>> => {
                 return fetchData<UserRegisteredEventsResponse>({
                     endpoint: '/users/meetups',

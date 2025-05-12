@@ -6,13 +6,14 @@ import { useLocation, useParams } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
 import { EventTimeline } from '@/pages/Events/EventDetails/EventTimeline';
 import { EventLocation } from '@/pages/Events/EventDetails/EventLocation';
-import { useEventService } from '@/services/api/eventService';
 import ComponentLoading from '@/components/ComponentLoading';
 import Button from '@/components/Button/Button';
 import { MeetupRegistrationStatus } from '@/types/enums';
 import Speakers from '@/components/Speakers';
 import { Event, EventDetailsResponse } from '@/types/event';
 import { ApiResponse } from '@/types/fetch';
+import useApiService from '@/services';
+import useFormatDate from '@/hooks/useFormatDate';
 
 type ApiEventDetailsResponse = {
     message?: string;
@@ -180,6 +181,12 @@ const SectionTitle = styled.h2`
     }
 `;
 
+/**
+ * EventDetails Component - Page Component
+ * @description Displays comprehensive details about a specific event.
+ * Fetches event data by ID or uses data passed via location state.
+ * Includes tabbed navigation for different sections: details, schedule, speakers, and location.
+ */
 export default function EventDetails() {
     const { eventId } = useParams();
     const location = useLocation();
@@ -203,7 +210,8 @@ export default function EventDetails() {
     );
     const [activeTab, setActiveTab] = useState<'details' | 'schedule' | 'speakers' | 'location'>('details');
 
-    const eventService = useEventService();
+    const { formatDate } = useFormatDate();
+    const eventFetchService = useApiService();
 
     useEffect(() => {
         if (!eventId) {
@@ -222,7 +230,7 @@ export default function EventDetails() {
 
             try {
                 setLoading(true);
-                const response = await eventService.getEventDetails(eventId);
+                const response = await eventFetchService.getEventDetails(eventId);
                 if (response?.statusCode && response.statusCode >= 200 && response.statusCode < 300) {
                     setEventDetails(response.data as unknown as ApiEventDetailsResponse);
 
@@ -324,17 +332,6 @@ export default function EventDetails() {
                 locationRef.current?.scrollIntoView(scrollOptions);
                 break;
         }
-    };
-
-    const formatDate = (dateValue: string | { seconds: number } | null) => {
-        if (!dateValue) return 'Date not available';
-
-        const date =
-            typeof dateValue === 'object' && 'seconds' in dateValue
-                ? new Date(dateValue.seconds * 1000)
-                : new Date(dateValue as string);
-
-        return date.toDateString();
     };
 
     const descriptionParagraphs = Array.isArray(eventData.description)

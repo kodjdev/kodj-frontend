@@ -47,6 +47,12 @@ const SectionTitle = styled.h2`
     }
 `;
 
+/**
+ * EventLocation Component - Organism Component
+ * @param location - Location data for the event or null if not available
+ * @description Displays the location information for an event including a map.
+ * Shows the venue name, address, and directions to help attendees find the event.
+ */
 export function EventLocation({ location }: EventLocationProps) {
     const locationData = location
         ? {

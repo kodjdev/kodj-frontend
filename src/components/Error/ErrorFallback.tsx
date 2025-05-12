@@ -4,6 +4,7 @@ import themeColors from '@/tools/themeColors';
 type ErrorFallbackProps = {
     error: Error | null;
     resetErrorBoundary?: () => void;
+    title: string;
 };
 
 const ErrorContainer = styled.div`
@@ -54,7 +55,7 @@ const Button = styled.button<{ primary?: boolean }>`
  * ErrorFallback - Custom Error Boundary Component
  * @description Displays a user-friendly error message with options to retry
  */
-export default function ErrorFallback({ error, resetErrorBoundary }: ErrorFallbackProps) {
+export default function ErrorFallback({ error, resetErrorBoundary, title }: ErrorFallbackProps) {
     const handleReportError = () => {
         // Add your error reporting service integration here
         console.error('Error details:', {
@@ -68,7 +69,7 @@ export default function ErrorFallback({ error, resetErrorBoundary }: ErrorFallba
 
     return (
         <ErrorContainer role="alert" aria-live="assertive">
-            <ErrorTitle>Something went wrong</ErrorTitle>
+            <ErrorTitle>{title}</ErrorTitle>
             <ErrorMessage>{error?.message || 'An unexpected error occurred'}</ErrorMessage>
             <ButtonGroup>
                 <Button

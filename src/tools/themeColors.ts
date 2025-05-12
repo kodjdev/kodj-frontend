@@ -235,6 +235,7 @@ const spacing = {
     xl: '32px',
     xxl: '48px',
     xxxl: '64px',
+    fourXl: '100px',
 };
 
 // border: 1px solid #FFF;

@@ -6,9 +6,10 @@ import { Event } from '@/types';
 import { useRecoilValue } from 'recoil';
 import { pastEventsAtom, upcomingEventsAtom } from '@/atoms/events';
 import themeColors from '@/tools/themeColors';
-import useFetchEvent from '@/hooks/useFetchEvent/useFetchEvent';
 import EventCard from '@/components/Card/EventCard';
 import Button from '@/components/Button/Button';
+import useApiService from '@/services';
+import useFormatDate from '@/hooks/useFormatDate';
 
 enum EventFilter {
     ALL = 'all',
@@ -117,7 +118,7 @@ const filterOptions = [
  * @param {EventFilter} defaultFilter - Default filter to be applied on load.
  */
 export default function EventsList({ onFilterChange, defaultFilter = EventFilter.ALL }: EventFiltersProps) {
-    const { fetchAllEvents } = useFetchEvent();
+    const eventFetchService = useApiService();
 
     const upcomingEvents = useRecoilValue(upcomingEventsAtom);
     const pastEvents = useRecoilValue(pastEventsAtom);
@@ -125,14 +126,33 @@ export default function EventsList({ onFilterChange, defaultFilter = EventFilter
 
     const [loading, setLoading] = useState(true);
     const [activeFilter, setActiveFilter] = useState<EventFilter>(defaultFilter);
+
+    const { formatDate } = useFormatDate();
+
     useEffect(() => {
         let isMounted = true;
 
         const initializeData = async () => {
             try {
-                await fetchAllEvents();
+                setLoading(true);
+
+                console.log('Explicitly fetching upcoming events...');
+
+                await eventFetchService.getEvents({
+                    type: 'upcoming',
+                    size: 50,
+                    page: 0,
+                });
+
+                console.log('Explicitly fetching past events...');
+
+                await eventFetchService.getEvents({
+                    type: 'past',
+                    size: 50,
+                    page: 0,
+                });
             } catch (error) {
-                console.log('Error initializing data: ', error);
+                console.error('Error fetching events:', error);
             } finally {
                 if (isMounted) {
                     setLoading(false);
@@ -145,7 +165,7 @@ export default function EventsList({ onFilterChange, defaultFilter = EventFilter
         return () => {
             isMounted = false;
         };
-    }, [fetchAllEvents]);
+    }, []);
 
     const handleFilterChange = (filter: EventFilter) => {
         setActiveFilter(filter);
@@ -154,18 +174,6 @@ export default function EventsList({ onFilterChange, defaultFilter = EventFilter
         }
     };
 
-    const formatDate = (dateValue: string | { seconds: number } | null) => {
-        if (!dateValue) return 'Date not available';
-
-        const date =
-            typeof dateValue === 'object' && 'seconds' in dateValue
-                ? new Date(dateValue.seconds * 1000)
-                : new Date(dateValue as string);
-
-        return date.toDateString();
-    };
-
-    // method to render event cards
     const renderEventCard = (event: Event, isUpcoming: boolean) => (
         <StyledLink
             to={`/events/${isUpcoming ? 'upcoming' : 'past'}/details/${event.id}`}
