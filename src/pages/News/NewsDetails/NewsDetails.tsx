@@ -121,6 +121,12 @@ const ShareButtons = styled.div`
     gap: ${themeColors.spacing.sm};
 `;
 
+/**
+ * NewsDetail Component - Page Component
+ * @description Displays detailed view of a single news article.
+ * Fetches the specific news item by ID from the API or falls back to sample data if needed.
+ * Handles loading states and error cases with Recoil for global error management.
+ */
 export default function NewsDetail() {
     const { id } = useParams<{ id: string }>();
     const [newsItem, setNewsItem] = useState<NewsItem | null>(null);

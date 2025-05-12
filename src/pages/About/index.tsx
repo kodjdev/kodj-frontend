@@ -185,6 +185,12 @@ const createIconContainer = (Icon: LucideIcon) => {
     );
 };
 
+/**
+ * AboutUs Component - Page Component
+ * @description Displays information about the KO'DJ organization and its mission.
+ * Includes sections for organization description, mission statement, benefits of joining,
+ * and information about the organization's team members.
+ */
 export default function AboutUs() {
     return (
         <Container>

@@ -181,6 +181,12 @@ const SectionTitle = styled.h2`
     }
 `;
 
+/**
+ * EventDetails Component - Page Component
+ * @description Displays comprehensive details about a specific event.
+ * Fetches event data by ID or uses data passed via location state.
+ * Includes tabbed navigation for different sections: details, schedule, speakers, and location.
+ */
 export default function EventDetails() {
     const { eventId } = useParams();
     const location = useLocation();

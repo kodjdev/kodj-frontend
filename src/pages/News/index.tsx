@@ -132,6 +132,12 @@ const ReadMoreLink = styled(Link)`
     }
 `;
 
+/**
+ * NewsList Component - Page Component
+ * @description Displays a filterable grid of news articles.
+ * Fetches news data from API with category filtering capability.
+ * Allows filtering by categories (all, tech, meetup, social).
+ */
 export default function NewsList() {
     const [activeCategory, setActiveCategory] = useState<'all' | 'TECH' | 'MEETUP' | 'SOCIAL'>('all');
     const [news, setNews] = useState<NewsItem[]>([]);

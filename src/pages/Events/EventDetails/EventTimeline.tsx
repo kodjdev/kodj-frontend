@@ -98,6 +98,12 @@ const NoEventsMessage = styled.div`
     font-size: ${themeColors.typography.body.medium.fontSize}px;
 `;
 
+/**
+ * EventTimeline Component - Organism Component
+ * @param schedule - Array of event schedule items with speakers, times, and topics
+ * @description Displays the timeline/schedule for an event in a tabular format.
+ * Shows each session with the speaker, time slot, and topic details.
+ */
 export function EventTimeline({ schedule = [] }: EventTimelineProps) {
     return (
         <div>
