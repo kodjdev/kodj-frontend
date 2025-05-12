@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import themeColors from '@/tools/themeColors';
 import Card from '@/components/Card/Card';
-import { ChevronRight, Users, Presentation, Laptop, Handshake } from 'lucide-react';
+import { ChevronRight, Users, Presentation, Laptop, Handshake, LucideIcon } from 'lucide-react';
 import rocketImage from '@/static/icons/rocket.jpg';
 import behzodImage from '@/static/team/bekhzod.png';
 import javokhirImage from '@/static/team/javokhir.jpg';
@@ -167,7 +167,7 @@ const OrganizerTitle = styled.h5`
     margin: 0 0 ${themeColors.spacing.xs} 0;
 `;
 
-const createIconContainer = (Icon) => {
+const createIconContainer = (Icon: LucideIcon) => {
     return (
         <div
             style={{
@@ -294,9 +294,9 @@ export default function AboutUs() {
                         <OrganizerAvatar>
                             <img src={javokhirImage} alt="Javokhir" />
                         </OrganizerAvatar>
-                        <OrganizerName>Javokhir</OrganizerName>
-                        <OrganizerRole>Product Designer</OrganizerRole>
-                        <OrganizerTitle>UI/UX Designer & Organiser</OrganizerTitle>
+                        <OrganizerName>Javokhirbek Khakimjonov</OrganizerName>
+                        <OrganizerRole>Software Developer</OrganizerRole>
+                        <OrganizerTitle>Event Moderator & Software Developer</OrganizerTitle>
                         <Card.Description>
                             Dedicated to fostering a welcoming and inclusive environment for all attendees, speakers,
                             and sponsors. Building a community of learners and creators.
