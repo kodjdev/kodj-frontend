@@ -1,14 +1,12 @@
-import { useState, useEffect, ReactNode } from 'react';
+import { ReactNode, useEffect } from 'react';
+import { useRecoilState } from 'recoil';
+import { useLocation } from 'react-router-dom';
 import ErrorFallback from '@/components/Error/ErrorFallback';
+import errorAtom from '@/atoms/errors';
 
 type ErrorBoundaryProps = {
     children: ReactNode;
     fallback?: ReactNode;
-};
-
-type ErrorBoundaryState = {
-    hasError: boolean;
-    error: Error | null;
 };
 
 /**
@@ -17,30 +15,30 @@ type ErrorBoundaryState = {
  * @description A functional component that catches JavaScript
  * errors anywhere in its child component tree
  * and displays a fallback UI instead of the component tree that crashed.
- *
- * @param {Object} props - Component props
- * @param {ReactNode} props.children - Child components to be rendered
- * @param {ReactNode} [props.fallback] - Custom fallback UI component (defaults to ErrorFallback)
+ * Uses Recoil for centralized error state management.
  */
-export default function ErrorBoundary({ children }: ErrorBoundaryProps) {
-    const [{ hasError, error }, setErrorState] = useState<ErrorBoundaryState>({
-        hasError: false,
-        error: null,
-    });
+export default function ErrorBoundary({ children, fallback }: ErrorBoundaryProps) {
+    const [errorState, setErrorState] = useRecoilState(errorAtom);
+    const location = useLocation();
 
     const resetErrorBoundary = () => {
-        setErrorState({
-            hasError: false,
-            error: null,
-        });
+        setErrorState(null);
     };
 
+    /* we reset the error state when route changes */
     useEffect(() => {
-        const errorHandler = (error: ErrorEvent) => {
-            console.error('Uncaught error:', error);
+        resetErrorBoundary();
+    }, [location.pathname, setErrorState]);
+
+    /* listen for uncaught errors */
+    useEffect(() => {
+        const errorHandler = (errorEvent: ErrorEvent) => {
+            console.error('Uncaught error:', errorEvent);
+
             setErrorState({
-                hasError: false,
-                error: null,
+                title: 'Uncaught Error',
+                message: errorEvent.message || 'An unexpected error occurred',
+                record: errorEvent.filename ? `${errorEvent.filename}:${errorEvent.lineno}` : null,
             });
         };
 
@@ -49,13 +47,21 @@ export default function ErrorBoundary({ children }: ErrorBoundaryProps) {
         return () => {
             window.removeEventListener('error', errorHandler);
         };
-    }, []);
+    }, [setErrorState]);
 
-    if (hasError) {
+    if (errorState) {
+        /* if a custom fallback is provided, use it */
+        if (fallback) {
+            return <>{fallback}</>;
+        }
+
+        /* if not just use the default ErrorFallback */
         return (
-            <>
-                <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />
-            </>
+            <ErrorFallback
+                error={new Error(errorState.message as string)}
+                resetErrorBoundary={resetErrorBoundary}
+                title={errorState.title}
+            />
         );
     }
 
