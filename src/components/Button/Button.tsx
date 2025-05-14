@@ -12,6 +12,7 @@ type BaseButtonProps = {
     children?: React.ReactNode;
     disabled?: boolean;
     htmlType?: ButtonHTMLAttributes<HTMLButtonElement>['type'];
+    active?: boolean;
 } & Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'type'>;
 
 type LinkButtonProps = {

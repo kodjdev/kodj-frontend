@@ -1,135 +1,217 @@
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import themeColors from '@/tools/themeColors';
-import useAuth from '@/context/useAuth';
+import Button from '@/components/Button/Button';
+import Input from '@/components/Input/Input';
+import { FaUser, FaEnvelope, FaLock, FaPhone, FaSave, FaEdit } from 'react-icons/fa';
 
-const Container = styled.div`
-    max-width: 800px;
-    margin: 0 auto;
-    padding-bottom: ${themeColors.spacing.xxl};
+type FieldConfig = {
+    id: string;
+    label: string;
+    value: string;
+    icon: React.ReactNode;
+    isPassword?: boolean;
+    isEditing: boolean;
+};
+
+const FormContainer = styled.form`
+    max-width: 600px;
 `;
 
-const ProfileHeader = styled.div`
-    display: flex;
-    align-items: center;
-    margin-bottom: ${themeColors.spacing.xl};
+const FieldGroup = styled.div`
+    margin-bottom: ${themeColors.spacing.lg};
 `;
 
-const ProfileImage = styled.div`
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
-    background-color: ${themeColors.colors.gray.background};
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-right: ${themeColors.spacing.lg};
-    overflow: hidden;
-
-    img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
-`;
-
-const ProfileInfo = styled.div`
-    flex: 1;
-`;
-
-const ProfileName = styled.h1`
-    font-size: ${themeColors.typography.headings.desktop.h2.fontSize}px;
-    color: ${themeColors.colors.neutral.white};
-    margin: 0 0 ${themeColors.spacing.sm} 0;
-`;
-
-const ProfileEmail = styled.p`
-    font-size: ${themeColors.typography.body.medium.fontSize}px;
-    color: ${themeColors.colors.gray.main};
-    margin: 0;
-`;
-
-const ProfileSection = styled.div`
-    margin-bottom: ${themeColors.spacing.xl};
-`;
-
-const SectionTitle = styled.h2`
-    font-size: ${themeColors.typography.headings.desktop.h4.fontSize}px;
-    color: ${themeColors.colors.neutral.white};
-    margin: 0 0 ${themeColors.spacing.md} 0;
-    border-bottom: 1px solid ${themeColors.cardBorder.color};
-    padding-bottom: ${themeColors.spacing.sm};
-`;
-
-const InfoItem = styled.div`
-    margin-bottom: ${themeColors.spacing.md};
-`;
-
-const InfoLabel = styled.div`
+const FieldLabel = styled.div`
     font-size: ${themeColors.typography.body.small.fontSize}px;
     color: ${themeColors.colors.gray.label};
     margin-bottom: ${themeColors.spacing.xs};
 `;
 
-const InfoValue = styled.div`
-    font-size: ${themeColors.typography.body.medium.fontSize}px;
+const FieldValue = styled.div`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: ${themeColors.colors.gray.inputTag};
     color: ${themeColors.colors.neutral.white};
+    padding: 4px ${themeColors.spacing.sm};
+    border-radius: ${themeColors.cardBorder.md};
 `;
 
-export default function AccountDetails() {
-    const { user } = useAuth();
-    const isLoading = false;
+const FieldText = styled.div`
+    font-size: ${themeColors.typography.body.small.fontSize}px;
+`;
 
-    if (isLoading || !user) {
-        return (
-            <Container>
-                <div>Loading user profile...</div>
-            </Container>
-        );
+const EditButton = styled.button`
+    background: none;
+    border: none;
+    color: ${themeColors.colors.primary.main};
+    cursor: pointer;
+
+    &:hover {
+        color: ${themeColors.colors.primary.hover};
     }
+`;
+
+const PasswordDots = styled.div`
+    display: flex;
+    gap: 4px;
+
+    span {
+        width: 8px;
+        height: 8px;
+        background-color: ${themeColors.colors.neutral.white};
+        border-radius: 50%;
+    }
+`;
+
+const ButtonsContainer = styled.div`
+    display: flex;
+    justify-content: flex-end;
+    gap: ${themeColors.spacing.md};
+    margin-top: ${themeColors.spacing.xl};
+`;
+
+/**
+ * AccountDetails Component - Sub Organism Component
+ * Form for viewing and editing account information
+ */
+export default function AccountDetails() {
+    const [fields, setFields] = useState<FieldConfig[]>([
+        {
+            id: 'name',
+            label: 'Name',
+            value: 'Kholikov Oybek',
+            icon: <FaUser />,
+            isEditing: false,
+        },
+        {
+            id: 'email',
+            label: 'Email',
+            value: 'example@example.com',
+            icon: <FaEnvelope />,
+            isEditing: false,
+        },
+        {
+            id: 'password',
+            label: 'Password',
+            value: 'password123',
+            icon: <FaLock />,
+            isPassword: true,
+            isEditing: false,
+        },
+        {
+            id: 'phone',
+            label: 'Phone number',
+            value: '01012345678',
+            icon: <FaPhone />,
+            isEditing: false,
+        },
+    ]);
+
+    const [formValues, setFormValues] = useState<Record<string, string>>({
+        name: 'Kholikov Oybek',
+        email: 'example@example.com',
+        password: 'password123',
+        phone: '01012345678',
+    });
+
+    const toggleEditField = (fieldId: string) => {
+        setFields((prevFields) =>
+            prevFields.map((field) => (field.id === fieldId ? { ...field, isEditing: !field.isEditing } : field)),
+        );
+    };
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        setFormValues((prev) => ({ ...prev, [name]: value }));
+    };
+
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+
+        setFields((prevFields) =>
+            prevFields.map((field) => ({
+                ...field,
+                value: formValues[field.id],
+                isEditing: false,
+            })),
+        );
+
+        //later i will add the my page api service
+        console.log('Saving account details:', formValues);
+    };
+
+    const renderField = (field: FieldConfig) => {
+        if (field.isEditing) {
+            return (
+                <Input
+                    name={field.id}
+                    value={formValues[field.id]}
+                    onChange={handleInputChange}
+                    type={field.isPassword ? 'password' : 'text'}
+                    icon={field.icon}
+                    fullWidth
+                    style={{ padding: '10px, 10px' }}
+                />
+            );
+        }
+
+        return (
+            <FieldGroup key={field.id}>
+                <FieldLabel>{field.label}</FieldLabel>
+                <FieldValue>
+                    <FieldText>
+                        {field.isPassword ? (
+                            <PasswordDots>
+                                {[...Array(10)].map((_, i) => (
+                                    <span key={i} />
+                                ))}
+                            </PasswordDots>
+                        ) : (
+                            field.value
+                        )}
+                    </FieldText>
+                    <EditButton onClick={() => toggleEditField(field.id)}>
+                        <FaEdit />
+                    </EditButton>
+                </FieldValue>
+            </FieldGroup>
+        );
+    };
+
+    // we check if any field is in edit mode
+    const isEditMode = fields.some((field) => field.isEditing);
 
     return (
-        <Container>
-            <ProfileHeader>
-                <ProfileImage>
-                    {user.data.imageUrl ? (
-                        <img src={user.data.imageUrl} alt={`${user.data.firstName} ${user.data.lastName}`} />
-                    ) : (
-                        <span>
-                            {user.data.firstName?.charAt(0) || ''}
-                            {user.data.lastName?.charAt(0) || ''}
-                        </span>
-                    )}
-                </ProfileImage>
-                <ProfileInfo>
-                    <ProfileName>
-                        {user.data.firstName} {user.data.lastName}
-                    </ProfileName>
-                    <ProfileEmail>{user.data.email}</ProfileEmail>
-                </ProfileInfo>
-            </ProfileHeader>
+        <FormContainer onSubmit={handleSubmit}>
+            {fields.map(renderField)}
 
-            <ProfileSection>
-                <SectionTitle>Personal Information</SectionTitle>
-                <InfoItem>
-                    <InfoLabel>Username</InfoLabel>
-                    <InfoValue>{user.data.username || 'Not set'}</InfoValue>
-                </InfoItem>
-                <InfoItem>
-                    <InfoLabel>Member Since</InfoLabel>
-                    <InfoValue>{new Date(user.data.createdAt).toLocaleDateString()}</InfoValue>
-                </InfoItem>
-                {user.data.region && (
-                    <InfoItem>
-                        <InfoLabel>Region</InfoLabel>
-                        <InfoValue>{user.data.region}</InfoValue>
-                    </InfoItem>
-                )}
-            </ProfileSection>
+            {isEditMode && (
+                <ButtonsContainer>
+                    <Button
+                        variant="secondary"
+                        htmlType="button"
+                        onClick={() => {
+                            // then reset form values and exit edit mode
+                            setFormValues({
+                                name: fields.find((f) => f.id === 'name')?.value || '',
+                                email: fields.find((f) => f.id === 'email')?.value || '',
+                                password: fields.find((f) => f.id === 'password')?.value || '',
+                                phone: fields.find((f) => f.id === 'phone')?.value || '',
+                            });
 
-            <ProfileSection>
-                <SectionTitle>Interests</SectionTitle>
-                <InfoValue>{user.data.category || 'No interests specified.'}</InfoValue>
-            </ProfileSection>
-        </Container>
+                            setFields((prevFields) => prevFields.map((field) => ({ ...field, isEditing: false })));
+                        }}
+                    >
+                        Cancel
+                    </Button>
+                    <Button variant="primary" htmlType="submit">
+                        <FaSave style={{ marginRight: '8px' }} />
+                        Save Changes
+                    </Button>
+                </ButtonsContainer>
+            )}
+        </FormContainer>
     );
 }
