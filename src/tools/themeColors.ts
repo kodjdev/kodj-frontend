@@ -53,6 +53,11 @@ const colors = {
         hover: '#6B6B6B',
     },
 
+    black: {
+        main: '#000000',
+        background: '#1A1D1E',
+    },
+
     // Status colors
     status: {
         error: {
@@ -60,6 +65,7 @@ const colors = {
             button: '#91313B',
             background: '#F9E8E7',
             light: '#EC7063',
+            action: '#E53E3E',
         },
         success: {
             button: '#23913C',
@@ -68,13 +74,28 @@ const colors = {
         warning: {
             main: '#F2A024', // Yellow
         },
+        info: {
+            action: '#3182CE',
+        },
     },
 
-    // Utility colors
-    utility: {
-        overlay: 'rgba(0, 0, 0, 0.065)',
-        black_40: 'rgba(0, 0, 0, 0.4)',
-        black_60: 'rgba(0, 0, 0, 0.6)',
+    ui: {
+        navItem: {
+            hoverBg: '#272727',
+            activeBg: '#FFFFFF',
+            activeText: '#000000',
+        },
+        signOut: {
+            bg: '#161616',
+            hoverBg: '#272727',
+        },
+        transparent: 'transparent',
+        overlay: {
+            redHover: '#E53E3E1A',
+            blueHover: '#3182CE1A',
+            whiteHover: '#FFFFFF1A',
+        },
+        dimmed: '#1A1D1E',
     },
 };
 
@@ -441,8 +462,6 @@ const themeColors = {
     modal_width_large: sizes.modal.large,
 
     black: colors.neutral.black,
-    black_40: colors.utility.black_40,
-    black_60: colors.utility.black_60,
 
     blue: colors.primary.main,
     blue_dark: colors.primary.dark,

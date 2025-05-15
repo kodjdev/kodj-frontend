@@ -16,6 +16,7 @@ type NavItemButtonProps = {
 type SidebarProps = {
     activeSection: PageSection;
     onSectionChange: (section: PageSection) => void;
+    onLogout: () => void;
 };
 
 const SidebarContainer = styled.div`
@@ -73,12 +74,8 @@ const NavSection = styled.nav`
 `;
 
 const NavItemButton = styled(Button)<NavItemButtonProps>`
-    text-transform: none;
-    justify-content: flex-start;
     width: 100%;
-    border: none;
-    background-color: ${(props) => (props.active ? '#272727' : 'transparent')};
-    border-radius: 8px;
+    margin-bottom: 8px;
 
     &:focus,
     &:active,
@@ -86,15 +83,6 @@ const NavItemButton = styled(Button)<NavItemButtonProps>`
         border: none !important;
         outline: none !important;
         box-shadow: none !important;
-    }
-
-    &:hover {
-        background-color: ${(props) => (props.active ? '#272727' : 'transparent')};
-    }
-
-    svg {
-        color: ${(props) => (props.active ? themeColors.colors.primary.main : themeColors.colors.gray.text)};
-        margin-right: ${themeColors.spacing.md};
     }
 `;
 
@@ -105,11 +93,9 @@ const NavText = styled.span`
 const SignOutButton = styled(Button)`
     text-transform: none;
     justify-content: flex-start;
-    border: 1px solid ${themeColors.cardBorder.color};
     margin-top: 16px;
     width: 100%;
     transition: background-color 0.2s ease;
-    border-radius: ${themeColors.cardBorder.md};
 
     &:hover {
         background-color: transparent;
@@ -126,11 +112,7 @@ const SignOutButton = styled(Button)`
  * Navigation sidebar for the MyPage section, allowing users to
  * switch between different sections and sign out.
  */
-export default function Sidebar({ activeSection, onSectionChange }: SidebarProps) {
-    const handleSignOut = () => {
-        console.log('Signing out...');
-    };
-
+export default function Sidebar({ activeSection, onSectionChange, onLogout }: SidebarProps) {
     return (
         <SidebarContainer>
             <ProfileSection>
@@ -144,29 +126,26 @@ export default function Sidebar({ activeSection, onSectionChange }: SidebarProps
 
             <NavSection>
                 <NavItemButton
-                    variant="text"
+                    variant={activeSection === PageSection.EVENTS ? 'navItemActive' : 'navItem'}
                     fullWidth={true}
-                    active={activeSection === PageSection.EVENTS}
                     onClick={() => onSectionChange(PageSection.EVENTS)}
                 >
                     <FaCalendarAlt />
-                    <NavText>Events</NavText>
+                    <NavText>Events - Registered</NavText>
                 </NavItemButton>
 
                 <NavItemButton
-                    variant="text"
+                    variant={activeSection === PageSection.BLOGS ? 'navItemActive' : 'navItem'}
                     fullWidth={true}
-                    active={activeSection === PageSection.BLOGS}
                     onClick={() => onSectionChange(PageSection.BLOGS)}
                 >
                     <FaPen />
-                    <NavText>Blogs (not now)</NavText>
+                    <NavText>My Blogs</NavText>
                 </NavItemButton>
 
                 <NavItemButton
-                    variant="text"
+                    variant={activeSection === PageSection.ACCOUNT ? 'navItemActive' : 'navItem'}
                     fullWidth={true}
-                    active={activeSection === PageSection.ACCOUNT}
                     onClick={() => onSectionChange(PageSection.ACCOUNT)}
                 >
                     <FaUser />
@@ -174,7 +153,7 @@ export default function Sidebar({ activeSection, onSectionChange }: SidebarProps
                 </NavItemButton>
             </NavSection>
 
-            <SignOutButton variant="text" onClick={handleSignOut}>
+            <SignOutButton variant="signOut" onClick={onLogout}>
                 <FaSignOutAlt />
                 <NavText>Sign out</NavText>
             </SignOutButton>

@@ -135,7 +135,6 @@ export type HeaderProps = {
     langMenuOpen: boolean;
     toggleLangMenu: () => void;
     isAuthenticated: boolean;
-    onLogout: () => void;
 };
 
 export type PastEventDetailsProps = {
