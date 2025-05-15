@@ -61,34 +61,33 @@ export default function ConfirmModal({
     );
 
     const footer = (
-        <>
-            <Button
-                variant="text"
-                onClick={onClose}
-                style={{
-                    color: themeColors.colors.primary.main,
-                    boxShadow: 'none',
-                    fontWeight: 'normal',
-                }}
-            >
+        <div
+            style={{
+                display: 'flex',
+                justifyContent: 'right',
+                gap: '32px',
+                width: '100%',
+            }}
+        >
+            <Button variant="blueText" size="sm" onClick={onClose}>
                 {cancelLabel}
             </Button>
-            <Button
-                variant="text"
-                onClick={handleConfirm}
-                style={{
-                    color: themeColors.colors.status.success.button,
-                    boxShadow: 'none',
-                    fontWeight: 'normal',
-                }}
-            >
+            <Button variant="redText" size="sm" onClick={handleConfirm}>
                 {confirmLabel}
             </Button>
-        </>
+        </div>
     );
 
     return (
-        <Modal isOpen={isOpen} onClose={onClose} title={title} size={size} footer={footer} hideCloseButton={true}>
+        <Modal
+            isOpen={isOpen}
+            onClose={onClose}
+            title={title}
+            size={size}
+            footer={footer}
+            hideCloseButton={true}
+            closeOnOverlayClick={false}
+        >
             {styledMessage}
         </Modal>
     );

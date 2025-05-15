@@ -45,7 +45,13 @@ const ModalOverlay = styled.div<{ isOpen: boolean }>`
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: ${themeColors.black_60};
+    background-color: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(3px);
+    opacity: 1;
+    transition:
+        visibility 0.3s ease-out,
+        opacity 0.3s ease-out;
+    pointer-events: ${({ isOpen }) => (isOpen ? 'auto' : 'none')};
     display: flex;
     align-items: center;
     justify-content: center;
@@ -63,8 +69,9 @@ const ModalContainer = styled(Card)<{ size: keyof typeof modalSizes; ref: React.
     flex-direction: column;
     animation: ${slideIn} 0.3s ease-out;
     margin: auto;
-    background-color: ${themeColors.colors.gray.background};
+    background-color: ${themeColors.colors.black.background};
     border: 1px solid ${themeColors.cardBorder.color};
+    border-radius: 28px;
     color: ${themeColors.colors.neutral.white};
     box-shadow: ${themeColors.shadow_3};
 `;
@@ -92,7 +99,6 @@ const CloseButton = styled.button`
     align-items: center;
     justify-content: center;
     padding: ${themeColors.spacing.xs};
-    border-radius: 50%;
     transition: all 0.2s;
 
     &:hover {
@@ -102,7 +108,7 @@ const CloseButton = styled.button`
 `;
 
 const ModalBody = styled.div`
-    padding: ${themeColors.spacing.sm};
+    padding: ${themeColors.spacing.xs};
     overflow-y: auto;
     flex: 1;
 `;

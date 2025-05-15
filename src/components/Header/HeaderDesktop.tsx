@@ -1,9 +1,11 @@
 import styled from 'styled-components';
 import { Link, NavLink as RouterNavLink } from 'react-router-dom';
-import kodjLogo from '@/static/team/kodj_new.jpg';
+import kodjLogo from '@/static/icons/kodj_new.jpg';
 import themeColors from '@/tools/themeColors';
 import Button from '@/components/Button/Button';
 import { HeaderProps } from '@/types';
+import useAuth from '@/context/useAuth';
+import avatar from '@/static/icons/avatar.svg';
 
 type LanguageMenuProps = {
     isOpen: boolean;
@@ -140,6 +142,20 @@ const LanguageOption = styled.button<{ isActive: boolean }>`
     }
 `;
 
+const UserAvatar = styled.div`
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    overflow: hidden;
+    cursor: pointer;
+
+    img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+`;
+
 /**
  * Desktop Header component
  * @param handleLangChange - Callback function to handle language changes
@@ -153,8 +169,9 @@ export default function HeaderDesktop({
     langMenuOpen,
     toggleLangMenu,
     isAuthenticated,
-    onLogout,
 }: HeaderProps) {
+    const { user } = useAuth();
+
     return (
         <HeaderOuterContainer>
             <HeaderInnerContainer>
@@ -168,7 +185,6 @@ export default function HeaderDesktop({
                     <NavLink to="/about">About Us</NavLink>
                     <NavLink to="/news">News</NavLink>
                     <NavLink to="/events">Events</NavLink>
-                    {isAuthenticated ? <NavLink to="mypage">MyPage</NavLink> : ''}
                 </Navigation>
 
                 <AuthButtons>
@@ -184,9 +200,15 @@ export default function HeaderDesktop({
                         </LanguageMenu>
                     </LanguageToggle>
                     {isAuthenticated ? (
-                        <Button asLink to="/login" variant="light" size="mini" onClick={onLogout}>
-                            logout
-                        </Button>
+                        <Link to={'/mypage'}>
+                            <UserAvatar>
+                                {user?.data.imageUrl ? (
+                                    <img src={user?.data.imageUrl} alt="User Avatar" />
+                                ) : (
+                                    <img src={avatar} alt="User Avatar" />
+                                )}
+                            </UserAvatar>
+                        </Link>
                     ) : (
                         <Button asLink to="/login" variant="light" size="mini">
                             login
@@ -196,4 +218,10 @@ export default function HeaderDesktop({
             </HeaderInnerContainer>
         </HeaderOuterContainer>
     );
+}
+
+{
+    /* <Button asLink to="/login" variant="light" size="mini" onClick={onLogout}>
+        logout
+    </Button> */
 }

@@ -3,7 +3,16 @@ import styled, { css } from 'styled-components';
 import { Link, LinkProps } from 'react-router-dom';
 import themeColor from '@/tools/themeColors';
 
-type ButtonVariant = 'primary' | 'secondary' | 'text' | 'light';
+type ButtonVariant =
+    | 'primary'
+    | 'secondary'
+    | 'text'
+    | 'light'
+    | 'redText'
+    | 'blueText'
+    | 'navItem'
+    | 'navItemActive'
+    | 'signOut';
 
 type BaseButtonProps = {
     variant?: ButtonVariant;
@@ -86,7 +95,7 @@ const StyledButton = styled('button')<{
             default: // 'md'
                 return css`
                     height: 44px;
-                    padding: 0 24px;
+                    padding: 0 16px;
                     font-size: ${themeColor.typography.body.medium.fontSize || 14}px;
                 `;
         }
@@ -105,13 +114,13 @@ const StyledButton = styled('button')<{
                 `;
             case 'text':
                 return css`
-                    background-color: transparent;
+                    background-color: ${themeColor.colors.ui.transparent};
                     color: ${themeColor.colors.neutral.white || 'white'};
                     &:hover:not(:disabled) {
-                        background-color: rgba(255, 255, 255, 0.1);
+                        background-color: ${themeColor.colors.ui.overlay.whiteHover};
                     }
                 `;
-            case 'light': // for login or light-themed buttons
+            case 'light': // for login
                 return css`
                     background-color: ${themeColor.colors.neutral.white};
                     color: ${themeColor.colors.neutral.black};
@@ -120,7 +129,95 @@ const StyledButton = styled('button')<{
                         background-color: ${themeColor.colors.gray.main};
                     }
                 `;
-            default: // 'primary'
+            case 'redText':
+                return css`
+                    background-color: ${themeColor.colors.ui.transparent};
+                    color: ${themeColor.colors.status.error.action};
+                    &:hover:not(:disabled) {
+                        background-color: ${themeColor.colors.ui.overlay.redHover};
+                    }
+                `;
+            case 'blueText':
+                return css`
+                    background-color: ${themeColor.colors.ui.transparent};
+                    color: ${themeColor.colors.status.info.action};
+                    &:hover:not(:disabled) {
+                        background-color: ${themeColor.colors.ui.overlay.blueHover};
+                    }
+                `;
+            case 'navItem':
+                return css`
+                    background-color: ${themeColor.colors.ui.transparent};
+                    color: ${themeColor.colors.neutral.white};
+                    text-transform: none;
+                    justify-content: flex-start;
+                    border: none;
+                    border-radius: 8px;
+
+                    &:hover:not(:disabled) {
+                        background-color: ${themeColor.colors.ui.navItem.hoverBg};
+                    }
+
+                    svg {
+                        color: ${themeColor.colors.gray.text};
+                        margin-right: ${themeColor.spacing.md};
+                    }
+                `;
+            case 'navItemActive':
+                return css`
+                    background-color: ${themeColor.colors.ui.navItem.activeBg};
+                    color: ${themeColor.colors.ui.navItem.activeText};
+                    text-transform: none;
+                    justify-content: flex-start;
+                    border: none;
+                    border-radius: 8px;
+
+                    &:hover:not(:disabled) {
+                        background-color: ${themeColor.colors.ui.navItem.activeBg};
+                        color: ${themeColor.colors.ui.navItem.activeText};
+                    }
+
+                    svg {
+                        color: ${themeColor.colors.ui.navItem.activeText};
+                        margin-right: ${themeColor.spacing.md};
+                    }
+                `;
+            case 'signOut':
+                return css`
+                    background-color: ${themeColor.colors.ui.signOut.bg};
+                    color: ${themeColor.colors.neutral.white};
+                    text-transform: none;
+                    justify-content: flex-start;
+                    border: none;
+                    border-radius: 8px;
+
+                    &:hover:not(:disabled) {
+                        background-color: ${themeColor.colors.ui.signOut.hoverBg};
+                    }
+
+                    svg {
+                        color: ${themeColor.colors.status.error.text};
+                        margin-right: ${themeColor.spacing.md};
+                    }
+                `;
+                return css`
+                    background-color: #161616;
+                    color: ${themeColor.colors.neutral.white};
+                    text-transform: none;
+                    justify-content: flex-start;
+                    border: none;
+                    border-radius: 8px;
+
+                    &:hover:not(:disabled) {
+                        background-color: #272727;
+                    }
+
+                    svg {
+                        color: ${themeColor.colors.status.error.text};
+                        margin-right: ${themeColor.spacing.md};
+                    }
+                `;
+            default:
                 return css`
                     background-color: ${themeColor.colors.primary.main};
                     color: ${themeColor.colors.neutral.white};

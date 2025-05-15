@@ -4,7 +4,9 @@ import { Link, NavLink as RouterNavLink } from 'react-router-dom';
 import themeColors from '@/tools/themeColors';
 import Button from '@/components/Button/Button';
 import { HeaderProps } from '@/types';
-import kodjLogo from '@/static/team/kodj_new.jpg';
+import kodjLogo from '@/static/icons/kodj_new.jpg';
+import useAuth from '@/context/useAuth';
+import avatar from '@/static/icons/avatar.svg';
 
 type MobileMenuProps = {
     isOpen: boolean;
@@ -138,12 +140,28 @@ const LanguageButton = styled.button<{ isActive: boolean }>`
     }
 `;
 
+const UserAvatar = styled.div`
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    overflow: hidden;
+    cursor: pointer;
+
+    img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+`;
+
 /**
  * Mobile Header component
  * @param handleLangChange - Callback function to handle language changes
  * @param currentLang - Current active language code
  */
-export default function HeaderMobile({ handleLangChange, currentLang, isAuthenticated, onLogout }: HeaderProps) {
+export default function HeaderMobile({ handleLangChange, currentLang, isAuthenticated }: HeaderProps) {
+    const { user } = useAuth();
+
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     const toggleMenu = () => {
@@ -188,16 +206,15 @@ export default function HeaderMobile({ handleLangChange, currentLang, isAuthenti
 
                     <MobileAuthButtons>
                         {isAuthenticated ? (
-                            <Button
-                                asLink
-                                to="/login"
-                                variant="light"
-                                size="md"
-                                onClick={onLogout}
-                                style={{ width: '100%' }}
-                            >
-                                Logout
-                            </Button>
+                            <Link to={'/mypage'}>
+                                <UserAvatar>
+                                    {user?.data.imageUrl ? (
+                                        <img src={user?.data.imageUrl} alt="User Avatar" />
+                                    ) : (
+                                        <img src={avatar} alt="User Avatar" />
+                                    )}
+                                </UserAvatar>
+                            </Link>
                         ) : (
                             <Button
                                 asLink
