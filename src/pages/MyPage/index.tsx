@@ -5,7 +5,9 @@ import AccountDetails from '@/pages/MyPage/AccountDetails';
 import MyEvents from '@/pages/MyPage/MyEvents';
 import BlogEditor from '@/pages/MyPage/BlogEditor';
 import Sidebar from '@/pages/MyPage/SideBar';
-import Calendar from './Calendar';
+import ConfirmModal from '@/components/Modal/ModalTypes/ConfirmModal';
+import useAuth from '@/context/useAuth';
+import useModal from '@/hooks/useModal';
 
 const PageContainer = styled.div`
     max-width: 1200px;
@@ -61,10 +63,6 @@ const SectionTitle = styled.h2`
     padding-bottom: ${themeColors.spacing.sm};
 `;
 
-const CalendarContainer = styled.div`
-    margin-top: ${themeColors.spacing.fourXl};
-`;
-
 enum PageSection {
     EVENTS = 'events',
     BLOGS = 'blogs',
@@ -78,6 +76,8 @@ enum PageSection {
  */
 export default function MyPage() {
     const [activeSection, setActiveSection] = useState<PageSection>(PageSection.EVENTS);
+    const { isAuthenticated, logout } = useAuth();
+    const { isOpen, openModal, closeModal } = useModal();
 
     const getSectionTitle = () => {
         switch (activeSection) {
@@ -106,23 +106,53 @@ export default function MyPage() {
         }
     };
 
-    return (
-        <PageContainer>
-            <ContentLayout>
-                <LeftColumn>
-                    <Sidebar activeSection={activeSection} onSectionChange={setActiveSection} />
-                    <CalendarContainer>
-                        <Calendar />
-                    </CalendarContainer>
-                </LeftColumn>
+    const handleLogoutClick = () => {
+        if (isAuthenticated) {
+            openModal();
+        }
+    };
 
-                <RightColumn>
-                    <SectionContainer>
-                        <SectionTitle>{getSectionTitle()}</SectionTitle>
-                        {renderContent()}
-                    </SectionContainer>
-                </RightColumn>
-            </ContentLayout>
-        </PageContainer>
+    const handleConfirmedLogout = () => {
+        closeModal();
+
+        setTimeout(async () => {
+            await logout();
+        });
+    };
+
+    const autProps = {
+        onLogout: handleLogoutClick,
+    };
+
+    return (
+        <>
+            {' '}
+            <PageContainer>
+                <ContentLayout>
+                    <LeftColumn>
+                        <Sidebar activeSection={activeSection} onSectionChange={setActiveSection} {...autProps} />
+                    </LeftColumn>
+
+                    <RightColumn>
+                        <SectionContainer>
+                            <SectionTitle>{getSectionTitle()}</SectionTitle>
+                            {renderContent()}
+                        </SectionContainer>
+                    </RightColumn>
+                </ContentLayout>
+            </PageContainer>
+            {
+                <ConfirmModal
+                    isOpen={isOpen}
+                    onClose={closeModal}
+                    title={'Confirm Logout'}
+                    message={'Are you sure you want to log out?'}
+                    onConfirm={handleConfirmedLogout}
+                    confirmLabel={'Yes, log out'}
+                    cancelLabel={'Cancel'}
+                    size="sm"
+                />
+            }
+        </>
     );
 }

@@ -4,6 +4,7 @@ import themeColors from '@/tools/themeColors';
 import Button from '@/components/Button/Button';
 import EventCard from '@/components/Card/EventCard';
 import { EventCardProps } from '@/types';
+import kodjWhiteLogo from '@/static/icons/logo.png';
 
 enum TabOption {
     PAST = 'past',
@@ -83,6 +84,9 @@ export default function MyEvents() {
 
     const renderEmptyState = () => (
         <EmptyState>
+            <div style={{ marginBottom: themeColors.spacing.lg }}>
+                <img src={kodjWhiteLogo} alt="KO'DJ Logo" style={{ width: '100px', borderRadius: '10%' }} />
+            </div>
             <EmptyStateTitle>No events found</EmptyStateTitle>
             <EmptyStateText>
                 {activeTab === TabOption.PAST

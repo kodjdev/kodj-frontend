@@ -4,6 +4,7 @@ import { createPortal } from 'react-dom';
 import themeColors from '@/tools/themeColors';
 import Card from '@/components/Card/Card';
 import { X } from 'lucide-react';
+import { modalSizes } from './modalConstants';
 
 export type ModalProps = {
     isOpen: boolean;
@@ -19,8 +20,6 @@ export type ModalProps = {
     className?: string;
 };
 
-export type Sizes = 'sm' | 'md' | 'lg' | 'xl' | 'full';
-
 const fadeIn = keyframes`
   from { opacity: 0; }
   to { opacity: 1; }
@@ -30,14 +29,6 @@ const slideIn = keyframes`
   from { transform: translateY(-20px); opacity: 0; }
   to { transform: translateY(0); opacity: 1; }
 `;
-
-export const modalSizes = {
-    sm: '400px',
-    md: themeColors.modal_width || '500px',
-    lg: themeColors.modal_width_large || '700px',
-    xl: '900px',
-    full: '90%',
-};
 
 const ModalOverlay = styled.div<{ isOpen: boolean }>`
     position: fixed;

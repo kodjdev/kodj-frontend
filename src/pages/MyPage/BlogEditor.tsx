@@ -14,6 +14,7 @@ import {
     FaLink,
     FaSave,
 } from 'react-icons/fa';
+import kodjWhiteLogo from '@/static/icons/logo.png';
 
 type BlogPost = {
     id?: string;
@@ -149,7 +150,7 @@ const RemoveCoverButton = styled.button`
     position: absolute;
     top: 10px;
     right: 10px;
-    background-color: ${themeColors.colors.utility.black_60};
+    background-color: ${themeColors.colors.ui.signOut};
     color: ${themeColors.colors.neutral.white};
     border: none;
     border-radius: 50%;
@@ -261,6 +262,9 @@ export default function BlogEditor() {
     if (!hasPosts) {
         return (
             <EmptyState>
+                <div style={{ marginBottom: themeColors.spacing.lg }}>
+                    <img src={kodjWhiteLogo} alt="KO'DJ Logo" style={{ width: '100px', borderRadius: '10%' }} />
+                </div>
                 <EmptyStateTitle>There are no blog posts written.</EmptyStateTitle>
                 <EmptyStateText>Start sharing your thoughts with the KO'DJ community.</EmptyStateText>
                 <Button variant="light" size="mini" onClick={handleNewPost}>
