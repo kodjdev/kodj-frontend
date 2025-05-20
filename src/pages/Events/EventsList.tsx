@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-import { Spin } from 'antd';
 import { Event } from '@/types';
 import { useRecoilValue } from 'recoil';
 import { pastEventsAtom, upcomingEventsAtom } from '@/atoms/events';
@@ -10,6 +9,7 @@ import EventCard from '@/components/Card/EventCard';
 import Button from '@/components/Button/Button';
 import useApiService from '@/services';
 import useFormatDate from '@/hooks/useFormatDate';
+import { Spin } from 'antd';
 
 enum EventFilter {
     ALL = 'all',
@@ -73,7 +73,7 @@ const LoadingContainer = styled.div`
     align-items: center;
     justify-content: center;
     min-height: 50vh;
-    background-color: ${themeColors.blue_dark};
+    background-color: ${themeColors.colors.neutral.black};
     color: ${themeColors.colors.primary.main};
 `;
 

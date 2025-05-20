@@ -45,7 +45,7 @@ const SubHeading = styled.p`
 const Form = styled.form`
     display: flex;
     flex-direction: column;
-    gap: 12px; // Reduced spacing between elements
+    gap: 12px;
 `;
 
 const InputGroup = styled.div`

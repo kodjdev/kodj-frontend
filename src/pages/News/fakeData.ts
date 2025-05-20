@@ -19,6 +19,7 @@ export type NewsItem = {
     user_id?: number;
     category_id?: number;
     tags?: string[];
+    read_time?: number;
 };
 
 export const sampleNews: NewsItem[] = [
@@ -33,6 +34,7 @@ export const sampleNews: NewsItem[] = [
         user_id: 1,
         contact_email: 'info@kodj.dev',
         tags: ['programming', 'development', 'ai'],
+        read_time: 5,
     },
     {
         id: '2',
@@ -45,6 +47,7 @@ export const sampleNews: NewsItem[] = [
         user_id: 2,
         contact_email: 'workshops@kodj.dev',
         tags: ['workshop', 'AI', 'Tashkent'],
+        read_time: 3,
     },
     {
         id: '3',
@@ -57,5 +60,6 @@ export const sampleNews: NewsItem[] = [
         user_id: 3,
         contact_email: 'events@kodj.dev',
         tags: ['networking', 'developers', 'social'],
+        read_time: 4,
     },
 ];

@@ -191,7 +191,7 @@ export default function Signup({ toggleAuthMode, returnUrl, eventDetails }: Sign
             };
 
             const response = await register(userData);
-            if (response && response.status === 200) {
+            if (response && response.statusCode === 200) {
                 messageApi.success('Account created! Please check your email for verification');
             }
 

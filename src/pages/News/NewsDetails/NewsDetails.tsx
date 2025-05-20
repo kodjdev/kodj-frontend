@@ -1,14 +1,15 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import styled from 'styled-components';
-import { Calendar, User, ArrowLeft, Tag } from 'lucide-react';
+import { Calendar, ArrowLeft, Timer, LinkIcon, Twitter, LinkedinIcon, CheckCircle } from 'lucide-react';
 import themeColors from '@/tools/themeColors';
 import Button from '@/components/Button/Button';
+import Card from '@/components/Card/Card';
 import { NewsItem, sampleNews } from '@/pages/News/fakeData';
-import useApiService from '@/services';
 import { useRecoilState } from 'recoil';
 import errorAtom from '@/atoms/errors';
 import useFormatDate from '@/hooks/useFormatDate';
+import NewsComments from './NewsComment';
 
 const Container = styled.div`
     max-width: ${themeColors.breakpoints.desktop};
@@ -35,10 +36,15 @@ const BackLink = styled(Link)`
 `;
 
 const Article = styled.article`
-    background-color: #161616;
-    border-radius: 8px;
-    padding: ${themeColors.spacing.xl};
+    background-color: #1e1e1e;
+    border-radius: 16px;
+    padding: ${themeColors.spacing.lg};
     border: 1px solid ${themeColors.cardBorder.color};
+    margin-bottom: ${themeColors.spacing.xl};
+
+    @media (max-width: ${themeColors.breakpoints.mobile}) {
+        padding: ${themeColors.spacing.md};
+        margin-bottom: ${themeColors.spacing.lg};
 `;
 
 const ArticleHeader = styled.div`
@@ -50,6 +56,7 @@ const ArticleTitle = styled.h1`
     font-size: ${themeColors.typography.headings.desktop.h2.fontSize}px;
     font-weight: ${themeColors.typography.headings.desktop.h2.fontWeight};
     margin-bottom: ${themeColors.spacing.md};
+    margin-top: 0;
 `;
 
 const ArticleMeta = styled.div`
@@ -67,28 +74,43 @@ const MetaItem = styled.div`
     gap: ${themeColors.spacing.xs};
 `;
 
-const CategoryBadge = styled.span`
+const ReadTimeShow = styled.span`
     display: inline-flex;
     align-items: center;
     gap: ${themeColors.spacing.xs};
     background-color: rgba(5, 124, 204, 0.1);
     color: ${themeColors.colors.primary.main};
     padding: ${themeColors.spacing.xs} ${themeColors.spacing.sm};
-    border-radius: 4px;
+    border-radius: ${themeColors.radiusSizes.xl};
     font-size: ${themeColors.typography.body.small.fontSize}px;
 `;
 
 const ArticleImage = styled.div`
     width: 100%;
-    max-height: 400px;
-    border-radius: 8px;
+    height: 450px;
+    border-radius: 12px;
     overflow: hidden;
     margin-bottom: ${themeColors.spacing.xl};
+    background-color: #111;
 
     img {
         width: 100%;
         height: 100%;
         object-fit: cover;
+    }
+
+    @media (max-width: ${themeColors.breakpoints.mobile}) {
+        height: 200px;
+        margin-bottom: ${themeColors.spacing.lg};
+        border-radius: 8px;
+        overflow: hidden;
+
+        img {
+            height: 100%;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 0;
+        }
     }
 `;
 
@@ -107,18 +129,117 @@ const ShareSection = styled.div`
     padding-top: ${themeColors.spacing.lg};
     border-top: 1px solid ${themeColors.cardBorder.color};
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     align-items: center;
-`;
+    flex-wrap: wrap;
 
-const ShareText = styled.span`
-    color: ${themeColors.colors.gray.main};
-    font-size: ${themeColors.typography.body.small.fontSize}px;
+    @media (max-width: ${themeColors.breakpoints.mobile}) {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: ${themeColors.spacing.md};
+    }
 `;
 
 const ShareButtons = styled.div`
     display: flex;
-    gap: ${themeColors.spacing.sm};
+    gap: ${themeColors.spacing.md};
+    justify-content: flex-start;
+    align-items: center;
+    flex-wrap: wrap;
+
+    @media (max-width: ${themeColors.breakpoints.mobile}) {
+        width: 100%;
+        justify-content: flex-start;
+    }
+`;
+
+const ShareButton = styled(Button)`
+    display: flex;
+    align-items: center;
+    gap: ${themeColors.spacing.xs};
+    padding: 6px 12px;
+    border-radius: 4px;
+    background-color: transparent !important;
+    border: none;
+    transition: color 0.2s ease;
+    border: 1px solid ${themeColors.cardBorder.color};
+    border-radius: ${themeColors.radiusSizes.xl};
+
+    &:hover {
+        background-color: transparent !important;
+        color: ${themeColors.colors.primary.main} !important;
+    }
+
+    svg {
+        stroke-width: 1.5px;
+    }
+`;
+
+const CopyNotification = styled.div`
+    position: fixed;
+    top: 4rem;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(30, 30, 30, 0.9);
+    color: white;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    animation:
+        fadeIn 0.3s,
+        fadeOut 0.3s 1.7s;
+    border: 1px solid rgba(75, 181, 67, 0.5);
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translate(-50%, -10px);
+        }
+        to {
+            opacity: 1;
+            transform: translate(-50%, 0);
+        }
+    }
+
+    @keyframes fadeOut {
+        from {
+            opacity: 1;
+            transform: translate(-50%, 0);
+        }
+        to {
+            opacity: 0;
+            transform: translate(-50%, -10px);
+        }
+    }
+`;
+const ReadNextSection = styled.div`
+    margin-top: ${themeColors.spacing.xl};
+`;
+
+const ReadNextHeader = styled.h3`
+    color: ${themeColors.colors.neutral.white};
+    font-size: ${themeColors.typography.headings.desktop.h3.fontSize}px;
+    margin-bottom: ${themeColors.spacing.lg};
+`;
+
+const RelatedNewsCard = styled(Card)`
+    border-radius: 12px;
+    background-color: #1e1e1e;
+    cursor: pointer;
+
+    &:hover {
+        transform: translateY(-2px);
+        transition: all 0.2s ease;
+    }
+`;
+
+const NewsCardLink = styled(Link)`
+    text-decoration: none;
+    color: inherit;
 `;
 
 /**
@@ -131,11 +252,10 @@ export default function NewsDetail() {
     const { id } = useParams<{ id: string }>();
     const [newsItem, setNewsItem] = useState<NewsItem | null>(null);
     const [loading, setLoading] = useState(true);
-
+    const [showCopyNotification, setShowCopyNotification] = useState(false);
     const [newsError, setNewsError] = useRecoilState(errorAtom);
 
     const { formatDate } = useFormatDate();
-    const newsService = useApiService();
 
     useEffect(() => {
         const fetchNewsItem = async () => {
@@ -145,17 +265,9 @@ export default function NewsDetail() {
                     throw new Error('News ID is required');
                 }
 
-                const response = await newsService.getNewsById(id);
+                console.log('API not implemented yet, using fallback data');
 
-                if (response.statusCode === 200 && response.data) {
-                    setNewsItem(response.data);
-                } else {
-                    throw new Error('Failed to fetch news item');
-                }
-            } catch (error) {
-                console.error('API not implemented yet, using fallback data:', error);
-
-                const fallbackItem = sampleNews.find((news) => news.id === id);
+                const fallbackItem = sampleNews.find((news) => news.id.toString() === id);
 
                 if (fallbackItem) {
                     setNewsItem(fallbackItem);
@@ -166,6 +278,14 @@ export default function NewsDetail() {
                         record: id || null,
                     });
                 }
+            } catch (error) {
+                console.error('Error handling news detail:', error);
+
+                setNewsError({
+                    title: 'Error Loading Article',
+                    message: 'There was a problem loading this article. Please try again.',
+                    record: id || null,
+                });
             } finally {
                 setLoading(false);
             }
@@ -178,7 +298,7 @@ export default function NewsDetail() {
                 setNewsError(null);
             }
         };
-    }, []);
+    }, [id]);
 
     if (loading) {
         return (
@@ -212,6 +332,31 @@ export default function NewsDetail() {
         }
     };
 
+    const handleCopyLink = () => {
+        navigator.clipboard.writeText(window.location.href);
+        setShowCopyNotification(true);
+        setTimeout(() => setShowCopyNotification(false), 2000);
+    };
+
+    const shareOnTwitter = () => {
+        const text = `Check out this article: ${newsItem.title}`;
+        const url = window.location.href;
+        window.open(
+            `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`,
+            '_blank',
+        );
+    };
+
+    const shareOnLinkedIn = () => {
+        const url = window.location.href;
+        window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`, '_blank');
+    };
+
+    const relatedNews = sampleNews
+        .filter((news) => news.id.toString() !== id)
+        .filter((news) => news.news_type === newsItem.news_type)
+        .slice(0, 1);
+
     return (
         <Container>
             <BackLink to="/news">
@@ -223,17 +368,23 @@ export default function NewsDetail() {
                     <ArticleTitle>{newsItem.title}</ArticleTitle>
                     <ArticleMeta>
                         <MetaItem>
-                            <Calendar size={14} />
+                            <Calendar
+                                size={14}
+                                style={{
+                                    paddingRight: '4px',
+                                }}
+                            />
                             {formatDate(newsItem.created_at)}
                         </MetaItem>
-                        <MetaItem>
-                            <User size={14} />
-                            {newsItem?.contact_email?.split('@')[0] || "KO'DJ Team"}
-                        </MetaItem>
-                        <CategoryBadge>
-                            <Tag size={14} />
-                            {getCategoryLabel(newsItem.news_type)}
-                        </CategoryBadge>
+                        <ReadTimeShow>
+                            <Timer
+                                size={14}
+                                style={{
+                                    paddingRight: '4px',
+                                }}
+                            />
+                            {getCategoryLabel(newsItem.read_time + 'min read')}
+                        </ReadTimeShow>
                     </ArticleMeta>
                 </ArticleHeader>
 
@@ -245,48 +396,55 @@ export default function NewsDetail() {
 
                 <ArticleContent>
                     <p>{newsItem.content}</p>
+                    {newsItem.content.length > 100 ? newsItem.content : <p>No content available for this article.</p>}
+                    <p>
+                        Bizga qo'shilib, eng so'nggi yangiliklarni o'rganing, expertlardan bilimlar o'rganing va
+                        uchrashuvlar va forumlarimizga qatnashing va tarmoq'ingizni kengaytiring. Bugundan boshlab
+                        to'liqligcha jamiyatimizga qo'ldan kelgancha yordam berishga kirishdik. Raxmat hammaga.
+                    </p>
                 </ArticleContent>
 
                 <ShareSection>
-                    <ShareText>Share this article:</ShareText>
                     <ShareButtons>
-                        {newsItem?.twitter_profile && (
-                            <a href={newsItem.twitter_profile} target="_blank" rel="noopener noreferrer">
-                                <Button variant="text" size="sm">
-                                    Twitter
-                                </Button>
-                            </a>
-                        )}
-                        {newsItem?.facebook_profile && (
-                            <a href={newsItem.facebook_profile} target="_blank" rel="noopener noreferrer">
-                                <Button variant="text" size="sm">
-                                    Facebook
-                                </Button>
-                            </a>
-                        )}
-                        {newsItem?.linkedin_profile && (
-                            <a href={newsItem.linkedin_profile} target="_blank" rel="noopener noreferrer">
-                                <Button variant="text" size="sm">
-                                    LinkedIn
-                                </Button>
-                            </a>
-                        )}
-                        {!newsItem?.twitter_profile && !newsItem?.facebook_profile && !newsItem?.linkedin_profile && (
-                            <>
-                                <Button variant="text" size="sm">
-                                    Twitter
-                                </Button>
-                                <Button variant="text" size="sm">
-                                    Facebook
-                                </Button>
-                                <Button variant="text" size="sm">
-                                    LinkedIn
-                                </Button>
-                            </>
-                        )}
+                        <ShareButton variant="text" size="sm" onClick={handleCopyLink}>
+                            <LinkIcon size={19} />
+                        </ShareButton>
+                        <ShareButton variant="text" size="sm" onClick={shareOnTwitter}>
+                            <Twitter size={19} />
+                        </ShareButton>
+                        <ShareButton variant="text" size="sm" onClick={shareOnLinkedIn}>
+                            <LinkedinIcon size={19} />
+                        </ShareButton>
                     </ShareButtons>
                 </ShareSection>
             </Article>
+
+            <NewsComments articleId={id || ''} />
+
+            {showCopyNotification && (
+                <CopyNotification>
+                    <CheckCircle size={16} color="#4BB543" />
+                    Link copied to clipboard
+                </CopyNotification>
+            )}
+
+            {relatedNews.length > 0 && (
+                <ReadNextSection>
+                    <ReadNextHeader>Read next</ReadNextHeader>
+                    {relatedNews.map((article) => (
+                        <NewsCardLink key={article.id} to={`/news/${article.id}`}>
+                            <RelatedNewsCard padding="1rem">
+                                <h3 style={{ color: themeColors.colors.neutral.white, marginBottom: '0.5rem' }}>
+                                    {article.title}
+                                </h3>
+                                <p style={{ color: themeColors.colors.gray.text }}>
+                                    {article.content.substring(0, 100)}...
+                                </p>
+                            </RelatedNewsCard>
+                        </NewsCardLink>
+                    ))}
+                </ReadNextSection>
+            )}
         </Container>
     );
 }
