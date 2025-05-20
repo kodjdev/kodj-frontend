@@ -1,9 +1,12 @@
 import styled from 'styled-components';
 import { Link, NavLink as RouterNavLink } from 'react-router-dom';
-import kodjLogo from '@/static/team/kodj_new.jpg';
+import kodjLogo from '@/static/icons/kodj_new.jpg';
 import themeColors from '@/tools/themeColors';
 import Button from '@/components/Button/Button';
 import { HeaderProps } from '@/types';
+import useAuth from '@/context/useAuth';
+import { Globe, User2 } from 'lucide-react';
+import Card from '@/components/Card/Card';
 
 type LanguageMenuProps = {
     isOpen: boolean;
@@ -87,7 +90,7 @@ const NavLink = styled(RouterNavLink)`
 const AuthButtons = styled.div`
     display: flex;
     align-items: center;
-    gap: ${themeColors.spacing.md || '1rem'};
+    gap: ${themeColors.spacing.xs || '1rem'};
 `;
 
 const LanguageToggle = styled.div`
@@ -95,48 +98,67 @@ const LanguageToggle = styled.div`
     margin-right: 8px;
 `;
 
-const LanguageButton = styled.button`
-    background: transparent;
-    border: none;
-    color: ${themeColors.colors.neutral.white};
-    font-size: ${themeColors.typography.body.medium.fontSize}px;
-    cursor: pointer;
-    padding: 4px 6px;
+const LanguageButton = styled(Button)`
+    padding: 6px 12px;
+    min-width: 80px;
     display: flex;
     align-items: center;
-    border-radius: 4px;
+    justify-content: flex-start;
+    gap: 8px;
+    text-transform: none;
+    font-weight: normal;
+    border-radius: 50px;
+`;
 
-    &:hover {
-        background-color: ${themeColors.colors.gray.hover};
+const LanguageMenu = styled(Card)<LanguageMenuProps>`
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    display: ${({ isOpen }) => (isOpen ? 'block' : 'none')};
+    z-index: 1000;
+    min-width: 90px;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    border-radius: 15px;
+    overflow: hidden;
+    background-color: transparent;
+    border: 1px solid ${themeColors.colors.primary.main};
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+
+    && {
+        background-color: transparent;
     }
 `;
 
-const LanguageMenu = styled.div<LanguageMenuProps>`
-    position: absolute;
-    top: 100%;
-    right: 0;
-    background-color: ${themeColors.colors.neutral.black};
-    border: 0.5px solid ${themeColors.colors.gray.line};
-    border-radius: 4px;
-    padding: 8px 0;
-    display: ${({ isOpen }) => (isOpen ? 'block' : 'none')};
-    z-index: 1000;
-    min-width: 120px;
-    margin-top: 8px;
-`;
-
-const LanguageOption = styled.button<{ isActive: boolean }>`
+const LanguageOption = styled(Button)<{ isActive: boolean }>`
     width: 100%;
-    text-align: left;
-    background: transparent;
+    text-align: center;
+    justify-content: center;
+    padding: 12px;
+    background-color: transparent !important;
+    color: ${({ isActive }) => (isActive ? themeColors.colors.status.info : themeColors.colors.neutral.white)};
+    font-weight: ${({ isActive }) => (isActive ? 'bold' : 'normal')};
+    border-radius: 0;
+    font-size: ${themeColors.typography.body.xsmall.fontSize}px;
     border: none;
-    color: ${({ isActive }) => (isActive ? themeColors.colors.primary.main : themeColors.colors.neutral.white)};
-    font-size: ${themeColors.typography.body.medium.fontSize}px;
-    cursor: pointer;
-    padding: 8px 16px;
 
     &:hover {
-        background-color: rgba(255, 255, 255, 0.1);
+        background-color: ${themeColors.colors.primary.main} !important;
+    }
+`;
+
+const UserAvatar = styled.div`
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    overflow: hidden;
+    cursor: pointer;
+
+    img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
     }
 `;
 
@@ -153,8 +175,9 @@ export default function HeaderDesktop({
     langMenuOpen,
     toggleLangMenu,
     isAuthenticated,
-    onLogout,
 }: HeaderProps) {
+    const { user } = useAuth();
+
     return (
         <HeaderOuterContainer>
             <HeaderInnerContainer>
@@ -168,25 +191,52 @@ export default function HeaderDesktop({
                     <NavLink to="/about">About Us</NavLink>
                     <NavLink to="/news">News</NavLink>
                     <NavLink to="/events">Events</NavLink>
-                    {isAuthenticated ? <NavLink to="mypage">MyPage</NavLink> : ''}
                 </Navigation>
 
                 <AuthButtons>
                     <LanguageToggle>
-                        <LanguageButton onClick={toggleLangMenu}>{currentLang.toUpperCase()}</LanguageButton>
-                        <LanguageMenu isOpen={langMenuOpen}>
-                            <LanguageOption isActive={currentLang === 'en'} onClick={() => handleLangChange('en')}>
-                                en
-                            </LanguageOption>
-                            <LanguageOption isActive={currentLang === 'uz'} onClick={() => handleLangChange('uz')}>
-                                uz
-                            </LanguageOption>
-                        </LanguageMenu>
+                        <LanguageButton variant="text" size="mini" onClick={toggleLangMenu}>
+                            <Globe size={16} />
+                            {currentLang === 'en' ? 'English' : 'Uzbek'}
+                        </LanguageButton>
+
+                        {langMenuOpen && (
+                            <LanguageMenu isOpen={langMenuOpen} padding="0">
+                                <LanguageOption
+                                    variant="text"
+                                    size="mini"
+                                    onClick={() => handleLangChange('en')}
+                                    isActive={currentLang === 'en'}
+                                >
+                                    English
+                                </LanguageOption>
+                                <LanguageOption
+                                    variant="text"
+                                    size="mini"
+                                    onClick={() => handleLangChange('uz')}
+                                    isActive={currentLang === 'uz'}
+                                >
+                                    Uzbek
+                                </LanguageOption>
+                            </LanguageMenu>
+                        )}
                     </LanguageToggle>
                     {isAuthenticated ? (
-                        <Button asLink to="/login" variant="light" size="mini" onClick={onLogout}>
-                            logout
-                        </Button>
+                        <Link to={'/mypage'}>
+                            <UserAvatar>
+                                {user?.data.imageUrl ? (
+                                    <img src={user?.data.imageUrl} alt="User Avatar" />
+                                ) : (
+                                    <User2
+                                        size={20}
+                                        color={themeColors.colors.neutral.white}
+                                        style={{
+                                            padding: '4px',
+                                        }}
+                                    />
+                                )}
+                            </UserAvatar>
+                        </Link>
                     ) : (
                         <Button asLink to="/login" variant="light" size="mini">
                             login

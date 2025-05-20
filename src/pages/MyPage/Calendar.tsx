@@ -1,198 +1,391 @@
+import { useState } from 'react';
 import styled from 'styled-components';
-import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import themeColors from '@/tools/themeColors';
+import { FaChevronLeft, FaChevronRight, FaCalendarAlt } from 'react-icons/fa';
 
-type CalendarProps = {
-    currentMonth: Date;
-    onChangeMonth: (date: Date) => void;
+type CalendarEvent = {
+    id: string;
+    title: string;
+    date: Date;
+    type: 'upcoming' | 'past';
 };
 
 const CalendarContainer = styled.div`
-    background-color: transparent;
-    padding: 0 ${themeColors.spacing.sm};
+    background-color: ${themeColors.colors.gray.background};
+    border-radius: ${themeColors.cardBorder.md};
+    border: 1px solid ${themeColors.cardBorder.color};
+    overflow: hidden;
 `;
 
 const CalendarHeader = styled.div`
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: ${themeColors.spacing.sm};
+    padding: ${themeColors.spacing.md};
+    background-color: ${themeColors.colors.gray.dark};
+    color: ${themeColors.colors.neutral.white};
+`;
+
+const MonthNavigation = styled.div`
+    display: flex;
+    align-items: center;
+    gap: ${themeColors.spacing.md};
 `;
 
 const MonthTitle = styled.h3`
-    color: ${themeColors.colors.neutral.white};
-    font-size: ${themeColors.typography.body.small.fontSize}px;
-    font-weight: bold;
     margin: 0;
-`;
-
-const CalendarNavigation = styled.div`
-    display: flex;
-    gap: ${themeColors.spacing.xl};
+    font-size: ${themeColors.typography.body.large.fontSize}px;
+    font-weight: 600;
 `;
 
 const NavButton = styled.button`
     background: none;
     border: none;
-    color: ${themeColors.colors.gray.main};
+    color: ${themeColors.colors.neutral.white};
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: ${themeColors.spacing.xs};
-    transition: color 0.2s ease;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    transition: background-color 0.2s;
 
     &:hover {
-        color: ${themeColors.colors.primary.main};
+        background-color: ${themeColors.colors.gray.hover};
     }
 `;
 
-const DaysGrid = styled.div`
+const CalendarGrid = styled.div`
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: 6px;
-    max-height: 280px;
-    padding-top: 10px;
-    margin-left: -${themeColors.spacing.md};
-    margin-right: -${themeColors.spacing.md};
-    width: calc(100% + ${themeColors.spacing.md} * 2);
 `;
 
-const DayOfWeek = styled.div`
-    color: ${themeColors.colors.gray.label};
-    font-size: ${themeColors.typography.body.xsmall.fontSize}px;
+const WeekdayHeader = styled.div`
     text-align: center;
-    margin-bottom: 2px;
-    font-weight: 500;
+    padding: ${themeColors.spacing.sm};
+    font-size: ${themeColors.typography.body.small.fontSize}px;
+    color: ${themeColors.colors.gray.text};
+    font-weight: 600;
 `;
 
-const Day = styled.div<{ isCurrentMonth: boolean; isSelected: boolean; isToday: boolean }>`
-    width: 100%;
+interface DayProps {
+    isCurrentMonth: boolean;
+    isToday: boolean;
+    hasEvent: boolean;
+    eventType?: 'upcoming' | 'past';
+}
+
+const Day = styled.div<DayProps>`
+    position: relative;
     aspect-ratio: 1;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: ${themeColors.typography.body.xsmall.fontSize}px;
-    border-radius: 4px;
-    cursor: pointer;
-    background-color: ${({ isSelected }) => (isSelected ? themeColors.colors.primary.main : 'transparent')};
-    color: ${({ isCurrentMonth, isToday, isSelected }) => {
-        if (isSelected) return themeColors.colors.neutral.white;
-        if (!isCurrentMonth) return themeColors.colors.gray.dark;
-        if (isToday) return themeColors.colors.primary.main;
-        return themeColors.colors.gray.main;
-    }};
-    transition: background-color 0.2s ease;
+    cursor: ${(props) => (props.hasEvent ? 'pointer' : 'default')};
+    color: ${(props) =>
+        !props.isCurrentMonth
+            ? themeColors.colors.gray.inputTag
+            : props.isToday
+              ? themeColors.colors.neutral.white
+              : themeColors.colors.gray.text};
+    font-weight: ${(props) => (props.isToday ? 600 : 400)};
 
-    max-width: 36px;
-    max-height: 36px;
-    margin: 0 auto;
+    ${(props) =>
+        props.isToday &&
+        `
+        &::after {
+            content: '';
+            position: absolute;
+            bottom: 6px;
+            width: 6px;
+            height: 6px;
+            background-color: ${themeColors.colors.primary.main};
+            border-radius: 50%;
+        }
+    `}
 
+    ${(props) =>
+        props.hasEvent &&
+        `
+        &::before {
+            content: '';
+            position: absolute;
+            top: 6px;
+            width: 6px;
+            height: 6px;
+            background-color: ${
+                props.eventType === 'upcoming' ? themeColors.colors.primary.main : themeColors.colors.gray.main
+            };
+            border-radius: 50%;
+        }
+    `}
+    
     &:hover {
-        background-color: ${({ isSelected }) =>
-            isSelected ? themeColors.colors.primary.light : themeColors.colors.gray.dark};
-    }
-
-    @media (max-width: 768px) {
-        max-width: 32px;
-        max-height: 32px;
+        background-color: ${(props) => (props.hasEvent ? themeColors.colors.gray.hover : 'transparent')};
     }
 `;
 
-export default function Calendar({ currentMonth, onChangeMonth }: CalendarProps) {
+const EventsListContainer = styled.div`
+    padding: ${themeColors.spacing.md};
+    border-top: 1px solid ${themeColors.cardBorder.color};
+`;
+
+const EventsTitle = styled.h4`
+    margin: 0 0 ${themeColors.spacing.md} 0;
+    font-size: ${themeColors.typography.body.medium.fontSize}px;
+    color: ${themeColors.colors.neutral.white};
+    display: flex;
+    align-items: center;
+    gap: ${themeColors.spacing.sm};
+`;
+
+const NoEventsMessage = styled.p`
+    color: ${themeColors.colors.gray.text};
+    font-size: ${themeColors.typography.body.small.fontSize}px;
+    text-align: center;
+    margin: ${themeColors.spacing.md} 0;
+`;
+
+const EventItem = styled.div<{ type: 'upcoming' | 'past' }>`
+    display: flex;
+    align-items: center;
+    gap: ${themeColors.spacing.sm};
+    padding: ${themeColors.spacing.sm};
+    border-radius: ${themeColors.cardBorder.sm};
+    margin-bottom: ${themeColors.spacing.sm};
+    background-color: ${(props) => (props.type === 'upcoming' ? 'rgba(5, 124, 204, 0.1)' : 'rgba(133, 133, 133, 0.1)')};
+
+    &:hover {
+        background-color: ${(props) =>
+            props.type === 'upcoming' ? 'rgba(5, 124, 204, 0.2)' : 'rgba(133, 133, 133, 0.2)'};
+    }
+`;
+
+const EventDot = styled.div<{ type: 'upcoming' | 'past' }>`
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: ${(props) =>
+        props.type === 'upcoming' ? themeColors.colors.primary.main : themeColors.colors.gray.main};
+`;
+
+const EventInfo = styled.div`
+    flex: 1;
+`;
+
+const EventTitle = styled.div`
+    font-size: ${themeColors.typography.body.small.fontSize}px;
+    color: ${themeColors.colors.neutral.white};
+`;
+
+const EventDate = styled.div`
+    font-size: ${themeColors.typography.body.xsmall.fontSize}px;
+    color: ${themeColors.colors.gray.text};
+`;
+
+/**
+ * Calendar Component - Sub Organism Component
+ * Displays a calendar with event indicators and a list of events for the selected date
+ */
+export default function Calendar() {
+    const [currentDate, setCurrentDate] = useState(new Date());
+    const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+
+    // mock sample data as of now
+    const events: CalendarEvent[] = [
+        {
+            id: '1',
+            title: 'Meet Up N4',
+            date: new Date(2024, 9, 19),
+            type: 'upcoming',
+        },
+        {
+            id: '2',
+            title: 'Tech Conference',
+            date: new Date(2024, 9, 25),
+            type: 'upcoming',
+        },
+        {
+            id: '3',
+            title: 'Coding Workshop',
+            date: new Date(2024, 8, 15),
+            type: 'past',
+        },
+    ];
+
+    const getEventsForDate = (date: Date) => {
+        return events.filter(
+            (event) =>
+                event.date.getDate() === date.getDate() &&
+                event.date.getMonth() === date.getMonth() &&
+                event.date.getFullYear() === date.getFullYear(),
+        );
+    };
+
+    const hasEvents = (date: Date) => {
+        return getEventsForDate(date).length > 0;
+    };
+
+    const getEventType = (date: Date) => {
+        const dateEvents = getEventsForDate(date);
+        if (dateEvents.length === 0) return undefined;
+        return dateEvents[0].type;
+    };
+
+    const getMonthName = (date: Date) => {
+        return date.toLocaleString('default', { month: 'long' });
+    };
+
     const prevMonth = () => {
-        const date = new Date(currentMonth);
-        date.setMonth(date.getMonth() - 1);
-        onChangeMonth(date);
+        setCurrentDate((prev) => {
+            const newDate = new Date(prev);
+            newDate.setMonth(prev.getMonth() - 1);
+            return newDate;
+        });
+        setSelectedDate(null);
     };
 
     const nextMonth = () => {
-        const date = new Date(currentMonth);
-        date.setMonth(date.getMonth() + 1);
-        onChangeMonth(date);
+        setCurrentDate((prev) => {
+            const newDate = new Date(prev);
+            newDate.setMonth(prev.getMonth() + 1);
+            return newDate;
+        });
+        setSelectedDate(null);
     };
 
-    const daysInMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0).getDate();
-    const firstDayOfMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1).getDay();
-    const prevMonthDays = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 0).getDate();
-    const days = [];
+    const generateCalendarDays = () => {
+        const year = currentDate.getFullYear();
+        const month = currentDate.getMonth();
 
-    const startDay = firstDayOfMonth === 0 ? 6 : firstDayOfMonth - 1;
+        const firstDay = new Date(year, month, 1);
+        const lastDay = new Date(year, month + 1, 0);
+        const firstDayOfWeek = firstDay.getDay();
 
-    for (let i = startDay - 1; i >= 0; i--) {
-        days.push({
-            day: prevMonthDays - i,
-            isCurrentMonth: false,
-            isSelected: false,
-            isToday: false,
-        });
-    }
+        const days = [];
 
-    const today = new Date();
-    const isToday = (day: number) =>
-        today.getDate() === day &&
-        today.getMonth() === currentMonth.getMonth() &&
-        today.getFullYear() === currentMonth.getFullYear();
-
-    const selectedDay = today.getDate();
-
-    for (let i = 1; i <= daysInMonth; i++) {
-        days.push({
-            day: i,
-            isCurrentMonth: true,
-            isSelected:
-                i === selectedDay &&
-                today.getMonth() === currentMonth.getMonth() &&
-                today.getFullYear() === currentMonth.getFullYear(),
-            isToday: isToday(i),
-        });
-    }
-
-    const remainingDays = 7 - (days.length % 7);
-    if (remainingDays < 7) {
-        for (let i = 1; i <= remainingDays; i++) {
+        for (let i = firstDayOfWeek - 1; i >= 0; i--) {
+            const prevMonthDay = new Date(year, month, -i);
             days.push({
-                day: i,
+                date: prevMonthDay,
                 isCurrentMonth: false,
-                isSelected: false,
-                isToday: false,
+                isToday: isSameDay(prevMonthDay, new Date()),
+                hasEvent: hasEvents(prevMonthDay),
+                eventType: getEventType(prevMonthDay),
             });
         }
-    }
 
-    const monthName = currentMonth.toLocaleString('default', { month: 'long', year: 'numeric' });
-    const daysOfWeek = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'];
+        for (let i = 1; i <= lastDay.getDate(); i++) {
+            const currentMonthDay = new Date(year, month, i);
+            days.push({
+                date: currentMonthDay,
+                isCurrentMonth: true,
+                isToday: isSameDay(currentMonthDay, new Date()),
+                hasEvent: hasEvents(currentMonthDay),
+                eventType: getEventType(currentMonthDay),
+            });
+        }
+
+        // we first add days from next month to complete grid
+        // 6 rows x 7 columns = 42 cells
+        const remainingDays = 42 - days.length;
+        for (let i = 1; i <= remainingDays; i++) {
+            const nextMonthDay = new Date(year, month + 1, i);
+            days.push({
+                date: nextMonthDay,
+                isCurrentMonth: false,
+                isToday: isSameDay(nextMonthDay, new Date()),
+                hasEvent: hasEvents(nextMonthDay),
+                eventType: getEventType(nextMonthDay),
+            });
+        }
+
+        return days;
+    };
+
+    const isSameDay = (date1: Date, date2: Date) => {
+        return (
+            date1.getDate() === date2.getDate() &&
+            date1.getMonth() === date2.getMonth() &&
+            date1.getFullYear() === date2.getFullYear()
+        );
+    };
+
+    const handleDateClick = (date: Date, hasEvent: boolean) => {
+        if (hasEvent) {
+            setSelectedDate(date);
+        }
+    };
+
+    const formatEventDate = (date: Date) => {
+        return date.toLocaleDateString('en-US', {
+            weekday: 'short',
+            month: 'short',
+            day: 'numeric',
+            year: 'numeric',
+        });
+    };
+
+    const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    const calendarDays = generateCalendarDays();
+    const selectedDateEvents = selectedDate ? getEventsForDate(selectedDate) : [];
 
     return (
         <CalendarContainer>
             <CalendarHeader>
-                <MonthTitle>{monthName}</MonthTitle>
-                <CalendarNavigation>
+                <MonthNavigation>
                     <NavButton onClick={prevMonth}>
-                        <FaChevronLeft size={10} />
+                        <FaChevronLeft />
                     </NavButton>
+                    <MonthTitle>{`${getMonthName(currentDate)} ${currentDate.getFullYear()}`}</MonthTitle>
                     <NavButton onClick={nextMonth}>
-                        <FaChevronRight size={10} />
+                        <FaChevronRight />
                     </NavButton>
-                </CalendarNavigation>
+                </MonthNavigation>
             </CalendarHeader>
 
-            <DaysGrid>
-                {daysOfWeek.map((day) => (
-                    <DayOfWeek key={day}>{day}</DayOfWeek>
+            <CalendarGrid>
+                {weekdays.map((day) => (
+                    <WeekdayHeader key={day}>{day}</WeekdayHeader>
                 ))}
 
-                {days.map((day, index) => (
+                {calendarDays.map((day, index) => (
                     <Day
                         key={index}
                         isCurrentMonth={day.isCurrentMonth}
-                        isSelected={day.isSelected}
                         isToday={day.isToday}
+                        hasEvent={day.hasEvent}
+                        eventType={day.eventType}
+                        onClick={() => handleDateClick(day.date, day.hasEvent)}
                     >
-                        {day.day}
+                        {day.date.getDate()}
                     </Day>
                 ))}
-            </DaysGrid>
+            </CalendarGrid>
+
+            {selectedDate && (
+                <EventsListContainer>
+                    <EventsTitle>
+                        <FaCalendarAlt />
+                        Events on {formatEventDate(selectedDate)}
+                    </EventsTitle>
+
+                    {selectedDateEvents.length > 0 ? (
+                        selectedDateEvents.map((event) => (
+                            <EventItem key={event.id} type={event.type}>
+                                <EventDot type={event.type} />
+                                <EventInfo>
+                                    <EventTitle>{event.title}</EventTitle>
+                                    <EventDate>{formatEventDate(event.date)}</EventDate>
+                                </EventInfo>
+                            </EventItem>
+                        ))
+                    ) : (
+                        <NoEventsMessage>No events for this date</NoEventsMessage>
+                    )}
+                </EventsListContainer>
+            )}
         </CalendarContainer>
     );
 }

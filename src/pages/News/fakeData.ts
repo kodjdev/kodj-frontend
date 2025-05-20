@@ -1,3 +1,7 @@
+import kodjLogo from '@/static/icons/kodj_new.jpg';
+import workShop from '@/static/icons/logo.png';
+import work from '@/static/icons/rocket.jpg';
+
 export type NewsItem = {
     id: string;
     title: string;
@@ -14,6 +18,7 @@ export type NewsItem = {
     created_at: string;
     user_id?: number;
     category_id?: number;
+    tags?: string[];
 };
 
 export const sampleNews: NewsItem[] = [
@@ -23,10 +28,11 @@ export const sampleNews: NewsItem[] = [
         content:
             "We're excited to announce the launch of our new website! Lorem ipsum dolor sit amet, consectetur adipiscing elit...",
         news_type: 'TECH',
-        image_url: '/static/news/website-launch.jpg',
+        image_url: kodjLogo,
         created_at: '2025-05-12T10:00:00Z',
         user_id: 1,
         contact_email: 'info@kodj.dev',
+        tags: ['programming', 'development', 'ai'],
     },
     {
         id: '2',
@@ -34,10 +40,11 @@ export const sampleNews: NewsItem[] = [
         content:
             'Join us for a hands-on machine learning workshop next month. Lorem ipsum dolor sit amet, consectetur adipiscing elit...',
         news_type: 'MEETUP',
-        image_url: '/static/news/ai-workshop.jpg',
+        image_url: workShop,
         created_at: '2025-05-20T14:30:00Z',
         user_id: 2,
         contact_email: 'workshops@kodj.dev',
+        tags: ['workshop', 'AI', 'Tashkent'],
     },
     {
         id: '3',
@@ -45,9 +52,10 @@ export const sampleNews: NewsItem[] = [
         content:
             'Connect with fellow developers at our monthly social gathering. Lorem ipsum dolor sit amet, consectetur adipiscing elit...',
         news_type: 'SOCIAL',
-        image_url: '/static/news/networking.jpg',
+        image_url: work,
         created_at: '2025-06-05T18:00:00Z',
         user_id: 3,
         contact_email: 'events@kodj.dev',
+        tags: ['networking', 'developers', 'social'],
     },
 ];

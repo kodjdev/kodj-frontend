@@ -73,7 +73,7 @@ const LoadingContainer = styled.div`
     align-items: center;
     justify-content: center;
     min-height: 50vh;
-    background-color: ${themeColors.black_40};
+    background-color: ${themeColors.blue_dark};
     color: ${themeColors.colors.primary.main};
 `;
 

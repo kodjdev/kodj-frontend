@@ -4,6 +4,7 @@ import { createPortal } from 'react-dom';
 import themeColors from '@/tools/themeColors';
 import Card from '@/components/Card/Card';
 import { X } from 'lucide-react';
+import { modalSizes } from './modalConstants';
 
 export type ModalProps = {
     isOpen: boolean;
@@ -19,8 +20,6 @@ export type ModalProps = {
     className?: string;
 };
 
-export type Sizes = 'sm' | 'md' | 'lg' | 'xl' | 'full';
-
 const fadeIn = keyframes`
   from { opacity: 0; }
   to { opacity: 1; }
@@ -31,21 +30,19 @@ const slideIn = keyframes`
   to { transform: translateY(0); opacity: 1; }
 `;
 
-export const modalSizes = {
-    sm: '400px',
-    md: themeColors.modal_width || '500px',
-    lg: themeColors.modal_width_large || '700px',
-    xl: '900px',
-    full: '90%',
-};
-
 const ModalOverlay = styled.div<{ isOpen: boolean }>`
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: ${themeColors.black_60};
+    background-color: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(3px);
+    opacity: 1;
+    transition:
+        visibility 0.3s ease-out,
+        opacity 0.3s ease-out;
+    pointer-events: ${({ isOpen }) => (isOpen ? 'auto' : 'none')};
     display: flex;
     align-items: center;
     justify-content: center;
@@ -63,8 +60,9 @@ const ModalContainer = styled(Card)<{ size: keyof typeof modalSizes; ref: React.
     flex-direction: column;
     animation: ${slideIn} 0.3s ease-out;
     margin: auto;
-    background-color: ${themeColors.colors.gray.background};
+    background-color: ${themeColors.colors.black.background};
     border: 1px solid ${themeColors.cardBorder.color};
+    border-radius: 28px;
     color: ${themeColors.colors.neutral.white};
     box-shadow: ${themeColors.shadow_3};
 `;
@@ -92,7 +90,6 @@ const CloseButton = styled.button`
     align-items: center;
     justify-content: center;
     padding: ${themeColors.spacing.xs};
-    border-radius: 50%;
     transition: all 0.2s;
 
     &:hover {
@@ -102,7 +99,7 @@ const CloseButton = styled.button`
 `;
 
 const ModalBody = styled.div`
-    padding: ${themeColors.spacing.sm};
+    padding: ${themeColors.spacing.xs};
     overflow-y: auto;
     flex: 1;
 `;
