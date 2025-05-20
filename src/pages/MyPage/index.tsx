@@ -140,18 +140,16 @@ export default function MyPage() {
                     </RightColumn>
                 </ContentLayout>
             </PageContainer>
-            {
-                <ConfirmModal
-                    isOpen={isOpen}
-                    onClose={closeModal}
-                    title={'Confirm Logout'}
-                    message={'Are you sure you want to log out?'}
-                    onConfirm={handleConfirmedLogout}
-                    confirmLabel={'Yes, log out'}
-                    cancelLabel={'Cancel'}
-                    size="sm"
-                />
-            }
+            <ConfirmModal
+                isOpen={isOpen}
+                onClose={closeModal}
+                title={'Confirm Logout'}
+                message={'Are you sure you want to log out?'}
+                onConfirm={handleConfirmedLogout}
+                confirmLabel={'Yes, log out'}
+                cancelLabel={'Cancel'}
+                size="sm"
+            />
         </>
     );
 }
