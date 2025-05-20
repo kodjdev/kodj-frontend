@@ -1,4 +1,4 @@
-import React, { InputHTMLAttributes } from 'react';
+import React, { InputHTMLAttributes, useState } from 'react';
 import styled from 'styled-components';
 import themeColor from '@/tools/themeColors';
 
@@ -6,7 +6,10 @@ export type InputProps = InputHTMLAttributes<HTMLInputElement> & {
     label?: string;
     error?: string;
     fullWidth?: boolean;
-    icon: React.ReactNode;
+    icon?: React.ReactNode;
+    iconPosition?: 'left' | 'right';
+    customStyles?: React.CSSProperties;
+    hideIconOnFocus?: boolean;
 };
 
 const InputContainer = styled.div<{ fullWidth?: boolean }>`
@@ -14,6 +17,9 @@ const InputContainer = styled.div<{ fullWidth?: boolean }>`
     flex-direction: column;
     margin-bottom: ${themeColor.spacing.lg};
     width: ${(props) => (props.fullWidth ? '100%' : 'auto')};
+    position: relative;
+    max-width: 350px;
+    margin: 0 auto;
 `;
 
 const Label = styled.label`
@@ -46,6 +52,18 @@ const StyledInput = styled.input`
         opacity: 0.6;
         cursor: not-allowed;
     }
+
+    ${themeColor.breakpoints.mobile} {
+        font-size: ${themeColor.typography.body.xsmall.fontSize}px;
+        padding: 0 ${themeColor.spacing.xs};
+        height: 40px;
+    }
+    ${themeColor.breakpoints.tablet} {
+        font-size: ${themeColor.typography.body.small.fontSize}px;
+    }
+    ${themeColor.breakpoints.laptop} {
+        font-size: ${themeColor.typography.body.medium.fontSize}px;
+    }
 `;
 
 const InputWrapper = styled.div`
@@ -55,15 +73,32 @@ const InputWrapper = styled.div`
     width: 100%;
 `;
 
-const IconWrapper = styled.div`
+const IconWrapperLeft = styled.div`
     position: absolute;
-    left: 16px;
+    left: 10px;
     top: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     transform: translateY(-50%);
     color: ${themeColor.colors.gray.text};
+    transition: opacity 0.2s ease;
+
+    @media (min-width: ${themeColor.breakpoints.tablet}) {
+        left: 16px;
+    }
+`;
+
+const IconWrapperRight = styled.div`
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform: translateY(-50%);
+    color: ${themeColor.colors.gray.text};
+    transition: opacity 0.2s ease;
 `;
 
 const ErrorMessage = styled.span`
@@ -74,27 +109,85 @@ const ErrorMessage = styled.span`
 
 /**
  * Input component - Atom Component
- * A form input control that combines multiple atomic elements (label, input field, and error message)
- * into a cohesive form control.
- * @returns a styled input component with optional label and error message.
+ * A Custom form input control with customizable icon positioning and focus behavior.
+ * @param {string} label - The label for the input field.
+ * @param {string} error - Error message to display below the input.
+ * @param {boolean} fullWidth - If true, the input will take the full width of its container.
+ * @param {React.ReactNode} icon - Icon to display inside the input.
+ * @param {'left' | 'right'} iconPosition - Position of the icon ('left' or 'right').
+ * @param {React.CSSProperties} customStyles - Custom styles to apply to the input.
+ * @param {boolean} hideIconOnFocus - If true, the icon will be hidden when the input is focused.
+ * @param {string} placeholder - Placeholder text for the input.
+ * @param {InputHTMLAttributes<HTMLInputElement>} rest - Other input attributes.
  */
-export default function Input({ icon, label, error, fullWidth = false, ...rest }: InputProps) {
+export default function Input({
+    icon,
+    label,
+    error,
+    fullWidth = false,
+    iconPosition = 'left',
+    customStyles,
+    hideIconOnFocus = false,
+    placeholder,
+    ...rest
+}: InputProps) {
+    const [isFocused, setIsFocused] = useState(false);
+    const [hasValue, setHasValue] = useState(Boolean(rest.value));
     const inputRef = React.useRef<HTMLInputElement>(null);
+
+    const getPadding = () => {
+        if (!icon) return { paddingLeft: '14px', paddingRight: '14px' };
+
+        if (iconPosition === 'left') {
+            return { paddingLeft: '45px', paddingRight: '14px' };
+        } else {
+            return { paddingLeft: '14px', paddingRight: '45px' };
+        }
+    };
+
+    const showIcon = () => {
+        if (!icon) return false;
+        if (!hideIconOnFocus) return true;
+        return !(isFocused || hasValue);
+    };
+
+    const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
+        setIsFocused(true);
+        if (rest.onFocus) rest.onFocus(e);
+    };
+
+    const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+        setIsFocused(false);
+        if (rest.onBlur) rest.onBlur(e);
+    };
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setHasValue(!!e.target.value);
+        if (rest.onChange) rest.onChange(e);
+    };
 
     return (
         <InputContainer fullWidth={fullWidth}>
+            {label && <Label>{label}</Label>}
             <InputWrapper>
-                {icon && <IconWrapper>{icon}</IconWrapper>}
-                {label && <Label>{label}</Label>}
+                {icon && iconPosition === 'left' && showIcon() && <IconWrapperLeft>{icon}</IconWrapperLeft>}
+
                 <StyledInput
                     ref={inputRef}
-                    {...rest}
+                    placeholder={isFocused ? '' : placeholder}
+                    onFocus={handleFocus}
+                    onBlur={handleBlur}
+                    onChange={handleChange}
                     style={{
-                        ...rest.style,
-                        paddingLeft: icon ? '45px' : '14px',
+                        ...getPadding(),
+                        ...customStyles,
                     }}
+                    {...rest}
                 />
+
+                {icon && iconPosition === 'right' && showIcon() && <IconWrapperRight>{icon}</IconWrapperRight>}
             </InputWrapper>
+
             {error && <ErrorMessage>{error}</ErrorMessage>}
         </InputContainer>
     );
