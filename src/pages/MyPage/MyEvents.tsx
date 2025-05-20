@@ -93,7 +93,7 @@ export default function MyEvents() {
                     ? "You haven't attended any events yet."
                     : "You don't have any upcoming events."}
             </EmptyStateText>
-            <Button variant="light" size="mini">
+            <Button variant="light" size="mini" asLink to="/events" style={{ marginTop: themeColors.spacing.md }}>
                 Browse Events
             </Button>
         </EmptyState>

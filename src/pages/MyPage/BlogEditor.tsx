@@ -267,7 +267,7 @@ export default function BlogEditor() {
                 </div>
                 <EmptyStateTitle>There are no blog posts written.</EmptyStateTitle>
                 <EmptyStateText>Start sharing your thoughts with the KO'DJ community.</EmptyStateText>
-                <Button variant="light" size="mini" onClick={handleNewPost}>
+                <Button variant="light" size="mini" onClick={handleNewPost} disabled>
                     Write Blog
                 </Button>
             </EmptyState>
