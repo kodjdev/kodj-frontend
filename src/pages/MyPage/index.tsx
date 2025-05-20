@@ -126,7 +126,6 @@ export default function MyPage() {
 
     return (
         <>
-            {' '}
             <PageContainer>
                 <ContentLayout>
                     <LeftColumn>
