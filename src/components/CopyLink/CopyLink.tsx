@@ -100,7 +100,7 @@ export default function CopyLink({ url, iconSize = 16, showText = true, classNam
         <>
             <LinkButton onClick={handleCopy} className={className}>
                 <Link2 size={iconSize} />
-                {showText}
+                {showText && (text || "Copy Link")}
             </LinkButton>
 
             {showNotification && (
