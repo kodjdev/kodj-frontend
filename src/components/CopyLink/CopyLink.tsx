@@ -75,7 +75,6 @@ const CopyNotification = styled.div`
  * @param {string} url - The URL to copy. If not provided, the current page URL is used.
  * @param {number} iconSize - The size of the icon.
  * @param {boolean} showText - Whether to show the text next to the icon.
- * @param {string} text - The text to display next to the icon.
  * @param {string} className - Additional class names for styling.
  */
 export default function CopyLink({ url, iconSize = 16, showText = true, className }: CopyLinkProps) {
