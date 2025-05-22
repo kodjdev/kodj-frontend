@@ -97,6 +97,25 @@ const colors = {
         },
         dimmed: '#1A1D1E',
     },
+
+    tags: {
+        programming: {
+            background: 'rgba(250, 200, 160, 0.2)',
+            text: '#d38d59',
+        },
+        ai: {
+            background: 'rgba(230, 200, 250, 0.2)',
+            text: '#a786c7',
+        },
+        development: {
+            background: 'rgba(200, 250, 200, 0.2)',
+            text: '#7fb496',
+        },
+        grayDefault: {
+            background: 'rgba(255, 255, 255, 0.1)',
+            text: '#858585', // using gray.main
+        },
+    },
 };
 
 /**
