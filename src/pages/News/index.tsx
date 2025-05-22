@@ -1,15 +1,17 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import styled, { css } from 'styled-components';
-import { Calendar, Bookmark, MessageSquare, ThumbsUp, Link2, CheckCircle } from 'lucide-react';
+import { Calendar, Bookmark, MessageSquare, ThumbsUp } from 'lucide-react';
 import themeColors from '@/tools/themeColors';
 import Card from '@/components/Card/Card';
 import Input from '@/components/Input/Input';
 import Button from '@/components/Button/Button';
-import { NewsItem, sampleNews } from '@/pages/News/fakeData';
+import { sampleNews } from '@/pages/News/fakeData';
 import useApiService from '@/services';
 import useFormatDate from '@/hooks/useFormatDate';
 import { FaSearch } from 'react-icons/fa';
+import CopyLink from '@/components/CopyLink/CopyLink';
+import { NewsItem } from '@/types/news';
 
 type TagVariant = 'default' | 'programming' | 'ai' | 'development';
 type FilterTypes = 'TECH' | 'MEETUP' | 'SOCIAL';
@@ -293,64 +295,6 @@ const ReadTimeText = styled.span`
     margin-left: ${themeColors.spacing.md};
 `;
 
-const ShareButton = styled.button`
-    background: transparent;
-    color: ${themeColors.colors.gray.main};
-    cursor: pointer;
-    font-size: ${themeColors.typography.body.small.fontSize}px;
-    border: none;
-    display: flex;
-    align-items: center;
-    gap: ${themeColors.spacing.xs};
-    padding: 0;
-
-    &:hover {
-        color: ${themeColors.colors.primary.main};
-    }
-`;
-
-const CopyNotification = styled.div`
-    position: fixed;
-    top: 4rem;
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: ${themeColors.colors.ui.dimmed};
-    color: white;
-    padding: 0.75rem 1rem;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    box-shadow: 0 4px 10px ${themeColors.shadow_purple_input_inset};
-    font-size: ${themeColors.typography.body.small.fontSize}px;
-    z-index: 1000;
-    animation:
-        fadeIn 0.3s,
-        fadeOut 0.3s 1.7s;
-
-    @keyframes fadeIn {
-        from {
-            opacity: 0;
-            transform: translate(-50%, -10px);
-        }
-        to {
-            opacity: 1;
-            transform: translate(-50%, 0);
-        }
-    }
-
-    @keyframes fadeOut {
-        from {
-            opacity: 1;
-            transform: translate(-50%, 0);
-        }
-        to {
-            opacity: 0;
-            transform: translate(-50%, -10px);
-        }
-    }
-`;
-
 /**
  * NewsList Component - Root Page Component
  * This component displays a list of news articles with filtering and search functionality.
@@ -368,8 +312,6 @@ export default function NewsList() {
     const [searchTerm, setSearchTerm] = useState('');
     const [visibleCount, setVisibleCount] = useState(4);
     const [hasMore, setHasMore] = useState(true);
-
-    const [showCopyNotification, setShowCopyNotification] = useState(false);
 
     const { formatDate } = useFormatDate();
     const newsService = useApiService();
@@ -390,29 +332,23 @@ export default function NewsList() {
         const fetchNews = async () => {
             setLoading(true);
             try {
-                // const response = await newsService.getAllNews(activeCategory);
+                const response = await newsService.getAllNews(activeCategory);
 
-                // if (response.statusCode === 200 && response.data) {
-                //     setNews(response.data);
-                // } else {
+                if (response.statusCode === 200 && response.data) {
+                    setNews(response.data);
+                } else {
+                    const fallbackData =
+                        activeCategory === 'TECH'
+                            ? sampleNews
+                            : sampleNews.filter((news) => news.news_type === activeCategory);
 
-                // as of now for test purposes we just use the  sample news
-                const fallbackData =
-                    activeCategory === 'TECH'
-                        ? sampleNews
-                        : sampleNews.filter((news) => news.news_type === activeCategory);
-
-                setNews(fallbackData);
-                // }
+                    console.error('Error fetching news, using fallback:', response);
+                    setNews(fallbackData);
+                }
             } catch (error) {
-                // fallback to sample news for any error
-                const fallbackData =
-                    activeCategory === 'TECH'
-                        ? sampleNews
-                        : sampleNews.filter((news) => news.news_type === activeCategory);
-
-                console.error('Error fetching news, using fallback:', error);
-                setNews(fallbackData);
+                if (error instanceof Error) {
+                    console.error('Error fetching news:', error.message);
+                }
             } finally {
                 setLoading(false);
             }
@@ -437,14 +373,6 @@ export default function NewsList() {
 
     const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchTerm(e.target.value);
-    };
-
-    const handleCopyLink = (e: React.MouseEvent) => {
-        e.preventDefault();
-        e.stopPropagation();
-        navigator.clipboard.writeText(window.location.href);
-        setShowCopyNotification(true);
-        setTimeout(() => setShowCopyNotification(false), 2000);
     };
 
     return (
@@ -546,9 +474,11 @@ export default function NewsList() {
                                                 </MetaItem>
                                                 <div style={{ display: 'flex', gap: themeColors.spacing.sm }}>
                                                     <InteractionButton>
-                                                        <ShareButton onClick={handleCopyLink}>
-                                                            <Link2 size={20} />
-                                                        </ShareButton>
+                                                        <CopyLink
+                                                            url={window.location.href}
+                                                            iconSize={16}
+                                                            showText={false}
+                                                        />
                                                     </InteractionButton>
                                                     <InteractionButton>
                                                         <Bookmark size={16} />
@@ -595,12 +525,6 @@ export default function NewsList() {
                                     Load More ...
                                 </Button>
                             </div>
-                        )}
-                        {showCopyNotification && (
-                            <CopyNotification>
-                                <CheckCircle size={16} color="#4BB543" />
-                                Link copied to clipboard
-                            </CopyNotification>
                         )}
                     </>
                 ) : (

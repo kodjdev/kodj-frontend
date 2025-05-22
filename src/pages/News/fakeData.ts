@@ -1,26 +1,7 @@
 import kodjLogo from '@/static/icons/kodj_new.jpg';
 import workShop from '@/static/icons/logo.png';
 import work from '@/static/icons/rocket.jpg';
-
-export type NewsItem = {
-    id: string;
-    title: string;
-    content: string;
-    image_name?: string;
-    image_url?: string;
-    news_type: 'TECH' | 'MEETUP' | 'SOCIAL';
-    contact_phone?: string;
-    contact_email?: string;
-    twitter_profile?: string;
-    linkedin_profile?: string;
-    facebook_profile?: string;
-    instagram_handle?: string;
-    created_at: string;
-    user_id?: number;
-    category_id?: number;
-    tags?: string[];
-    read_time?: number;
-};
+import { NewsItem } from '@/types/news';
 
 export const sampleNews: NewsItem[] = [
     {

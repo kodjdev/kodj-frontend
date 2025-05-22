@@ -1,6 +1,6 @@
 import useAxios from '@/hooks/useAxios/useAxios';
-import { NewsItem } from '@/pages/News/fakeData';
 import { ApiResponse } from '@/types/fetch';
+import { NewsItem } from '@/types/news';
 import { useMemo } from 'react';
 
 /**

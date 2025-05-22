@@ -1,15 +1,17 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import styled from 'styled-components';
-import { Calendar, ArrowLeft, Timer, LinkIcon, Twitter, LinkedinIcon, CheckCircle } from 'lucide-react';
+import { Calendar, ArrowLeft, Timer, Twitter, LinkedinIcon } from 'lucide-react';
 import themeColors from '@/tools/themeColors';
 import Button from '@/components/Button/Button';
 import Card from '@/components/Card/Card';
-import { NewsItem, sampleNews } from '@/pages/News/fakeData';
+import { sampleNews } from '@/pages/News/fakeData';
 import { useRecoilState } from 'recoil';
 import errorAtom from '@/atoms/errors';
 import useFormatDate from '@/hooks/useFormatDate';
-import NewsComments from './NewsComment';
+import NewsComments from '@/pages/News/NewsDetails/NewsComment';
+import CopyLink from '@/components/CopyLink/CopyLink';
+import { NewsItem } from '@/types/news';
 
 const Container = styled.div`
     max-width: ${themeColors.breakpoints.desktop};
@@ -175,47 +177,6 @@ const ShareButton = styled(Button)`
     }
 `;
 
-const CopyNotification = styled.div`
-    position: fixed;
-    top: 4rem;
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: rgba(30, 30, 30, 0.9);
-    color: white;
-    padding: 0.75rem 1rem;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    z-index: 1000;
-    animation:
-        fadeIn 0.3s,
-        fadeOut 0.3s 1.7s;
-    border: 1px solid rgba(75, 181, 67, 0.5);
-
-    @keyframes fadeIn {
-        from {
-            opacity: 0;
-            transform: translate(-50%, -10px);
-        }
-        to {
-            opacity: 1;
-            transform: translate(-50%, 0);
-        }
-    }
-
-    @keyframes fadeOut {
-        from {
-            opacity: 1;
-            transform: translate(-50%, 0);
-        }
-        to {
-            opacity: 0;
-            transform: translate(-50%, -10px);
-        }
-    }
-`;
 const ReadNextSection = styled.div`
     margin-top: ${themeColors.spacing.xl};
 `;
@@ -252,7 +213,6 @@ export default function NewsDetail() {
     const { id } = useParams<{ id: string }>();
     const [newsItem, setNewsItem] = useState<NewsItem | null>(null);
     const [loading, setLoading] = useState(true);
-    const [showCopyNotification, setShowCopyNotification] = useState(false);
     const [newsError, setNewsError] = useRecoilState(errorAtom);
 
     const { formatDate } = useFormatDate();
@@ -332,12 +292,6 @@ export default function NewsDetail() {
         }
     };
 
-    const handleCopyLink = () => {
-        navigator.clipboard.writeText(window.location.href);
-        setShowCopyNotification(true);
-        setTimeout(() => setShowCopyNotification(false), 2000);
-    };
-
     const shareOnTwitter = () => {
         const text = `Check out this article: ${newsItem.title}`;
         const url = window.location.href;
@@ -406,8 +360,8 @@ export default function NewsDetail() {
 
                 <ShareSection>
                     <ShareButtons>
-                        <ShareButton variant="text" size="sm" onClick={handleCopyLink}>
-                            <LinkIcon size={19} />
+                        <ShareButton variant="text" size="sm">
+                            <CopyLink url={window.location.href} iconSize={19} />
                         </ShareButton>
                         <ShareButton variant="text" size="sm" onClick={shareOnTwitter}>
                             <Twitter size={19} />
@@ -420,13 +374,6 @@ export default function NewsDetail() {
             </Article>
 
             <NewsComments articleId={id || ''} />
-
-            {showCopyNotification && (
-                <CopyNotification>
-                    <CheckCircle size={16} color="#4BB543" />
-                    Link copied to clipboard
-                </CopyNotification>
-            )}
 
             {relatedNews.length > 0 && (
                 <ReadNextSection>
