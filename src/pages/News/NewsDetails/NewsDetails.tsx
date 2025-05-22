@@ -337,7 +337,7 @@ export default function NewsDetail() {
                                     paddingRight: '4px',
                                 }}
                             />
-                            {getCategoryLabel(newsItem.read_time + 'min read')}
+                            {formatReadTime(newsItem.read_time)}
                         </ReadTimeShow>
                     </ArticleMeta>
                 </ArticleHeader>
