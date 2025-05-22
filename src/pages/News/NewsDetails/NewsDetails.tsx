@@ -349,8 +349,11 @@ export default function NewsDetail() {
                 )}
 
                 <ArticleContent>
-                    <p>{newsItem.content}</p>
-                    {newsItem.content.length > 100 ? newsItem.content : <p>No content available for this article.</p>}
+                    <p>
+                        {newsItem.content.length > 100
+                            ? newsItem.content
+                            : "No content available for this article."}
+                    </p>
                     <p>
                         Bizga qo'shilib, eng so'nggi yangiliklarni o'rganing, expertlardan bilimlar o'rganing va
                         uchrashuvlar va forumlarimizga qatnashing va tarmoq'ingizni kengaytiring. Bugundan boshlab
