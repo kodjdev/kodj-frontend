@@ -2,6 +2,7 @@ import { useUserService } from '@/services/apiService/userService';
 import { useFetchEventService } from '@/services/apiService/fetchEventService';
 import { useRegisterEventService } from '@/services/apiService/registerEventService';
 import { useFetchNewsService } from '@/services/apiService/fetchNewsService';
+import { useFetchCommentsService } from './apiService/fetchComments';
 
 /**
  * API Service - Centralized API Service
@@ -11,15 +12,17 @@ import { useFetchNewsService } from '@/services/apiService/fetchNewsService';
  * @returns {Object} - An object containing all the API service functions.
  */
 export default function useApiService() {
-    const userService = useUserService();
+    const userDetailsService = useUserService();
     const eventFetchService = useFetchEventService();
     const eventRegisterService = useRegisterEventService();
     const newsFetchService = useFetchNewsService();
+    const commentFetchService = useFetchCommentsService();
 
     return {
-        ...userService,
+        ...userDetailsService,
         ...eventFetchService,
         ...eventRegisterService,
         ...newsFetchService,
+        ...commentFetchService,
     };
 }
