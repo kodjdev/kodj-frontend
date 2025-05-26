@@ -10,6 +10,7 @@ export type InputProps = InputHTMLAttributes<HTMLInputElement> & {
     iconPosition?: 'left' | 'right';
     customStyles?: React.CSSProperties;
     hideIconOnFocus?: boolean;
+    transparent?: boolean;
 };
 
 const InputContainer = styled.div<{ fullWidth?: boolean }>`
@@ -18,8 +19,8 @@ const InputContainer = styled.div<{ fullWidth?: boolean }>`
     margin-bottom: ${themeColor.spacing.lg};
     width: ${(props) => (props.fullWidth ? '100%' : 'auto')};
     position: relative;
-    max-width: 350px;
-    margin: 0 auto;
+    max-width: ${(props) => (props.fullWidth ? '100%' : '350px')};
+    margin: 0;
 `;
 
 const Label = styled.label`
@@ -28,7 +29,7 @@ const Label = styled.label`
     margin-bottom: ${themeColor.spacing.xs};
 `;
 
-const StyledInput = styled.input`
+const StyledInput = styled.input<{ transparent?: boolean }>`
     background-color: ${themeColor.colors.gray.inputTag};
     color: ${themeColor.colors.neutral.white};
     border: none;
@@ -38,6 +39,8 @@ const StyledInput = styled.input`
     height: 50px;
     width: 100%;
     box-shadow: ${themeColor.shadows.inset.input.gray};
+    background-color: ${(props) => (props.transparent ? 'transparent' : themeColor.colors.gray.inputTag)};
+    border: ${(props) => (props.transparent ? `1px solid ${themeColor.cardBorder.color}` : `none`)};
 
     &:focus {
         outline: none;
@@ -138,10 +141,18 @@ export default function Input({
     const getPadding = () => {
         if (!icon) return { paddingLeft: '14px', paddingRight: '14px' };
 
+        const iconVisible = showIcon();
+
         if (iconPosition === 'left') {
-            return { paddingLeft: '45px', paddingRight: '14px' };
+            return {
+                paddingLeft: iconVisible ? '45px' : '14px',
+                paddingRight: '14px',
+            };
         } else {
-            return { paddingLeft: '14px', paddingRight: '45px' };
+            return {
+                paddingLeft: '14px',
+                paddingRight: iconVisible ? '45px' : '14px',
+            };
         }
     };
 
