@@ -3,16 +3,18 @@ import styled from 'styled-components';
 import themeColors from '@/tools/themeColors';
 import { useNavigate } from 'react-router-dom';
 import { message } from 'antd';
-import { HiOutlineMail, HiOutlineLockClosed, HiOutlineEyeOff, HiOutlineEye, HiOutlinePhone } from 'react-icons/hi';
+import { HiOutlineMail, HiOutlineLockClosed, HiOutlineEyeOff, HiOutlineEye } from 'react-icons/hi';
 import Input from '@/components/Input/Input';
 import Button from '@/components/Button/Button';
 import { GoogleLogin } from '@react-oauth/google';
 import { EventDetails } from '@/types';
 import useAuth from '@/context/useAuth';
 import useGoogleSignupFlow from '@/hooks/useGoogleSignup';
+import { UserRelatedDataProps } from '@/pages/Auth/index';
 
 type SignupProps = {
     toggleAuthMode: () => void;
+    onSignupSuccess?: (userData: UserRelatedDataProps) => void;
     returnUrl?: string;
     eventDetails?: EventDetails;
 };
@@ -26,6 +28,13 @@ const FormContainer = styled.div`
     box-shadow:
         0 10px 15px -3px rgba(0, 0, 0, 0.1),
         0 4px 6px -2px rgba(0, 0, 0, 0.05);
+
+    @media (max-width: ${themeColors.breakpoints.mobile}) {
+        width: 100%;
+        margin-top: 6rem;
+        margin-bottom: 3rem;
+        padding: 24px;
+    }
 `;
 
 const EventNotification = styled.div`
@@ -44,7 +53,7 @@ const Heading = styled.h2`
     font-weight: 700;
     color: ${themeColors.white};
     margin-bottom: 40px;
-    text-align: center;
+    text-align: left;
     margin-top: 12px;
 `;
 
@@ -56,7 +65,6 @@ const Form = styled.form`
 
 const InputGroup = styled.div`
     position: relative;
-    margin-top: -20px;
     margin-bottom: 12px;
 `;
 
@@ -64,7 +72,7 @@ const PasswordVisibilityToggle = styled.div`
     position: absolute;
     right: 16px;
     top: 40%;
-    transform: translateY(-50%);
+    transform: translateY(-20%);
     color: ${themeColors.gray_text};
     cursor: pointer;
     z-index: 1;
@@ -136,15 +144,14 @@ const StyledButton = styled(Button)`
  * @description This component handles user registration, including email and password signup,
  * Google authentication, and form validation. It uses Ant Design for UI components and styled-components for styling.
  */
-export default function Signup({ toggleAuthMode, returnUrl, eventDetails }: SignupProps) {
+export default function Signup({ toggleAuthMode, returnUrl, eventDetails, onSignupSuccess }: SignupProps) {
     const navigate = useNavigate();
-    const { user, register } = useAuth();
+    const { user } = useAuth();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [messageApi, contextHolder] = message.useMessage();
-    const [phone, setPhone] = useState('');
 
     const {
         contextHolder: googleContextHolder,
@@ -154,10 +161,6 @@ export default function Signup({ toggleAuthMode, returnUrl, eventDetails }: Sign
 
     const handleSuccessfulAuth = () => {
         try {
-            if (!phone.trim()) {
-                messageApi.error('Phone number is required');
-                return;
-            }
             if (returnUrl && eventDetails) {
                 navigate(returnUrl, { state: eventDetails });
             } else {
@@ -172,7 +175,7 @@ export default function Signup({ toggleAuthMode, returnUrl, eventDetails }: Sign
         if (user) {
             handleSuccessfulAuth();
         }
-    }, [user]);
+    }, []);
 
     const handleEmailAuth = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -182,23 +185,12 @@ export default function Signup({ toggleAuthMode, returnUrl, eventDetails }: Sign
                 return;
             }
 
-            const userData = {
+            onSignupSuccess?.({
                 email,
                 password,
-                username: email.split('@')[0],
-                name: email.split('@')[0],
-                phone: phone,
-            };
-
-            const response = await register(userData);
-            if (response && response.statusCode === 200) {
-                messageApi.success('Account created! Please check your email for verification');
-            }
-
-            // switch to login mode after successful signup
-            setTimeout(() => {
-                toggleAuthMode();
-            }, 2000);
+                returnUrl,
+                eventDetails,
+            });
         } catch (error) {
             console.error('Authentication error:', error);
             if (error instanceof Error) {
@@ -234,7 +226,8 @@ export default function Signup({ toggleAuthMode, returnUrl, eventDetails }: Sign
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
                         required
                         fullWidth={true}
-                        style={{ backgroundColor: 'transparent', border: '1px solid gray' }}
+                        hideIconOnFocus={true}
+                        transparent={true}
                     />
                 </InputGroup>
 
@@ -247,7 +240,8 @@ export default function Signup({ toggleAuthMode, returnUrl, eventDetails }: Sign
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
                         required
                         fullWidth={true}
-                        style={{ backgroundColor: 'transparent', border: '1px solid gray' }}
+                        hideIconOnFocus={true}
+                        transparent={true}
                     />
                     <PasswordVisibilityToggle onClick={togglePasswordVisibility}>
                         {showPassword ? <HiOutlineEyeOff size={20} /> : <HiOutlineEye size={20} />}
@@ -263,19 +257,8 @@ export default function Signup({ toggleAuthMode, returnUrl, eventDetails }: Sign
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => setConfirmPassword(e.target.value)}
                         required
                         fullWidth={true}
-                        style={{ backgroundColor: 'transparent', border: '1px solid gray' }}
-                    />
-                </InputGroup>
-                <InputGroup>
-                    <Input
-                        icon={<HiOutlinePhone size={20} />}
-                        type="tel"
-                        placeholder="Phone Number (required)"
-                        value={phone}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPhone(e.target.value)}
-                        required
-                        fullWidth={true}
-                        style={{ backgroundColor: 'transparent', border: '1px solid gray' }}
+                        hideIconOnFocus={true}
+                        transparent={true}
                     />
                 </InputGroup>
 

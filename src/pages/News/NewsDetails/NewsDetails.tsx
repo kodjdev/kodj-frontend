@@ -228,7 +228,6 @@ export default function NewsDetail() {
                 console.log('API not implemented yet, using fallback data');
 
                 const fallbackItem = sampleNews.find((news) => news.id.toString() === id);
-
                 if (fallbackItem) {
                     setNewsItem(fallbackItem);
                 } else {
@@ -337,7 +336,7 @@ export default function NewsDetail() {
                                     paddingRight: '4px',
                                 }}
                             />
-                            {formatReadTime(newsItem.read_time)}
+                            {getCategoryLabel(newsItem.read_time + 'min read')}
                         </ReadTimeShow>
                     </ArticleMeta>
                 </ArticleHeader>
@@ -349,11 +348,7 @@ export default function NewsDetail() {
                 )}
 
                 <ArticleContent>
-                    <p>
-                        {newsItem.content.length > 100
-                            ? newsItem.content
-                            : "No content available for this article."}
-                    </p>
+                    <p>{newsItem.content.length > 100 ? newsItem.content : 'No content available for this article.'}</p>
                     <p>
                         Bizga qo'shilib, eng so'nggi yangiliklarni o'rganing, expertlardan bilimlar o'rganing va
                         uchrashuvlar va forumlarimizga qatnashing va tarmoq'ingizni kengaytiring. Bugundan boshlab
