@@ -1,6 +1,6 @@
-import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
+import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { NavigateFunction, useNavigate } from 'react-router-dom';
 import { useSetRecoilState } from 'recoil';
 import errorAtom from '@/atoms/errors';
 import { ApiResponse } from '@/types/fetch';
@@ -30,20 +30,21 @@ export default function useAxios() {
         },
     });
 
-    // response interceptor for common error handling
-    axiosInstance.interceptors.response.use(
-        (response) => response,
-        (error) => {
-            // handling the  401 Unauthorized errors
-            if (error.response && error.response.status === 401) {
-                localStorage.removeItem('access_token');
-                localStorage.removeItem('refresh_token');
+    const setupInterceptors = (axiosInstance: AxiosInstance, navigate: NavigateFunction) => {
+        axiosInstance.interceptors.response.use(
+            (response) => response,
+            (error) => {
+                if (error.response?.status === 401) {
+                    localStorage.removeItem('access_token');
+                    localStorage.removeItem('refresh_token');
+                    navigate('/login');
+                }
+                return Promise.reject(error);
+            },
+        );
+    };
 
-                navigate('/login');
-            }
-            return Promise.reject(error);
-        },
-    );
+    setupInterceptors(axiosInstance, navigate);
 
     return useCallback(
         async <T = unknown>({
@@ -118,6 +119,6 @@ export default function useAxios() {
                 throw error;
             }
         },
-        [navigate, setError, axiosInstance],
+        [setError, axiosInstance],
     );
 }

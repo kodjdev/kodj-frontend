@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { PersonStanding, ThumbsUp } from 'lucide-react';
@@ -208,32 +208,29 @@ export default function NewsComments({ articleId, initialComments = [] }: Commen
     const { isAuthenticated, user } = useAuth();
     const newsCommentService = useApiService();
 
+    const fetchComments = useCallback(async () => {
+        try {
+            setComments([]);
+            const response = await newsCommentService.getComments(articleId);
+            const transformedData = response.data?.map(changeCommentData);
+            setComments(transformedData || initialComments);
+        } catch (error) {
+            console.error('Error fetching comments:', error);
+            setComments(initialComments);
+        }
+    }, [articleId, newsCommentService, initialComments]);
+
     useEffect(() => {
         let isMounted = true;
-        const fetchComments = async () => {
-            try {
-                if (isMounted) {
-                    setComments([]);
-                    const response = await newsCommentService.getComments(articleId);
-                    if (isMounted) {
-                        const transformedData = response.data?.map(changeCommentData);
-                        setComments(transformedData || []);
-                    }
-                }
-            } catch (error) {
-                console.error('Error fetching comments:', error);
-                if (initialComments.length === 0 && isMounted) {
-                    setComments([]);
-                }
-            }
-        };
 
-        fetchComments();
+        if (isMounted) {
+            fetchComments();
+        }
 
         return () => {
             isMounted = false;
         };
-    }, []);
+    }, [fetchComments]);
 
     const changeCommentData = (commentData: CommentData): Comment => ({
         id: commentData.id,

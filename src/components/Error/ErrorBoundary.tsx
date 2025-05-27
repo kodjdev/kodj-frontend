@@ -1,4 +1,4 @@
-import { ReactNode, useEffect } from 'react';
+import { ReactNode, useCallback, useEffect } from 'react';
 import { useRecoilState } from 'recoil';
 import { useLocation } from 'react-router-dom';
 import ErrorFallback from '@/components/Error/ErrorFallback';
@@ -19,19 +19,12 @@ type ErrorBoundaryProps = {
  */
 export default function ErrorBoundary({ children, fallback }: ErrorBoundaryProps) {
     const [errorState, setErrorState] = useRecoilState(errorAtom);
+
     const location = useLocation();
 
-    const resetErrorBoundary = () => {
+    useEffect(() => {
         setErrorState(null);
-    };
 
-    /* we reset the error state when route changes */
-    useEffect(() => {
-        resetErrorBoundary();
-    }, [location.pathname, setErrorState]);
-
-    /* listen for uncaught errors */
-    useEffect(() => {
         const errorHandler = (errorEvent: ErrorEvent) => {
             console.error('Uncaught error:', errorEvent);
 
@@ -47,15 +40,17 @@ export default function ErrorBoundary({ children, fallback }: ErrorBoundaryProps
         return () => {
             window.removeEventListener('error', errorHandler);
         };
+    }, [location.pathname, setErrorState]);
+
+    const resetErrorBoundary = useCallback(() => {
+        setErrorState(null);
     }, [setErrorState]);
 
     if (errorState) {
-        /* if a custom fallback is provided, use it */
         if (fallback) {
             return <>{fallback}</>;
         }
 
-        /* if not just use the default ErrorFallback */
         return (
             <ErrorFallback
                 error={new Error(errorState.message as string)}

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { Calendar, ArrowLeft, Timer, Twitter, LinkedinIcon } from 'lucide-react';
@@ -217,47 +217,54 @@ export default function NewsDetail() {
 
     const { formatDate } = useFormatDate();
 
-    useEffect(() => {
-        const fetchNewsItem = async () => {
-            setLoading(true);
-            try {
-                if (!id) {
-                    throw new Error('News ID is required');
-                }
+    const fetchNewsItem = useCallback(async () => {
+        setLoading(true);
+        try {
+            if (!id) {
+                throw new Error('News ID is required');
+            }
 
-                console.log('API not implemented yet, using fallback data');
+            console.log('API not implemented yet, using fallback data');
 
-                const fallbackItem = sampleNews.find((news) => news.id.toString() === id);
-                if (fallbackItem) {
-                    setNewsItem(fallbackItem);
-                } else {
-                    setNewsError({
-                        title: 'Article Not Found',
-                        message: 'The news article you requested could not be found.',
-                        record: id || null,
-                    });
-                }
-            } catch (error) {
-                console.error('Error handling news detail:', error);
-
+            const fallbackItem = sampleNews.find((news) => news.id.toString() === id);
+            if (fallbackItem) {
+                setNewsItem(fallbackItem);
+            } else {
                 setNewsError({
-                    title: 'Error Loading Article',
-                    message: 'There was a problem loading this article. Please try again.',
+                    title: 'Article Not Found',
+                    message: 'The news article you requested could not be found.',
                     record: id || null,
                 });
-            } finally {
-                setLoading(false);
             }
-        };
+        } catch (error) {
+            console.error('Error handling news detail:', error);
+
+            setNewsError({
+                title: 'Error Loading Article',
+                message: 'There was a problem loading this article. Please try again.',
+                record: id || null,
+            });
+        } finally {
+            setLoading(false);
+        }
+    }, [id, setNewsError]);
+
+    useEffect(() => {
+        if (!id) {
+            setNewsError({
+                title: 'Invalid Article ID',
+                message: 'The article ID provided is invalid.',
+                record: null,
+            });
+            return;
+        }
 
         fetchNewsItem();
 
         return () => {
-            if (newsError) {
-                setNewsError(null);
-            }
+            setNewsError(null);
         };
-    }, [id]);
+    }, [id, fetchNewsItem, setNewsError]);
 
     if (loading) {
         return (
@@ -267,13 +274,20 @@ export default function NewsDetail() {
         );
     }
 
-    if (!newsItem) {
+    if (newsError || !newsItem) {
         return (
             <Container>
                 <BackLink to="/news">
                     <ArrowLeft size={16} /> Back to news
                 </BackLink>
-                <div>News article not found.</div>
+                <Article>
+                    <ArticleHeader>
+                        <ArticleTitle>{newsError?.title || 'Error'}</ArticleTitle>
+                        <ArticleContent>
+                            <p>{newsError?.message}</p>
+                        </ArticleContent>
+                    </ArticleHeader>
+                </Article>
             </Container>
         );
     }

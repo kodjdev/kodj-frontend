@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
 import themeColors from '@/tools/themeColors';
 import { useNavigate } from 'react-router-dom';
@@ -159,7 +159,7 @@ export default function Signup({ toggleAuthMode, returnUrl, eventDetails, onSign
         handleGoogleSignupError,
     } = useGoogleSignupFlow();
 
-    const handleSuccessfulAuth = () => {
+    const handleSuccessfulAuth = useCallback(() => {
         try {
             if (returnUrl && eventDetails) {
                 navigate(returnUrl, { state: eventDetails });
@@ -169,13 +169,13 @@ export default function Signup({ toggleAuthMode, returnUrl, eventDetails, onSign
         } catch (error) {
             console.error('Error happened here: ', error);
         }
-    };
+    }, [navigate, returnUrl, eventDetails]);
 
     useEffect(() => {
         if (user) {
             handleSuccessfulAuth();
         }
-    }, []);
+    }, [user, handleSuccessfulAuth]);
 
     const handleEmailAuth = async (e: React.FormEvent) => {
         e.preventDefault();

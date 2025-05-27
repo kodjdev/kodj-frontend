@@ -3,7 +3,7 @@ import themeColors from '@/tools/themeColors';
 import Card from '@/components/Card/Card';
 import { Calendar, Clock, MapPin, Coffee, Box, Play } from 'lucide-react';
 import { useLocation, useParams } from 'react-router-dom';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { EventTimeline } from '@/pages/Events/EventDetails/EventTimeline';
 import { EventLocation } from '@/pages/Events/EventDetails/EventLocation';
 import ComponentLoading from '@/components/ComponentLoading';
@@ -213,50 +213,48 @@ export default function EventDetails() {
     const { formatDate } = useFormatDate();
     const eventFetchService = useApiService();
 
-    useEffect(() => {
+    const fetchEventDetails = useCallback(async () => {
         if (!eventId) {
             setLoading(true);
             return;
         }
 
+        try {
+            setLoading(true);
+            const response = await eventFetchService.getEventDetails(eventId);
+            if (response?.statusCode && response.statusCode >= 200 && response.statusCode < 300) {
+                setEventDetails(response.data as unknown as ApiEventDetailsResponse);
+
+                if (!locationEventData) {
+                    const mappedEvent = mapApiResponseToEvent(eventId, response.data);
+                    setEventData(mappedEvent);
+                }
+            } else {
+                throw new Error(response.message || 'Failed to fetch event details');
+            }
+        } catch (err) {
+            setError(err instanceof Error ? err : new Error('An unknown error occurred'));
+            console.error('Error fetching event details:', err);
+        } finally {
+            setLoading(false);
+        }
+    }, [eventId, eventFetchService, locationEventData]);
+
+    useEffect(() => {
         if (locationEventData) {
             setEventData(locationEventData);
         }
 
         let isMounted = true;
 
-        const fetchEventDetails = async () => {
-            if (!isMounted) return;
-
-            try {
-                setLoading(true);
-                const response = await eventFetchService.getEventDetails(eventId);
-                if (response?.statusCode && response.statusCode >= 200 && response.statusCode < 300) {
-                    setEventDetails(response.data as unknown as ApiEventDetailsResponse);
-
-                    if (!locationEventData) {
-                        const mappedEvent = mapApiResponseToEvent(eventId, response.data);
-                        setEventData(mappedEvent);
-                    }
-                } else {
-                    throw new Error(response.message || 'Failed to fetch event details');
-                }
-            } catch (err) {
-                if (!isMounted) return;
-
-                setError(err instanceof Error ? err : new Error('An unknown error occurred'));
-                console.error('Error fetching event details:', err);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchEventDetails();
+        if (isMounted) {
+            fetchEventDetails();
+        }
 
         return () => {
             isMounted = false;
         };
-    }, [eventId]);
+    }, [fetchEventDetails, locationEventData]);
 
     /**
      * Method to map from EventDetailsResponse to Event
