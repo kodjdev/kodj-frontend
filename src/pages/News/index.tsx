@@ -6,12 +6,12 @@ import themeColors from '@/tools/themeColors';
 import Card from '@/components/Card/Card';
 import Input from '@/components/Input/Input';
 import Button from '@/components/Button/Button';
-import { sampleNews } from '@/pages/News/fakeData';
 import useApiService from '@/services';
 import useFormatDate from '@/hooks/useFormatDate';
 import { FaSearch } from 'react-icons/fa';
 import CopyLink from '@/components/CopyLink/CopyLink';
 import { NewsItem } from '@/types/news';
+import defaultImg from '@/static/icons/default.jpg';
 
 type TagVariant = 'default' | 'programming' | 'ai' | 'development';
 type FilterTypes = 'TECH' | 'MEETUP' | 'SOCIAL';
@@ -313,6 +313,14 @@ export default function NewsList() {
     const [visibleCount, setVisibleCount] = useState(4);
     const [hasMore, setHasMore] = useState(true);
 
+    const [newsCache, setNewsCache] = useState<Record<FilterTypes, NewsItem[]>>({
+        TECH: [],
+        MEETUP: [],
+        SOCIAL: [],
+    });
+
+    const [fetchedCategories, setFetchedCategories] = useState<Set<FilterTypes>>(new Set());
+
     const { formatDate } = useFormatDate();
     const newsService = useApiService();
 
@@ -328,34 +336,42 @@ export default function NewsList() {
 
     const visibleNews = filteredNews.slice(0, visibleCount);
 
-    useEffect(() => {
-        const fetchNews = async () => {
-            setLoading(true);
-            try {
-                const response = await newsService.getAllNews(activeCategory);
+    const fetchNews = async () => {
+        if (fetchedCategories.has(activeCategory) && newsCache[activeCategory].length > 0) {
+            setNews(newsCache[activeCategory]);
+            setLoading(false);
+            return;
+        }
 
-                if (response.statusCode === 200 && response.data) {
-                    setNews(response.data);
-                } else {
-                    const fallbackData =
-                        activeCategory === 'TECH'
-                            ? sampleNews
-                            : sampleNews.filter((news) => news.news_type === activeCategory);
+        setLoading(true);
+        try {
+            const response = await newsService.getAllNews(activeCategory);
 
-                    console.error('Error fetching news, using fallback:', response);
-                    setNews(fallbackData);
-                }
-            } catch (error) {
-                if (error instanceof Error) {
-                    console.error('Error fetching news:', error.message);
-                }
-            } finally {
-                setLoading(false);
+            if (response.statusCode === 200 && response.data && response.data.content) {
+                const fetchedNews = response.data.content;
+                setNews(fetchedNews);
+
+                setNewsCache((prevCache) => ({
+                    ...prevCache,
+                    [activeCategory]: fetchedNews,
+                }));
+                setFetchedCategories((prev) => new Set(prev.add(activeCategory)));
+            } else {
+                console.error('Error fetching news, using fallback:', response);
+                setNews([]);
             }
-        };
+        } catch (error) {
+            if (error instanceof Error) {
+                console.error('Error fetching news:', error.message);
+            }
+        } finally {
+            setLoading(false);
+        }
+    };
 
+    useEffect(() => {
         fetchNews();
-    }, [activeCategory, newsService]);
+    }, [activeCategory]);
 
     useEffect(() => {
         setVisibleCount(3);
@@ -436,6 +452,7 @@ export default function NewsList() {
                     <>
                         {visibleNews.map((newsItem) => (
                             <NewsCardLink key={newsItem.id} to={`/news/${newsItem.id}`}>
+                                {' '}
                                 <NewsCard key={newsItem.id}>
                                     <NewsCardContent>
                                         <NewsCardMain>
@@ -468,7 +485,7 @@ export default function NewsList() {
                                                             borderRadius: '50%',
                                                         }}
                                                     />
-                                                    {formatDate(newsItem.created_at) || '2025.05.18'}
+                                                    {formatDate(newsItem.createdAt) || '2025.05.18'}
 
                                                     <ReadTimeText>3 min read</ReadTimeText>
                                                 </MetaItem>
@@ -496,14 +513,14 @@ export default function NewsList() {
                                         </NewsCardMain>
 
                                         <NewsCardImage>
-                                            {newsItem.image_url ? (
+                                            {newsItem.imageURL ? (
                                                 <img
-                                                    src={newsItem.image_url}
+                                                    src={newsItem.imageURL}
                                                     alt={newsItem.title}
                                                     style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                                                 />
                                             ) : (
-                                                <img src="/api/placeholder/300/200" alt="KO'DJ" />
+                                                <img src={defaultImg} alt="KO'DJ" />
                                             )}
                                         </NewsCardImage>
                                     </NewsCardContent>

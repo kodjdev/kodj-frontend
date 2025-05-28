@@ -7,11 +7,11 @@ import Button from '@/components/Button/Button';
 import useAuth from '@/context/useAuth';
 import themeColors from '@/tools/themeColors';
 import { HiOutlinePhone, HiArrowLeft, HiX, HiCheckCircle } from 'react-icons/hi';
-import { UserRelatedDataProps } from '@/pages/Auth/index';
 import { EventDetails } from '@/types';
+import { UserData } from '@/types/user';
 
 type PhoneVerificationProps = {
-    signupData: UserRelatedDataProps;
+    signupData: UserData;
     onBack: () => void;
     returnUrl?: string;
     eventDetails?: EventDetails;
@@ -259,6 +259,9 @@ export default function PhoneVerification({ signupData, onBack }: PhoneVerificat
     const handleFinishSignup = async () => {
         setIsLoading(true);
         try {
+            if (!password) {
+                throw new Error('Password is required');
+            }
             const userData = {
                 email,
                 password,

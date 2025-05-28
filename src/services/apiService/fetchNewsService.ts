@@ -1,5 +1,5 @@
 import useAxios from '@/hooks/useAxios/useAxios';
-import { ApiResponse } from '@/types/fetch';
+import { ApiResponse, PaginatedResponse } from '@/types/fetch';
 import { NewsItem } from '@/types/news';
 import { useMemo } from 'react';
 
@@ -14,13 +14,15 @@ export const useFetchNewsService = () => {
 
     return useMemo(() => {
         return {
-            getAllNews: async (newsType?: 'TECH' | 'MEETUP' | 'SOCIAL'): Promise<ApiResponse<NewsItem[]>> => {
+            getAllNews: async (
+                newsType?: 'TECH' | 'MEETUP' | 'SOCIAL',
+            ): Promise<ApiResponse<PaginatedResponse<NewsItem>>> => {
                 const params: Record<string, string> = {};
                 if (newsType) {
                     params.type = newsType;
                 }
 
-                return fetchData<NewsItem[]>({
+                return fetchData<PaginatedResponse<NewsItem>>({
                     endpoint: '/news',
                     method: 'GET',
                     params,

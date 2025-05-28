@@ -208,6 +208,19 @@ export default function NewsComments({ articleId, initialComments = [] }: Commen
     const { isAuthenticated, user } = useAuth();
     const newsCommentService = useApiService();
 
+    const changeCommentData = useCallback(
+        (commentData: CommentData): Comment => ({
+            id: commentData.id,
+            author: commentData.username,
+            date: new Date(commentData.createdAt).toLocaleDateString(),
+            text: commentData.comment,
+            likes: commentData.likes,
+            avatar: commentData.avatarURL,
+            replies: [],
+        }),
+        [],
+    );
+
     const fetchComments = useCallback(async () => {
         try {
             setComments([]);
@@ -218,29 +231,11 @@ export default function NewsComments({ articleId, initialComments = [] }: Commen
             console.error('Error fetching comments:', error);
             setComments(initialComments);
         }
-    }, [articleId, newsCommentService, initialComments]);
+    }, [articleId, initialComments, changeCommentData]);
 
     useEffect(() => {
-        let isMounted = true;
-
-        if (isMounted) {
-            fetchComments();
-        }
-
-        return () => {
-            isMounted = false;
-        };
+        fetchComments();
     }, [fetchComments]);
-
-    const changeCommentData = (commentData: CommentData): Comment => ({
-        id: commentData.id,
-        author: commentData.username,
-        date: new Date(commentData.createdAt).toLocaleDateString(),
-        text: commentData.comment,
-        likes: commentData.likes,
-        avatar: commentData.avatarURL,
-        replies: [],
-    });
 
     const handleInputFocus = () => {
         if (!isAuthenticated) {

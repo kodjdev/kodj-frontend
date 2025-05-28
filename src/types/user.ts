@@ -1,3 +1,5 @@
+import { EventDetails } from '.';
+
 type RegistrationStatus = 'confirmed' | 'pending' | 'waitlist';
 type SpeakerStatus = 'confirmed' | 'pending';
 
@@ -29,12 +31,14 @@ export type SpeakerRegistrationResponse = {
 };
 
 export type UserData = {
-    name: string;
+    name?: string;
     email: string;
     password?: string;
     avatar?: File;
     bio?: string;
     role?: 'user' | 'admin' | 'speaker';
+    returnUrl?: string;
+    eventDetails?: EventDetails;
 };
 
 export type UserDetails = {
@@ -45,6 +49,17 @@ export type UserDetails = {
     bio?: string;
     role: 'user' | 'admin' | 'speaker';
     createdAt: string;
+    providerId?: string;
+    username: string;
+    phone: string;
+    oauthId?: string;
+    oauthProvider: string;
+    firstName?: string;
+    lastName?: string;
+    imageUrl?: string;
+    imageName?: string;
+    region?: string;
+    provider: string;
 };
 
 export type UserCount = {
