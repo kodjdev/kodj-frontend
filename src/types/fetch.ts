@@ -1,7 +1,7 @@
 export type ApiResponse<T = unknown> = {
     data: T;
     message?: string;
-    statusCode?: number;
+    statusCode: number;
     access_token?: string;
     refresh_token?: string;
 };

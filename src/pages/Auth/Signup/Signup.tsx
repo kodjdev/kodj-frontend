@@ -10,11 +10,11 @@ import { GoogleLogin } from '@react-oauth/google';
 import { EventDetails } from '@/types';
 import useAuth from '@/context/useAuth';
 import useGoogleSignupFlow from '@/hooks/useGoogleSignup';
-import { UserRelatedDataProps } from '@/pages/Auth/index';
+import { UserData } from '@/types/user';
 
 type SignupProps = {
     toggleAuthMode: () => void;
-    onSignupSuccess?: (userData: UserRelatedDataProps) => void;
+    onSignupSuccess?: (userData: UserData) => void;
     returnUrl?: string;
     eventDetails?: EventDetails;
 };

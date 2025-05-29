@@ -42,24 +42,27 @@ export type UserData = {
 };
 
 export type UserDetails = {
-    id: string;
-    name: string;
-    email: string;
-    avatar?: string;
-    bio?: string;
-    role: 'user' | 'admin' | 'speaker';
-    createdAt: string;
-    providerId?: string;
-    username: string;
-    phone: string;
-    oauthId?: string;
-    oauthProvider: string;
-    firstName?: string;
-    lastName?: string;
-    imageUrl?: string;
-    imageName?: string;
-    region?: string;
-    provider: string;
+    data: {
+        id: string;
+        name?: string;
+        email: string;
+        avatar?: string;
+        bio?: string;
+        role: 'user' | 'admin' | 'speaker';
+        createdAt: string;
+        providerId?: string;
+        username: string;
+        phone: string;
+        oauthId?: string;
+        oauthProvider: string;
+        firstName?: string;
+        lastName?: string;
+        imageUrl?: string;
+        imageName?: string;
+        region?: string;
+        provider: string;
+        category: string;
+    };
 };
 
 export type UserCount = {

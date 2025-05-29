@@ -1,17 +1,19 @@
 import { createContext } from 'react';
 import { AuthContextType } from '@/types/auth';
 
+const createContextError = (methodName: string) => () => {
+    throw new Error(`${methodName} must be used within AuthProvider`);
+};
+
 export const AuthContext = createContext<AuthContextType>({
     user: null,
     isAuthenticated: false,
     isLoading: true,
-    login: async () => ({ data: null }),
-    register: async () => ({
-        data: { registrationId: '', eventId: '', status: 'pending', success: false, message: '', otpSent: false },
-    }),
-    validateOTP: async () => ({ data: { data: { access_token: '', refresh_token: '' } } }),
-    loginWithGoogle: async () => ({ data: { data: { access_token: '', refresh_token: '' } } }),
-    signUpWithGoogle: async () => ({ data: null }),
-    logout: async () => {},
-    refreshTokens: async () => false,
+    login: createContextError('login'),
+    register: createContextError('register'),
+    validateOTP: createContextError('validateOTP'),
+    loginWithGoogle: createContextError('loginWithGoogle'),
+    signUpWithGoogle: createContextError('signUpWithGoogle'),
+    logout: createContextError('logout'),
+    refreshTokens: createContextError('refreshTokens'),
 });

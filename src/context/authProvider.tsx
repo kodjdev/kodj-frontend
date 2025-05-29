@@ -1,19 +1,11 @@
 import useAxios from '@/hooks/useAxios/useAxios';
 import { ApiResponse, RegisterFormData } from '@/types/fetch';
 import { EventRegistrationResponse } from '@/types/user';
-import { useState, useEffect, ReactNode, useCallback } from 'react';
-import { User } from '@/types/auth';
+import { useState, useEffect, ReactNode, useCallback, useRef } from 'react';
+import { TokenResponse, User } from '@/types/auth';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '@/context/AuthContext';
-
-type Tokens = {
-    access_token: string;
-    refresh_token: string;
-};
-
-export type TokenResponse = {
-    data: Tokens;
-};
+import useApiService from '@/services';
 
 type AuthProviderProps = {
     children: ReactNode;
@@ -34,6 +26,10 @@ export default function AuthProvider({ children }: AuthProviderProps) {
     const fetchData = useAxios();
     const navigate = useNavigate();
 
+    const isLoadingUserRef = useRef(false);
+
+    const getUserService = useApiService();
+
     const clearTokens = useCallback(() => {
         localStorage.removeItem('access_token');
         localStorage.removeItem('refresh_token');
@@ -42,16 +38,14 @@ export default function AuthProvider({ children }: AuthProviderProps) {
 
     const loadUserData = useCallback(
         async (token: string) => {
+            if (isLoadingUserRef.current) {
+                return null;
+            }
+            isLoadingUserRef.current = true;
             try {
-                const response = await fetchData<User>({
-                    endpoint: '/users/details',
-                    method: 'GET',
-                    customHeaders: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                });
+                const response = await getUserService.getUserDetails(token);
 
-                if (response.data) {
+                if (response.data && response.data.data) {
                     setUser(response.data);
                     return response.data;
                 } else {
@@ -62,9 +56,11 @@ export default function AuthProvider({ children }: AuthProviderProps) {
                 console.error('Error loading user data:', error);
                 clearTokens();
                 return null;
+            } finally {
+                isLoadingUserRef.current = false;
             }
         },
-        [fetchData, clearTokens],
+        [getUserService, clearTokens],
     );
 
     const isTokenValid = useCallback((token: string): boolean => {
@@ -234,10 +230,18 @@ export default function AuthProvider({ children }: AuthProviderProps) {
                 if (response.data?.data?.access_token) {
                     localStorage.setItem('access_token', response.data.data.access_token);
                     localStorage.setItem('refresh_token', response.data.data.refresh_token);
-                    console.log('Tokens stored, loading user data');
+                    console.log('Tokens stored, loading user data', response);
 
-                    // Load user data, but don't repeatedly call this function
-                    await loadUserData(response.data.data.access_token);
+                    const userData = await loadUserData(response.data.data.access_token);
+
+                    if (userData) {
+                        console.log('User data loaded, navigating to mypage');
+                        setTimeout(() => {
+                            navigate('/mypage');
+                        }, 500);
+                    } else {
+                        console.error('Failed to load user data after Google login');
+                    }
                 }
 
                 return response;
@@ -246,7 +250,7 @@ export default function AuthProvider({ children }: AuthProviderProps) {
                 throw error;
             }
         },
-        [fetchData, loadUserData],
+        [fetchData, loadUserData, navigate],
     );
 
     const signUpWithGoogle = useCallback(

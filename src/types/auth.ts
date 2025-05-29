@@ -4,18 +4,20 @@ import { EventRegistrationResponse } from './user';
 
 export type User = {
     data: {
-        id: number;
-        username: string;
+        id: string;
         email: string;
-        firstName: string | null;
-        lastName: string | null;
-        oauthProvider: string;
-        imageUrl: string;
-        imageName: string;
-        region: string | null;
-        bio: string | null;
-        category: string | null;
+        firstName?: string;
+        lastName?: string;
+        imageUrl?: string;
+        bio?: string;
+        role: 'user' | 'admin' | 'speaker';
         createdAt: string;
+        username: string;
+        phone?: string;
+        oauthProvider?: string;
+        region?: string;
+        category?: string;
+        provider?: string;
     };
 };
 

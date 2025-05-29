@@ -1,19 +1,20 @@
+import { UserDetails } from '@/types/user';
+
 export type NewsItem = {
-    id: string;
+    id: number;
     title: string;
     content: string;
-    image_name?: string;
-    image_url?: string;
-    news_type: 'TECH' | 'MEETUP' | 'SOCIAL';
-    contact_phone?: string;
-    contact_email?: string;
-    twitter_profile?: string;
-    linkedin_profile?: string;
-    facebook_profile?: string;
-    instagram_handle?: string;
-    created_at: string;
-    user_id?: number;
-    category_id?: number;
+    imageName?: string;
+    imageURL?: string;
+    type: 'TECH' | 'MEETUP' | 'SOCIAL';
+    contactPhone?: string;
+    contactEmail?: string;
+    twitterProfile?: string;
+    linkedinProfile?: string;
+    facebookProfile?: string;
+    instagramHandle?: string;
+    createdAt: string;
+    user?: UserDetails;
     tags?: string[];
     read_time?: number;
 };

@@ -224,10 +224,7 @@ export default function Login({ toggleAuthMode, returnUrl, eventDetails }: Login
             if (response && response.data) {
                 messageApi.success('Successfully logged in with Google');
 
-                setTimeout(() => {
-                    // window.location.reload();
-                    navigate('/mypage');
-                }, 1000);
+                handleSuccessfulAuth();
             } else {
                 messageApi.error('Authentication failed - invalid response');
                 console.error('Invalid auth response:', response);
@@ -325,10 +322,9 @@ export default function Login({ toggleAuthMode, returnUrl, eventDetails }: Login
                 <GoogleLogin
                     onSuccess={handleGoogleLoginSuccess}
                     onError={handleGoogleLoginError}
-                    useOneTap
                     text="signin_with"
                     shape="rectangular"
-                    width="100%"
+                    theme="outline"
                 />
             </GoogleLoginWrapper>
 

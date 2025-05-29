@@ -4,14 +4,7 @@ import { useLocation } from 'react-router-dom';
 import Signup from '@/pages/Auth/Signup/Signup';
 import Login from '@/pages/Auth/Login/Login';
 import PhoneVerification from '@/pages/Auth/Signup/PhoneVerification';
-import { EventDetails } from '@/types';
-
-type UserData = {
-    email: string;
-    password: string;
-    returnUrl?: string;
-    eventDetails?: EventDetails;
-};
+import { UserData } from '@/types/user';
 
 const AuthWrapper = styled.div`
     width: 100%;
