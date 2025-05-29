@@ -1,9 +1,9 @@
 import styled from 'styled-components';
 import themeColors from '@/tools/themeColors';
 import Card from '@/components/Card/Card';
-import { Calendar, Clock, MapPin, Coffee, Box, Play } from 'lucide-react';
-import { useLocation, useParams } from 'react-router-dom';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { Calendar, Clock, MapPin, Coffee, Box, Play, ArrowLeft } from 'lucide-react';
+import { Link, useLocation, useParams } from 'react-router-dom';
+import { useEffect, useRef, useState } from 'react';
 import { EventTimeline } from '@/pages/Events/EventDetails/EventTimeline';
 import { EventLocation } from '@/pages/Events/EventDetails/EventLocation';
 import ComponentLoading from '@/components/ComponentLoading';
@@ -14,12 +14,6 @@ import { Event, EventDetailsResponse } from '@/types/event';
 import { ApiResponse } from '@/types/fetch';
 import useApiService from '@/services';
 import useFormatDate from '@/hooks/useFormatDate';
-
-type ApiEventDetailsResponse = {
-    message?: string;
-    data: EventDetailsResponse;
-    statusCode?: number;
-};
 
 const PageContainer = styled.div`
     background-color: ${themeColors.colors.neutral.black};
@@ -181,6 +175,24 @@ const SectionTitle = styled.h2`
     }
 `;
 
+const BackLink = styled(Link)`
+    display: inline-flex;
+    align-items: center;
+    color: ${themeColors.colors.gray.main};
+    font-size: ${themeColors.typography.body.medium.fontSize}px;
+    text-decoration: none;
+    margin-bottom: ${themeColors.spacing.lg};
+    transition: color 0.2s ease;
+
+    &:hover {
+        color: ${themeColors.colors.primary.main};
+    }
+
+    svg {
+        margin-right: ${themeColors.spacing.xs};
+    }
+`;
+
 /**
  * EventDetails Component - Page Component
  * @description Displays comprehensive details about a specific event.
@@ -213,48 +225,56 @@ export default function EventDetails() {
     const { formatDate } = useFormatDate();
     const eventFetchService = useApiService();
 
-    const fetchEventDetails = useCallback(async () => {
-        if (!eventId) {
-            setLoading(true);
-            return;
-        }
-
-        try {
-            setLoading(true);
-            const response = await eventFetchService.getEventDetails(eventId);
-            if (response?.statusCode && response.statusCode >= 200 && response.statusCode < 300) {
-                setEventDetails(response.data as unknown as ApiEventDetailsResponse);
-
-                if (!locationEventData) {
-                    const mappedEvent = mapApiResponseToEvent(eventId, response.data);
-                    setEventData(mappedEvent);
-                }
-            } else {
-                throw new Error(response.message || 'Failed to fetch event details');
-            }
-        } catch (err) {
-            setError(err instanceof Error ? err : new Error('An unknown error occurred'));
-            console.error('Error fetching event details:', err);
-        } finally {
-            setLoading(false);
-        }
-    }, [eventId, eventFetchService, locationEventData]);
-
     useEffect(() => {
+        let isMounted = true;
+
+        const fetchEventDetails = async () => {
+            if (!eventId) {
+                if (isMounted) setLoading(false);
+                return;
+            }
+
+            try {
+                if (isMounted) setLoading(true);
+
+                console.log('Fetching event details for ID:', eventId);
+
+                const response = await eventFetchService.getEventDetails(eventId);
+
+                if (!isMounted) return;
+
+                if (response?.statusCode && response.statusCode >= 200 && response.statusCode < 300) {
+                    setEventDetails(response);
+
+                    if (!locationEventData) {
+                        const mappedEvent = mapApiResponseToEvent(eventId, response.data);
+                        setEventData(mappedEvent);
+                    }
+                } else {
+                    throw new Error(response.message || 'Failed to fetch event details');
+                }
+            } catch (err) {
+                if (isMounted) {
+                    setError(err instanceof Error ? err : new Error('An unknown error occurred'));
+                    console.error('Error fetching event details:', err);
+                }
+            } finally {
+                if (isMounted) {
+                    setLoading(false);
+                }
+            }
+        };
+
         if (locationEventData) {
             setEventData(locationEventData);
         }
 
-        let isMounted = true;
-
-        if (isMounted) {
-            fetchEventDetails();
-        }
+        fetchEventDetails();
 
         return () => {
             isMounted = false;
         };
-    }, [fetchEventDetails, locationEventData]);
+    }, [eventId]);
 
     /**
      * Method to map from EventDetailsResponse to Event
@@ -360,6 +380,9 @@ export default function EventDetails() {
     }
     return (
         <PageContainer>
+            <BackLink to="/events">
+                <ArrowLeft size={16} /> Back to Events
+            </BackLink>
             <ContentWrapper>
                 <LeftPanel>
                     <EventBanner>

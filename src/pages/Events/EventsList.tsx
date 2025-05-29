@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { Event } from '@/types';
@@ -129,43 +129,43 @@ export default function EventsList({ onFilterChange, defaultFilter = EventFilter
 
     const { formatDate } = useFormatDate();
 
-    const initializeData = useCallback(async () => {
-        try {
-            setLoading(true);
-
-            console.log('Explicitly fetching upcoming events...');
-
-            await eventFetchService.getEvents({
-                type: 'upcoming',
-                size: 50,
-                page: 0,
-            });
-
-            console.log('Explicitly fetching past events...');
-
-            await eventFetchService.getEvents({
-                type: 'past',
-                size: 50,
-                page: 0,
-            });
-        } catch (error) {
-            console.error('Error fetching events:', error);
-        } finally {
-            setLoading(false);
-        }
-    }, [eventFetchService]);
-
     useEffect(() => {
         let isMounted = true;
 
-        if (isMounted) {
-            initializeData();
-        }
+        const fetchData = async () => {
+            if (!isMounted) return;
+
+            try {
+                setLoading(true);
+
+                console.log('Explicitly fetching upcoming events...');
+                await eventFetchService.getEvents({
+                    type: 'upcoming',
+                    size: 50,
+                    page: 0,
+                });
+
+                console.log('Explicitly fetching past events...');
+                await eventFetchService.getEvents({
+                    type: 'past',
+                    size: 50,
+                    page: 0,
+                });
+            } catch (error) {
+                console.error('Error fetching events:', error);
+            } finally {
+                if (isMounted) {
+                    setLoading(false);
+                }
+            }
+        };
+
+        fetchData();
 
         return () => {
             isMounted = false;
         };
-    }, [initializeData]);
+    }, []);
 
     const handleFilterChange = (filter: EventFilter) => {
         setActiveFilter(filter);
