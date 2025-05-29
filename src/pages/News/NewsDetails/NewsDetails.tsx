@@ -1,17 +1,16 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { Calendar, ArrowLeft, Timer, Twitter, LinkedinIcon } from 'lucide-react';
 import themeColors from '@/tools/themeColors';
 import Button from '@/components/Button/Button';
 import Card from '@/components/Card/Card';
-import { sampleNews } from '@/pages/News/fakeData';
 import { useRecoilState } from 'recoil';
 import errorAtom from '@/atoms/errors';
 import useFormatDate from '@/hooks/useFormatDate';
-import NewsComments from '@/pages/News/NewsDetails/NewsComment';
 import CopyLink from '@/components/CopyLink/CopyLink';
 import { NewsItem } from '@/types/news';
+import useApiService from '@/services';
 
 const Container = styled.div`
     max-width: ${themeColors.breakpoints.desktop};
@@ -215,56 +214,89 @@ export default function NewsDetail() {
     const [loading, setLoading] = useState(true);
     const [newsError, setNewsError] = useRecoilState(errorAtom);
 
+    const [relatedNews, setRelatedNews] = useState<NewsItem[]>([]);
+
+    const newsService = useApiService();
+
     const { formatDate } = useFormatDate();
 
-    const fetchNewsItem = useCallback(async () => {
-        setLoading(true);
-        try {
-            if (!id) {
-                throw new Error('News ID is required');
-            }
-
-            console.log('API not implemented yet, using fallback data');
-
-            const fallbackItem = sampleNews.find((news) => news.id.toString() === id);
-            if (fallbackItem) {
-                setNewsItem(fallbackItem);
-            } else {
-                setNewsError({
-                    title: 'Article Not Found',
-                    message: 'The news article you requested could not be found.',
-                    record: id || null,
-                });
-            }
-        } catch (error) {
-            console.error('Error handling news detail:', error);
-
-            setNewsError({
-                title: 'Error Loading Article',
-                message: 'There was a problem loading this article. Please try again.',
-                record: id || null,
-            });
-        } finally {
-            setLoading(false);
-        }
-    }, [id, setNewsError]);
-
     useEffect(() => {
-        if (!id) {
-            setNewsError({
-                title: 'Invalid Article ID',
-                message: 'The article ID provided is invalid.',
-                record: null,
-            });
-            return;
-        }
+        let isMounted = true;
+
+        const fetchNewsItem = async () => {
+            if (!id) {
+                if (isMounted) {
+                    setNewsError({
+                        title: 'Invalid Article ID',
+                        message: 'The article ID provided is invalid.',
+                        record: null,
+                    });
+                }
+                return;
+            }
+
+            if (isMounted) setLoading(true);
+
+            try {
+                console.log('Fetching news item with ID:', id);
+
+                const response = await newsService.getNewsById(id);
+
+                if (!isMounted) return;
+
+                if (response.statusCode === 200 && response.data) {
+                    const newsData = response.data.data;
+                    setNewsItem(newsData);
+                    setNewsError(null);
+                } else {
+                    setNewsError({
+                        title: 'Article Not Found',
+                        message: 'The news article you requested could not be found.',
+                        record: id || null,
+                    });
+                }
+            } catch (error) {
+                console.error('Error loading news item:', error);
+                if (isMounted) {
+                    setNewsError({
+                        title: 'Error Loading Article',
+                        message: 'There was a problem loading this article. Please try again.',
+                        record: id || null,
+                    });
+                }
+            } finally {
+                if (isMounted) {
+                    setLoading(false);
+                }
+            }
+        };
 
         fetchNewsItem();
 
         return () => {
-            setNewsError(null);
+            isMounted = false;
         };
-    }, [id, fetchNewsItem, setNewsError]);
+    }, [id]);
+
+    useEffect(() => {
+        if (newsItem && newsItem.type) {
+            const fetchRelatedNews = async () => {
+                try {
+                    const response = await newsService.getAllNews(newsItem.type);
+                    if (response.statusCode === 200 && response.data && response.data.data.content) {
+                        const filtered = response.data.data.content
+                            .filter((news) => news.id.toString() !== id)
+                            .slice(0, 5);
+                        setRelatedNews(filtered);
+                    }
+                } catch (error) {
+                    console.error('Error fetching related news:', error);
+                }
+            };
+
+            fetchRelatedNews();
+        }
+    }, [newsItem, id]);
 
     if (loading) {
         return (
@@ -292,19 +324,6 @@ export default function NewsDetail() {
         );
     }
 
-    const getCategoryLabel = (category: string) => {
-        switch (category) {
-            case 'TECH':
-                return 'Technology';
-            case 'MEETUP':
-                return 'Meetup';
-            case 'SOCIAL':
-                return 'Social';
-            default:
-                return category;
-        }
-    };
-
     const shareOnTwitter = () => {
         const text = `Check out this article: ${newsItem.title}`;
         const url = window.location.href;
@@ -318,11 +337,6 @@ export default function NewsDetail() {
         const url = window.location.href;
         window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`, '_blank');
     };
-
-    const relatedNews = sampleNews
-        .filter((news) => news.id.toString() !== id)
-        .filter((news) => news.news_type === newsItem.news_type)
-        .slice(0, 1);
 
     return (
         <Container>
@@ -341,7 +355,7 @@ export default function NewsDetail() {
                                     paddingRight: '4px',
                                 }}
                             />
-                            {formatDate(newsItem.created_at)}
+                            {formatDate(newsItem.createdAt)}
                         </MetaItem>
                         <ReadTimeShow>
                             <Timer
@@ -350,30 +364,47 @@ export default function NewsDetail() {
                                     paddingRight: '4px',
                                 }}
                             />
-                            {getCategoryLabel(newsItem.read_time + 'min read')}
+                            {newsItem.read_time ? `${newsItem.read_time} min read` : '3 min read'}
                         </ReadTimeShow>
                     </ArticleMeta>
                 </ArticleHeader>
 
-                {newsItem.image_url && (
+                {newsItem.imageURL && (
                     <ArticleImage>
-                        <img src={newsItem.image_url} alt={newsItem.title} />
+                        <img src={newsItem.imageURL} alt={newsItem.title} />
                     </ArticleImage>
                 )}
 
                 <ArticleContent>
-                    <p>{newsItem.content.length > 100 ? newsItem.content : 'No content available for this article.'}</p>
                     <p>
-                        Bizga qo'shilib, eng so'nggi yangiliklarni o'rganing, expertlardan bilimlar o'rganing va
-                        uchrashuvlar va forumlarimizga qatnashing va tarmoq'ingizni kengaytiring. Bugundan boshlab
-                        to'liqligcha jamiyatimizga qo'ldan kelgancha yordam berishga kirishdik. Raxmat hammaga.
+                        {(() => {
+                            if (!newsItem.content) {
+                                return 'No content available for this article.';
+                            }
+
+                            if (newsItem.content.length > 100) {
+                                const sentences = newsItem.content.split('.');
+                                const firstPart = sentences.slice(0, 2).join('.') + '.';
+                                const secondPart = sentences.slice(2).join('.').trim();
+
+                                return (
+                                    <>
+                                        {firstPart}
+                                        <br />
+                                        <br />
+                                        {secondPart}
+                                    </>
+                                );
+                            }
+
+                            return newsItem.content;
+                        })()}
                     </p>
                 </ArticleContent>
-
                 <ShareSection>
                     <ShareButtons>
                         <ShareButton variant="text" size="sm">
-                            <CopyLink url={window.location.href} iconSize={19} />
+                            <CopyLink url={window.location.href} iconSize={19} showText={false} />
                         </ShareButton>
                         <ShareButton variant="text" size="sm" onClick={shareOnTwitter}>
                             <Twitter size={19} />
@@ -385,19 +416,19 @@ export default function NewsDetail() {
                 </ShareSection>
             </Article>
 
-            <NewsComments articleId={id || ''} />
+            {/* <NewsComments articleId={id || ''} /> */}
 
             {relatedNews.length > 0 && (
                 <ReadNextSection>
-                    <ReadNextHeader>Read next</ReadNextHeader>
+                    <ReadNextHeader>Related Articles</ReadNextHeader>
                     {relatedNews.map((article) => (
                         <NewsCardLink key={article.id} to={`/news/${article.id}`}>
-                            <RelatedNewsCard padding="1rem">
+                            <RelatedNewsCard padding="1rem" style={{ marginBottom: '1rem' }}>
                                 <h3 style={{ color: themeColors.colors.neutral.white, marginBottom: '0.5rem' }}>
                                     {article.title}
                                 </h3>
                                 <p style={{ color: themeColors.colors.gray.text }}>
-                                    {article.content.substring(0, 100)}...
+                                    {article.content.substring(0, 150)}...
                                 </p>
                             </RelatedNewsCard>
                         </NewsCardLink>

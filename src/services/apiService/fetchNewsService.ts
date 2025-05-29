@@ -16,21 +16,21 @@ export const useFetchNewsService = () => {
         return {
             getAllNews: async (
                 newsType?: 'TECH' | 'MEETUP' | 'SOCIAL',
-            ): Promise<ApiResponse<PaginatedResponse<NewsItem>>> => {
+            ): Promise<ApiResponse<{ data: PaginatedResponse<NewsItem>; message: string; statusCode: number }>> => {
                 const params: Record<string, string> = {};
                 if (newsType) {
                     params.type = newsType;
                 }
 
-                return fetchData<PaginatedResponse<NewsItem>>({
+                return fetchData<{ data: PaginatedResponse<NewsItem>; message: string; statusCode: number }>({
                     endpoint: '/news',
                     method: 'GET',
                     params,
                 });
             },
 
-            getNewsById: async (id: string): Promise<ApiResponse<NewsItem>> => {
-                return fetchData<NewsItem>({
+            getNewsById: async (id: string): Promise<ApiResponse<{ data: NewsItem }>> => {
+                return fetchData<{ data: NewsItem }>({
                     endpoint: `/news/${id}`,
                     method: 'GET',
                 });

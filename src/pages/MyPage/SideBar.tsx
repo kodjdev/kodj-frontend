@@ -2,6 +2,9 @@ import styled from 'styled-components';
 import themeColors from '@/tools/themeColors';
 import { FaCalendarAlt, FaUser, FaPen, FaSignOutAlt } from 'react-icons/fa';
 import Button from '@/components/Button/Button';
+import useAuth from '@/context/useAuth';
+import defaultUserImage from '@/static/icons/default.jpg';
+import useFormatDate from '@/hooks/useFormatDate';
 
 enum PageSection {
     EVENTS = 'events',
@@ -113,14 +116,18 @@ const SignOutButton = styled(Button)`
  * switch between different sections and sign out.
  */
 export default function Sidebar({ activeSection, onSectionChange, onLogout }: SidebarProps) {
+    const { formatDate } = useFormatDate();
+
+    const { user } = useAuth();
+
     return (
         <SidebarContainer>
             <ProfileSection>
-                <ProfileImage src="/api/placeholder/60/60" alt="Profile" />
+                <ProfileImage src={user?.data.imageUrl || defaultUserImage} alt="Profile" />
                 <ProfileInfo>
-                    <ProfileName>Behzod Olimov</ProfileName>
-                    <ProfileEmail>example@example.com</ProfileEmail>
-                    <ProfileJoined>KO'DJ joined: 12.12.2024</ProfileJoined>
+                    <ProfileName>{user?.data.username || 'Anonymous'}</ProfileName>
+                    <ProfileEmail>{user?.data.email || 'No Email Given'}</ProfileEmail>
+                    <ProfileJoined>KO'DJ joined: {formatDate(user?.data.createdAt)}</ProfileJoined>
                 </ProfileInfo>
             </ProfileSection>
 

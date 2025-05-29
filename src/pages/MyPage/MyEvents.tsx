@@ -24,6 +24,7 @@ const TabsHeader = styled.div`
 const Tab = styled.button<{ active: boolean }>`
     background-color: transparent;
     border: none;
+    outline: none;
     color: ${(props) => (props.active ? themeColors.colors.neutral.white : themeColors.colors.gray.text)};
     font-size: ${themeColors.typography.body.medium.fontSize}px;
     font-weight: ${(props) => (props.active ? 600 : 400)};
@@ -39,6 +40,10 @@ const Tab = styled.button<{ active: boolean }>`
         width: 100%;
         height: 2px;
         background-color: ${(props) => (props.active ? themeColors.colors.primary.main : 'transparent')};
+    }
+
+    &:focus {
+        outline: none;
     }
 `;
 

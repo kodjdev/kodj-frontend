@@ -347,8 +347,9 @@ export default function NewsList() {
         try {
             const response = await newsService.getAllNews(activeCategory);
 
-            if (response.statusCode === 200 && response.data && response.data.content) {
-                const fetchedNews = response.data.content;
+            if (response.statusCode === 200 && response.data) {
+                const fetchedNews = response.data.data.content;
+                console.log('Fetched news:', fetchedNews);
                 setNews(fetchedNews);
 
                 setNewsCache((prevCache) => ({
