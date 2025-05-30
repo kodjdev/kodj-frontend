@@ -109,23 +109,25 @@ export default function LoadingAnimation({
 }
 
 export function PageLoading({ message = 'Loading page...' }: LoadingProps) {
-    <LoadingAnimation message={message} minHeight="500px" size="large" />;
+    return <LoadingAnimation message={message} minHeight="500px" size="large" />;
 }
 
 export function SectionLoading({ message = 'Loading...' }: LoadingProps) {
-    <LoadingAnimation message={message} minHeight="200px" size="default" />;
+    return <LoadingAnimation message={message} minHeight="200px" size="default" />;
 }
 
 export function ModalLoading({ message = 'Please wait...' }: LoadingProps) {
-    <LoadingAnimation
-        message={message}
-        fullScreen
-        backgroundColor="rgba(0, 0, 0, 0.7)"
-        textColor={themeColors.colors.neutral.white}
-        size="large"
-    />;
+    return (
+        <LoadingAnimation
+            message={message}
+            fullScreen
+            backgroundColor="rgba(0, 0, 0, 0.7)"
+            textColor={themeColors.colors.neutral.white}
+            size="large"
+        />
+    );
 }
 
 export function InlineLoading({ message = 'Loading...' }: LoadingProps) {
-    <LoadingAnimation message={message} minHeight="100px" size="small" backgroundColor="transparent" />;
+    return <LoadingAnimation message={message} minHeight="100px" size="small" backgroundColor="transparent" />;
 }
