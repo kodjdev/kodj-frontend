@@ -11,6 +11,7 @@ import useFormatDate from '@/hooks/useFormatDate';
 import CopyLink from '@/components/CopyLink/CopyLink';
 import { NewsItem } from '@/types/news';
 import useApiService from '@/services';
+import PageLoading from '@/components/Loading/LoadingAnimation';
 
 const Container = styled.div`
     max-width: ${themeColors.breakpoints.desktop};
@@ -299,11 +300,7 @@ export default function NewsDetail() {
     }, [newsItem, id]);
 
     if (loading) {
-        return (
-            <Container>
-                <div>Loading...</div>
-            </Container>
-        );
+        return <PageLoading message="Loading details.." />;
     }
 
     if (newsError || !newsItem) {

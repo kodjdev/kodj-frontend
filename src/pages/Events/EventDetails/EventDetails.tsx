@@ -6,7 +6,6 @@ import { Link, useLocation, useParams } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
 import { EventTimeline } from '@/pages/Events/EventDetails/EventTimeline';
 import { EventLocation } from '@/pages/Events/EventDetails/EventLocation';
-import ComponentLoading from '@/components/ComponentLoading';
 import Button from '@/components/Button/Button';
 import { MeetupRegistrationStatus } from '@/types/enums';
 import Speakers from '@/components/Speakers';
@@ -14,6 +13,7 @@ import { Event, EventDetailsResponse } from '@/types/event';
 import { ApiResponse } from '@/types/fetch';
 import useApiService from '@/services';
 import useFormatDate from '@/hooks/useFormatDate';
+import PageLoading from '@/components/Loading/LoadingAnimation';
 
 const PageContainer = styled.div`
     background-color: ${themeColors.colors.neutral.black};
@@ -146,13 +146,6 @@ const EventInfoItem = styled.div`
         font-size: ${themeColors.typography.body.medium.fontSize}px;
         color: ${themeColors.colors.neutral.white};
     }
-`;
-
-const LoadingContainer = styled.div`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 400px;
 `;
 
 const ErrorContainer = styled.div`
@@ -359,13 +352,7 @@ export default function EventDetails() {
           : ['No description available.'];
 
     if (loading && !locationEventData) {
-        return (
-            <PageContainer>
-                <LoadingContainer>
-                    <ComponentLoading />
-                </LoadingContainer>
-            </PageContainer>
-        );
+        return <PageLoading message="Loading Event Details ..." />;
     }
 
     if (error && !locationEventData) {
