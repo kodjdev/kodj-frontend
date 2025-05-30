@@ -10,12 +10,18 @@ import useApiService from '@/services';
 import useFormatDate from '@/hooks/useFormatDate';
 import { FaSearch } from 'react-icons/fa';
 import CopyLink from '@/components/CopyLink/CopyLink';
-import { NewsItem } from '@/types/news';
 import defaultImg from '@/static/icons/default.jpg';
 import PageLoading from '@/components/Loading/LoadingAnimation';
+import { useRecoilValue } from 'recoil';
+import { meetupNewsAtom, newsCacheStatusAtom, socialNewsAtom, techNewsAtom } from '@/atoms/news';
 
-type TagVariant = 'default' | 'programming' | 'ai' | 'development';
-type FilterTypes = 'TECH' | 'MEETUP' | 'SOCIAL';
+export type TagVariant = 'default' | 'programming' | 'ai' | 'development';
+
+export enum FilterTypes {
+    TECH = 'TECH',
+    MEETUP = 'MEETUP',
+    SOCIAL = 'SOCIAL',
+}
 
 const TAG_VARIANT_MAP: Record<string, TagVariant> = {
     programming: 'programming',
@@ -306,24 +312,35 @@ const ReadTimeText = styled.span`
  * @param {string | null} activeTag - The currently selected tag for filtering.
  */
 export default function NewsList() {
-    const [activeCategory, setActiveCategory] = useState<FilterTypes>('TECH');
-    const [news, setNews] = useState<Array<NewsItem>>([]);
+    const [activeCategory, setActiveCategory] = useState<FilterTypes>(FilterTypes.TECH);
     const [activeTag, setActiveTag] = useState<string | null>(null);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
     const [visibleCount, setVisibleCount] = useState(4);
     const [hasMore, setHasMore] = useState(true);
 
-    const [newsCache, setNewsCache] = useState<Record<FilterTypes, NewsItem[]>>({
-        TECH: [],
-        MEETUP: [],
-        SOCIAL: [],
-    });
-
-    const [fetchedCategories, setFetchedCategories] = useState<Set<FilterTypes>>(new Set());
+    const techNews = useRecoilValue(techNewsAtom);
+    const meetupNews = useRecoilValue(meetupNewsAtom);
+    const socialNews = useRecoilValue(socialNewsAtom);
+    const cacheStatus = useRecoilValue(newsCacheStatusAtom);
 
     const { formatDate } = useFormatDate();
     const newsService = useApiService();
+
+    const getCurrentNews = () => {
+        switch (activeCategory) {
+            case FilterTypes.TECH:
+                return techNews;
+            case FilterTypes.MEETUP:
+                return meetupNews;
+            case FilterTypes.SOCIAL:
+                return socialNews;
+            default:
+                return [];
+        }
+    };
+
+    const news = getCurrentNews();
 
     const filteredNews = news.filter((newsItem) => {
         const matchesSearch =
@@ -337,42 +354,36 @@ export default function NewsList() {
 
     const visibleNews = filteredNews.slice(0, visibleCount);
 
-    const fetchNews = async () => {
-        if (fetchedCategories.has(activeCategory) && newsCache[activeCategory].length > 0) {
-            setNews(newsCache[activeCategory]);
-            setLoading(false);
-            return;
-        }
-
-        setLoading(true);
-        try {
-            const response = await newsService.getAllNews(activeCategory);
-
-            if (response.statusCode === 200 && response.data) {
-                const fetchedNews = response.data.data.content;
-                console.log('Fetched news:', fetchedNews);
-                setNews(fetchedNews);
-
-                setNewsCache((prevCache) => ({
-                    ...prevCache,
-                    [activeCategory]: fetchedNews,
-                }));
-                setFetchedCategories((prev) => new Set(prev.add(activeCategory)));
-            } else {
-                console.error('Error fetching news, using fallback:', response);
-                setNews([]);
-            }
-        } catch (error) {
-            if (error instanceof Error) {
-                console.error('Error fetching news:', error.message);
-            }
-        } finally {
-            setLoading(false);
-        }
-    };
-
     useEffect(() => {
+        let isMounted = true;
+
+        const fetchNews = async () => {
+            const cacheInfo = cacheStatus[activeCategory];
+
+            if (cacheInfo.loaded) {
+                console.log(`Using cached ${activeCategory} news`);
+                return;
+            }
+
+            if (!isMounted) return;
+
+            try {
+                setLoading(true);
+                await newsService.getAllNews(activeCategory);
+            } catch (error) {
+                console.error('Error fetching news:', error);
+            } finally {
+                if (isMounted) {
+                    setLoading(false);
+                }
+            }
+        };
+
         fetchNews();
+
+        return () => {
+            isMounted = false;
+        };
     }, [activeCategory]);
 
     useEffect(() => {
@@ -400,7 +411,7 @@ export default function NewsList() {
                     <FilterButton
                         isActive={activeCategory === 'TECH' && !activeTag}
                         onClick={() => {
-                            setActiveCategory('TECH');
+                            setActiveCategory(FilterTypes.TECH);
                             setActiveTag(null);
                         }}
                     >
@@ -409,7 +420,7 @@ export default function NewsList() {
                     <FilterButton
                         isActive={activeCategory === 'MEETUP' && !activeTag}
                         onClick={() => {
-                            setActiveCategory('MEETUP');
+                            setActiveCategory(FilterTypes.MEETUP);
                             setActiveTag(null);
                         }}
                     >
@@ -418,7 +429,7 @@ export default function NewsList() {
                     <FilterButton
                         isActive={activeCategory === 'SOCIAL' && !activeTag}
                         onClick={() => {
-                            setActiveCategory('SOCIAL');
+                            setActiveCategory(FilterTypes.SOCIAL);
                             setActiveTag(null);
                         }}
                     >

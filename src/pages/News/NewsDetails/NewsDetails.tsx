@@ -213,10 +213,9 @@ export default function NewsDetail() {
     const { id } = useParams<{ id: string }>();
     const [newsItem, setNewsItem] = useState<NewsItem | null>(null);
     const [loading, setLoading] = useState(true);
-    const [newsError, setNewsError] = useRecoilState(errorAtom);
-
     const [relatedNews, setRelatedNews] = useState<NewsItem[]>([]);
 
+    const [newsError, setNewsError] = useRecoilState(errorAtom);
     const newsService = useApiService();
 
     const { formatDate } = useFormatDate();
@@ -239,8 +238,6 @@ export default function NewsDetail() {
             if (isMounted) setLoading(true);
 
             try {
-                console.log('Fetching news item with ID:', id);
-
                 const response = await newsService.getNewsById(id);
 
                 if (!isMounted) return;
@@ -297,7 +294,7 @@ export default function NewsDetail() {
 
             fetchRelatedNews();
         }
-    }, [newsItem, id]);
+    }, [newsItem?.id, newsItem?.type, id]);
 
     if (loading) {
         return <PageLoading message="Loading details.." />;

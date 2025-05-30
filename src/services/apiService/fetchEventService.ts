@@ -6,6 +6,8 @@ import useAxios from '@/hooks/useAxios/useAxios';
 import { MeetupResponse, PageResponse } from '@/types/hook';
 import { Event, EventDetailsResponse } from '@/types/event';
 
+export const CACHE_DURATION = 5 * 60 * 1000;
+
 /**
  * Convert the MeetupResponse to Event format for internal use
  */
@@ -63,8 +65,6 @@ export const useFetchEventService = () => {
     const [pastEvents, setPastEvents] = useRecoilState(pastEventsAtom);
     const [cacheStatus, setCacheStatus] = useRecoilState(eventsCacheStatusAtom);
     const [eventDetailsCache, setEventDetailsCache] = useRecoilState(eventDetailsAtom);
-
-    const CACHE_DURATION = 5 * 60 * 1000;
 
     const isCacheValid = (lastFetch: number | null): boolean => {
         if (!lastFetch) return false;
