@@ -13,7 +13,6 @@ type CopyLinkProps = {
 const LinkButton = styled.button`
     background: transparent;
     border: none;
-    color: ${themeColors.colors.gray.main};
     cursor: pointer;
     font-size: ${themeColors.typography.body.small.fontSize}px;
     display: flex;
@@ -99,7 +98,7 @@ export default function CopyLink({ url, iconSize = 16, showText = true, classNam
         <>
             <LinkButton onClick={handleCopy} className={className}>
                 <Link2 size={iconSize} />
-                {showText && (text || "Copy Link")}
+                {showText && 'Copy Link'}
             </LinkButton>
 
             {showNotification && (

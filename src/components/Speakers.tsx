@@ -122,10 +122,7 @@ export default function Speakers({ speakers = [] }: SpeakersProps) {
             <SectionTitle>Speakers</SectionTitle>
             <SpeakersGrid>
                 {speakers.map((speaker) => {
-                    const speakerBio = speaker.bio || speaker.topic || '';
-                    // const description =
-                    //     speakerBio.length > 80 ? `${speakerBio.substring(0, 80).trim()}...` : speakerBio;
-
+                    const speakerBio = speaker.bio || speaker.topic || 'No bio available';
                     return (
                         <CustomEventCard
                             key={speaker.id}

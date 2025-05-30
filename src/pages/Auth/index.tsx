@@ -3,6 +3,8 @@ import styled from 'styled-components';
 import { useLocation } from 'react-router-dom';
 import Signup from '@/pages/Auth/Signup/Signup';
 import Login from '@/pages/Auth/Login/Login';
+import PhoneVerification from '@/pages/Auth/Signup/PhoneVerification';
+import { UserData } from '@/types/user';
 
 const AuthWrapper = styled.div`
     width: 100%;
@@ -30,6 +32,8 @@ const ContentContainer = styled.div`
 export default function LoginRoot() {
     const location = useLocation();
     const [isSignUp, setIsSignUp] = useState(false);
+    const [showPhoneVerification, setShowPhoneVerification] = useState(false);
+    const [signupData, setSignupData] = useState<UserData | null>(null);
 
     const returnUrl = location.state?.returnUrl;
     const eventDetails = location.state?.eventDetails;
@@ -47,13 +51,35 @@ export default function LoginRoot() {
 
     const toggleAuthMode = () => {
         setIsSignUp(!isSignUp);
+        setShowPhoneVerification(false);
+    };
+
+    const handleSignupSuccess = (userData: UserData) => {
+        setSignupData(userData);
+        setShowPhoneVerification(true);
+    };
+
+    const handleBackToSignup = () => {
+        setShowPhoneVerification(false);
     };
 
     return (
         <AuthWrapper>
             <ContentContainer>
-                {isSignUp ? (
-                    <Signup toggleAuthMode={toggleAuthMode} returnUrl={returnUrl} eventDetails={eventDetails} />
+                {showPhoneVerification && signupData ? (
+                    <PhoneVerification
+                        signupData={signupData}
+                        onBack={handleBackToSignup}
+                        returnUrl={returnUrl}
+                        eventDetails={eventDetails}
+                    />
+                ) : isSignUp ? (
+                    <Signup
+                        toggleAuthMode={toggleAuthMode}
+                        onSignupSuccess={handleSignupSuccess}
+                        returnUrl={returnUrl}
+                        eventDetails={eventDetails}
+                    />
                 ) : (
                     <Login toggleAuthMode={toggleAuthMode} returnUrl={returnUrl} eventDetails={eventDetails} />
                 )}

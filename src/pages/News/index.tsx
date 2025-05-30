@@ -6,15 +6,22 @@ import themeColors from '@/tools/themeColors';
 import Card from '@/components/Card/Card';
 import Input from '@/components/Input/Input';
 import Button from '@/components/Button/Button';
-import { sampleNews } from '@/pages/News/fakeData';
 import useApiService from '@/services';
 import useFormatDate from '@/hooks/useFormatDate';
 import { FaSearch } from 'react-icons/fa';
 import CopyLink from '@/components/CopyLink/CopyLink';
-import { NewsItem } from '@/types/news';
+import defaultImg from '@/static/icons/default.jpg';
+import PageLoading from '@/components/Loading/LoadingAnimation';
+import { useRecoilValue } from 'recoil';
+import { meetupNewsAtom, newsCacheStatusAtom, socialNewsAtom, techNewsAtom } from '@/atoms/news';
 
-type TagVariant = 'default' | 'programming' | 'ai' | 'development';
-type FilterTypes = 'TECH' | 'MEETUP' | 'SOCIAL';
+export type TagVariant = 'default' | 'programming' | 'ai' | 'development';
+
+export enum FilterTypes {
+    TECH = 'TECH',
+    MEETUP = 'MEETUP',
+    SOCIAL = 'SOCIAL',
+}
 
 const TAG_VARIANT_MAP: Record<string, TagVariant> = {
     programming: 'programming',
@@ -305,16 +312,35 @@ const ReadTimeText = styled.span`
  * @param {string | null} activeTag - The currently selected tag for filtering.
  */
 export default function NewsList() {
-    const [activeCategory, setActiveCategory] = useState<FilterTypes>('TECH');
-    const [news, setNews] = useState<Array<NewsItem>>([]);
+    const [activeCategory, setActiveCategory] = useState<FilterTypes>(FilterTypes.TECH);
     const [activeTag, setActiveTag] = useState<string | null>(null);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
     const [visibleCount, setVisibleCount] = useState(4);
     const [hasMore, setHasMore] = useState(true);
 
+    const techNews = useRecoilValue(techNewsAtom);
+    const meetupNews = useRecoilValue(meetupNewsAtom);
+    const socialNews = useRecoilValue(socialNewsAtom);
+    const cacheStatus = useRecoilValue(newsCacheStatusAtom);
+
     const { formatDate } = useFormatDate();
     const newsService = useApiService();
+
+    const getCurrentNews = () => {
+        switch (activeCategory) {
+            case FilterTypes.TECH:
+                return techNews;
+            case FilterTypes.MEETUP:
+                return meetupNews;
+            case FilterTypes.SOCIAL:
+                return socialNews;
+            default:
+                return [];
+        }
+    };
+
+    const news = getCurrentNews();
 
     const filteredNews = news.filter((newsItem) => {
         const matchesSearch =
@@ -329,33 +355,36 @@ export default function NewsList() {
     const visibleNews = filteredNews.slice(0, visibleCount);
 
     useEffect(() => {
+        let isMounted = true;
+
         const fetchNews = async () => {
-            setLoading(true);
+            const cacheInfo = cacheStatus[activeCategory];
+
+            if (cacheInfo.loaded) {
+                console.log(`Using cached ${activeCategory} news`);
+                return;
+            }
+
+            if (!isMounted) return;
+
             try {
-                const response = await newsService.getAllNews(activeCategory);
-
-                if (response.statusCode === 200 && response.data) {
-                    setNews(response.data);
-                } else {
-                    const fallbackData =
-                        activeCategory === 'TECH'
-                            ? sampleNews
-                            : sampleNews.filter((news) => news.news_type === activeCategory);
-
-                    console.error('Error fetching news, using fallback:', response);
-                    setNews(fallbackData);
-                }
+                setLoading(true);
+                await newsService.getAllNews(activeCategory);
             } catch (error) {
-                if (error instanceof Error) {
-                    console.error('Error fetching news:', error.message);
-                }
+                console.error('Error fetching news:', error);
             } finally {
-                setLoading(false);
+                if (isMounted) {
+                    setLoading(false);
+                }
             }
         };
 
         fetchNews();
-    }, [activeCategory, newsService]);
+
+        return () => {
+            isMounted = false;
+        };
+    }, [activeCategory]);
 
     useEffect(() => {
         setVisibleCount(3);
@@ -382,7 +411,7 @@ export default function NewsList() {
                     <FilterButton
                         isActive={activeCategory === 'TECH' && !activeTag}
                         onClick={() => {
-                            setActiveCategory('TECH');
+                            setActiveCategory(FilterTypes.TECH);
                             setActiveTag(null);
                         }}
                     >
@@ -391,7 +420,7 @@ export default function NewsList() {
                     <FilterButton
                         isActive={activeCategory === 'MEETUP' && !activeTag}
                         onClick={() => {
-                            setActiveCategory('MEETUP');
+                            setActiveCategory(FilterTypes.MEETUP);
                             setActiveTag(null);
                         }}
                     >
@@ -400,7 +429,7 @@ export default function NewsList() {
                     <FilterButton
                         isActive={activeCategory === 'SOCIAL' && !activeTag}
                         onClick={() => {
-                            setActiveCategory('SOCIAL');
+                            setActiveCategory(FilterTypes.SOCIAL);
                             setActiveTag(null);
                         }}
                     >
@@ -431,11 +460,12 @@ export default function NewsList() {
 
             <NewsGrid>
                 {loading ? (
-                    <div>Loading...</div>
+                    <PageLoading message="Loading news articles..." />
                 ) : filteredNews.length > 0 ? (
                     <>
                         {visibleNews.map((newsItem) => (
                             <NewsCardLink key={newsItem.id} to={`/news/${newsItem.id}`}>
+                                {' '}
                                 <NewsCard key={newsItem.id}>
                                     <NewsCardContent>
                                         <NewsCardMain>
@@ -468,7 +498,7 @@ export default function NewsList() {
                                                             borderRadius: '50%',
                                                         }}
                                                     />
-                                                    {formatDate(newsItem.created_at) || '2025.05.18'}
+                                                    {formatDate(newsItem.createdAt) || '2025.05.18'}
 
                                                     <ReadTimeText>3 min read</ReadTimeText>
                                                 </MetaItem>
@@ -496,14 +526,14 @@ export default function NewsList() {
                                         </NewsCardMain>
 
                                         <NewsCardImage>
-                                            {newsItem.image_url ? (
+                                            {newsItem.imageURL ? (
                                                 <img
-                                                    src={newsItem.image_url}
+                                                    src={newsItem.imageURL}
                                                     alt={newsItem.title}
                                                     style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                                                 />
                                             ) : (
-                                                <img src="/api/placeholder/300/200" alt="KO'DJ" />
+                                                <img src={defaultImg} alt="KO'DJ" />
                                             )}
                                         </NewsCardImage>
                                     </NewsCardContent>

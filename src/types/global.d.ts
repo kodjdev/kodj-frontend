@@ -19,15 +19,6 @@ declare global {
         | `${PixelValue} ${PixelValue} ${PixelValue} ${PixelValue}`;
     type Padding = Margin;
 
-    type User = {
-        displayName: string;
-        email: string;
-        id: string;
-        name: string;
-        nickname: string;
-        profileImageUrl: string;
-        isSettlement?: 'not-departed' | 'paid' | 'send-required' | 'sent';
-    };
     type Room = {
         _id: string;
         name: string;

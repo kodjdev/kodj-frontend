@@ -1,12 +1,11 @@
 import styled from 'styled-components';
 import themeColors from '@/tools/themeColors';
 import Card from '@/components/Card/Card';
-import { Calendar, Clock, MapPin, Coffee, Box, Play } from 'lucide-react';
-import { useLocation, useParams } from 'react-router-dom';
+import { Calendar, Clock, MapPin, Coffee, Box, Play, ArrowLeft } from 'lucide-react';
+import { Link, useLocation, useParams } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
 import { EventTimeline } from '@/pages/Events/EventDetails/EventTimeline';
 import { EventLocation } from '@/pages/Events/EventDetails/EventLocation';
-import ComponentLoading from '@/components/ComponentLoading';
 import Button from '@/components/Button/Button';
 import { MeetupRegistrationStatus } from '@/types/enums';
 import Speakers from '@/components/Speakers';
@@ -14,12 +13,7 @@ import { Event, EventDetailsResponse } from '@/types/event';
 import { ApiResponse } from '@/types/fetch';
 import useApiService from '@/services';
 import useFormatDate from '@/hooks/useFormatDate';
-
-type ApiEventDetailsResponse = {
-    message?: string;
-    data: EventDetailsResponse;
-    statusCode?: number;
-};
+import PageLoading from '@/components/Loading/LoadingAnimation';
 
 const PageContainer = styled.div`
     background-color: ${themeColors.colors.neutral.black};
@@ -154,13 +148,6 @@ const EventInfoItem = styled.div`
     }
 `;
 
-const LoadingContainer = styled.div`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 400px;
-`;
-
 const ErrorContainer = styled.div`
     display: flex;
     flex-direction: column;
@@ -178,6 +165,24 @@ const SectionTitle = styled.h2`
 
     @media (max-width: ${themeColors.breakpoints.mobile}) {
         font-size: ${themeColors.typography.headings.mobile.h2.fontSize}px;
+    }
+`;
+
+const BackLink = styled(Link)`
+    display: inline-flex;
+    align-items: center;
+    color: ${themeColors.colors.gray.main};
+    font-size: ${themeColors.typography.body.medium.fontSize}px;
+    text-decoration: none;
+    margin-bottom: ${themeColors.spacing.lg};
+    transition: color 0.2s ease;
+
+    &:hover {
+        color: ${themeColors.colors.primary.main};
+    }
+
+    svg {
+        margin-right: ${themeColors.spacing.xs};
     }
 `;
 
@@ -214,25 +219,25 @@ export default function EventDetails() {
     const eventFetchService = useApiService();
 
     useEffect(() => {
-        if (!eventId) {
-            setLoading(true);
-            return;
-        }
-
-        if (locationEventData) {
-            setEventData(locationEventData);
-        }
-
         let isMounted = true;
 
         const fetchEventDetails = async () => {
-            if (!isMounted) return;
+            if (!eventId) {
+                if (isMounted) setLoading(false);
+                return;
+            }
 
             try {
-                setLoading(true);
+                if (isMounted) setLoading(true);
+
+                // Removed debug console.log to avoid clutter in production
+
                 const response = await eventFetchService.getEventDetails(eventId);
+
+                if (!isMounted) return;
+
                 if (response?.statusCode && response.statusCode >= 200 && response.statusCode < 300) {
-                    setEventDetails(response.data as unknown as ApiEventDetailsResponse);
+                    setEventDetails(response);
 
                     if (!locationEventData) {
                         const mappedEvent = mapApiResponseToEvent(eventId, response.data);
@@ -242,14 +247,20 @@ export default function EventDetails() {
                     throw new Error(response.message || 'Failed to fetch event details');
                 }
             } catch (err) {
-                if (!isMounted) return;
-
-                setError(err instanceof Error ? err : new Error('An unknown error occurred'));
-                console.error('Error fetching event details:', err);
+                if (isMounted) {
+                    setError(err instanceof Error ? err : new Error('An unknown error occurred'));
+                    console.error('Error fetching event details:', err);
+                }
             } finally {
-                setLoading(false);
+                if (isMounted) {
+                    setLoading(false);
+                }
             }
         };
+
+        if (locationEventData) {
+            setEventData(locationEventData);
+        }
 
         fetchEventDetails();
 
@@ -341,13 +352,7 @@ export default function EventDetails() {
           : ['No description available.'];
 
     if (loading && !locationEventData) {
-        return (
-            <PageContainer>
-                <LoadingContainer>
-                    <ComponentLoading />
-                </LoadingContainer>
-            </PageContainer>
-        );
+        return <PageLoading message="Loading Event Details ..." />;
     }
 
     if (error && !locationEventData) {
@@ -362,6 +367,9 @@ export default function EventDetails() {
     }
     return (
         <PageContainer>
+            <BackLink to="/events">
+                <ArrowLeft size={16} /> Back to Events
+            </BackLink>
             <ContentWrapper>
                 <LeftPanel>
                     <EventBanner>

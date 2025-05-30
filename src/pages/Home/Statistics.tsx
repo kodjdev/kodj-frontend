@@ -7,6 +7,7 @@ import { motion } from 'framer-motion';
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import { FaUserGroup } from 'react-icons/fa6';
 import themeColors from '@/tools/themeColors';
+import SectionLoading from '@/components/Loading/LoadingAnimation';
 
 type MeetupDataItem = {
     date: string;
@@ -16,28 +17,6 @@ type MeetupDataItem = {
 const Container = styled.div`
     display: flex;
     flex-direction: column;
-`;
-
-const LoadingContainer = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-`;
-
-const Spinner = styled.div`
-    animation: spin 1s linear infinite;
-    border-radius: 9999px;
-    height: 2rem;
-    width: 2rem;
-    border-bottom-width: 2px;
-    border-color: white;
-
-    @keyframes spin {
-        to {
-            transform: rotate(360deg);
-        }
-    }
 `;
 
 const Header = styled.h2`
@@ -273,11 +252,7 @@ export default function Statistics() {
     };
 
     if (loading) {
-        return (
-            <LoadingContainer>
-                <Spinner />
-            </LoadingContainer>
-        );
+        return <SectionLoading message="Loading Statistics ..." />;
     }
 
     return (

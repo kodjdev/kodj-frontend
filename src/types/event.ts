@@ -1,5 +1,5 @@
-import { KeynoteSession, MeetupRegistration, Note, Review } from './api';
-import { Speaker } from './speakers';
+import { KeynoteSession, MeetupRegistration, Note, Review } from '@/types/api';
+import { Speaker } from '@/types/speakers';
 
 export type UserRegisteredEventsResponse = {
     upcomingEvents: Event[];
@@ -21,6 +21,7 @@ export type Event = {
     subtitle?: string;
     speakers?: Speaker[];
     eventSchedule?: KeynoteSession[];
+    parking?: boolean;
 };
 
 export type EventDetailsResponse = {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
 import themeColors from '@/tools/themeColors';
 import { useNavigate } from 'react-router-dom';
@@ -28,6 +28,7 @@ const FormContainer = styled.div`
 
     @media (max-width: ${themeColors.breakpoints.mobile}) {
         width: 100%;
+        margin-top: 2rem;
         padding: 22px;
     }
 `;
@@ -48,14 +49,15 @@ const Heading = styled.h2`
     font-weight: 700;
     color: ${themeColors.white};
     margin-bottom: 40px;
-    text-align: center;
+    text-align: left;
     margin-top: 12px;
 `;
 
 const Form = styled.form`
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 20px;
+    width: 100%;
 `;
 
 const InputGroup = styled.div`
@@ -65,11 +67,13 @@ const InputGroup = styled.div`
 const PasswordVisibilityToggle = styled.div`
     position: absolute;
     right: 16px;
-    top: 40%;
+    top: 50%;
     transform: translateY(-50%);
     color: ${themeColors.gray_text};
     cursor: pointer;
-    z-index: 1;
+    z-index: 10;
+    display: flex;
+    align-items: center;
 `;
 
 const ForgotPasswordLink = styled.a`
@@ -78,8 +82,8 @@ const ForgotPasswordLink = styled.a`
     text-align: right;
     text-decoration: none;
     display: block;
-    margin-top: -20px;
-    margin-bottom: 12px;
+    margin-top: -5px;
+    margin-bottom: 0px;
     cursor: pointer;
 
     &:hover {
@@ -145,6 +149,15 @@ const StyledButton = styled(Button)`
     }
 `;
 
+const GoogleLoginWrapper = styled.div`
+    width: 100%;
+
+    .google-login-button {
+        width: 100% !important;
+        justify-content: center !important;
+    }
+`;
+
 /**
  * Login - Page component for user authentication.
  * @description This component handles user login, including email/password authentication and Google sign-in.
@@ -164,19 +177,19 @@ export default function Login({ toggleAuthMode, returnUrl, eventDetails }: Login
     const [otpSent, setOtpSent] = useState(false);
     const [otp, setOtp] = useState('');
 
-    const handleSuccessfulAuth = () => {
+    const handleSuccessfulAuth = useCallback(() => {
         if (returnUrl && eventDetails) {
             navigate(returnUrl, { state: eventDetails });
         } else {
             navigate('/mypage');
         }
-    };
+    }, [navigate, returnUrl, eventDetails]);
 
     useEffect(() => {
         if (user) {
             handleSuccessfulAuth();
         }
-    }, [user]);
+    }, [user, handleSuccessfulAuth]);
 
     const handleEmailAuth = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -211,10 +224,7 @@ export default function Login({ toggleAuthMode, returnUrl, eventDetails }: Login
             if (response && response.data) {
                 messageApi.success('Successfully logged in with Google');
 
-                setTimeout(() => {
-                    // window.location.reload();
-                    navigate('/mypage');
-                }, 1000);
+                handleSuccessfulAuth();
             } else {
                 messageApi.error('Authentication failed - invalid response');
                 console.error('Invalid auth response:', response);
@@ -258,7 +268,8 @@ export default function Login({ toggleAuthMode, returnUrl, eventDetails }: Login
                         required
                         fullWidth={true}
                         disabled={otpSent}
-                        style={{ backgroundColor: 'transparent', border: '1px solid gray' }}
+                        transparent={true}
+                        hideIconOnFocus={true}
                     />
                 </InputGroup>
 
@@ -272,7 +283,8 @@ export default function Login({ toggleAuthMode, returnUrl, eventDetails }: Login
                             onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
                             required
                             fullWidth={true}
-                            style={{ backgroundColor: 'transparent', border: '1px solid gray' }}
+                            hideIconOnFocus={true}
+                            transparent={true}
                         />
                         <PasswordVisibilityToggle onClick={togglePasswordVisibility}>
                             {showPassword ? <HiOutlineEyeOff size={20} /> : <HiOutlineEye size={20} />}
@@ -288,7 +300,8 @@ export default function Login({ toggleAuthMode, returnUrl, eventDetails }: Login
                             onChange={(e: React.ChangeEvent<HTMLInputElement>) => setOtp(e.target.value)}
                             required
                             fullWidth={true}
-                            style={{ backgroundColor: 'transparent', border: '1px solid gray' }}
+                            transparent={true}
+                            hideIconOnFocus={true}
                         />
                     </InputGroup>
                 )}
@@ -305,15 +318,15 @@ export default function Login({ toggleAuthMode, returnUrl, eventDetails }: Login
             <Divider>
                 <span>OR</span>
             </Divider>
-
-            <GoogleLogin
-                onSuccess={handleGoogleLoginSuccess}
-                onError={handleGoogleLoginError}
-                useOneTap
-                text="signin_with"
-                shape="rectangular"
-                width="100%"
-            />
+            <GoogleLoginWrapper>
+                <GoogleLogin
+                    onSuccess={handleGoogleLoginSuccess}
+                    onError={handleGoogleLoginError}
+                    text="signin_with"
+                    shape="rectangular"
+                    theme="outline"
+                />
+            </GoogleLoginWrapper>
 
             <AccountPrompt>
                 <AccountText>No account yet?</AccountText>

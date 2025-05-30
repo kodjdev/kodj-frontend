@@ -1,7 +1,7 @@
 export type ApiResponse<T = unknown> = {
     data: T;
     message?: string;
-    statusCode?: number;
+    statusCode: number;
     access_token?: string;
     refresh_token?: string;
 };
@@ -29,4 +29,33 @@ export type RegisterFormData = {
     username: string;
     name: string;
     phone: string;
+};
+
+export type PaginatedResponse<T> = {
+    content: T[];
+    pageAble: {
+        pageNumber: number;
+        pageSize: number;
+        sort: {
+            empty: boolean;
+            sorted: boolean;
+            unsorted: boolean;
+        };
+        offset: number;
+        paged: boolean;
+        unpaged: boolean;
+    };
+    totalElements: number;
+    totalPages: number;
+    last: boolean;
+    size: number;
+    number: number;
+    sort: {
+        empty: boolean;
+        sorted: boolean;
+        unsorted: boolean;
+    };
+    numberOfElements: number;
+    first: boolean;
+    empty: boolean;
 };

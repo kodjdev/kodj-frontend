@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { PersonStanding, ThumbsUp } from 'lucide-react';
@@ -208,42 +208,34 @@ export default function NewsComments({ articleId, initialComments = [] }: Commen
     const { isAuthenticated, user } = useAuth();
     const newsCommentService = useApiService();
 
+    const changeCommentData = useCallback(
+        (commentData: CommentData): Comment => ({
+            id: commentData.id,
+            author: commentData.username,
+            date: new Date(commentData.createdAt).toLocaleDateString(),
+            text: commentData.comment,
+            likes: commentData.likes,
+            avatar: commentData.avatarURL,
+            replies: [],
+        }),
+        [],
+    );
+
+    const fetchComments = useCallback(async () => {
+        try {
+            setComments([]);
+            const response = await newsCommentService.getComments(articleId);
+            const transformedData = response.data?.map(changeCommentData);
+            setComments(transformedData || initialComments);
+        } catch (error) {
+            console.error('Error fetching comments:', error);
+            setComments(initialComments);
+        }
+    }, [articleId, initialComments, changeCommentData]);
+
     useEffect(() => {
-        let isMounted = true;
-        const fetchComments = async () => {
-            try {
-                if (isMounted) {
-                    setComments([]);
-                    const response = await newsCommentService.getComments(articleId);
-                    if (isMounted) {
-                        const transformedData = response.data?.map(changeCommentData);
-                        setComments(transformedData || []);
-                    }
-                }
-            } catch (error) {
-                console.error('Error fetching comments:', error);
-                if (initialComments.length === 0 && isMounted) {
-                    setComments([]);
-                }
-            }
-        };
-
         fetchComments();
-
-        return () => {
-            isMounted = false;
-        };
-    }, []);
-
-    const changeCommentData = (commentData: CommentData): Comment => ({
-        id: commentData.id,
-        author: commentData.username,
-        date: new Date(commentData.createdAt).toLocaleDateString(),
-        text: commentData.comment,
-        likes: commentData.likes,
-        avatar: commentData.avatarURL,
-        replies: [],
-    });
+    }, [fetchComments]);
 
     const handleInputFocus = () => {
         if (!isAuthenticated) {

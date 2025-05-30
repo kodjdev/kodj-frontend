@@ -1,11 +1,57 @@
-import { useSetRecoilState } from 'recoil';
-import { upcomingEventsAtom, pastEventsAtom } from '@/atoms/events';
+import { useRecoilState } from 'recoil';
+import { upcomingEventsAtom, pastEventsAtom, eventsCacheStatusAtom, eventDetailsAtom } from '@/atoms/events';
 import { ApiResponse } from '@/types/fetch';
 import { useMemo } from 'react';
 import useAxios from '@/hooks/useAxios/useAxios';
 import { MeetupResponse, PageResponse } from '@/types/hook';
-import { Event } from '@/types';
-import { EventDetailsResponse } from '@/types/event';
+import { Event, EventDetailsResponse } from '@/types/event';
+
+export const CACHE_DURATION = 5 * 60 * 1000;
+
+/**
+ * Convert the MeetupResponse to Event format for internal use
+ */
+export const meetupToEvent = (meetup: MeetupResponse): Event => {
+    return {
+        id: meetup.id.toString(),
+        title: meetup.title || 'Untitled Event',
+        description: meetup.description || 'No description available',
+        date: meetup.meetupDate || null,
+        location: meetup.location || 'Location TBD',
+        maxSeats: meetup.maxSeats ?? 50,
+        imageUrl: meetup.imageURL || '',
+        parking: meetup.parking ?? false,
+        author: "KO'DJ",
+        registeredCount: 0,
+        isFreeEvent: true,
+        time: undefined,
+        speakers: [],
+        eventSchedule: [],
+    };
+};
+
+/**
+ * Convert the Event to MeetupResponse format for api compatibility
+ */
+export const eventToMeetup = (event: Event): MeetupResponse => {
+    return {
+        id: parseInt(event.id) || 0,
+        title: event.title || 'Untitled Event',
+        description: Array.isArray(event.description)
+            ? event.description.join(' ')
+            : event.description || 'No description available',
+        meetupDate: typeof event.date === 'string' ? event.date : new Date().toISOString(),
+        location: event.location || 'Location TBD',
+        maxSeats: event.maxSeats ?? 50,
+        imageURL: event.imageUrl || '',
+        parking: event.parking ?? false,
+        provided: 'Cached Data',
+        organizerId: 0,
+        startTime: typeof event.date === 'string' ? event.date : '',
+        endTime: typeof event.date === 'string' ? event.date : '',
+        imageName: '',
+    };
+};
 
 /**
  * Fetch Event Service - For Event Fetching
@@ -15,58 +61,80 @@ import { EventDetailsResponse } from '@/types/event';
  */
 export const useFetchEventService = () => {
     const fetchData = useAxios();
-    const setUpcomingEvents = useSetRecoilState(upcomingEventsAtom);
-    const setPastEvents = useSetRecoilState(pastEventsAtom);
+    const [upcomingEvents, setUpcomingEvents] = useRecoilState(upcomingEventsAtom);
+    const [pastEvents, setPastEvents] = useRecoilState(pastEventsAtom);
+    const [cacheStatus, setCacheStatus] = useRecoilState(eventsCacheStatusAtom);
+    const [eventDetailsCache, setEventDetailsCache] = useRecoilState(eventDetailsAtom);
 
-    /**
-     * convert MeetupResponse to Event type
-     */
-    const convertMeetupToEvent = (meetup: MeetupResponse): Event => {
-        return {
-            id: meetup.id.toString(),
-            title: meetup.title,
-            description: meetup.description,
-            date: meetup.meetupDate,
-            location: meetup.location,
-            maxSeats: meetup.maxSeats,
-            imageUrl: meetup.imageURL,
-            imageUrls: meetup.imageURL ? [meetup.imageURL] : [],
-            parking: meetup.parking,
-        };
+    const isCacheValid = (lastFetch: number | null): boolean => {
+        if (!lastFetch) return false;
+        const currentTime = Date.now();
+        return currentTime - lastFetch < CACHE_DURATION;
     };
 
-    return useMemo(() => {
-        const updateRecoilAtomsFromResponse = (
-            response: ApiResponse<PageResponse<MeetupResponse>>,
-            type: 'upcoming' | 'past',
-        ): void => {
-            if (response.statusCode === 200) {
-                const contentArray = response.data?.data?.content;
+    const updateRecoilAtomsFromResponse = (
+        response: ApiResponse<PageResponse<MeetupResponse>>,
+        type: 'upcoming' | 'past',
+    ): void => {
+        const now = Date.now();
 
-                if (contentArray && Array.isArray(contentArray)) {
-                    const convertedEvents = contentArray.map(convertMeetupToEvent);
+        if (response.statusCode === 200) {
+            const contentArray = response.data?.data?.content;
 
-                    if (type === 'upcoming') {
-                        setUpcomingEvents(convertedEvents);
-                    } else if (type === 'past') {
-                        setPastEvents(convertedEvents);
-                    }
-                    return;
+            if (contentArray && Array.isArray(contentArray)) {
+                const convertedEvents = contentArray.map(meetupToEvent);
+
+                if (type === 'upcoming') {
+                    setUpcomingEvents(convertedEvents);
+                } else if (type === 'past') {
+                    setPastEvents(convertedEvents);
                 }
-            }
 
-            // fallback for empty data content
-            if (type === 'upcoming') {
-                setUpcomingEvents([]);
-            } else if (type === 'past') {
-                setPastEvents([]);
-            }
-        };
+                setCacheStatus((prev) => ({
+                    ...prev,
+                    [type]: { loaded: true, lastFetch: now },
+                }));
 
-        return {
+                console.log(`${type} events cached successfully`);
+                return;
+            }
+        }
+
+        // Fallback for empty data
+        if (type === 'upcoming') {
+            setUpcomingEvents([]);
+        } else if (type === 'past') {
+            setPastEvents([]);
+        }
+
+        setCacheStatus((prev) => ({
+            ...prev,
+            [type]: { loaded: true, lastFetch: now },
+        }));
+    };
+
+    return useMemo(
+        () => ({
             getEvents: async ({ page = 0, size = 10, type = 'upcoming' } = {}): Promise<
                 ApiResponse<PageResponse<MeetupResponse>>
             > => {
+                const cacheInfo = cacheStatus[type as 'upcoming' | 'past'];
+
+                if (cacheInfo.loaded && isCacheValid(cacheInfo.lastFetch)) {
+                    console.log(`Using cached ${type} events`);
+
+                    const cachedEvents = type === 'upcoming' ? upcomingEvents : pastEvents;
+                    return {
+                        data: {
+                            data: {
+                                content: cachedEvents.map(eventToMeetup),
+                            },
+                        } as PageResponse<MeetupResponse>,
+                        statusCode: 200,
+                        message: 'success',
+                    };
+                }
+
                 const response = await fetchData<PageResponse<MeetupResponse>>({
                     endpoint: '/meetups',
                     method: 'GET',
@@ -78,6 +146,38 @@ export const useFetchEventService = () => {
                 });
 
                 updateRecoilAtomsFromResponse(response, type as 'upcoming' | 'past');
+                return response;
+            },
+
+            getEventDetails: async (meetupId: string | number): Promise<ApiResponse<EventDetailsResponse>> => {
+                const eventId = meetupId.toString();
+                const cachedDetail = eventDetailsCache[eventId];
+
+                if (cachedDetail && isCacheValid(cachedDetail.lastFetch)) {
+                    console.log(`Using cached event details for ID: ${eventId}`);
+
+                    return {
+                        data: cachedDetail.data,
+                        statusCode: 200,
+                        message: 'success',
+                    };
+                }
+
+                const response = await fetchData<EventDetailsResponse>({
+                    endpoint: `/meetups/${meetupId}/details`,
+                    method: 'GET',
+                });
+
+                if (response.statusCode === 200 && response.data) {
+                    setEventDetailsCache((prev) => ({
+                        ...prev,
+                        [eventId]: {
+                            data: response.data,
+                            lastFetch: Date.now(),
+                        },
+                    }));
+                    console.log(`Event details cached for ID: ${eventId}`);
+                }
 
                 return response;
             },
@@ -87,20 +187,67 @@ export const useFetchEventService = () => {
                     throw new Error('Event ID is required');
                 }
 
+                const eventId = id.toString();
+                const allEvents = [...upcomingEvents, ...pastEvents];
+                const cachedEvent = allEvents.find((event) => event.id === eventId);
+
+                if (cachedEvent && cacheStatus.upcoming.loaded && cacheStatus.past.loaded) {
+                    console.log(`Using cached event data for ID: ${eventId}`);
+
+                    return {
+                        data: eventToMeetup(cachedEvent),
+                        statusCode: 200,
+                        message: 'success',
+                    };
+                }
+
                 return fetchData<MeetupResponse>({
                     endpoint: `/meetups/${id}`,
                     method: 'GET',
                 });
             },
 
-            getEventDetails: async (meetupId: string | number): Promise<ApiResponse<EventDetailsResponse>> => {
-                return fetchData<EventDetailsResponse>({
-                    endpoint: `/meetups/${meetupId}/details`,
-                    method: 'GET',
+            meetupToEvent,
+            eventToMeetup,
+
+            clearCache: () => {
+                setUpcomingEvents([]);
+                setPastEvents([]);
+                setEventDetailsCache({});
+                setCacheStatus({
+                    upcoming: { loaded: false, lastFetch: null },
+                    past: { loaded: false, lastFetch: null },
                 });
+                console.log('Event cache cleared');
             },
 
-            convertMeetupToEvent,
-        };
-    }, [fetchData, setUpcomingEvents, setPastEvents]);
+            // here we force refresh ( as we ignore the cache)
+            forceRefresh: async (type?: 'upcoming' | 'past') => {
+                if (type) {
+                    setCacheStatus((prev) => ({
+                        ...prev,
+                        [type]: { loaded: false, lastFetch: null },
+                    }));
+                } else {
+                    setCacheStatus({
+                        upcoming: { loaded: false, lastFetch: null },
+                        past: { loaded: false, lastFetch: null },
+                    });
+                    setEventDetailsCache({});
+                }
+                console.log(`Force refresh triggered for: ${type || 'all'}`);
+            },
+        }),
+        [
+            fetchData,
+            upcomingEvents,
+            pastEvents,
+            cacheStatus,
+            eventDetailsCache,
+            setUpcomingEvents,
+            setPastEvents,
+            setCacheStatus,
+            setEventDetailsCache,
+        ],
+    );
 };

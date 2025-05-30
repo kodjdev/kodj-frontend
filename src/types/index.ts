@@ -6,13 +6,6 @@ export type Timestamp = {
     nanoseconds: number;
 };
 
-export type User = {
-    id: string;
-    email: string;
-    name?: string;
-    role?: string;
-};
-
 export type BaseEvent = {
     id: string;
     title: string;
@@ -23,6 +16,9 @@ export type BaseEvent = {
     parking?: boolean;
     maxSeats?: number;
     registeredCount?: number;
+    isFreeEvent?: boolean;
+    time?: string;
+    speakers?: Speaker[];
 };
 
 export type Event = BaseEvent & {
@@ -40,7 +36,7 @@ export type Event = BaseEvent & {
 export type EventForServer = BaseEvent & {
     speakerId?: string;
     headerTitle?: string;
-    date: Timestamp;
+    date?: string;
     images: string[];
     eventRoom: string;
     parking: boolean;
@@ -135,22 +131,4 @@ export type HeaderProps = {
     langMenuOpen: boolean;
     toggleLangMenu: () => void;
     isAuthenticated: boolean;
-};
-
-export type PastEventDetailsProps = {
-    params: Promise<{
-        id: string;
-    }>;
-};
-
-export type FormattedDateTime = {
-    date: string;
-    time: string;
-};
-
-export type StatisticsProps = {
-    speakerCount: number;
-    meetupData: Array<{ date: string; value: number }>;
-    currentUsers: number;
-    maxUsers: number;
 };

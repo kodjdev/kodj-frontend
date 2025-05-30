@@ -225,7 +225,7 @@ export default function HeaderDesktop({
                         <Link to={'/mypage'}>
                             <UserAvatar>
                                 {user?.data.imageUrl ? (
-                                    <img src={user?.data.imageUrl} alt="User Avatar" />
+                                    <img src={user?.data.imageUrl} alt={`${user.data.firstName || 'User'}'s Avatar`} />
                                 ) : (
                                     <User2
                                         size={20}

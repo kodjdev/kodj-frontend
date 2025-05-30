@@ -3,13 +3,14 @@ import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { Event } from '@/types';
 import { useRecoilValue } from 'recoil';
-import { pastEventsAtom, upcomingEventsAtom } from '@/atoms/events';
+import { eventsCacheStatusAtom, pastEventsAtom, upcomingEventsAtom } from '@/atoms/events';
 import themeColors from '@/tools/themeColors';
 import EventCard from '@/components/Card/EventCard';
 import Button from '@/components/Button/Button';
 import useApiService from '@/services';
 import useFormatDate from '@/hooks/useFormatDate';
-import { Spin } from 'antd';
+import { message } from 'antd';
+import PageLoading from '@/components/Loading/LoadingAnimation';
 
 enum EventFilter {
     ALL = 'all',
@@ -68,15 +69,6 @@ const EventsGrid = styled.div`
     }
 `;
 
-const LoadingContainer = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 50vh;
-    background-color: ${themeColors.colors.neutral.black};
-    color: ${themeColors.colors.primary.main};
-`;
-
 const EventFilterContainer = styled.div`
     display: flex;
     gap: ${themeColors.spacing.md};
@@ -122,7 +114,9 @@ export default function EventsList({ onFilterChange, defaultFilter = EventFilter
 
     const upcomingEvents = useRecoilValue(upcomingEventsAtom);
     const pastEvents = useRecoilValue(pastEventsAtom);
-    // const setEventCache = useSetRecoilState(eventCacheAtom);
+    const cacheStatus = useRecoilValue(eventsCacheStatusAtom);
+
+    const [messageApi, contextHolder] = message.useMessage();
 
     const [loading, setLoading] = useState(true);
     const [activeFilter, setActiveFilter] = useState<EventFilter>(defaultFilter);
@@ -132,27 +126,48 @@ export default function EventsList({ onFilterChange, defaultFilter = EventFilter
     useEffect(() => {
         let isMounted = true;
 
-        const initializeData = async () => {
+        const fetchData = async () => {
+            const needsUpcomingData = !cacheStatus.upcoming.loaded;
+            const needsPastData = !cacheStatus.past.loaded;
+
+            if (!needsUpcomingData && !needsPastData) {
+                if (isMounted) {
+                    setLoading(false);
+                }
+                return;
+            }
+
+            if (!isMounted) return;
+
             try {
                 setLoading(true);
 
-                console.log('Explicitly fetching upcoming events...');
+                const promises = [];
 
-                await eventFetchService.getEvents({
-                    type: 'upcoming',
-                    size: 50,
-                    page: 0,
-                });
+                if (needsUpcomingData) {
+                    promises.push(
+                        eventFetchService.getEvents({
+                            type: 'upcoming',
+                            size: 50,
+                            page: 0,
+                        }),
+                    );
+                }
 
-                console.log('Explicitly fetching past events...');
-
-                await eventFetchService.getEvents({
-                    type: 'past',
-                    size: 50,
-                    page: 0,
-                });
+                if (needsPastData) {
+                    promises.push(
+                        eventFetchService.getEvents({
+                            type: 'past',
+                            size: 50,
+                            page: 0,
+                        }),
+                    );
+                }
+                await Promise.all(promises);
             } catch (error) {
-                console.error('Error fetching events:', error);
+                messageApi.error(
+                    error instanceof Error ? error.message : 'An unexpected error occurred while fetching events.',
+                );
             } finally {
                 if (isMounted) {
                     setLoading(false);
@@ -160,7 +175,7 @@ export default function EventsList({ onFilterChange, defaultFilter = EventFilter
             }
         };
 
-        initializeData();
+        fetchData();
 
         return () => {
             isMounted = false;
@@ -194,15 +209,12 @@ export default function EventsList({ onFilterChange, defaultFilter = EventFilter
     );
 
     if (loading) {
-        return (
-            <LoadingContainer>
-                <Spin tip="Wait a little bit" size="large" />
-            </LoadingContainer>
-        );
+        return <PageLoading message="Loading Events ..." />;
     }
 
     return (
         <Container>
+            {contextHolder}
             <EventFilterContainer>
                 {filterOptions.map((option) => (
                     <FilterButton
