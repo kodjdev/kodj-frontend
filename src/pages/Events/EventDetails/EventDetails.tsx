@@ -230,7 +230,7 @@ export default function EventDetails() {
             try {
                 if (isMounted) setLoading(true);
 
-                console.log('Fetching event details for ID:', eventId);
+                // Removed debug console.log to avoid clutter in production
 
                 const response = await eventFetchService.getEventDetails(eventId);
 
