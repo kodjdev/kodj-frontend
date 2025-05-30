@@ -1,3 +1,4 @@
+import { FilterTypes } from '@/pages/News';
 import { UserDetails } from '@/types/user';
 
 export type NewsItem = {
@@ -6,7 +7,7 @@ export type NewsItem = {
     content: string;
     imageName?: string;
     imageURL?: string;
-    type: 'TECH' | 'MEETUP' | 'SOCIAL';
+    type: FilterTypes;
     contactPhone?: string;
     contactEmail?: string;
     twitterProfile?: string;

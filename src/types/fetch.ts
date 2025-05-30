@@ -33,7 +33,7 @@ export type RegisterFormData = {
 
 export type PaginatedResponse<T> = {
     content: T[];
-    pageable: {
+    pageAble: {
         pageNumber: number;
         pageSize: number;
         sort: {
