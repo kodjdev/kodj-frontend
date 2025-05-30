@@ -1,4 +1,6 @@
-import { EventForServer, EventTimeline, Speaker } from '@/types';
+import { EventTimeline } from '@/types';
+import { EventDetailsResponse } from '@/types/event';
+import { Speaker } from '@/types/speakers';
 import { Timestamp } from 'firebase/firestore';
 import { atom } from 'recoil';
 
@@ -36,7 +38,18 @@ export const upcomingEventsAtom = atom<Event[]>({
     default: [],
 });
 
-export const eventCacheAtom = atom<Record<string, EventForServer>>({
-    key: 'eventCache',
+export const eventsCacheStatusAtom = atom<{
+    upcoming: { loaded: boolean; lastFetch: number | null };
+    past: { loaded: boolean; lastFetch: number | null };
+}>({
+    key: 'eventsCacheStatusAtom',
+    default: {
+        upcoming: { loaded: false, lastFetch: null },
+        past: { loaded: false, lastFetch: null },
+    },
+});
+
+export const eventDetailsAtom = atom<Record<string, { data: EventDetailsResponse; lastFetch: number }>>({
+    key: 'eventDetailsAtom',
     default: {},
 });

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import themeColors from '@/tools/themeColors';
+import SectionLoading from '@/components/Loading/LoadingAnimation';
 
 type TimeLeftType = {
     days: number;
@@ -198,28 +199,6 @@ const Separator = styled.span`
     }
 `;
 
-const LoadingContainer = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-`;
-
-const LoadingSpinner = styled.div`
-    animation: spin 1s linear infinite;
-    border-radius: 50%;
-    height: 2rem;
-    width: 2rem;
-    border: 1px solid transparent;
-    border-bottom-color: ${themeColors.colors.neutral.white};
-
-    @keyframes spin {
-        to {
-            transform: rotate(360deg);
-        }
-    }
-`;
-
 export default function TimeFrame() {
     const [timeLeft, setTimeLeft] = useState<TimeLeftType>({
         days: 0,
@@ -264,11 +243,7 @@ export default function TimeFrame() {
     }, [event]);
 
     if (loading) {
-        return (
-            <LoadingContainer>
-                <LoadingSpinner />
-            </LoadingContainer>
-        );
+        return <SectionLoading message="Loading Time Frame..." />;
     }
 
     return (

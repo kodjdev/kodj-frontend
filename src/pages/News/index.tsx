@@ -12,6 +12,7 @@ import { FaSearch } from 'react-icons/fa';
 import CopyLink from '@/components/CopyLink/CopyLink';
 import { NewsItem } from '@/types/news';
 import defaultImg from '@/static/icons/default.jpg';
+import PageLoading from '@/components/Loading/LoadingAnimation';
 
 type TagVariant = 'default' | 'programming' | 'ai' | 'development';
 type FilterTypes = 'TECH' | 'MEETUP' | 'SOCIAL';
@@ -448,7 +449,7 @@ export default function NewsList() {
 
             <NewsGrid>
                 {loading ? (
-                    <div>Loading...</div>
+                    <PageLoading message="Loading news articles..." />
                 ) : filteredNews.length > 0 ? (
                     <>
                         {visibleNews.map((newsItem) => (

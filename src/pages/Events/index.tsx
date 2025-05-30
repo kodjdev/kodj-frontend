@@ -1,23 +1,13 @@
 import { Suspense } from 'react';
 import styled from 'styled-components';
 import themeColors from '@/tools/themeColors';
-import { Spin } from 'antd';
 import EventsList from '@/pages/Events/EventsList';
+import PageLoading from '@/components/Loading/LoadingAnimation';
 
 const PageContainer = styled.div`
     background-color: ${themeColors.colors.neutral.black};
     min-height: 100vh;
     padding: 1rem 0;
-`;
-
-const LoadingContainer = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-    background-color: ${themeColors.colors.neutral.black};
-    color: ${themeColors.colors.primary.main};
-    font-size: 1rem;
 `;
 
 /**
@@ -27,13 +17,7 @@ const LoadingContainer = styled.div`
 export default function EventsPage() {
     return (
         <PageContainer>
-            <Suspense
-                fallback={
-                    <LoadingContainer>
-                        <Spin tip="Loading events..." size="large" />
-                    </LoadingContainer>
-                }
-            >
+            <Suspense fallback={<PageLoading message="Loading Events ..." />}>
                 <EventsList />
             </Suspense>
         </PageContainer>
