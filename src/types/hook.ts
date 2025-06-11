@@ -5,6 +5,7 @@ export type MeetupResponse = {
     parking: boolean;
     location: string;
     maxSeats: number;
+    availableSeats: number;
     provided: string;
     meetupDate: string;
     organizerId: number;

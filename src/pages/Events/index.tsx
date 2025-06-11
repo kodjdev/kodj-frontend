@@ -7,7 +7,6 @@ import PageLoading from '@/components/Loading/LoadingAnimation';
 const PageContainer = styled.div`
     background-color: ${themeColors.colors.neutral.black};
     min-height: 100vh;
-    padding: 1rem 0;
 `;
 
 /**

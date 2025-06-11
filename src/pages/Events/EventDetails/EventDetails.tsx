@@ -211,11 +211,12 @@ export default function EventDetails() {
             title: 'Event Not Found',
             description: ['No description available.'],
             date: null,
+            startTime: null,
         },
     );
     const [activeTab, setActiveTab] = useState<'details' | 'schedule' | 'speakers' | 'location'>('details');
 
-    const { formatDate } = useFormatDate();
+    const { formatDate, formatTime } = useFormatDate();
     const eventFetchService = useApiService();
 
     useEffect(() => {
@@ -230,14 +231,13 @@ export default function EventDetails() {
             try {
                 if (isMounted) setLoading(true);
 
-                // Removed debug console.log to avoid clutter in production
-
                 const response = await eventFetchService.getEventDetails(eventId);
 
                 if (!isMounted) return;
 
                 if (response?.statusCode && response.statusCode >= 200 && response.statusCode < 300) {
                     setEventDetails(response);
+                    console.log('mappedEvent event logged: ', response);
 
                     if (!locationEventData) {
                         const mappedEvent = mapApiResponseToEvent(eventId, response.data);
@@ -422,7 +422,9 @@ export default function EventDetails() {
                             </EventInfoItem>
                             <EventInfoItem>
                                 <Clock size={16} />
-                                <span>{eventData.time || 'Time not specified'}</span>
+                                <span>
+                                    {eventData.startTime ? formatTime(eventData.startTime) : 'Time not specified'}
+                                </span>
                             </EventInfoItem>
                             <EventInfoItem>
                                 <MapPin size={16} />
@@ -447,7 +449,22 @@ export default function EventDetails() {
                                 <span>{eventData.isFreeEvent ? 'Free' : 'Paid'}</span>
                             </EventInfoItem>
                         </EventInfoContainer>
-                        <Button asLink={true} to={`/events/register/${eventId}`} fullWidth={true} size="md">
+                        <Button
+                            asLink={true}
+                            to={`/events/upcoming/register/${eventId}`}
+                            state={{
+                                title: eventData.title,
+                                date: eventData.date,
+                                location: eventData.location,
+                                imageUrl: eventData.imageUrl,
+                                author: eventData.author,
+                                eventRoom: eventData.eventRoom,
+                                registeredCount: eventData.registeredCount,
+                                maxSeats: eventData.maxSeats,
+                            }}
+                            fullWidth={true}
+                            size="md"
+                        >
                             Register for Event
                         </Button>
                     </Card>
