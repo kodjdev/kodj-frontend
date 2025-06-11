@@ -21,13 +21,18 @@ export const useRegisterEventService = () => {
 
     return useMemo(() => {
         return {
-            registerEvent: async (formData: EventRegistrationData): Promise<ApiResponse<EventRegistrationResponse>> => {
+            registerEvent: async (
+                meetupId: string,
+                registrationData: EventRegistrationData,
+            ): Promise<ApiResponse<EventRegistrationResponse>> => {
+                const access_token = localStorage.getItem('access_token');
                 return fetchData<EventRegistrationResponse>({
-                    endpoint: '/meetups',
+                    endpoint: `/users/meetups/${meetupId}/registration`,
                     method: 'POST',
-                    data: formData,
+                    data: registrationData,
                     customHeaders: {
-                        'Content-Type': 'multipart/form-data',
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${access_token}`,
                     },
                 });
             },

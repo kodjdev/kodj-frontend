@@ -9,6 +9,7 @@ import {
     AboutUs,
     News,
     NewsDetail,
+    EventRegister,
 } from '@/router/lazyComponents';
 
 type PathTypes = {
@@ -51,6 +52,10 @@ export const routes: RouteType = {
         {
             path: '/events/:type/details/:eventId',
             element: <EventDetails />,
+        },
+        {
+            path: '/events/:type/register/:eventId',
+            element: <EventRegister />,
         },
         {
             path: '/login',
