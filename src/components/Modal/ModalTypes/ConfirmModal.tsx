@@ -1,8 +1,52 @@
 import { ReactNode } from 'react';
 import styled from 'styled-components';
-import Modal, { Sizes } from '@/components/Modal/Modal';
+import Modal from '@/components/Modal/Modal';
 import Button from '@/components/Button/Button';
 import themeColors from '@/tools/themeColors';
+
+export type ConfirmModalProps = {
+    isOpen: boolean;
+    onClose: () => void;
+    onConfirm: () => void;
+    confirmLabel?: string;
+    cancelLabel?: string;
+    confirmVariant?: 'primary' | 'secondary' | 'danger';
+} & Omit<React.ComponentProps<typeof Modal>, 'isOpen' | 'onClose' | 'footer' | 'children'> & {
+        message?: string | ReactNode;
+        mainMessage?: string;
+        highlightText?: string;
+        subMessage?: string;
+    };
+
+const ContentContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: ${themeColors.spacing.md};
+    text-align: left;
+    padding: 24px;
+    padding-top: 0;
+    padding-bottom: 0;
+`;
+
+const MainMessage = styled.p`
+    margin: 0;
+    color: ${themeColors.colors.neutral.white};
+    font-size: ${themeColors.typography.body.medium.fontSize}px;
+    line-height: 1.5;
+`;
+
+const HighlightText = styled.span`
+    color: ${themeColors.blue};
+    font-weight: ${themeColors.typography.headings.desktop.h3.fontWeight};
+    display: block;
+    margin: 0;
+`;
+
+const SubMessage = styled.p`
+    margin: 0;
+    color: ${themeColors.gray_text};
+    font-size: ${themeColors.typography.body.small.fontSize}px;
+`;
 
 const MessageContainer = styled.div`
     text-align: left;
@@ -27,38 +71,35 @@ const Message = styled.p`
  * @param {string} [cancelLabel='Cancel'] - Text for the cancel button
  * @param {('sm'|'md'|'lg'|'xl'|'full')} [size='sm'] - Controls the width of the modal
  */
-export type ConfirmModalProps = {
-    isOpen: boolean;
-    onClose: () => void;
-    title?: string;
-    message: string | ReactNode;
-    onConfirm: () => void;
-    confirmLabel?: string;
-    cancelLabel?: string;
-    confirmVariant?: 'primary' | 'secondary' | 'danger';
-    size?: Sizes;
-};
-
 export default function ConfirmModal({
     isOpen,
     onClose,
-    title = 'Confirm Logout',
-    message,
     onConfirm,
-    confirmLabel = 'Logout',
+    confirmLabel = 'Confirm',
     cancelLabel = 'Cancel',
-    size = 'sm',
+    confirmVariant = 'danger',
+    message,
+    mainMessage,
+    highlightText,
+    subMessage,
+    ...modalProps
 }: ConfirmModalProps) {
     const handleConfirm = () => {
         onConfirm();
-        onClose();
     };
 
-    const styledMessage = (
-        <MessageContainer>
-            <Message>{typeof message === 'string' ? message : message}</Message>
-        </MessageContainer>
-    );
+    const organizedContent =
+        mainMessage || highlightText || subMessage ? (
+            <ContentContainer>
+                {mainMessage && <MainMessage>{mainMessage}</MainMessage>}
+                {highlightText && <HighlightText>{highlightText}</HighlightText>}
+                {subMessage && <SubMessage>{subMessage}</SubMessage>}
+            </ContentContainer>
+        ) : message ? (
+            <MessageContainer>
+                <Message>{typeof message === 'string' ? message : message}</Message>
+            </MessageContainer>
+        ) : null;
 
     const footer = (
         <div
@@ -72,7 +113,13 @@ export default function ConfirmModal({
             <Button variant="blueText" size="sm" onClick={onClose}>
                 {cancelLabel}
             </Button>
-            <Button variant="redText" size="sm" onClick={handleConfirm}>
+            <Button
+                variant={
+                    confirmVariant === 'primary' ? 'primary' : confirmVariant === 'danger' ? 'redText' : 'blueText'
+                }
+                size="sm"
+                onClick={handleConfirm}
+            >
                 {confirmLabel}
             </Button>
         </div>
@@ -80,15 +127,15 @@ export default function ConfirmModal({
 
     return (
         <Modal
+            size="md"
             isOpen={isOpen}
             onClose={onClose}
-            title={title}
-            size={size}
             footer={footer}
             hideCloseButton={true}
             closeOnOverlayClick={false}
+            {...modalProps}
         >
-            {styledMessage}
+            {organizedContent}
         </Modal>
     );
 }
