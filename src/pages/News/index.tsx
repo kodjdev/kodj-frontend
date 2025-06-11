@@ -32,7 +32,6 @@ const TAG_VARIANT_MAP: Record<string, TagVariant> = {
 const Container = styled.div`
     max-width: ${themeColors.breakpoints.desktop};
     margin: 0 auto;
-    padding-top: ${themeColors.spacing.xl};
 
     @media (max-width: ${themeColors.breakpoints.mobile}) {
         padding: 0 ${themeColors.spacing.sm};
@@ -41,7 +40,6 @@ const Container = styled.div`
 `;
 
 const SearchContainer = styled.div`
-    margin-top: ${themeColors.spacing.md};
     margin-bottom: ${themeColors.spacing.xl};
     display: flex;
     flex-direction: column;
@@ -118,6 +116,8 @@ const NewsCard = styled(Card)`
 const NewsCardContent = styled.div`
     display: flex;
     gap: ${themeColors.spacing.xl};
+    height: 100%;
+    align-items: stretch;
 
     @media (max-width: ${themeColors.breakpoints.mobile}) {
         padding: ${themeColors.spacing.md};
@@ -126,17 +126,21 @@ const NewsCardContent = styled.div`
 `;
 
 const NewsCardMain = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 0;
     flex: 1;
 `;
 
 const NewsCardImage = styled.div`
-    width: 300px;
+    width: 280px;
     height: 200px;
     border-radius: 8px;
     overflow: hidden;
     background-color: #111;
     display: flex;
-    align-items: center;
+    align-self: flex-start;
     justify-content: center;
 
     @media (max-width: ${themeColors.breakpoints.tablet}) {
@@ -487,7 +491,7 @@ export default function NewsList() {
                                                     </>
                                                 )}
                                             </TagList>
-                                            <NewsDescription>{newsItem.content.substring(0, 150)}...</NewsDescription>
+                                            <NewsDescription>{newsItem.content.substring(0, 70)}...</NewsDescription>
 
                                             <NewsCardMeta>
                                                 <MetaItem>

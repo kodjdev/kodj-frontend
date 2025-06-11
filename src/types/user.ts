@@ -1,13 +1,15 @@
 import { EventDetails } from '.';
 
-type RegistrationStatus = 'confirmed' | 'pending' | 'waitlist';
+type RegistrationStatus = 'CONFIRMED' | 'PENDING' | 'CANCELED';
 type SpeakerStatus = 'confirmed' | 'pending';
 
 export type EventRegistrationData = {
-    eventId: string;
-    userId: string;
-    attendeeCount?: number;
-    notes?: string;
+    status?: RegistrationStatus;
+    cancelled?: boolean;
+    attendanceReason?: string;
+    expectation?: string;
+    interestField?: string;
+    registrationDate?: string;
 };
 
 export type SpeakerRegistrationData = {
@@ -19,9 +21,9 @@ export type SpeakerRegistrationData = {
 };
 
 export type EventRegistrationResponse = {
-    registrationId: string;
-    eventId: string;
-    status: RegistrationStatus;
+    message: string;
+    data: string;
+    statusCode: number;
 };
 
 export type SpeakerRegistrationResponse = {
