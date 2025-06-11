@@ -9,7 +9,7 @@ import { modalSizes } from '@/components/Modal/modalConstants';
 export type ModalProps = {
     isOpen: boolean;
     onClose: () => void;
-    title?: string;
+    title?: string | ReactNode;
     children: ReactNode;
     size?: keyof typeof modalSizes;
     hideCloseButton?: boolean;

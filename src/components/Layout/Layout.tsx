@@ -25,7 +25,7 @@ const MainContent = styled.main`
 const ContentWrapper = styled.div`
     max-width: ${themeColors.breakpoints.laptop || '1140px'};
     margin: 0 auto; // Centers the content
-    padding: ${themeColors.spacing.xl || '60px'} ${themeColors.spacing.lg || '40px'};
+    padding: ${themeColors.spacing.xxxl || '60px'} ${themeColors.spacing.lg || '40px'};
     width: 100%;
     box-sizing: border-box;
 
