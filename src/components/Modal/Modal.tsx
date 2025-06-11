@@ -4,12 +4,12 @@ import { createPortal } from 'react-dom';
 import themeColors from '@/tools/themeColors';
 import Card from '@/components/Card/Card';
 import { X } from 'lucide-react';
-import { modalSizes } from './modalConstants';
+import { modalSizes } from '@/components/Modal/modalConstants';
 
 export type ModalProps = {
     isOpen: boolean;
     onClose: () => void;
-    title?: string;
+    title?: string | ReactNode;
     children: ReactNode;
     size?: keyof typeof modalSizes;
     hideCloseButton?: boolean;

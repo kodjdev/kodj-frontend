@@ -7,6 +7,8 @@ import uzHome from '@/pages/Home/langs/uz-home.json';
 import enHome from '@/pages/Home/langs/en-home.json';
 import enSpeakers from '@/pages/Speakers/langs/en-speakers.json';
 import uzSpeakers from '@/pages/Speakers/langs/uz-speakers.json';
+import enEventRegister from '@/pages/Events/EventRegister/langs/en-register.json';
+import uzEventRegister from '@/pages/Events/EventRegister/langs/uz-register.json';
 
 declare module 'i18next' {
     interface CustomTypeOptions {
@@ -14,6 +16,7 @@ declare module 'i18next' {
         resources: {
             home: typeof enHome;
             speakers: typeof enSpeakers;
+            eventRegister: typeof enEventRegister;
         };
     }
 }
@@ -29,17 +32,19 @@ i18n.use(initReactI18next)
             en: {
                 home: enHome,
                 speakers: enSpeakers,
+                eventRegister: enEventRegister,
             },
             uz: {
                 home: uzHome,
                 speakers: uzSpeakers,
+                eventRegister: uzEventRegister,
             },
         },
         fallbackLng: 'en',
         interpolation: {
             escapeValue: false,
         },
-        ns: ['home', 'speakers'],
+        ns: ['home', 'speakers', 'eventRegister'],
         defaultNS: 'about',
         detection: {
             order: ['localStorage', 'navigator'],

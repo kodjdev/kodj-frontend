@@ -179,6 +179,7 @@ export default function Login({ toggleAuthMode, returnUrl, eventDetails }: Login
 
     const handleSuccessfulAuth = useCallback(() => {
         if (returnUrl && eventDetails) {
+            localStorage.removeItem('pendingEventRegistration');
             navigate(returnUrl, { state: eventDetails });
         } else {
             navigate('/mypage');

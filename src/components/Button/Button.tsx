@@ -22,6 +22,7 @@ type BaseButtonProps = {
     disabled?: boolean;
     htmlType?: ButtonHTMLAttributes<HTMLButtonElement>['type'];
     active?: boolean;
+    icon?: React.ReactElement;
 } & Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'type'>;
 
 type LinkButtonProps = {
@@ -193,23 +194,6 @@ const StyledButton = styled('button')<{
 
                     &:hover:not(:disabled) {
                         background-color: ${themeColor.colors.ui.signOut.hoverBg};
-                    }
-
-                    svg {
-                        color: ${themeColor.colors.status.error.text};
-                        margin-right: ${themeColor.spacing.md};
-                    }
-                `;
-                return css`
-                    background-color: #161616;
-                    color: ${themeColor.colors.neutral.white};
-                    text-transform: none;
-                    justify-content: flex-start;
-                    border: none;
-                    border-radius: 8px;
-
-                    &:hover:not(:disabled) {
-                        background-color: #272727;
                     }
 
                     svg {

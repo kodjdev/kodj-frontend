@@ -36,7 +36,11 @@ export default function LoginRoot() {
     const [signupData, setSignupData] = useState<UserData | null>(null);
 
     const returnUrl = location.state?.returnUrl;
-    const eventDetails = location.state?.eventDetails;
+    const eventDetails =
+        location.state?.eventDetails ||
+        (localStorage.getItem('pendingEventRegistration')
+            ? JSON.parse(localStorage.getItem('pendingEventRegistration')!)
+            : null);
 
     // we check the URL parameters on mount to determine if we should show login or signup
     useEffect(() => {

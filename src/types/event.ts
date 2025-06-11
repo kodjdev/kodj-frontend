@@ -17,11 +17,15 @@ export type Event = {
     imageUrl?: string;
     registeredCount?: number;
     maxSeats?: number;
+    startTime?: string;
+    endTime?: string;
+    availableSeats?: number;
     isFreeEvent?: boolean;
     subtitle?: string;
     speakers?: Speaker[];
     eventSchedule?: KeynoteSession[];
     parking?: boolean;
+    eventRoom?: string;
 };
 
 export type EventDetailsResponse = {

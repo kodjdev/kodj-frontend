@@ -15,6 +15,7 @@ export type BaseEvent = {
     eventRoom?: string;
     parking?: boolean;
     maxSeats?: number;
+    availableSeats?: number;
     registeredCount?: number;
     isFreeEvent?: boolean;
     time?: string;
@@ -31,6 +32,7 @@ export type Event = BaseEvent & {
     seats?: string;
     isUpcoming?: boolean;
     isPlaceholder?: boolean;
+    description?: string;
 };
 
 export type EventForServer = BaseEvent & {

@@ -12,6 +12,8 @@ export const CACHE_DURATION = 5 * 60 * 1000;
  * Convert the MeetupResponse to Event format for internal use
  */
 export const meetupToEvent = (meetup: MeetupResponse): Event => {
+    const registeredCount = meetup.maxSeats - meetup.availableSeats;
+
     return {
         id: meetup.id.toString(),
         title: meetup.title || 'Untitled Event',
@@ -19,10 +21,13 @@ export const meetupToEvent = (meetup: MeetupResponse): Event => {
         date: meetup.meetupDate || null,
         location: meetup.location || 'Location TBD',
         maxSeats: meetup.maxSeats ?? 50,
+        availableSeats: meetup.availableSeats ?? 50,
+        startTime: meetup.startTime || '',
+        endTime: meetup.endTime || '',
+        registeredCount: registeredCount,
         imageUrl: meetup.imageURL || '',
         parking: meetup.parking ?? false,
         author: "KO'DJ",
-        registeredCount: 0,
         isFreeEvent: true,
         time: undefined,
         speakers: [],
@@ -34,6 +39,9 @@ export const meetupToEvent = (meetup: MeetupResponse): Event => {
  * Convert the Event to MeetupResponse format for api compatibility
  */
 export const eventToMeetup = (event: Event): MeetupResponse => {
+    const maxSeats = event.maxSeats ?? 50;
+    const registeredCount = event.registeredCount ?? 0;
+
     return {
         id: parseInt(event.id) || 0,
         title: event.title || 'Untitled Event',
@@ -42,7 +50,8 @@ export const eventToMeetup = (event: Event): MeetupResponse => {
             : event.description || 'No description available',
         meetupDate: typeof event.date === 'string' ? event.date : new Date().toISOString(),
         location: event.location || 'Location TBD',
-        maxSeats: event.maxSeats ?? 50,
+        maxSeats: maxSeats || 50,
+        availableSeats: Math.max(0, maxSeats - registeredCount),
         imageURL: event.imageUrl || '',
         parking: event.parking ?? false,
         provided: 'Cached Data',

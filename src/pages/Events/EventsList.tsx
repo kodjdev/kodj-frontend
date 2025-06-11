@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-import { Event } from '@/types';
 import { useRecoilValue } from 'recoil';
 import { eventsCacheStatusAtom, pastEventsAtom, upcomingEventsAtom } from '@/atoms/events';
 import themeColors from '@/tools/themeColors';
@@ -11,6 +10,7 @@ import useApiService from '@/services';
 import useFormatDate from '@/hooks/useFormatDate';
 import { message } from 'antd';
 import PageLoading from '@/components/Loading/LoadingAnimation';
+import { Event } from '@/types/event';
 
 enum EventFilter {
     ALL = 'all',
@@ -76,8 +76,8 @@ const EventFilterContainer = styled.div`
 `;
 
 const FilterButton = styled(Button)<{ isActive: boolean }>`
-    background-color: ${(props) => (props.isActive ? themeColors.colors.primary.main : 'transparent')}!important;
-    color: ${(props) => (props.isActive ? themeColors.colors.neutral.white : themeColors.colors.gray.main)} !important;
+    background-color: ${(props) => (props.isActive ? themeColors.white : 'transparent')}!important;
+    color: ${(props) => (props.isActive ? themeColors.colors.neutral.black : themeColors.colors.gray.main)} !important;
     border: 1px solid ${themeColors.cardBorder.color};
     border-radius: ${themeColors.radiusSizes.two_xl};
     padding: 6px 10px;
@@ -198,12 +198,13 @@ export default function EventsList({ onFilterChange, defaultFilter = EventFilter
             <EventCard
                 isFreeEvent={true}
                 title={event.title}
-                description={event.description}
+                description={Array.isArray(event.description) ? event.description.join(' ') : event.description}
                 date={formatDate(event.date)}
                 author={event.author || "KO'DJ"}
                 imageUrl={event.imageUrl || ''}
-                registeredCount={event.registeredCount || 50}
-                maxSeats={event.maxSeats || 60}
+                registeredCount={event.registeredCount}
+                maxSeats={event.maxSeats || 50}
+                availableSeats={event.availableSeats}
             />
         </StyledLink>
     );

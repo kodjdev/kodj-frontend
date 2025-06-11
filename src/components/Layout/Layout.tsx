@@ -25,16 +25,13 @@ const MainContent = styled.main`
 const ContentWrapper = styled.div`
     max-width: ${themeColors.breakpoints.laptop || '1140px'};
     margin: 0 auto; // Centers the content
-    padding: ${themeColors.spacing.xl || '60px'} ${themeColors.spacing.lg || '40px'};
+    padding: ${themeColors.spacing.xxxl || '60px'} ${themeColors.spacing.lg || '40px'};
     width: 100%;
     box-sizing: border-box;
 
     @media (max-width: ${themeColors.breakpoints.mobile}) {
         padding-left: ${themeColors.spacing.lg || '16px'};
         padding-right: ${themeColors.spacing.lg || '16px'};
-    }
-    @media (min-width: ${themeColors.breakpoints.tablet}) {
-        padding: ${themeColors.spacing.xl || '60px'} ${themeColors.spacing.lg || '40px'};
     }
 `;
 
