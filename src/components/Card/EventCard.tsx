@@ -14,6 +14,7 @@ export type EventCardProps = {
     isUpcoming?: boolean;
     registeredCount?: number;
     maxSeats?: number;
+    availableSeats?: number;
     className?: string;
     children?: React.ReactNode;
 };
@@ -103,6 +104,7 @@ export default function EventCard({
     isFreeEvent,
     registeredCount,
     maxSeats,
+    availableSeats,
     className,
     children,
     ...props
@@ -135,12 +137,18 @@ export default function EventCard({
                     </DateText>
                 )}
 
-                {(registeredCount !== undefined || maxSeats) && (
+                {(registeredCount !== undefined || availableSeats !== undefined || maxSeats) && (
                     <RegistrationInfo>
-                        {registeredCount !== undefined && maxSeats && (
+                        {maxSeats && (
                             <InfoItem>
                                 <FaUsers style={{ marginRight: '4px' }} />
-                                Registered: {registeredCount}/{maxSeats}
+                                Registered:{' '}
+                                {registeredCount !== undefined
+                                    ? registeredCount
+                                    : availableSeats !== undefined
+                                      ? maxSeats - availableSeats
+                                      : 0}
+                                /{maxSeats}
                             </InfoItem>
                         )}
                         {isFreeEvent && (

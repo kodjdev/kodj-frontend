@@ -33,9 +33,6 @@ const ContentWrapper = styled.div`
         padding-left: ${themeColors.spacing.lg || '16px'};
         padding-right: ${themeColors.spacing.lg || '16px'};
     }
-    @media (min-width: ${themeColors.breakpoints.tablet}) {
-        padding: ${themeColors.spacing.xl || '60px'} ${themeColors.spacing.lg || '40px'};
-    }
 `;
 
 /**
