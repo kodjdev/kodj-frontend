@@ -1,6 +1,7 @@
 import { ReactNode } from 'react';
-import Modal, { Sizes } from '@/components/Modal/Modal';
+import Modal from '@/components/Modal/Modal';
 import Button from '@/components/Button/Button';
+import { Sizes } from '@/components/Modal/modalConstants';
 
 export type InfoModalProps = {
     isOpen: boolean;
