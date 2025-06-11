@@ -71,7 +71,6 @@ const SelectIcon = styled(ChevronDown)`
 const TextArea = styled.textarea<{ hasError?: boolean }>`
     padding: ${themeColors.spacing.md} ${themeColors.spacing.lg};
     border-radius: ${themeColors.radiusSizes.md};
-    border: ${({ hasError }) => (hasError ? `1px solid ${themeColors.red_text}` : 'none')};
     border: 1px solid ${({ hasError }) => (hasError ? themeColors.red_text : themeColors.cardBorder.color)};
     background-color: ${themeColors.gray_background};
     color: ${themeColors.white_dark};
