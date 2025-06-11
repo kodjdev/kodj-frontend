@@ -237,7 +237,9 @@ export default function EventDetails() {
 
                 if (response?.statusCode && response.statusCode >= 200 && response.statusCode < 300) {
                     setEventDetails(response);
-                    console.log('mappedEvent event logged: ', response);
+                    // Log event details if necessary using a proper logging mechanism
+                    // Example: logger.info('mappedEvent event logged: ', response);
+                    // For now, removing the console.log statement
 
                     if (!locationEventData) {
                         const mappedEvent = mapApiResponseToEvent(eventId, response.data);
