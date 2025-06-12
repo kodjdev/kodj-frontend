@@ -54,6 +54,10 @@ export type EventForServer = BaseEvent & {
 export type EventDetails = {
     id: string;
     title: string;
+    location?: string;
+    imageUrl?: string;
+    author?: string;
+    eventRoom?: string;
     date: {
         seconds: number;
         nanoseconds: number;
