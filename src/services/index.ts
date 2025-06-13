@@ -1,8 +1,9 @@
-import { useUserService } from '@/services/apiService/userService';
+import { useUserService } from '@/services/apiService/fetchUserService';
 import { useFetchEventService } from '@/services/apiService/fetchEventService';
 import { useRegisterEventService } from '@/services/apiService/registerEventService';
 import { useFetchNewsService } from '@/services/apiService/fetchNewsService';
-import { useFetchCommentsService } from './apiService/fetchComments';
+import { useFetchCommentsService } from '@/services/apiService/fetchCommentsService';
+import { useFetchStatsService } from '@/services/apiService/fetchStatsService';
 
 /**
  * API Service - Centralized API Service
@@ -17,6 +18,7 @@ export default function useApiService() {
     const eventRegisterService = useRegisterEventService();
     const newsFetchService = useFetchNewsService();
     const commentFetchService = useFetchCommentsService();
+    const statsFetchService = useFetchStatsService();
 
     return {
         ...userDetailsService,
@@ -24,5 +26,6 @@ export default function useApiService() {
         ...eventRegisterService,
         ...newsFetchService,
         ...commentFetchService,
+        ...statsFetchService,
     };
 }

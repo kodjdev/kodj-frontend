@@ -36,7 +36,6 @@ const FeaturesGrid = styled.div`
     margin-top: 3rem;
     border-radius: 8px 8px 8px 8px;
     border: 0.5px solid ${themeColors.cardBorder.color};
-    margin-bottom: 50px;
     position: relative;
 
     @media (min-width: 1024px) {
