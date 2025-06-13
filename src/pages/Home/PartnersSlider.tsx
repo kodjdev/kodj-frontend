@@ -9,15 +9,16 @@ const slideAnimation = keyframes`
     transform: translateX(-50%);
   }
 `;
-
 const Container = styled.div`
     overflow: hidden;
     padding: ${themeColors.spacing.xxxl} 0;
     background: transparent;
     position: relative;
+    margin: 0 -${themeColors.spacing.xl};
 
     @media (max-width: ${themeColors.breakpoints.tablet}) {
         padding: ${themeColors.spacing.lg} ${themeColors.spacing.md};
+        margin: 0 -${themeColors.spacing.md};
     }
 
     &::before,
@@ -25,9 +26,9 @@ const Container = styled.div`
         content: '';
         position: absolute;
         top: 0;
-        width: 80px;
+        width: 150px;
         height: 100%;
-        z-index: 2;
+        z-index: 10;
         pointer-events: none;
 
         @media (max-width: ${themeColors.breakpoints.tablet}) {
@@ -37,22 +38,23 @@ const Container = styled.div`
 
     &::before {
         left: 0;
-        background: linear-gradient(
-            to right,
-            ${themeColors.colors.gray.dark} 0%,
-            ${themeColors.colors.gray.dark} 30%,
-            transparent 100%
-        );
+        background: linear-gradient(to right, #000000 0%, #000000 60%, transparent 100%);
     }
 
     &::after {
         right: 0;
-        background: linear-gradient(
-            to left,
-            ${themeColors.colors.gray.dark} 0%,
-            ${themeColors.colors.gray.dark} 30%,
-            transparent 100%
-        );
+        background: linear-gradient(to left, #000000 0%, #000000 60%, transparent 100%);
+    }
+`;
+
+const SliderWrapper = styled.div`
+    display: flex;
+    animation: ${slideAnimation} 30s linear infinite;
+    width: 200%;
+    padding: 0 ${themeColors.spacing.xl};
+
+    @media (max-width: ${themeColors.breakpoints.tablet}) {
+        padding: 0 ${themeColors.spacing.md};
     }
 `;
 
@@ -61,7 +63,6 @@ const Title = styled.h3`
     color: ${themeColors.gray_text};
     font-size: 1rem;
     font-weight: 400;
-    margin-bottom: ${themeColors.spacing.xl};
     letter-spacing: 0.5px;
     padding-bottom: ${themeColors.spacing.xl};
 
@@ -76,13 +77,6 @@ const LogoItem = styled.div`
     align-items: center;
     justify-content: center;
     padding: 0 ${themeColors.spacing.lg};
-`;
-
-const SliderWrapper = styled.div`
-    display: flex;
-    animation: ${slideAnimation} 30s linear infinite;
-    width: 200%;
-    // padding: ${themeColors.spacing.lg};
 `;
 
 const LogoContainer = styled.div`
@@ -122,7 +116,8 @@ const companies = [
     { name: 'X', logo: 'https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/x.svg' },
     { name: 'Mozilla', logo: 'https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/mozilla.svg' },
 ];
-export default function PartnerCompaniesSlider() {
+
+export default function PartnersSlider() {
     return (
         <Container>
             <Title>Trusted by fast-growing companies worldwide</Title>

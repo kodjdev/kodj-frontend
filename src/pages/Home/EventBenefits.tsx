@@ -20,6 +20,8 @@ const AIIcon: React.FC = () => (
 );
 
 const SectionContainer = styled.section`
+    width: 100%;
+    padding: ${themeColors.spacing.xxxl} 0;
     max-width: ${themeColors.breakpoints.laptop || '1140px'};
     margin: 0 auto;
     padding-bottom: 80px;
@@ -131,10 +133,10 @@ export default function EventBenefits() {
             <SectionHeader>
                 <Title>
                     <span>Come and see </span>
-                    <span>what we have to offer</span>
+                    <span>what we have to offer:</span>
                 </Title>
                 <JoinButton asLink to="/join" variant="text" size="md">
-                    JOIN THE COMMUNITY
+                    Join the Community
                 </JoinButton>
             </SectionHeader>
 
