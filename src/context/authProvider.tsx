@@ -38,7 +38,6 @@ export default function AuthProvider({ children }: AuthProviderProps) {
 
     const isTokenValid = useCallback((token: string): boolean => {
         if (!token) {
-            console.warn('No token provided for validation');
             return false;
         }
 
@@ -60,23 +59,19 @@ export default function AuthProvider({ children }: AuthProviderProps) {
     const loadUserData = useCallback(
         async (token: string): Promise<User | null> => {
             if (isLoadingUserRef.current) {
-                console.log('User data loading already in progress');
                 return null;
             }
 
             isLoadingUserRef.current = true;
 
             try {
-                console.log('Loading user data...');
                 const response = await getUserService.getUserDetails(token);
 
                 if (response.data?.data) {
                     const userData = response.data;
                     setUser(userData);
-                    console.log('User data loaded successfully:', userData.data.username);
                     return userData;
                 } else {
-                    console.log('No user data in response');
                     clearTokens();
                     return null;
                 }
@@ -125,21 +120,18 @@ export default function AuthProvider({ children }: AuthProviderProps) {
         let isMounted = true;
 
         const initializeAuth = async () => {
-            console.log('Initializing authentication...');
             setIsLoading(true);
 
             try {
                 const accessToken = localStorage.getItem('access_token');
 
                 if (accessToken && isTokenValid(accessToken)) {
-                    console.log('Valid access token found');
                     const userData = await loadUserData(accessToken);
 
                     if (isMounted && !userData) {
                         console.log('Failed to load user data with valid token');
                     }
                 } else {
-                    console.log('No valid access token, checking refresh token');
                     const refreshToken = localStorage.getItem('refresh_token');
 
                     if (refreshToken) {
@@ -163,7 +155,6 @@ export default function AuthProvider({ children }: AuthProviderProps) {
             } finally {
                 if (isMounted) {
                     setIsLoading(false);
-                    console.log('Authentication initialization complete');
                 }
             }
         };
@@ -237,7 +228,6 @@ export default function AuthProvider({ children }: AuthProviderProps) {
     const loginWithGoogle = useCallback(
         async (idToken: string): Promise<ApiResponse<TokenResponse>> => {
             try {
-                console.log('Starting Google login process');
                 const response = await fetchData<TokenResponse>({
                     endpoint: '/auth/google/sign-in',
                     method: 'POST',
@@ -247,23 +237,12 @@ export default function AuthProvider({ children }: AuthProviderProps) {
                     },
                 });
 
-                console.log('Google login response:', response);
-
                 if (response.data?.data?.access_token) {
                     localStorage.setItem('access_token', response.data.data.access_token);
                     localStorage.setItem('refresh_token', response.data.data.refresh_token);
-                    console.log('Tokens stored, loading user data', response);
 
-                    const userData = await loadUserData(response.data.data.access_token);
-
-                    if (userData) {
-                        console.log('User data loaded, navigating to mypage');
-                        setTimeout(() => {
-                            navigate('/mypage');
-                        }, 500);
-                    } else {
-                        console.error('Failed to load user data after Google login');
-                    }
+                    await loadUserData(response.data.data.access_token);
+                    console.log('User data loaded successfully after Google login');
                 }
 
                 return response;

@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import themeColors from '@/tools/themeColors';
 import SectionLoading from '@/components/Loading/LoadingAnimation';
+import { ArrowUpRight } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 type TimeLeftType = {
     days: number;
@@ -19,20 +21,11 @@ const Container = styled.div`
     display: flex;
     flex-direction: column;
     max-width: ${themeColors.breakpoints.laptop};
-    padding: 32px 48px;
-    margin: 1rem auto;
+    padding: 24px;
     border-radius: 8px;
     border: 1px solid ${themeColors.cardBorder.color};
     background-color: ${themeColors.colors.gray.dark};
     overflow: hidden;
-    @media (min-width: ${themeColors.breakpoints.mobile}) {
-        padding: 32px;
-    }
-
-    @media (min-width: ${themeColors.breakpoints.tablet}) {
-        padding: 32px 48px;
-        max-width: ${themeColors.breakpoints.laptop};
-    }
 `;
 
 const ContentWrapper = styled.div`
@@ -132,24 +125,25 @@ const EventNameText = styled.p`
 `;
 
 const TimerContainer = styled.div`
-    display: grid;
-    grid-template-columns: repeat(2, 1fr); // 2 columns on small screens
-    gap: 0.25rem;
     width: 100%;
     margin-top: 1rem;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.25rem;
+    justify-items: flex-start;
 
-    @media (min-width: ${themeColors.breakpoints.mobile}) {
+    @media (min-width: ${themeColors.breakpoints.tablet}) {
         display: flex;
         flex-direction: row;
         align-items: center;
-        justify-content: center;
-        width: auto;
-        gap: 1rem;
+        justify-content: flex-start;
+        gap: 1.5rem;
         margin-top: 0;
+        width: auto;
     }
 
-    @media (min-width: ${themeColors.breakpoints.tablet}) {
-        gap: 1.5rem;
+    @media (min-width: ${themeColors.breakpoints.laptop}) {
+        gap: 2rem;
     }
 `;
 
@@ -199,7 +193,79 @@ const Separator = styled.span`
     }
 `;
 
+const RegisterButton = styled.button`
+    background: transparent;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 6px;
+    height: auto;
+    min-height: 32px;
+    transition: all 0.3s ease;
+    margin-left: 0.5rem;
+    position: relative;
+    overflow: visible;
+    min-width: 24px;
+
+    &:hover {
+        background: transparent;
+        transform: scale(1.05);
+        min-width: 80px;
+    }
+`;
+
+const ButtonContent = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    width: 100%;
+`;
+
+const ArrowIcon = styled.div`
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    ${RegisterButton}:hover & {
+        opacity: 0;
+        visibility: hidden;
+        background-color: transparent;
+    }
+
+    svg {
+        color: #ffd700;
+        width: 20px;
+        height: 20px;
+        font-weight: bold;
+        filter: drop-shadow(0 0 8px #ffd700) drop-shadow(0 0 12px #ffd700);
+        stroke-width: 2;
+    }
+`;
+
+const RegisterText = styled.span`
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    color: #4285f4;
+    font-weight: bold;
+    font-size: 12px;
+    text-transform: uppercase;
+    white-space: nowrap;
+    filter: drop-shadow(0 0 6px #4285f4);
+
+    ${RegisterButton}:hover & {
+        opacity: 1;
+        visibility: visible;
+    }
+`;
+
 export default function TimeFrame() {
+    const navigate = useNavigate();
     const [timeLeft, setTimeLeft] = useState<TimeLeftType>({
         days: 0,
         hours: 0,
@@ -207,11 +273,9 @@ export default function TimeFrame() {
         seconds: 0,
     });
 
-    // hardcoded sample data, useEventFetch define
-    // bolgandan keyin integrate qilamiz
     const [event] = useState<EventType>({
-        name: 'Developers Meetup',
-        date: new Date(Date.now() + 15 * 24 * 60 * 60 * 1000), // 15 days from now
+        name: 'Ai Here',
+        date: new Date(Date.now() + 15 * 24 * 60 * 60 * 1000),
     });
 
     const [loading, setLoading] = useState<boolean>(false);
@@ -246,6 +310,10 @@ export default function TimeFrame() {
         return <SectionLoading message="Loading Time Frame..." />;
     }
 
+    function formatTime(value: number): string {
+        return value < 10 ? `0${value}` : value.toString();
+    }
+
     return (
         <Container>
             <ContentWrapper>
@@ -273,6 +341,22 @@ export default function TimeFrame() {
                         <TimeLeftText>Time left until the next</TimeLeftText>
                         <UntilNextText>MeetUp.</UntilNextText>
                         <EventNameText>{event?.name || ''}</EventNameText>
+
+                        <RegisterButton
+                            onClick={() => {
+                                navigate('/events');
+                                if (process.env.NODE_ENV !== 'production') {
+                                    console.log('Register clicked');
+                                }
+                            }}
+                        >
+                            <ButtonContent>
+                                <ArrowIcon>
+                                    <ArrowUpRight />
+                                </ArrowIcon>
+                                <RegisterText>Register</RegisterText>
+                            </ButtonContent>
+                        </RegisterButton>
                     </TimeInfoContainer>
                 </LeftSection>
 
@@ -294,7 +378,7 @@ export default function TimeFrame() {
 
                     <TimeUnit>
                         <TimeValue>{formatTime(timeLeft.minutes)}</TimeValue>
-                        <TimeLabel>MINUT</TimeLabel>
+                        <TimeLabel>MINUTE</TimeLabel>
                     </TimeUnit>
 
                     <Separator>·</Separator>
@@ -307,8 +391,4 @@ export default function TimeFrame() {
             </ContentWrapper>
         </Container>
     );
-}
-
-function formatTime(value: number): string {
-    return value < 10 ? `0${value}` : value.toString();
 }

@@ -21,22 +21,31 @@
     "statisticsPage": {
         "statisticsHeader": "Statistics",
         "statisticsHeaderGray": "of KO'DJ",
+        "subtitle": "Empowering developers through knowledge sharing and collaboration",
+        "loading": "Loading Statistics...",
+        "error": "Error loading statistics",
         "statisticsBody": {
             "users": {
-                "title": "Meetup Speakers",
-                "description": "Visited Speakers"
+                "title": "Expert Speakers",
+                "description": "Industry professionals sharing knowledge across various tech domains"
             },
             "meetups": {
-                "title": "Meetups"
+                "title": "Community Events",
+                "description": "Monthly meetups, workshops, and networking sessions fostering developer collaboration"
             },
             "registeredUsers": {
-                "title": "Registered users",
-                "description": "Current Users"
+                "title": "Active Members",
+                "description": "Engaged community members participating in discussions, events, and knowledge sharing"
             },
-            "planning": {
-                "title": "Planning to host coders of",
-                "description": "in 2025"
+            "badges": {
+                "active": "Active",
+                "growing": "Growing",
+                "expanding": "Expanding"
             }
+        },
+        "progress": {
+            "current": "Current",
+            "target": "Target"
         }
     },
     "timerPage": {

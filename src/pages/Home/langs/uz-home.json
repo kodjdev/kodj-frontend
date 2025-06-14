@@ -19,24 +19,33 @@
         "login": "Kirish"
     },
     "statisticsPage": {
-        "statisticsHeader": "KO'DJ",
-        "statisticsHeaderGray": "Statistikasi",
+        "statisticsHeader": "Statistika",
+        "statisticsHeaderGray": "KO'DJ ning",
+        "subtitle": "Bilim almashish va hamkorlik orqali dasturchllarni rivojlantirish",
+        "loading": "Statistika yuklanmoqda...",
+        "error": "Statistikani yuklashda xatolik",
         "statisticsBody": {
             "users": {
-                "title": "Meetup Speakerlar",
-                "description": "Tashrif buyurgan Speakerlar"
+                "title": "Mutaxassis Ma'ruzachilar",
+                "description": "Turli texnologiya sohalarida bilim ulashadigan sanoat mutaxassislari"
             },
             "meetups": {
-                "title": "Meetuplar"
+                "title": "Jamiyat Tadbirlari",
+                "description": "Oylik uchrashuvlar, seminarlar va dasturchllar hamkorligi uchun tarmoq sessiyalari"
             },
             "registeredUsers": {
-                "title": "Ro‘yxatdan o‘tgan foydalanuvchilar",
-                "description": "Joriy Foydalanuvchilar"
+                "title": "Faol A'zolar",
+                "description": "Muhokamalar, tadbirlar va bilim almashishda faol ishtirok etadigan jamiyat a'zolari"
             },
-            "planning": {
-                "title": "Dasturchilarni qabul qilishni rejalashtirish",
-                "description": "2025 yilda"
+            "badges": {
+                "active": "Faol",
+                "growing": "O'sib boruvchi",
+                "expanding": "Kengayib boruvchi"
             }
+        },
+        "progress": {
+            "current": "Hozirgi",
+            "target": "Maqsad"
         }
     },
     "timerPage": {

@@ -2,6 +2,9 @@ import EventBenefits from '@/pages/Home/EventBenefits';
 import Statistics from '@/pages/Home/Statistics';
 import CommunityCard from '@/pages/Home/CommunityCard/CommunityCard';
 import TimeFrame from '@/pages/Home/TimeFrame';
+import PartnerCompaniesSlider from '@/pages/Home/PartnersSlider';
+import FeedbackPage from '@/pages/Home/Feedbacks';
+import SpeakerRegistrationBanner from '@/pages/Home/SpeakerRegistrationBanner';
 
 /**
  * Home - Home Page Component
@@ -13,9 +16,11 @@ export default function HomePage() {
         <>
             <CommunityCard />
             <Statistics />
+            <PartnerCompaniesSlider />
             <EventBenefits />
             <TimeFrame />
-            {/* <CardHoverEffect /> */}
+            <SpeakerRegistrationBanner />
+            <FeedbackPage />
         </>
     );
 }

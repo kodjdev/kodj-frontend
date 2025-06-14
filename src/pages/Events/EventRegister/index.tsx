@@ -10,7 +10,7 @@ import { RegistrationFormData } from '@/types';
 import Button from '@/components/Button/Button';
 import useAuth from '@/context/useAuth';
 import EventForm from '@/pages/Events/EventRegister/EventForm';
-import Step from '@/components/Step';
+import Step from '@/components/ProgressBar/Step';
 import useApiService from '@/services';
 import { ApiResponse } from '@/types/fetch';
 import { EventRegistrationData, EventRegistrationResponse } from '@/types/user';
@@ -62,10 +62,10 @@ const ButtonWrapper = styled.div`
     margin-top: ${themeColors.spacing.xl};
     display: flex;
     justify-content: space-between;
-    gap: ${themeColors.spacing.sm}; // Add gap for mobile
+    gap: ${themeColors.spacing.sm};
 
     @media (max-width: ${themeColors.breakpoints.mobile}) {
-        flex-direction: column; // Stack buttons on mobile
+        flex-direction: column;
         gap: ${themeColors.spacing.md};
     }
 `;
@@ -228,7 +228,11 @@ export default function EventRegister() {
     const { handleSubmit, trigger, reset } = methods;
 
     useEffect(() => {
-        if (!user) {
+        const pendingRegistration = localStorage.getItem('pendingEventRegistration');
+
+        if (user && pendingRegistration) {
+            localStorage.removeItem('pendingEventRegistration');
+        } else if (!user) {
             setIsLoginModalOpen(true);
         }
     }, [user]);
