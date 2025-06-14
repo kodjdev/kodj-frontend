@@ -345,7 +345,9 @@ export default function TimeFrame() {
                         <RegisterButton
                             onClick={() => {
                                 navigate('/events');
-                                console.log('Register clicked');
+                                if (process.env.NODE_ENV !== 'production') {
+                                    console.log('Register clicked');
+                                }
                             }}
                         >
                             <ButtonContent>
