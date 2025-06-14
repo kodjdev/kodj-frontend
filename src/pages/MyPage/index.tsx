@@ -8,6 +8,7 @@ import Sidebar from '@/pages/MyPage/SideBar';
 import ConfirmModal from '@/components/Modal/ModalTypes/ConfirmModal';
 import useAuth from '@/context/useAuth';
 import useModal from '@/hooks/useModal';
+import JobPosting from '@/pages/MyPage/JobPosting/index';
 
 const PageContainer = styled.div`
     max-width: 1200px;
@@ -44,27 +45,18 @@ const RightColumn = styled.div`
     }
 `;
 
-const SectionContainer = styled.div`
-    background-color: ${themeColors.colors.gray.background};
+const SectionContainer = styled.div<{ showBorder?: boolean }>`
     border-radius: ${themeColors.cardBorder.md};
-    border: 1px solid ${themeColors.cardBorder.color};
-    padding: ${themeColors.spacing.lg};
+    border: ${(props) => (props.showBorder ? `1px solid ${themeColors.cardBorder.color}` : 'none')};
+    padding: ${(props) => (props.showBorder ? themeColors.spacing.lg : '0')};
     margin-bottom: ${themeColors.spacing.lg};
     overflow: hidden;
     min-height: 500px;
 `;
 
-const SectionTitle = styled.h2`
-    font-size: ${themeColors.typography.headings.desktop.h3.fontSize}px;
-    font-weight: ${themeColors.typography.headings.desktop.h3.fontWeight};
-    color: ${themeColors.colors.neutral.white};
-    margin: 0 0 ${themeColors.spacing.md} 0;
-    border-bottom: 1px solid ${themeColors.cardBorder.color};
-    padding-bottom: ${themeColors.spacing.sm};
-`;
-
 enum PageSection {
     EVENTS = 'events',
+    JOB_POSTING = 'jobPosting',
     BLOGS = 'blogs',
     ACCOUNT = 'account',
 }
@@ -79,26 +71,15 @@ export default function MyPage() {
     const { isAuthenticated, logout } = useAuth();
     const { isOpen, openModal, closeModal } = useModal();
 
-    const getSectionTitle = () => {
-        switch (activeSection) {
-            case PageSection.EVENTS:
-                return 'My Events';
-            case PageSection.BLOGS:
-                return 'Blogs';
-            case PageSection.ACCOUNT:
-                return 'Personal Info';
-            default:
-                return 'My Events';
-        }
-    };
-
-    // render the content based on active section
+    /* render the content based on active section */
     const renderContent = () => {
         switch (activeSection) {
             case PageSection.EVENTS:
                 return <MyEvents />;
             case PageSection.BLOGS:
                 return <BlogEditor />;
+            case PageSection.JOB_POSTING:
+                return <JobPosting />;
             case PageSection.ACCOUNT:
                 return <AccountDetails />;
             default:
@@ -131,10 +112,8 @@ export default function MyPage() {
                     <LeftColumn>
                         <Sidebar activeSection={activeSection} onSectionChange={setActiveSection} {...autProps} />
                     </LeftColumn>
-
                     <RightColumn>
-                        <SectionContainer>
-                            <SectionTitle>{getSectionTitle()}</SectionTitle>
+                        <SectionContainer showBorder={activeSection === PageSection.JOB_POSTING}>
                             {renderContent()}
                         </SectionContainer>
                     </RightColumn>
