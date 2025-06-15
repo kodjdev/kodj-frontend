@@ -10,6 +10,13 @@ import useAuth from '@/context/useAuth';
 import useModal from '@/hooks/useModal';
 import JobPosting from '@/pages/MyPage/JobPosting/index';
 
+enum PageSection {
+    EVENTS = 'events',
+    JOB_POSTING = 'jobPosting',
+    BLOGS = 'blogs',
+    ACCOUNT = 'account',
+}
+
 const PageContainer = styled.div`
     max-width: 1200px;
     margin: 0 auto;
@@ -54,13 +61,6 @@ const SectionContainer = styled.div<{ showBorder?: boolean }>`
     min-height: 500px;
 `;
 
-enum PageSection {
-    EVENTS = 'events',
-    JOB_POSTING = 'jobPosting',
-    BLOGS = 'blogs',
-    ACCOUNT = 'account',
-}
-
 /**
  * MyPage Component - Root Page Component
  * Main component for user's personal page where they can view their events,
@@ -70,6 +70,7 @@ export default function MyPage() {
     const [activeSection, setActiveSection] = useState<PageSection>(PageSection.EVENTS);
     const { isAuthenticated, logout } = useAuth();
     const { isOpen, openModal, closeModal } = useModal();
+    const [isJobPostingFormActive, setIsJobPostingFormActive] = useState(false);
 
     /* render the content based on active section */
     const renderContent = () => {
@@ -79,7 +80,7 @@ export default function MyPage() {
             case PageSection.BLOGS:
                 return <BlogEditor />;
             case PageSection.JOB_POSTING:
-                return <JobPosting />;
+                return <JobPosting onFormStateChange={setIsJobPostingFormActive} />;
             case PageSection.ACCOUNT:
                 return <AccountDetails />;
             default:
@@ -105,6 +106,8 @@ export default function MyPage() {
         onLogout: handleLogoutClick,
     };
 
+    const shouldShowBorder = activeSection === PageSection.JOB_POSTING && isJobPostingFormActive;
+
     return (
         <>
             <PageContainer>
@@ -113,9 +116,7 @@ export default function MyPage() {
                         <Sidebar activeSection={activeSection} onSectionChange={setActiveSection} {...autProps} />
                     </LeftColumn>
                     <RightColumn>
-                        <SectionContainer showBorder={activeSection === PageSection.JOB_POSTING}>
-                            {renderContent()}
-                        </SectionContainer>
+                        <SectionContainer showBorder={shouldShowBorder}>{renderContent()}</SectionContainer>
                     </RightColumn>
                 </ContentLayout>
             </PageContainer>
