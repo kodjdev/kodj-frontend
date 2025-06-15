@@ -6,8 +6,9 @@ import Input from '@/components/Input/Input';
 import { message } from 'antd';
 import { FaBriefcase } from 'react-icons/fa';
 import EmptyState from '@/components/EmptyState';
-import { Controller, useForm } from 'react-hook-form';
+import { Controller, FieldErrors, useForm } from 'react-hook-form';
 import { JobFormData } from '@/types';
+import { ChevronDown } from 'lucide-react';
 
 type LabelProps = {
     required?: boolean;
@@ -26,8 +27,13 @@ const FormHeader = styled.h2`
     color: ${themeColors.white};
     font-size: ${themeColors.typography.headings.desktop.h3.fontSize}px;
     font-weight: ${themeColors.typography.headings.desktop.h3.fontWeight};
-    margin-top: 0;
-    margin-bottom: ${themeColors.spacing.xl};
+    margin: 0;
+`;
+
+const SubHeader = styled.p`
+    color: ${themeColors.gray_text};
+    font-size: ${themeColors.typography.body.medium.fontSize}px;
+    margin-bottom: ${themeColors.spacing.lg};
 `;
 
 const FormRow = styled.div`
@@ -57,15 +63,23 @@ const Label = styled.label<LabelProps>`
     }
 `;
 
+const SelectWrapper = styled.div`
+    position: relative;
+    width: 100%;
+`;
+
 const Select = styled.select`
     width: 100%;
-    padding: 12px 16px;
+    padding: 10px 14px;
+    padding-right: 40px;
     background-color: transparent;
     color: ${themeColors.white};
     border: 1px solid ${themeColors.cardBorder.color};
     border-radius: ${themeColors.radiusSizes.md};
     font-size: ${themeColors.typography.body.medium.fontSize}px;
     height: 40px;
+    appearance: none;
+    cursor: pointer;
 
     &:focus {
         outline: none;
@@ -77,6 +91,26 @@ const Select = styled.select`
         background-color: ${themeColors.gray_background};
         color: ${themeColors.white};
     }
+
+    &::-webkit-appearance {
+        -webkit-appearance: none;
+    }
+
+    &::-moz-appearance {
+        -moz-appearance: none;
+    }
+`;
+
+const SelectArrow = styled.div`
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    color: ${themeColors.gray_text};
+    display: flex;
+    align-items: center;
+    justify-content: center;
 `;
 
 const TextArea = styled.textarea`
@@ -124,12 +158,14 @@ const Tag = styled.span`
 
 const ButtonsRow = styled.div`
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end;
     gap: ${themeColors.spacing.md};
     margin-top: ${themeColors.spacing.xl};
 
     @media (max-width: ${themeColors.breakpoints.mobile}) {
         flex-direction: column;
+        gap: ${themeColors.spacing.sm};
+        margin-top: ${themeColors.spacing.lg};
     }
 `;
 
@@ -244,6 +280,25 @@ export default function JobPostingBasicInfo({ onNext, onFormStateChange }: JobPo
         onNext(data);
     };
 
+    const scrollToFirstError = (errors: FieldErrors<JobFormData>) => {
+        const firstErrorField = Object.keys(errors)[0];
+        if (firstErrorField) {
+            const element = document.querySelector(`[name="${firstErrorField}"]`);
+            if (element) {
+                element.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'center',
+                });
+                /* focus on the first error field after scrolling */
+                setTimeout(() => {
+                    if (element instanceof HTMLInputElement || element instanceof HTMLSelectElement) {
+                        element.focus();
+                    }
+                }, 300);
+            }
+        }
+    };
+
     if (!hasJobs) {
         return (
             <>
@@ -267,7 +322,11 @@ export default function JobPostingBasicInfo({ onNext, onFormStateChange }: JobPo
             {contextHolder}
             <Container>
                 <FormContainer>
-                    <FormHeader>Job posting - Basic Information</FormHeader>
+                    <FormHeader>Job Posting - Basic Info</FormHeader>
+                    <SubHeader>
+                        Fill in the basic information about the job posting. This will help candidates understand the
+                        role and your company better.
+                    </SubHeader>
 
                     <FormGroup>
                         <Controller
@@ -388,13 +447,18 @@ export default function JobPostingBasicInfo({ onNext, onFormStateChange }: JobPo
                                 name="category"
                                 control={control}
                                 render={({ field }) => (
-                                    <Select {...field}>
-                                        <option value="">Select</option>
-                                        <option value="engineering">Engineering</option>
-                                        <option value="design">Design</option>
-                                        <option value="product">Product</option>
-                                        <option value="marketing">Marketing</option>
-                                    </Select>
+                                    <SelectWrapper>
+                                        <Select {...field}>
+                                            <option value="">Select</option>
+                                            <option value="engineering">Engineering</option>
+                                            <option value="design">Design</option>
+                                            <option value="product">Product</option>
+                                            <option value="marketing">Marketing</option>
+                                        </Select>
+                                        <SelectArrow>
+                                            <ChevronDown size={16} />
+                                        </SelectArrow>
+                                    </SelectWrapper>
                                 )}
                             />
                         </FormGroup>
@@ -407,12 +471,17 @@ export default function JobPostingBasicInfo({ onNext, onFormStateChange }: JobPo
                                 name="workplaceType"
                                 control={control}
                                 render={({ field }) => (
-                                    <Select {...field}>
-                                        <option value="">Select</option>
-                                        <option value="remote">Remote</option>
-                                        <option value="onsite">On-site</option>
-                                        <option value="hybrid">Hybrid</option>
-                                    </Select>
+                                    <SelectWrapper>
+                                        <Select {...field}>
+                                            <option value="">Select</option>
+                                            <option value="remote">Remote</option>
+                                            <option value="onsite">On-site</option>
+                                            <option value="hybrid">Hybrid</option>
+                                        </Select>
+                                        <SelectArrow>
+                                            <ChevronDown size={16} />
+                                        </SelectArrow>
+                                    </SelectWrapper>
                                 )}
                             />
                         </FormGroup>
@@ -422,13 +491,18 @@ export default function JobPostingBasicInfo({ onNext, onFormStateChange }: JobPo
                                 name="jobType"
                                 control={control}
                                 render={({ field }) => (
-                                    <Select {...field}>
-                                        <option value="">Select</option>
-                                        <option value="fulltime">Full-time</option>
-                                        <option value="parttime">Part-time</option>
-                                        <option value="contract">Contract</option>
-                                        <option value="internship">Internship</option>
-                                    </Select>
+                                    <SelectWrapper>
+                                        <Select {...field}>
+                                            <option value="">Select</option>
+                                            <option value="fulltime">Full-time</option>
+                                            <option value="parttime">Part-time</option>
+                                            <option value="contract">Contract</option>
+                                            <option value="internship">Internship</option>
+                                        </Select>
+                                        <SelectArrow>
+                                            <ChevronDown size={16} />
+                                        </SelectArrow>
+                                    </SelectWrapper>
                                 )}
                             />
                         </FormGroup>
@@ -441,12 +515,17 @@ export default function JobPostingBasicInfo({ onNext, onFormStateChange }: JobPo
                                 name="experience"
                                 control={control}
                                 render={({ field }) => (
-                                    <Select {...field}>
-                                        <option value="">Select</option>
-                                        <option value="entry">Entry Level (0-2 years)</option>
-                                        <option value="mid">Mid Level (2-5 years)</option>
-                                        <option value="senior">Senior Level (5+ years)</option>
-                                    </Select>
+                                    <SelectWrapper>
+                                        <Select {...field}>
+                                            <option value="">Select</option>
+                                            <option value="entry">Entry Level (0-2 years)</option>
+                                            <option value="mid">Mid Level (2-5 years)</option>
+                                            <option value="senior">Senior Level (5+ years)</option>
+                                        </Select>
+                                        <SelectArrow>
+                                            <ChevronDown size={16} />
+                                        </SelectArrow>
+                                    </SelectWrapper>
                                 )}
                             />
                         </FormGroup>
@@ -456,12 +535,17 @@ export default function JobPostingBasicInfo({ onNext, onFormStateChange }: JobPo
                                 name="offerStatus"
                                 control={control}
                                 render={({ field }) => (
-                                    <Select {...field}>
-                                        <option value="">Select</option>
-                                        <option value="open">Open</option>
-                                        <option value="closed">Closed</option>
-                                        <option value="paused">Paused</option>
-                                    </Select>
+                                    <SelectWrapper>
+                                        <Select {...field}>
+                                            <option value="">Select</option>
+                                            <option value="open">Open</option>
+                                            <option value="closed">Closed</option>
+                                            <option value="paused">Paused</option>
+                                        </Select>
+                                        <SelectArrow>
+                                            <ChevronDown size={16} />
+                                        </SelectArrow>
+                                    </SelectWrapper>
                                 )}
                             />
                         </FormGroup>
@@ -474,13 +558,18 @@ export default function JobPostingBasicInfo({ onNext, onFormStateChange }: JobPo
                                 name="salaryRange"
                                 control={control}
                                 render={({ field }) => (
-                                    <Select {...field}>
-                                        <option value="">Select</option>
-                                        <option value="0-50k">$0 - $50,000</option>
-                                        <option value="50k-100k">$50,000 - $100,000</option>
-                                        <option value="100k-150k">$100,000 - $150,000</option>
-                                        <option value="150k+">$150,000+</option>
-                                    </Select>
+                                    <SelectWrapper>
+                                        <Select {...field}>
+                                            <option value="">Select</option>
+                                            <option value="0-50k">$0 - $50,000</option>
+                                            <option value="50k-100k">$50,000 - $100,000</option>
+                                            <option value="100k-150k">$100,000 - $150,000</option>
+                                            <option value="150k+">$150,000+</option>
+                                        </Select>
+                                        <SelectArrow>
+                                            <ChevronDown size={16} />
+                                        </SelectArrow>
+                                    </SelectWrapper>
                                 )}
                             />
                         </FormGroup>
@@ -490,13 +579,18 @@ export default function JobPostingBasicInfo({ onNext, onFormStateChange }: JobPo
                                 name="positions"
                                 control={control}
                                 render={({ field }) => (
-                                    <Select {...field}>
-                                        <option value="">Select</option>
-                                        <option value="1">1</option>
-                                        <option value="2-5">2-5</option>
-                                        <option value="5-10">5-10</option>
-                                        <option value="10+">10+</option>
-                                    </Select>
+                                    <SelectWrapper>
+                                        <Select {...field}>
+                                            <option value="">Select</option>
+                                            <option value="1">1</option>
+                                            <option value="2-5">2-5</option>
+                                            <option value="5-10">5-10</option>
+                                            <option value="10+">10+</option>
+                                        </Select>
+                                        <SelectArrow>
+                                            <ChevronDown size={16} />
+                                        </SelectArrow>
+                                    </SelectWrapper>
                                 )}
                             />
                         </FormGroup>
@@ -554,8 +648,12 @@ export default function JobPostingBasicInfo({ onNext, onFormStateChange }: JobPo
                     </FormGroup>
 
                     <ButtonsRow>
-                        <Button variant="primary" size="md" onClick={handleFormSubmit(handleSubmit)}>
-                            Next: Company Details
+                        <Button
+                            variant="outline"
+                            size="md"
+                            onClick={handleFormSubmit(handleSubmit, scrollToFirstError)}
+                        >
+                            Next Step
                         </Button>
                     </ButtonsRow>
                 </FormContainer>

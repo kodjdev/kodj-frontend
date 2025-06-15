@@ -38,6 +38,8 @@ const ProfileSection = styled.div`
     align-items: center;
     gap: ${themeColors.spacing.md};
     margin-bottom: ${themeColors.spacing.xl};
+    min-width: 0;
+    overflow: hidden;
 `;
 
 const ProfileImage = styled.img`
@@ -48,27 +50,38 @@ const ProfileImage = styled.img`
 `;
 
 const ProfileInfo = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: ${themeColors.spacing.xs};
     flex: 1;
+    min-width: 0;
+    overflow: hidden;
 `;
-
 const ProfileName = styled.h3`
     margin: 0;
     color: ${themeColors.colors.neutral.white};
     font-size: ${themeColors.typography.body.medium.fontSize}px;
-    font-weight: 600;
+    font-weight: ${themeColors.typography.body.medium.lineHeight};
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 `;
 
 const ProfileEmail = styled.p`
-    margin: 4px 0 0;
+    margin: 0;
     color: ${themeColors.colors.gray.text};
     font-size: ${themeColors.typography.body.small.fontSize}px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 `;
 
 const ProfileJoined = styled.span`
-    display: block;
+    color: ${themeColors.colors.gray.text};
     font-size: ${themeColors.typography.body.xsmall.fontSize}px;
-    color: ${themeColors.colors.gray.label};
-    margin-top: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 `;
 
 const NavSection = styled.nav`

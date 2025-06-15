@@ -12,6 +12,7 @@ import CopyLink from '@/components/CopyLink/CopyLink';
 import { NewsItem } from '@/types/news';
 import useApiService from '@/services';
 import PageLoading from '@/components/Loading/LoadingAnimation';
+import defaultImg from '@/static/icons/default.jpg';
 
 const Container = styled.div`
     max-width: ${themeColors.breakpoints.desktop};
@@ -362,12 +363,17 @@ export default function NewsDetail() {
                         </ReadTimeShow>
                     </ArticleMeta>
                 </ArticleHeader>
-
-                {newsItem.imageURL && (
-                    <ArticleImage>
+                <ArticleImage>
+                    {newsItem.imageURL ? (
                         <img src={newsItem.imageURL} alt={newsItem.title} />
-                    </ArticleImage>
-                )}
+                    ) : (
+                        <img
+                            src={defaultImg}
+                            alt="KO'DJ"
+                            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                        />
+                    )}
+                </ArticleImage>
 
                 <ArticleContent>
                     <p>

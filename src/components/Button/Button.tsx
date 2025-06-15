@@ -17,7 +17,7 @@ type ButtonVariant =
 
 type BaseButtonProps = {
     variant?: ButtonVariant;
-    size?: 'sm' | 'md' | 'lg' | 'mini';
+    size?: 'sm' | 'md' | 'lg' | 'mini' | 'xs';
     fullWidth?: boolean;
     children?: React.ReactNode;
     disabled?: boolean;
@@ -46,7 +46,7 @@ type ButtonProps = BaseButtonProps & (LinkButtonProps | RegularButtonProps);
 
 const StyledButton = styled('button')<{
     variant: ButtonVariant;
-    size: 'sm' | 'md' | 'lg' | 'mini';
+    size: 'sm' | 'md' | 'lg' | 'mini' | 'xs';
     fullWidth?: boolean;
     disabled?: boolean;
     as?: typeof Link;
@@ -92,6 +92,12 @@ const StyledButton = styled('button')<{
                 return css`
                     height: 32px;
                     padding: 7px 20px;
+                    font-size: ${themeColor.typography.body.xsmall.fontSize || 14}px;
+                `;
+            case 'xs':
+                return css`
+                    height: 36px;
+                    padding: 4px 18px;
                     font-size: ${themeColor.typography.body.xsmall.fontSize || 14}px;
                 `;
             default: // 'md'
