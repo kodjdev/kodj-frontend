@@ -269,7 +269,7 @@ export default function AccountDetails() {
                 <ProfileImage>👤</ProfileImage>
                 <ProfileButtons>
                     <Button
-                        variant="text"
+                        variant="outline"
                         size="mini"
                         style={{
                             border: '1px solid' + themeColors.cardBorder.color,
