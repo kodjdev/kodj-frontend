@@ -1,10 +1,9 @@
 import { useState } from 'react';
 import styled from 'styled-components';
 import themeColors from '@/tools/themeColors';
-import Button from '@/components/Button/Button';
 import EventCard from '@/components/Card/EventCard';
 import { EventCardProps } from '@/types';
-import kodjWhiteLogo from '@/static/icons/logo.png';
+import EmptyState from '@/components/EmptyState';
 
 enum TabOption {
     PAST = 'past',
@@ -17,7 +16,6 @@ const TabsContainer = styled.div`
 
 const TabsHeader = styled.div`
     display: flex;
-    border-bottom: 1px solid ${themeColors.cardBorder.color};
     margin-bottom: ${themeColors.spacing.lg};
 `;
 
@@ -57,23 +55,6 @@ const EventsGrid = styled.div`
     }
 `;
 
-const EmptyState = styled.div`
-    text-align: center;
-    padding: ${themeColors.spacing.fourXl} 0;
-    color: ${themeColors.colors.gray.text};
-`;
-
-const EmptyStateTitle = styled.h3`
-    font-size: ${themeColors.typography.body.large.fontSize}px;
-    margin-bottom: ${themeColors.spacing.md};
-    color: ${themeColors.colors.neutral.white};
-`;
-
-const EmptyStateText = styled.p`
-    font-size: ${themeColors.typography.body.medium.fontSize}px;
-    margin-bottom: ${themeColors.spacing.lg};
-`;
-
 /**
  * EventTabs Component - Sub Organism Component
  * Tabbed interface displaying user's past and upcoming events
@@ -88,20 +69,18 @@ export default function MyEvents() {
     const events = activeTab === TabOption.PAST ? pastEvents : upcomingEvents;
 
     const renderEmptyState = () => (
-        <EmptyState>
-            <div style={{ marginBottom: themeColors.spacing.lg }}>
-                <img src={kodjWhiteLogo} alt="KO'DJ Logo" style={{ width: '100px', borderRadius: '10%' }} />
-            </div>
-            <EmptyStateTitle>No events found</EmptyStateTitle>
-            <EmptyStateText>
-                {activeTab === TabOption.PAST
+        <EmptyState
+            title="No events found"
+            description={
+                activeTab === TabOption.PAST
                     ? "You haven't attended any events yet."
-                    : "You don't have any upcoming events."}
-            </EmptyStateText>
-            <Button variant="light" size="mini" asLink to="/events" style={{ marginTop: themeColors.spacing.md }}>
-                Browse Events
-            </Button>
-        </EmptyState>
+                    : "You don't have any upcoming events."
+            }
+            buttonText="Browse Events"
+            buttonAsLink={true}
+            buttonTo="/events"
+            showLogo={true}
+        />
     );
 
     return (

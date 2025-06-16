@@ -2,7 +2,7 @@ import React, { InputHTMLAttributes, useState } from 'react';
 import styled from 'styled-components';
 import themeColor from '@/tools/themeColors';
 
-export type InputProps = InputHTMLAttributes<HTMLInputElement> & {
+export type InputProps = Omit<InputHTMLAttributes<HTMLInputElement>, 'size'> & {
     label?: string;
     error?: string;
     fullWidth?: boolean;
@@ -11,6 +11,7 @@ export type InputProps = InputHTMLAttributes<HTMLInputElement> & {
     customStyles?: React.CSSProperties;
     hideIconOnFocus?: boolean;
     transparent?: boolean;
+    size?: 'mini' | 'xs' | 'md' | 'lg';
 };
 
 const InputContainer = styled.div<{ fullWidth?: boolean }>`
@@ -24,19 +25,32 @@ const InputContainer = styled.div<{ fullWidth?: boolean }>`
 `;
 
 const Label = styled.label`
-    color: ${themeColor.colors.gray.text};
+    color: ${themeColor.colors.neutral.white};
     font-size: ${themeColor.typography.body.small.fontSize}px;
     margin-bottom: ${themeColor.spacing.xs};
 `;
 
-const StyledInput = styled.input<{ transparent?: boolean }>`
+const StyledInput = styled.input<{ transparent?: boolean; size?: 'mini' | 'xs' | 'md' | 'lg' }>`
     background-color: ${themeColor.colors.gray.inputTag};
     color: ${themeColor.colors.neutral.white};
     border: none;
     padding: 0 ${themeColor.spacing.sm};
     border-radius: ${themeColor.cardBorder.md};
     font-size: ${themeColor.typography.body.medium.fontSize}px;
-    height: 50px;
+    height: ${(props) => {
+        switch (props.size) {
+            case 'mini':
+                return '32px';
+            case 'xs':
+                return '40px';
+            case 'md':
+                return '50px';
+            case 'lg':
+                return '60px';
+            default:
+                return '50px';
+        }
+    }};
     width: 100%;
     box-shadow: ${themeColor.shadows.inset.input.gray};
     background-color: ${(props) => (props.transparent ? 'transparent' : themeColor.colors.gray.inputTag)};
@@ -44,7 +58,8 @@ const StyledInput = styled.input<{ transparent?: boolean }>`
 
     &:focus {
         outline: none;
-        box-shadow: ${themeColor.shadows.inset.input.purple};
+        box-shadow: ${(props) =>
+            props.transparent ? `0 0 0 2px ${themeColor.blue}` : themeColor.shadows.inset.input.purple};
     }
 
     &::placeholder {
@@ -59,7 +74,20 @@ const StyledInput = styled.input<{ transparent?: boolean }>`
     ${themeColor.breakpoints.mobile} {
         font-size: ${themeColor.typography.body.xsmall.fontSize}px;
         padding: 0 ${themeColor.spacing.xs};
-        height: 40px;
+        height: ${(props) => {
+            switch (props.size) {
+                case 'mini':
+                    return '28px';
+                case 'xs':
+                    return '36px';
+                case 'md':
+                    return '40px';
+                case 'lg':
+                    return '48px';
+                default:
+                    return '40px';
+            }
+        }};
     }
     ${themeColor.breakpoints.tablet} {
         font-size: ${themeColor.typography.body.small.fontSize}px;
@@ -68,7 +96,6 @@ const StyledInput = styled.input<{ transparent?: boolean }>`
         font-size: ${themeColor.typography.body.medium.fontSize}px;
     }
 `;
-
 const InputWrapper = styled.div`
     position: relative;
     display: flex;
@@ -132,6 +159,7 @@ export default function Input({
     customStyles,
     hideIconOnFocus = false,
     placeholder,
+    size = 'md',
     ...rest
 }: InputProps) {
     const [isFocused, setIsFocused] = useState(false);
@@ -189,6 +217,7 @@ export default function Input({
                     onFocus={handleFocus}
                     onBlur={handleBlur}
                     onChange={handleChange}
+                    size={size}
                     style={{
                         ...getPadding(),
                         ...customStyles,

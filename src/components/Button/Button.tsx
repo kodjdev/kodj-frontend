@@ -10,13 +10,14 @@ type ButtonVariant =
     | 'light'
     | 'redText'
     | 'blueText'
+    | 'outline'
     | 'navItem'
     | 'navItemActive'
     | 'signOut';
 
 type BaseButtonProps = {
     variant?: ButtonVariant;
-    size?: 'sm' | 'md' | 'lg' | 'mini';
+    size?: 'sm' | 'md' | 'lg' | 'mini' | 'xs';
     fullWidth?: boolean;
     children?: React.ReactNode;
     disabled?: boolean;
@@ -45,7 +46,7 @@ type ButtonProps = BaseButtonProps & (LinkButtonProps | RegularButtonProps);
 
 const StyledButton = styled('button')<{
     variant: ButtonVariant;
-    size: 'sm' | 'md' | 'lg' | 'mini';
+    size: 'sm' | 'md' | 'lg' | 'mini' | 'xs';
     fullWidth?: boolean;
     disabled?: boolean;
     as?: typeof Link;
@@ -93,6 +94,12 @@ const StyledButton = styled('button')<{
                     padding: 7px 20px;
                     font-size: ${themeColor.typography.body.xsmall.fontSize || 14}px;
                 `;
+            case 'xs':
+                return css`
+                    height: 36px;
+                    padding: 4px 18px;
+                    font-size: ${themeColor.typography.body.xsmall.fontSize || 14}px;
+                `;
             default: // 'md'
                 return css`
                     height: 44px;
@@ -130,6 +137,20 @@ const StyledButton = styled('button')<{
                         background-color: ${themeColor.colors.gray.main};
                     }
                 `;
+            case 'outline':
+                return css`
+                    background-color: ${themeColor.colors.ui.transparent};
+                    color: ${themeColor.colors.neutral.white};
+                    border: 1px solid ${themeColor.cardBorder.color};
+                    border-radius: ${themeColor.radiusSizes.two_xl};
+
+                    &:hover:not(:disabled) {
+                        background-color: ${themeColor.colors.neutral.white};
+                        color: ${themeColor.colors.neutral.black};
+                        border: 1px solid ${themeColor.cardBorder.color};
+                        border-radius: ${themeColor.radiusSizes.two_xl};
+                    }
+                `;
             case 'redText':
                 return css`
                     background-color: ${themeColor.colors.ui.transparent};
@@ -156,30 +177,29 @@ const StyledButton = styled('button')<{
                     border-radius: 8px;
 
                     &:hover:not(:disabled) {
-                        background-color: ${themeColor.colors.ui.navItem.hoverBg};
+                        background-color: ${themeColor.colors.gray.light};
                     }
 
                     svg {
-                        color: ${themeColor.colors.gray.text};
+                        color: ${themeColor.colors.neutral.white};
                         margin-right: ${themeColor.spacing.md};
+                    }
+
+                    &:hover:not(:disabled) svg {
+                        color: ${themeColor.colors.ui.navItem.activeBg};
                     }
                 `;
             case 'navItemActive':
                 return css`
-                    background-color: ${themeColor.colors.ui.navItem.activeBg};
-                    color: ${themeColor.colors.ui.navItem.activeText};
+                    background-color: ${themeColor.colors.ui.navItem.hoverBg};
+                    color: ${themeColor.colors.neutral.white};
                     text-transform: none;
                     justify-content: flex-start;
                     border: none;
                     border-radius: 8px;
 
-                    &:hover:not(:disabled) {
-                        background-color: ${themeColor.colors.ui.navItem.activeBg};
-                        color: ${themeColor.colors.ui.navItem.activeText};
-                    }
-
                     svg {
-                        color: ${themeColor.colors.ui.navItem.activeText};
+                        color: ${themeColor.colors.neutral.white};
                         margin-right: ${themeColor.spacing.md};
                     }
                 `;

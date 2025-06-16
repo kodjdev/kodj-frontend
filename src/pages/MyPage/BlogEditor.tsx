@@ -14,7 +14,8 @@ import {
     FaLink,
     FaSave,
 } from 'react-icons/fa';
-import kodjWhiteLogo from '@/static/icons/logo.png';
+import { message } from 'antd';
+import EmptyState from '@/components/EmptyState';
 
 type BlogPost = {
     id?: string;
@@ -30,23 +31,6 @@ const EditorContainer = styled.div`
     display: flex;
     flex-direction: column;
     gap: ${themeColors.spacing.lg};
-`;
-
-const EmptyState = styled.div`
-    text-align: center;
-    padding: ${themeColors.spacing.fourXl} 0;
-    color: ${themeColors.colors.gray.text};
-`;
-
-const EmptyStateTitle = styled.h3`
-    font-size: ${themeColors.typography.body.large.fontSize}px;
-    margin-bottom: ${themeColors.spacing.md};
-    color: ${themeColors.colors.neutral.white};
-`;
-
-const EmptyStateText = styled.p`
-    font-size: ${themeColors.typography.body.medium.fontSize}px;
-    margin-bottom: ${themeColors.spacing.lg};
 `;
 
 const TitleInput = styled.input`
@@ -222,15 +206,7 @@ export default function BlogEditor() {
     });
     const [coverImage, setCoverImage] = useState<string | null>(null);
 
-    const handleNewPost = () => {
-        setHasPosts(true);
-        setPost({
-            title: '',
-            content: '',
-            published: false,
-        });
-        setCoverImage(null);
-    };
+    const [messageApi, contextHolder] = message.useMessage();
 
     const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setPost((prev) => ({ ...prev, title: e.target.value }));
@@ -254,23 +230,28 @@ export default function BlogEditor() {
         setCoverImage(null);
     };
 
+    const handleNewPost = () => {
+        messageApi.info('Not available now, coming soon !');
+        setHasPosts(false);
+    };
+
     const savePost = () => {
         console.log('Saving blog post:', { ...post, coverImage });
         alert('Blog post saved successfully!');
     };
-
     if (!hasPosts) {
         return (
-            <EmptyState>
-                <div style={{ marginBottom: themeColors.spacing.lg }}>
-                    <img src={kodjWhiteLogo} alt="KO'DJ Logo" style={{ width: '100px', borderRadius: '10%' }} />
-                </div>
-                <EmptyStateTitle>There are no blog posts written.</EmptyStateTitle>
-                <EmptyStateText>Start sharing your thoughts with the KO'DJ community.</EmptyStateText>
-                <Button variant="light" size="mini" onClick={handleNewPost} disabled>
-                    Write Blog
-                </Button>
-            </EmptyState>
+            <>
+                {contextHolder}
+                <EmptyState
+                    title="There are no blog posts written."
+                    description="Start sharing your thoughts with the KO'DJ community."
+                    buttonText="Write Blog"
+                    onButtonClick={handleNewPost}
+                    style={{ paddingTop: '160px' }}
+                    showLogo={true}
+                />
+            </>
         );
     }
 

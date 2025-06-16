@@ -14,54 +14,132 @@ type FieldConfig = {
     isEditing: boolean;
 };
 
+const Container = styled.div`
+    // background-color: ${themeColors.colors.gray.background};
+    border: 1px solid ${themeColors.cardBorder.color};
+    border-radius: ${themeColors.cardBorder.md};
+    padding: ${themeColors.spacing.lg};
+    max-width: 600px;
+    width: 100%;
+    box-sizing: border-box;
+
+    @media (max-width: ${themeColors.breakpoints.mobile}) {
+        padding: ${themeColors.spacing.md};
+        margin: 0;
+        max-width: 100%;
+        border-radius: 0;
+        border-left: none;
+        border-right: none;
+    }
+`;
+
+const Header = styled.h2`
+    color: ${themeColors.colors.neutral.white};
+    font-size: ${themeColors.typography.headings.desktop.h4.fontSize}px;
+    font-weight: ${themeColors.typography.headings.desktop.h4.fontWeight};
+    margin-top: 0;
+
+    @media (max-width: ${themeColors.breakpoints.mobile}) {
+        font-size: ${themeColors.typography.headings.mobile.h4.fontSize}px;
+        margin-bottom: ${themeColors.spacing.lg};
+    }
+`;
+
+const ProfileSection = styled.div`
+    display: flex;
+    align-items: center;
+    gap: ${themeColors.spacing.md};
+    margin-bottom: ${themeColors.spacing.xl};
+    padding-bottom: ${themeColors.spacing.lg};
+    border-bottom: 1px solid ${themeColors.cardBorder.color};
+
+    @media (max-width: ${themeColors.breakpoints.mobile}) {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: ${themeColors.spacing.sm};
+        margin-bottom: ${themeColors.spacing.lg};
+        padding-bottom: ${themeColors.spacing.md};
+    }
+`;
+
+const ProfileImage = styled.div`
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    border: 1px solid ${themeColors.colors.gray.inputTag};
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: ${themeColors.colors.gray.text};
+    font-size: 32px;
+
+    @media (max-width: ${themeColors.breakpoints.mobile}) {
+        width: 60px;
+        height: 60px;
+        font-size: 24px;
+        align-self: center;
+    }
+`;
+const ProfileButtons = styled.div`
+    display: flex;
+    gap: ${themeColors.spacing.sm};
+
+    @media (max-width: ${themeColors.breakpoints.mobile}) {
+        width: 100%;
+        flex-direction: column;
+    }
+`;
+
 const FormContainer = styled.form`
     max-width: 600px;
 `;
 
 const FieldGroup = styled.div`
     margin-bottom: ${themeColors.spacing.lg};
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+
+    @media (max-width: ${themeColors.breakpoints.mobile}) {
+        margin-bottom: ${themeColors.spacing.md};
+        align-items: center;
+        min-height: 60px;
+    }
+`;
+
+const FieldContent = styled.div`
+    flex: 1;
 `;
 
 const FieldLabel = styled.div`
     font-size: ${themeColors.typography.body.small.fontSize}px;
-    color: ${themeColors.colors.gray.label};
+    color: ${themeColors.colors.gray.text};
     margin-bottom: ${themeColors.spacing.xs};
-`;
 
-const FieldValue = styled.div`
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: ${themeColors.colors.gray.inputTag};
-    color: ${themeColors.colors.neutral.white};
-    padding: 4px ${themeColors.spacing.sm};
-    border-radius: ${themeColors.cardBorder.md};
-`;
-
-const FieldText = styled.div`
-    font-size: ${themeColors.typography.body.small.fontSize}px;
-`;
-
-const EditButton = styled.button`
-    background: none;
-    border: none;
-    color: ${themeColors.colors.primary.main};
-    cursor: pointer;
-
-    &:hover {
-        color: ${themeColors.colors.primary.hover};
+    @media (max-width: ${themeColors.breakpoints.mobile}) {
+        font-size: ${themeColors.typography.body.xsmall.fontSize}px;
+        margin-bottom: 4px;
     }
 `;
 
-const PasswordDots = styled.div`
-    display: flex;
-    gap: 4px;
+const FieldText = styled.div`
+    font-size: ${themeColors.typography.body.medium.fontSize}px;
+    color: ${themeColors.colors.neutral.white};
 
-    span {
-        width: 8px;
-        height: 8px;
-        background-color: ${themeColors.colors.neutral.white};
-        border-radius: 50%;
+    @media (max-width: ${themeColors.breakpoints.mobile}) {
+        font-size: ${themeColors.typography.body.small.fontSize}px;
+        word-break: break-word;
+    }
+`;
+const EditButton = styled.button`
+    background: none;
+    border: none;
+    color: ${themeColors.colors.gray.text};
+    cursor: pointer;
+    padding: 4px;
+
+    &:hover {
+        color: ${themeColors.blue};
     }
 `;
 
@@ -70,6 +148,12 @@ const ButtonsContainer = styled.div`
     justify-content: flex-end;
     gap: ${themeColors.spacing.md};
     margin-top: ${themeColors.spacing.xl};
+
+    @media (max-width: ${themeColors.breakpoints.mobile}) {
+        flex-direction: column;
+        gap: ${themeColors.spacing.sm};
+        margin-top: ${themeColors.spacing.lg};
+    }
 `;
 
 /**
@@ -145,73 +229,95 @@ export default function AccountDetails() {
     const renderField = (field: FieldConfig) => {
         if (field.isEditing) {
             return (
-                <Input
-                    name={field.id}
-                    value={formValues[field.id]}
-                    onChange={handleInputChange}
-                    type={field.isPassword ? 'password' : 'text'}
-                    icon={field.icon}
-                    fullWidth
-                    style={{ padding: '10px, 10px' }}
-                />
+                <FieldGroup key={field.id}>
+                    <FieldContent>
+                        <FieldLabel>{field.label}</FieldLabel>
+                        <Input
+                            name={field.id}
+                            value={formValues[field.id]}
+                            onChange={handleInputChange}
+                            type={field.isPassword ? 'password' : 'text'}
+                            fullWidth
+                            transparent
+                            size="xs"
+                        />
+                    </FieldContent>
+                </FieldGroup>
             );
         }
 
         return (
             <FieldGroup key={field.id}>
-                <FieldLabel>{field.label}</FieldLabel>
-                <FieldValue>
-                    <FieldText>
-                        {field.isPassword ? (
-                            <PasswordDots>
-                                {[...Array(10)].map((_, i) => (
-                                    <span key={i} />
-                                ))}
-                            </PasswordDots>
-                        ) : (
-                            field.value
-                        )}
-                    </FieldText>
-                    <EditButton onClick={() => toggleEditField(field.id)}>
-                        <FaEdit />
-                    </EditButton>
-                </FieldValue>
+                <FieldContent>
+                    <FieldLabel>{field.label}</FieldLabel>
+                    <FieldText>{field.isPassword ? '***********' : field.value}</FieldText>
+                </FieldContent>
+                <EditButton onClick={() => toggleEditField(field.id)}>
+                    <FaEdit />
+                </EditButton>
             </FieldGroup>
         );
     };
 
-    // we check if any field is in edit mode
     const isEditMode = fields.some((field) => field.isEditing);
 
     return (
-        <FormContainer onSubmit={handleSubmit}>
-            {fields.map(renderField)}
+        <Container>
+            <Header>Personal info</Header>
 
-            {isEditMode && (
-                <ButtonsContainer>
+            <ProfileSection>
+                <ProfileImage>👤</ProfileImage>
+                <ProfileButtons>
                     <Button
-                        variant="secondary"
-                        htmlType="button"
-                        onClick={() => {
-                            // then reset form values and exit edit mode
-                            setFormValues({
-                                name: fields.find((f) => f.id === 'name')?.value || '',
-                                email: fields.find((f) => f.id === 'email')?.value || '',
-                                password: fields.find((f) => f.id === 'password')?.value || '',
-                                phone: fields.find((f) => f.id === 'phone')?.value || '',
-                            });
-
-                            setFields((prevFields) => prevFields.map((field) => ({ ...field, isEditing: false })));
+                        variant="outline"
+                        size="mini"
+                        style={{
+                            border: '1px solid' + themeColors.cardBorder.color,
                         }}
                     >
-                        Cancel
+                        Upload new picture
                     </Button>
-                    <Button variant="primary" htmlType="submit">
-                        <FaSave style={{ marginRight: '8px' }} />
-                        Save Changes
+                    <Button
+                        variant="light"
+                        size="mini"
+                        style={{
+                            backgroundColor: themeColors.colors.neutral.white,
+                            color: themeColors.colors.neutral.black,
+                        }}
+                    >
+                        Delete
                     </Button>
-                </ButtonsContainer>
-            )}
-        </FormContainer>
+                </ProfileButtons>
+            </ProfileSection>
+
+            <FormContainer onSubmit={handleSubmit}>
+                {fields.map(renderField)}
+
+                {isEditMode && (
+                    <ButtonsContainer>
+                        <Button
+                            variant="redText"
+                            size="mini"
+                            htmlType="button"
+                            onClick={() => {
+                                setFormValues({
+                                    name: fields.find((f) => f.id === 'name')?.value || '',
+                                    email: fields.find((f) => f.id === 'email')?.value || '',
+                                    password: fields.find((f) => f.id === 'password')?.value || '',
+                                    phone: fields.find((f) => f.id === 'phone')?.value || '',
+                                });
+                                setFields((prevFields) => prevFields.map((field) => ({ ...field, isEditing: false })));
+                            }}
+                        >
+                            Cancel
+                        </Button>
+                        <Button variant="outline" htmlType="submit" size="sm">
+                            <FaSave style={{ marginRight: '8px' }} />
+                            Save Changes
+                        </Button>
+                    </ButtonsContainer>
+                )}
+            </FormContainer>
+        </Container>
     );
 }

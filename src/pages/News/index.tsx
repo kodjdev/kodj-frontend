@@ -418,6 +418,7 @@ export default function NewsList() {
                             setActiveCategory(FilterTypes.TECH);
                             setActiveTag(null);
                         }}
+                        size="mini"
                     >
                         All
                     </FilterButton>
@@ -427,6 +428,7 @@ export default function NewsList() {
                             setActiveCategory(FilterTypes.MEETUP);
                             setActiveTag(null);
                         }}
+                        size="mini"
                     >
                         Meetup
                     </FilterButton>
@@ -436,6 +438,7 @@ export default function NewsList() {
                             setActiveCategory(FilterTypes.SOCIAL);
                             setActiveTag(null);
                         }}
+                        size="mini"
                     >
                         Social
                     </FilterButton>

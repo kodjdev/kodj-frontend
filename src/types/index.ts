@@ -138,3 +138,35 @@ export type HeaderProps = {
     toggleLangMenu: () => void;
     isAuthenticated: boolean;
 };
+
+export type JobFormData = {
+    title: string;
+    companyName: string;
+    location: string;
+    contactEmail: string;
+    contactPhone: string;
+    deadline: string;
+    category: string;
+    workplaceType: string;
+    jobType: string;
+    experience: string;
+    offerStatus: string;
+    salaryRange: string;
+    positions: string;
+    description: string;
+    companyTags: string[];
+    techTags: string[];
+    companyLogo?: File;
+    companyPictures?: File[];
+    socialAccounts?: {
+        linkedin: string;
+        instagram: string;
+        twitter: string;
+        facebook: string;
+    };
+};
+
+export enum JobPostingStep {
+    BASIC_INFO = 'basicInfo',
+    COMPANY_DETAILS = 'companyDetails',
+}

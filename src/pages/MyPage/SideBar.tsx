@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import themeColors from '@/tools/themeColors';
-import { FaCalendarAlt, FaUser, FaPen, FaSignOutAlt } from 'react-icons/fa';
+import { FaCalendarAlt, FaUser, FaPen, FaSignOutAlt, FaBriefcase } from 'react-icons/fa';
 import Button from '@/components/Button/Button';
 import useAuth from '@/context/useAuth';
 import defaultUserImage from '@/static/icons/default.jpg';
@@ -9,6 +9,7 @@ import useFormatDate from '@/hooks/useFormatDate';
 enum PageSection {
     EVENTS = 'events',
     BLOGS = 'blogs',
+    JOB_POSTING = 'jobPosting',
     ACCOUNT = 'account',
 }
 
@@ -37,6 +38,8 @@ const ProfileSection = styled.div`
     align-items: center;
     gap: ${themeColors.spacing.md};
     margin-bottom: ${themeColors.spacing.xl};
+    min-width: 0;
+    overflow: hidden;
 `;
 
 const ProfileImage = styled.img`
@@ -47,33 +50,45 @@ const ProfileImage = styled.img`
 `;
 
 const ProfileInfo = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: ${themeColors.spacing.xs};
     flex: 1;
+    min-width: 0;
+    overflow: hidden;
 `;
-
 const ProfileName = styled.h3`
     margin: 0;
     color: ${themeColors.colors.neutral.white};
     font-size: ${themeColors.typography.body.medium.fontSize}px;
-    font-weight: 600;
+    font-weight: ${themeColors.typography.body.medium.fontWeight};
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 `;
 
 const ProfileEmail = styled.p`
-    margin: 4px 0 0;
+    margin: 0;
     color: ${themeColors.colors.gray.text};
     font-size: ${themeColors.typography.body.small.fontSize}px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 `;
 
 const ProfileJoined = styled.span`
-    display: block;
+    color: ${themeColors.colors.gray.text};
     font-size: ${themeColors.typography.body.xsmall.fontSize}px;
-    color: ${themeColors.colors.gray.label};
-    margin-top: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 `;
 
 const NavSection = styled.nav`
     display: flex;
     flex-direction: column;
     margin-top: 0;
+    border-bottom: 1px solid ${themeColors.cardBorder.color};
 `;
 
 const NavItemButton = styled(Button)<NavItemButtonProps>`
@@ -96,17 +111,16 @@ const NavText = styled.span`
 const SignOutButton = styled(Button)`
     text-transform: none;
     justify-content: flex-start;
-    margin-top: 16px;
+    margin-top: 12px;
     width: 100%;
     transition: background-color 0.2s ease;
 
-    &:hover {
-        background-color: transparent;
-    }
-
-    svg {
-        color: ${themeColors.colors.status.error.text};
-        margin-right: ${themeColors.spacing.md};
+    &:focus,
+    &:active,
+    &:focus-visible {
+        border: none !important;
+        outline: none !important;
+        box-shadow: none !important;
     }
 `;
 
@@ -127,7 +141,7 @@ export default function Sidebar({ activeSection, onSectionChange, onLogout }: Si
                 <ProfileInfo>
                     <ProfileName>{user?.data.username || 'Anonymous'}</ProfileName>
                     <ProfileEmail>{user?.data.email || 'No Email Given'}</ProfileEmail>
-                    <ProfileJoined>KO'DJ joined: {formatDate(user?.data.createdAt)}</ProfileJoined>
+                    <ProfileJoined>Joined: {formatDate(user?.data.createdAt)}</ProfileJoined>
                 </ProfileInfo>
             </ProfileSection>
 
@@ -138,7 +152,7 @@ export default function Sidebar({ activeSection, onSectionChange, onLogout }: Si
                     onClick={() => onSectionChange(PageSection.EVENTS)}
                 >
                     <FaCalendarAlt />
-                    <NavText>Events - Registered</NavText>
+                    <NavText>Events</NavText>
                 </NavItemButton>
 
                 <NavItemButton
@@ -151,16 +165,25 @@ export default function Sidebar({ activeSection, onSectionChange, onLogout }: Si
                 </NavItemButton>
 
                 <NavItemButton
+                    variant={activeSection === PageSection.JOB_POSTING ? 'navItemActive' : 'navItem'}
+                    fullWidth={true}
+                    onClick={() => onSectionChange(PageSection.JOB_POSTING)}
+                >
+                    <FaBriefcase />
+                    <NavText>Job posting</NavText>
+                </NavItemButton>
+
+                <NavItemButton
                     variant={activeSection === PageSection.ACCOUNT ? 'navItemActive' : 'navItem'}
                     fullWidth={true}
                     onClick={() => onSectionChange(PageSection.ACCOUNT)}
                 >
                     <FaUser />
-                    <NavText>Personal Info</NavText>
+                    <NavText>My account</NavText>
                 </NavItemButton>
             </NavSection>
 
-            <SignOutButton variant="signOut" onClick={onLogout}>
+            <SignOutButton variant="navItem" fullWidth={true} onClick={onLogout}>
                 <FaSignOutAlt />
                 <NavText>Sign out</NavText>
             </SignOutButton>
