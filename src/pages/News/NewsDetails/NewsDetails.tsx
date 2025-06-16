@@ -369,7 +369,7 @@ export default function NewsDetail() {
                     ) : (
                         <img
                             src={defaultImg}
-                            alt="KO'DJ"
+                            alt="Default news image"
                             style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                         />
                     )}
