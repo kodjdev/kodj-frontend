@@ -61,7 +61,7 @@ const ProfileName = styled.h3`
     margin: 0;
     color: ${themeColors.colors.neutral.white};
     font-size: ${themeColors.typography.body.medium.fontSize}px;
-    font-weight: ${themeColors.typography.body.medium.lineHeight};
+    font-weight: ${themeColors.typography.body.medium.fontWeight};
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
