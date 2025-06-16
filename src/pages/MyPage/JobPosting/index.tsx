@@ -46,5 +46,5 @@ export default function JobPosting({ onFormStateChange }: JobPostingProps) {
         );
     }
 
-    return <JobPostingBasicInfo onNext={handleBasicInfoNext} />;
+    return <JobPostingBasicInfo onNext={handleBasicInfoNext} onFormStateChange={setIsShowingForm} />;
 }
