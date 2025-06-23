@@ -188,9 +188,12 @@ export default function AuthProvider({ children }: AuthProviderProps) {
         async (formData: RegisterFormData) => {
             try {
                 const response = await fetchData<EventRegistrationResponse>({
-                    endpoint: '/auth/register',
+                    endpoint: '/users',
                     method: 'POST',
                     data: formData,
+                    customHeaders: {
+                        'Content-Type': 'multipart/form-data',
+                    },
                 });
                 return response;
             } catch (error) {
