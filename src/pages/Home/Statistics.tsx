@@ -254,6 +254,7 @@ export default function Statistics() {
 
                 if (response.statusCode === 200 && response.data) {
                     setStats(response.data);
+                    console.log('Statistics fetched successfully:', response.data);
                 } else {
                     setError(response.message || 'Failed to fetch statistics');
                 }
@@ -271,35 +272,35 @@ export default function Statistics() {
         {
             id: 'speakers',
             title: t('statisticsPage.statisticsBody.users.title'),
-            value: stats?.totalSpeakers || 25,
+            value: stats?.data.totalSpeakers,
             suffix: '+',
             description: t('statisticsPage.statisticsBody.users.description'),
             icon: '👨‍💼',
             badge: t('statisticsPage.statisticsBody.badges.active'),
             badgeClass: 'active',
-            progress: { current: stats?.totalSpeakers || 25, target: 50 },
+            progress: { current: stats?.data.totalSpeakers, target: 50 },
         },
         {
             id: 'events',
             title: t('statisticsPage.statisticsBody.meetups.title'),
-            value: stats?.totalMeetups || 12,
+            value: stats?.data.totalEvents,
             suffix: '+',
             description: t('statisticsPage.statisticsBody.meetups.description'),
             icon: '🎪',
             badge: t('statisticsPage.statisticsBody.badges.growing'),
             badgeClass: 'growing',
-            progress: { current: stats?.totalMeetups || 12, target: 20 },
+            progress: { current: stats?.data.totalEvents, target: 20 },
         },
         {
             id: 'members',
             title: t('statisticsPage.statisticsBody.registeredUsers.title'),
-            value: stats?.totalUsers || 60,
+            value: stats?.data.totalUsers || 60,
             suffix: '+',
             description: t('statisticsPage.statisticsBody.registeredUsers.description'),
             icon: '👥',
             badge: t('statisticsPage.statisticsBody.badges.expanding'),
             badgeClass: 'expanding',
-            progress: { current: stats?.totalUsers || 60, target: 300 },
+            progress: { current: stats?.data.totalUsers, target: 300 },
         },
     ];
 
@@ -370,7 +371,7 @@ export default function Statistics() {
                         <CardContent>
                             <StatTitle>{stat.title}</StatTitle>
                             <StatNumber variants={numberVariants}>
-                                {stat.value}
+                                {String(stat.value || 0)}
                                 <NumberSuffix>{stat.suffix}</NumberSuffix>
                             </StatNumber>
                             <StatDescription>{stat.description}</StatDescription>
@@ -382,7 +383,7 @@ export default function Statistics() {
                                     <ProgressFill
                                         initial={{ width: 0 }}
                                         animate={{
-                                            width: `${(stat.progress.current / stat.progress.target) * 100}%`,
+                                            width: `${((stat.progress.current ?? 0) / stat.progress.target) * 100}%`,
                                         }}
                                         transition={{ duration: 1.5, delay: 0.5 }}
                                     />
