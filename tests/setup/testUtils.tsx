@@ -28,7 +28,22 @@ const customRender = (ui: ReactElement, options?: Omit<RenderOptions, 'wrapper'>
 export * from '@testing-library/react';
 export { customRender as render };
 
-export const createMockEvent = (overrides: Partial<Event> = {}) => ({
+type CustomEvent = {
+    id: string;
+    title: string;
+    description: string;
+    date: string;
+    author: string;
+    imageUrl: string;
+    registeredCount: number;
+    maxSeats: number;
+    readonly availableSeats: number;
+    status: 'active' | 'inactive';
+    category: string;
+    location: string;
+};
+
+export const createMockEvent = (overrides: Partial<CustomEvent> = {}) => ({
     id: `event-${Math.random().toString(36).substr(2, 9)}`,
     title: 'Frontend Development Workshop',
     description: 'Learn modern React patterns and testing strategies',
