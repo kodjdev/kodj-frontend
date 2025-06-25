@@ -271,7 +271,7 @@ export default function Statistics() {
         {
             id: 'speakers',
             title: t('statisticsPage.statisticsBody.users.title'),
-            value: stats?.data.totalSpeakers,
+            value: stats?.data.totalSpeakers || 0,
             suffix: '+',
             description: t('statisticsPage.statisticsBody.users.description'),
             icon: '👨‍💼',
