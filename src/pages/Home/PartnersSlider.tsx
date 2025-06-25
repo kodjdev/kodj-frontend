@@ -1,7 +1,7 @@
 import themeColors from '@/tools/themeColors';
 import styled, { keyframes } from 'styled-components';
 import wayuLogo from '@/static/icons/wayu.png';
-import gimsongLogo from '@/static/icons/law.png';
+import lawLogo from '@/static/icons/law.png';
 
 const slideAnimation = keyframes`
   0% {
