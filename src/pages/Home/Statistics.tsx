@@ -277,7 +277,7 @@ export default function Statistics() {
             icon: '👨‍💼',
             badge: t('statisticsPage.statisticsBody.badges.active'),
             badgeClass: 'active',
-            progress: { current: stats?.data.totalSpeakers, target: 50 },
+            progress: { current: stats?.data.totalSpeakers ?? 0, target: 50 },
         },
         {
             id: 'events',
