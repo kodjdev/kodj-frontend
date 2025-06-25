@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import themeColors from '@/tools/themeColors';
 import useApiService from '@/services';
 import { useEffect, useState } from 'react';
-import { StatsOverview } from '@/services/apiService/fetchStatsService';
+import { StatsOverview } from '@/services/api/fetchStatsService';
 
 const StatisticsSection = styled.section`
     width: 100%;

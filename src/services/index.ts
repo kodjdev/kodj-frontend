@@ -1,9 +1,9 @@
-import { useUserService } from '@/services/apiService/fetchUserService';
-import { useFetchEventService } from '@/services/apiService/fetchEventService';
-import { useRegisterEventService } from '@/services/apiService/registerEventService';
-import { useFetchNewsService } from '@/services/apiService/fetchNewsService';
-import { useFetchCommentsService } from '@/services/apiService/fetchCommentsService';
-import { useFetchStatsService } from '@/services/apiService/fetchStatsService';
+import { useUserService } from '@/services/api/fetchUserService';
+import { useFetchEventService } from '@/services/api/fetchEventService';
+import { useRegisterEventService } from '@/services/api/registerEventService';
+import { useFetchNewsService } from '@/services/api/fetchNewsService';
+import { useFetchCommentsService } from '@/services/api/fetchCommentsService';
+import { useFetchStatsService } from '@/services/api/fetchStatsService';
 
 /**
  * API Service - Centralized API Service
