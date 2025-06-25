@@ -176,7 +176,7 @@ export default function Signup({ toggleAuthMode, returnUrl, eventDetails }: Sign
     const handleFinishSignup = async () => {
         setIsLoading(true);
         try {
-            if (!password) {
+            if (!password.value) {
                 throw new Error('Password is required');
             }
             const userData = {
