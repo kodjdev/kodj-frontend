@@ -173,7 +173,12 @@ export default function AuthProvider({ children }: AuthProviderProps) {
                 return await fetchData<TokenResponse>({
                     endpoint: '/auth/login',
                     method: 'POST',
-                    data: { email, password },
+                    data: {
+                        email,
+                        password,
+                        ipAddress: window.location.hostname,
+                        deviceType: 'web',
+                    },
                 });
             } catch (error) {
                 console.error('Login error:', error);
@@ -191,9 +196,6 @@ export default function AuthProvider({ children }: AuthProviderProps) {
                     endpoint: '/users',
                     method: 'POST',
                     data: formData,
-                    customHeaders: {
-                        'Content-Type': 'multipart/form-data',
-                    },
                 });
                 return response;
             } catch (error) {
