@@ -254,7 +254,6 @@ export default function Statistics() {
 
                 if (response.statusCode === 200 && response.data) {
                     setStats(response.data);
-                    console.log('Statistics fetched successfully:', response.data);
                 } else {
                     setError(response.message || 'Failed to fetch statistics');
                 }
