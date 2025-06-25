@@ -1,0 +1,5 @@
+{
+    "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+    "refresh_token": "your-refresh-token-here...",
+    "user": "{\"id\":\"123\",\"email\":\"your@email.com\"...}"
+}

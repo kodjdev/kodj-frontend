@@ -1,0 +1,152 @@
+{
+    "events-list.json": {
+        "data": {
+            "content": [
+                {
+                    "id": "1",
+                    "title": "React Workshop: Building Modern Applications",
+                    "description": [
+                        "Learn React fundamentals and advanced patterns",
+                        "Build a complete application from scratch"
+                    ],
+                    "date": "2024-08-15T09:00:00Z",
+                    "startTime": "2024-08-15T09:00:00Z",
+                    "endTime": "2024-08-15T17:00:00Z",
+                    "location": "Tech Hub, Downtown",
+                    "author": "John Doe",
+                    "imageUrl": "https://example.com/react-workshop.jpg",
+                    "registeredCount": 25,
+                    "maxSeats": 50,
+                    "availableSeats": 25,
+                    "isFreeEvent": true,
+                    "eventRoom": "Conference Room A"
+                },
+                {
+                    "id": "2",
+                    "title": "JavaScript Deep Dive",
+                    "description": ["Advanced JavaScript concepts", "ES6+ features and best practices"],
+                    "date": "2024-08-20T14:00:00Z",
+                    "startTime": "2024-08-20T14:00:00Z",
+                    "endTime": "2024-08-20T18:00:00Z",
+                    "location": "Innovation Center",
+                    "author": "Jane Smith",
+                    "imageUrl": "https://example.com/js-deep-dive.jpg",
+                    "registeredCount": 15,
+                    "maxSeats": 30,
+                    "availableSeats": 15,
+                    "isFreeEvent": true,
+                    "eventRoom": "Workshop Room B"
+                }
+            ],
+            "totalElements": 2,
+            "totalPages": 1,
+            "first": true,
+            "last": true,
+            "size": 10,
+            "number": 0
+        },
+        "statusCode": 200,
+        "message": "success"
+    },
+
+    "event-details-upcoming.json": {
+        "data": {
+            "keynoteSessions": [
+                {
+                    "id": "1",
+                    "subject": "React Workshop: Building Modern Applications",
+                    "startTime": "2024-08-15T09:00:00Z",
+                    "endTime": "2024-08-15T17:00:00Z",
+                    "imageURL": "https://example.com/react-workshop.jpg",
+                    "description": "Learn React fundamentals and advanced patterns"
+                }
+            ],
+            "speakers": [
+                {
+                    "id": "1",
+                    "name": "John Doe",
+                    "title": "Senior React Developer",
+                    "bio": "10+ years of experience in frontend development",
+                    "imageUrl": "https://example.com/john-doe.jpg"
+                }
+            ],
+            "notes": [
+                {
+                    "id": "1",
+                    "description": "Learn React fundamentals and advanced patterns. Build a complete application from scratch.",
+                    "status": "ACTIVE"
+                }
+            ],
+            "meetupRegistrations": [
+                {
+                    "id": "1",
+                    "status": "ACCEPTED",
+                    "cancelled": false
+                },
+                {
+                    "id": "2",
+                    "status": "ACCEPTED",
+                    "cancelled": false
+                }
+            ],
+            "availableSeats": 25
+        },
+        "statusCode": 200,
+        "message": "success"
+    },
+
+    "event-details-past.json": {
+        "data": {
+            "keynoteSessions": [
+                {
+                    "id": "2",
+                    "subject": "JavaScript Deep Dive - Past Event",
+                    "startTime": "2024-06-15T14:00:00Z",
+                    "endTime": "2024-06-15T18:00:00Z",
+                    "imageURL": "https://example.com/js-past.jpg",
+                    "description": "Advanced JavaScript concepts covered"
+                }
+            ],
+            "speakers": [
+                {
+                    "id": "2",
+                    "name": "Jane Smith",
+                    "title": "JavaScript Expert",
+                    "bio": "Author of JavaScript best practices",
+                    "imageUrl": "https://example.com/jane-smith.jpg"
+                }
+            ],
+            "notes": [
+                {
+                    "id": "2",
+                    "description": "Advanced JavaScript concepts and ES6+ features were covered in this comprehensive workshop.",
+                    "status": "ACTIVE"
+                }
+            ],
+            "meetupRegistrations": [
+                {
+                    "id": "3",
+                    "status": "ACCEPTED",
+                    "cancelled": false
+                }
+            ],
+            "availableSeats": 0
+        },
+        "statusCode": 200,
+        "message": "success"
+    },
+
+    "empty-events.json": {
+        "data": {
+            "content": [],
+            "totalElements": 0,
+            "totalPages": 0,
+            "first": true,
+            "last": true,
+            "size": 10,
+            "number": 0
+        },
+        "statusCode": 200,
+        "message": "success"
+    }
+}

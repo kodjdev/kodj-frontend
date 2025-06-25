@@ -21,7 +21,7 @@ declare global {
     }
 }
 
-Cypress.Commands.add('login', (email = 'test@gmail.com', password = 'password123') => {
+Cypress.Commands.add('login', (email = 'sardor0968@gmail.com', password = 'password123') => {
     cy.visit('/login');
     cy.get('[data-testid="email-input"]').type(email);
     cy.get('[data-testid="password-input"]').type(password);
