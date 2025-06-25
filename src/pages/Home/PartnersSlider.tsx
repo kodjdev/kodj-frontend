@@ -1,5 +1,7 @@
 import themeColors from '@/tools/themeColors';
 import styled, { keyframes } from 'styled-components';
+import wayuLogo from '@/static/icons/wayu.png';
+import lawLogo from '@/static/icons/law.png';
 
 const slideAnimation = keyframes`
   0% {
@@ -9,6 +11,7 @@ const slideAnimation = keyframes`
     transform: translateX(-50%);
   }
 `;
+
 const Container = styled.div`
     overflow: hidden;
     padding: ${themeColors.spacing.xxxl} 0;
@@ -107,14 +110,11 @@ const LogoSVG = styled.img`
 `;
 
 const companies = [
-    { name: 'Google', logo: 'https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/google.svg' },
-    { name: 'Microsoft', logo: 'https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/microsoft.svg' },
+    { name: 'Wayu', logo: wayuLogo },
+    { name: '금성', logo: gimsongLogo },
     { name: 'Apple', logo: 'https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/apple.svg' },
     { name: 'GitHub', logo: 'https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/github.svg' },
-    { name: 'LinkedIn', logo: 'https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/linkedin.svg' },
-    { name: 'Instagram', logo: 'https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/instagram.svg' },
     { name: 'X', logo: 'https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/x.svg' },
-    { name: 'Mozilla', logo: 'https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/mozilla.svg' },
 ];
 
 export default function PartnersSlider() {

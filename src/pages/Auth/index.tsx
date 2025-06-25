@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import { useLocation } from 'react-router-dom';
 import Signup from '@/pages/Auth/Signup/Signup';
 import Login from '@/pages/Auth/Login/Login';
-import PhoneVerification from '@/pages/Auth/Signup/PhoneVerification';
 import { UserData } from '@/types/user';
 
 const AuthWrapper = styled.div`
@@ -24,6 +23,26 @@ const ContentContainer = styled.div`
     padding: 16px;
 `;
 
+const SuccessMessage = styled.div`
+    color: green;
+    font-size: 16px;
+    margin-bottom: 16px;
+    text-align: center;
+    font-weight: bold;
+    width: 100%;
+    max-width: 400px;
+    background-color: #e6ffed;
+    padding: 12px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border: 1px solid #b2f2bb;
+    transition: all 0.3s ease-in-out;
+
+    &:hover {
+        background-color: #d4f7e0;
+    }
+`;
+
 /**
  * LoginRoot - Page Component that handles the login and signup process
  * @description This component manages the authentication process, allowing users to either log in or sign up.
@@ -32,7 +51,6 @@ const ContentContainer = styled.div`
 export default function LoginRoot() {
     const location = useLocation();
     const [isSignUp, setIsSignUp] = useState(false);
-    const [showPhoneVerification, setShowPhoneVerification] = useState(false);
     const [signupData, setSignupData] = useState<UserData | null>(null);
 
     const returnUrl = location.state?.returnUrl;
@@ -42,7 +60,6 @@ export default function LoginRoot() {
             ? JSON.parse(localStorage.getItem('pendingEventRegistration')!)
             : null);
 
-    // we check the URL parameters on mount to determine if we should show login or signup
     useEffect(() => {
         const searchParams = new URLSearchParams(location.search);
         const authMode = searchParams.get('mode');
@@ -55,29 +72,20 @@ export default function LoginRoot() {
 
     const toggleAuthMode = () => {
         setIsSignUp(!isSignUp);
-        setShowPhoneVerification(false);
     };
 
     const handleSignupSuccess = (userData: UserData) => {
         setSignupData(userData);
-        setShowPhoneVerification(true);
-    };
-
-    const handleBackToSignup = () => {
-        setShowPhoneVerification(false);
     };
 
     return (
         <AuthWrapper>
             <ContentContainer>
-                {showPhoneVerification && signupData ? (
-                    <PhoneVerification
-                        signupData={signupData}
-                        onBack={handleBackToSignup}
-                        returnUrl={returnUrl}
-                        eventDetails={eventDetails}
-                    />
-                ) : isSignUp ? (
+                {signupData && (
+                    <SuccessMessage>Account created successfully! Please login with your credentials.</SuccessMessage>
+                )}
+
+                {isSignUp && !signupData ? (
                     <Signup
                         toggleAuthMode={toggleAuthMode}
                         onSignupSuccess={handleSignupSuccess}

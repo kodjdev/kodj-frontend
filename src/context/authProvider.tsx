@@ -173,7 +173,12 @@ export default function AuthProvider({ children }: AuthProviderProps) {
                 return await fetchData<TokenResponse>({
                     endpoint: '/auth/login',
                     method: 'POST',
-                    data: { email, password },
+                    data: {
+                        email,
+                        password,
+                        ipAddress: window.location.hostname,
+                        deviceType: 'web',
+                    },
                 });
             } catch (error) {
                 console.error('Login error:', error);
@@ -188,7 +193,7 @@ export default function AuthProvider({ children }: AuthProviderProps) {
         async (formData: RegisterFormData) => {
             try {
                 const response = await fetchData<EventRegistrationResponse>({
-                    endpoint: '/auth/register',
+                    endpoint: '/users',
                     method: 'POST',
                     data: formData,
                 });

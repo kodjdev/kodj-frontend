@@ -27,7 +27,8 @@
         "baseUrl": ".",
         "paths": {
             "@/*": ["src/*"]
-        }
+        },
+        "types": ["cypress", "cypress-axe"]
     },
-    "include": ["src", "src/types/custom.d.ts", "vite.config.ts"]
+    "include": ["src", "src/types/custom.d.ts", "vite.config.ts", "node.js"]
 }

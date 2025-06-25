@@ -5,7 +5,7 @@ import { ApiResponse, PaginatedResponse } from '@/types/fetch';
 import { NewsItem } from '@/types/news';
 import { useMemo } from 'react';
 import { useRecoilState } from 'recoil';
-import { CACHE_DURATION } from '@/services/apiService/fetchEventService';
+import { CACHE_DURATION } from '@/services/api/fetchEventService';
 
 /**
  * News Service - For News Data  Fetching

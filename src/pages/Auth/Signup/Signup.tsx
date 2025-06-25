@@ -11,6 +11,8 @@ import { EventDetails } from '@/types';
 import useAuth from '@/context/useAuth';
 import useGoogleSignupFlow from '@/hooks/useGoogleSignup';
 import { UserData } from '@/types/user';
+import { PhoneCall } from 'lucide-react';
+import { useFieldValidation } from '@/hooks/useFormValidation/useFormValidation';
 
 type SignupProps = {
     toggleAuthMode: () => void;
@@ -144,20 +146,77 @@ const StyledButton = styled(Button)`
  * @description This component handles user registration, including email and password signup,
  * Google authentication, and form validation. It uses Ant Design for UI components and styled-components for styling.
  */
-export default function Signup({ toggleAuthMode, returnUrl, eventDetails, onSignupSuccess }: SignupProps) {
+export default function Signup({ toggleAuthMode, returnUrl, eventDetails }: SignupProps) {
     const navigate = useNavigate();
     const { user } = useAuth();
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+
     const [showPassword, setShowPassword] = useState(false);
     const [messageApi, contextHolder] = message.useMessage();
+
+    const email = useFieldValidation('email', { emailFormat: 'standard' });
+    const password = useFieldValidation('password', {
+        minLength: 8,
+        requireUppercase: true,
+        requireLowercase: true,
+        requireNumbers: true,
+        requireSpecialChars: true,
+    });
+    const confirmPassword = useFieldValidation('match');
+    const phoneNumber = useFieldValidation('phone', { phoneFormat: 'kr' });
+
+    const { register } = useAuth();
 
     const {
         contextHolder: googleContextHolder,
         handleGoogleSignupSuccess,
         handleGoogleSignupError,
     } = useGoogleSignupFlow();
+
+    const handleFinishSignup = async () => {
+        setIsLoading(true);
+        try {
+            if (!password.value) {
+                throw new Error('Password is required');
+            }
+            const userData = {
+                email: email.value,
+                password: password.value,
+                username: email.value.split('@')[0],
+                name: email.value.split('@')[0],
+                phone: phoneNumber.value,
+            };
+
+            const response = await register(userData);
+            if (response && response.statusCode === 200) {
+                messageApi.success({
+                    content: 'Account creation is successful!',
+                    duration: 3,
+                    style: { marginTop: '5vh' },
+                });
+                resetForm();
+                setTimeout(() => {
+                    navigate('/');
+                }, 3000);
+            }
+        } catch (error) {
+            resetForm();
+            if (error instanceof Error && error.message) {
+                messageApi.error(error.message || 'Registration failed');
+            } else {
+                messageApi.error('An unexpected error occurred');
+            }
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const resetForm = () => {
+        email.setValue('');
+        password.setValue('');
+        confirmPassword.setValue('');
+        phoneNumber.setValue('');
+    };
 
     const handleSuccessfulAuth = useCallback(() => {
         try {
@@ -180,17 +239,16 @@ export default function Signup({ toggleAuthMode, returnUrl, eventDetails, onSign
     const handleEmailAuth = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            if (password !== confirmPassword) {
-                messageApi.error('Passwords do not match');
+            const passwordResult = password.validate(password.value);
+            const confirmResult = confirmPassword.validate(confirmPassword.value, password.value);
+            const phoneResult = phoneNumber.validate(phoneNumber.value);
+
+            if (!passwordResult.isValid || !confirmResult.isValid || !phoneResult.isValid) {
+                messageApi.error('Please fix all errors before submitting');
                 return;
             }
 
-            onSignupSuccess?.({
-                email,
-                password,
-                returnUrl,
-                eventDetails,
-            });
+            await handleFinishSignup();
         } catch (error) {
             console.error('Authentication error:', error);
             if (error instanceof Error) {
@@ -222,22 +280,25 @@ export default function Signup({ toggleAuthMode, returnUrl, eventDetails, onSign
                         icon={<HiOutlineMail size={20} />}
                         type="email"
                         placeholder="Email"
-                        value={email}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
+                        value={email.value}
+                        onChange={email.onChange}
+                        onBlur={email.onBlur}
+                        error={email.error}
                         required
                         fullWidth={true}
                         hideIconOnFocus={true}
                         transparent={true}
                     />
                 </InputGroup>
-
                 <InputGroup>
                     <Input
                         icon={<HiOutlineLockClosed size={20} />}
                         type={showPassword ? 'text' : 'password'}
                         placeholder="Password"
-                        value={password}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
+                        value={password.value}
+                        onBlur={password.onBlur}
+                        onChange={password.onChange}
+                        error={password.error}
                         required
                         fullWidth={true}
                         hideIconOnFocus={true}
@@ -247,23 +308,39 @@ export default function Signup({ toggleAuthMode, returnUrl, eventDetails, onSign
                         {showPassword ? <HiOutlineEyeOff size={20} /> : <HiOutlineEye size={20} />}
                     </PasswordVisibilityToggle>
                 </InputGroup>
-
                 <InputGroup>
                     <Input
                         icon={<HiOutlineLockClosed size={20} />}
                         type={showPassword ? 'text' : 'password'}
                         placeholder="Confirm Password"
-                        value={confirmPassword}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setConfirmPassword(e.target.value)}
+                        value={confirmPassword.value}
+                        onBlur={confirmPassword.onBlur}
+                        onChange={confirmPassword.onChange}
+                        error={confirmPassword.error}
                         required
                         fullWidth={true}
                         hideIconOnFocus={true}
                         transparent={true}
                     />
                 </InputGroup>
-
-                <StyledButton color="blue" size="md" fullWidth={true} as="button">
-                    SIGN UP
+                <InputGroup>
+                    <Input
+                        icon={<PhoneCall size={20} />}
+                        type="text"
+                        placeholder="Phone Number: 010XXXXXXXX"
+                        value={phoneNumber.value}
+                        onChange={phoneNumber.onChange}
+                        onBlur={phoneNumber.onBlur}
+                        error={phoneNumber.error}
+                        maxLength={11}
+                        required
+                        fullWidth={true}
+                        hideIconOnFocus={true}
+                        transparent={true}
+                    />
+                </InputGroup>
+                <StyledButton color="blue" size="md" fullWidth={true} as="button" disabled={isLoading}>
+                    {isLoading ? 'Creating Account...' : 'SIGN UP'}
                 </StyledButton>
             </Form>
 

@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import themeColors from '@/tools/themeColors';
 import Button from '@/components/Button/Button';
 import Input from '@/components/Input/Input';
-import { FaUser, FaEnvelope, FaLock, FaPhone, FaSave, FaEdit } from 'react-icons/fa';
+import { FaSave, FaEdit } from 'react-icons/fa';
+import useApiService from '@/services';
+import { UserDetails } from '@/types/user';
 
 type FieldConfig = {
     id: string;
@@ -156,49 +158,98 @@ const ButtonsContainer = styled.div`
     }
 `;
 
+const INITIAL_FIELDS: FieldConfig[] = [
+    {
+        id: 'name',
+        label: 'Name',
+        value: '',
+        icon: null,
+        isPassword: false,
+        isEditing: false,
+    },
+    {
+        id: 'email',
+        label: 'Email',
+        value: '',
+        icon: null,
+        isPassword: false,
+        isEditing: false,
+    },
+    {
+        id: 'phone',
+        label: 'Phone',
+        value: '',
+        icon: null,
+        isPassword: false,
+        isEditing: false,
+    },
+];
+
 /**
  * AccountDetails Component - Sub Organism Component
  * Form for viewing and editing account information
  */
 export default function AccountDetails() {
-    const [fields, setFields] = useState<FieldConfig[]>([
-        {
-            id: 'name',
-            label: 'Name',
-            value: 'Kholikov Oybek',
-            icon: <FaUser />,
-            isEditing: false,
-        },
-        {
-            id: 'email',
-            label: 'Email',
-            value: 'example@example.com',
-            icon: <FaEnvelope />,
-            isEditing: false,
-        },
-        {
-            id: 'password',
-            label: 'Password',
-            value: 'password123',
-            icon: <FaLock />,
-            isPassword: true,
-            isEditing: false,
-        },
-        {
-            id: 'phone',
-            label: 'Phone number',
-            value: '01012345678',
-            icon: <FaPhone />,
-            isEditing: false,
-        },
-    ]);
+    const userDetailsService = useApiService();
+    const [isLoading, setIsLoading] = useState(true);
 
-    const [formValues, setFormValues] = useState<Record<string, string>>({
-        name: 'Kholikov Oybek',
-        email: 'example@example.com',
-        password: 'password123',
-        phone: '01012345678',
+    const [formValues, setFormValues] = useState({
+        name: '',
+        email: '',
+        phone: '',
     });
+
+    const [fields, setFields] = useState<FieldConfig[]>(INITIAL_FIELDS);
+
+    useEffect(() => {
+        const fetchUserData = async () => {
+            try {
+                setIsLoading(true);
+                const accessToken = localStorage.getItem('access_token');
+                if (!accessToken) {
+                    console.error('No access token found');
+                    return;
+                }
+                const response = await userDetailsService.getUserDetails(accessToken);
+                if (response.statusCode === 200) {
+                    const userData: UserDetails = response.data;
+                    console.log('User data fetched:', userData);
+
+                    setFields((prev) =>
+                        prev.map((field) => ({
+                            ...field,
+                            value: getUserFieldValue(userData, field.id),
+                        })),
+                    );
+
+                    setFormValues({
+                        name: userData.data.username || '',
+                        email: userData.data.email || '',
+                        phone: userData.data.phone || '',
+                    });
+                }
+            } catch (error) {
+                console.error('Failed to fetch user data:', error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchUserData();
+    }, []);
+
+    const getUserFieldValue = (userData: UserDetails, fieldId: string): string => {
+        switch (fieldId) {
+            case 'name':
+                return userData.data.username || '';
+            case 'email':
+                return userData.data.email || '';
+            case 'phone':
+                return userData.data.phone || '010-1234-5678';
+            default:
+                return '';
+        }
+    };
 
     const toggleEditField = (fieldId: string) => {
         setFields((prevFields) =>
@@ -217,12 +268,12 @@ export default function AccountDetails() {
         setFields((prevFields) =>
             prevFields.map((field) => ({
                 ...field,
-                value: formValues[field.id],
                 isEditing: false,
+                value: formValues[field.id as keyof typeof formValues] || field.value,
             })),
         );
 
-        //later i will add the my page api service
+        /* later i will add the my page api service */
         console.log('Saving account details:', formValues);
     };
 
@@ -234,7 +285,7 @@ export default function AccountDetails() {
                         <FieldLabel>{field.label}</FieldLabel>
                         <Input
                             name={field.id}
-                            value={formValues[field.id]}
+                            value={formValues[field.id as keyof typeof formValues]}
                             onChange={handleInputChange}
                             type={field.isPassword ? 'password' : 'text'}
                             fullWidth
@@ -252,7 +303,7 @@ export default function AccountDetails() {
                     <FieldLabel>{field.label}</FieldLabel>
                     <FieldText>{field.isPassword ? '***********' : field.value}</FieldText>
                 </FieldContent>
-                <EditButton onClick={() => toggleEditField(field.id)}>
+                <EditButton onClick={() => toggleEditField(field.id)} disabled={true}>
                     <FaEdit />
                 </EditButton>
             </FieldGroup>
@@ -261,6 +312,10 @@ export default function AccountDetails() {
 
     const isEditMode = fields.some((field) => field.isEditing);
 
+    if (isLoading) {
+        return <div>Loading...</div>;
+    }
+
     return (
         <Container>
             <Header>Personal info</Header>
@@ -268,14 +323,8 @@ export default function AccountDetails() {
             <ProfileSection>
                 <ProfileImage>👤</ProfileImage>
                 <ProfileButtons>
-                    <Button
-                        variant="outline"
-                        size="mini"
-                        style={{
-                            border: '1px solid' + themeColors.cardBorder.color,
-                        }}
-                    >
-                        Upload new picture
+                    <Button variant="signOut" size="mini">
+                        Upload Photo
                     </Button>
                     <Button
                         variant="light"
@@ -303,7 +352,6 @@ export default function AccountDetails() {
                                 setFormValues({
                                     name: fields.find((f) => f.id === 'name')?.value || '',
                                     email: fields.find((f) => f.id === 'email')?.value || '',
-                                    password: fields.find((f) => f.id === 'password')?.value || '',
                                     phone: fields.find((f) => f.id === 'phone')?.value || '',
                                 });
                                 setFields((prevFields) => prevFields.map((field) => ({ ...field, isEditing: false })));
