@@ -265,7 +265,13 @@ export default function AccountDetails() {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
-        setFields((prevFields) => prevFields.map((field) => ({ ...field, isEditing: false })));
+        setFields((prevFields) =>
+            prevFields.map((field) => ({
+                ...field,
+                isEditing: false,
+                value: formValues[field.id as keyof typeof formValues] || field.value,
+            })),
+        );
 
         /* later i will add the my page api service */
         console.log('Saving account details:', formValues);
