@@ -193,7 +193,7 @@ export default function AuthProvider({ children }: AuthProviderProps) {
         async (formData: RegisterFormData) => {
             try {
                 const response = await fetchData<EventRegistrationResponse>({
-                    endpoint: '/users',
+                    endpoint: '/auth/register',
                     method: 'POST',
                     data: formData,
                 });
@@ -211,7 +211,7 @@ export default function AuthProvider({ children }: AuthProviderProps) {
         async (email: string, otp: string) => {
             try {
                 const response = await fetchData<TokenResponse>({
-                    endpoint: '/auth/otp',
+                    endpoint: '/auth/verify-login-otp',
                     method: 'POST',
                     data: { email, otp },
                 });

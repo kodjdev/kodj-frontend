@@ -17,7 +17,7 @@ export const useFetchStatsService = () => {
         return {
             getStatisticsOverview: async (): Promise<ApiResponse<StatsOverview>> => {
                 return fetchData<StatsOverview>({
-                    endpoint: '/statistics',
+                    endpoint: '/public/statistics',
                     method: 'GET',
                 });
             },

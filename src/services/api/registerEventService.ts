@@ -27,7 +27,7 @@ export const useRegisterEventService = () => {
             ): Promise<ApiResponse<EventRegistrationResponse>> => {
                 const access_token = localStorage.getItem('access_token');
                 return fetchData<EventRegistrationResponse>({
-                    endpoint: `/users/meetups/${meetupId}/registration`,
+                    endpoint: `/public/users/meetups/${meetupId}/registration`,
                     method: 'POST',
                     data: registrationData,
                     customHeaders: {

@@ -111,7 +111,7 @@ const LogoSVG = styled.img`
 
 const companies = [
     { name: 'Wayu', logo: wayuLogo },
-    { name: '금성', logo: gimsongLogo },
+    { name: '금성', logo: lawLogo },
     { name: 'Apple', logo: 'https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/apple.svg' },
     { name: 'GitHub', logo: 'https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/github.svg' },
     { name: 'X', logo: 'https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/x.svg' },
