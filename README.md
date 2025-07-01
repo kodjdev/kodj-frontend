@@ -1,9 +1,15 @@
-<div align="center">
-  <img src="https://github.com/user-attachments/assets/75e522ad-09c9-4d2e-99b4-bd6f6ea158b7" alt="kodj_logo" height="300" width="auto" />
+<picture class="github-only">
+  <source media="(prefers-color-scheme: light)" srcset="https://github.com/user-attachments/assets/75e522ad-09c9-4d2e-99b4-bd6f6ea158b7">
+  <source media="(prefers-color-scheme: dark)" srcset="https://github.com/user-attachments/assets/75e522ad-09c9-4d2e-99b4-bd6f6ea158b7">
+  <img alt="KO'DJ Logo" src="https://github.com/user-attachments/assets/75e522ad-09c9-4d2e-99b4-bd6f6ea158b7" width="15%">
+</picture>
+
+<div>
+  <br>
 </div>
-&nbsp;
-<div align="center"> 
-  <img src="https://img.shields.io/badge/React-61DAFB?style=flat-square&logo=React&logoColor=black"/> 
+
+<div align="left"> 
+ <img src="https://img.shields.io/badge/React-61DAFB?style=flat-square&logo=React&logoColor=black"/> 
   <img src="https://img.shields.io/badge/Typescript-3178C6?style=flat-square&logo=Typescript&logoColor=white"/>
   <img src="https://img.shields.io/badge/Vite-646CFF?style=flat-square&logo=Vite&logoColor=white"/>
   <img src="https://img.shields.io/badge/Ant_Design-0170FE?style=flat-square&logo=ant-design&logoColor=white"/>
@@ -11,9 +17,9 @@
   <img src="https://img.shields.io/badge/Styled_Components-DB7093?style=flat-square&logo=styled-components&logoColor=white"/>
 </div>
 
-# KO'DJ - Koreyadagi O'zbek Dasturchilar Jamiyati
-
-## 📖 Description
+<div>
+  <br>
+</div>
 
 KO'DJ - ya'ni Koreyadagi O'zbek Dasturchilar Jamiyati bo'lib KO'DJ web sahifasi orqali dev uchrashuvlar, uchrashuvlarni topish va ularga ro'yhatdan o'tish va uchrashuvlar bo'yicha sarhisoblarni yoritib boruvchi va KO'DJ jamiyatini ravnaqi yo'lida xizmat qiluvchi web safiha hisoblanadi.
 
