@@ -145,7 +145,7 @@ export const useFetchEventService = () => {
                 }
 
                 const response = await fetchData<PageResponse<MeetupResponse>>({
-                    endpoint: '/meetups',
+                    endpoint: '/public/meetups',
                     method: 'GET',
                     params: {
                         page: page.toString(),
@@ -173,7 +173,7 @@ export const useFetchEventService = () => {
                 }
 
                 const response = await fetchData<EventDetailsResponse>({
-                    endpoint: `/meetups/${meetupId}/details`,
+                    endpoint: `/public/meetups/${meetupId}/details`,
                     method: 'GET',
                 });
 
@@ -211,7 +211,7 @@ export const useFetchEventService = () => {
                 }
 
                 return fetchData<MeetupResponse>({
-                    endpoint: `/meetups/${id}`,
+                    endpoint: `/public/meetups/${id}`,
                     method: 'GET',
                 });
             },

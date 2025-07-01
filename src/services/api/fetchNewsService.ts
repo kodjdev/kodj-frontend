@@ -137,7 +137,7 @@ export const useFetchNewsService = () => {
                     message: string;
                     statusCode: number;
                 }>({
-                    endpoint: '/news',
+                    endpoint: '/public/news',
                     method: 'GET',
                     params,
                 });
@@ -161,7 +161,7 @@ export const useFetchNewsService = () => {
                 console.log(`Fetching fresh news details for ID: ${id}`);
 
                 const response = await fetchData<{ data: NewsItem }>({
-                    endpoint: `/news/${id}`,
+                    endpoint: `/public/news/${id}`,
                     method: 'GET',
                 });
 
