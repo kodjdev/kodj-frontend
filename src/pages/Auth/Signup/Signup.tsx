@@ -3,16 +3,18 @@ import styled from 'styled-components';
 import themeColors from '@/tools/themeColors';
 import { useNavigate } from 'react-router-dom';
 import { message } from 'antd';
-import { HiOutlineMail, HiOutlineLockClosed, HiOutlineEyeOff, HiOutlineEye } from 'react-icons/hi';
+import { HiOutlineMail } from 'react-icons/hi';
 import Input from '@/components/Input/Input';
 import Button from '@/components/Button/Button';
 import { GoogleLogin } from '@react-oauth/google';
-import { EventDetails } from '@/types';
-import useAuth from '@/context/useAuth';
-import useGoogleSignupFlow from '@/hooks/useGoogleSignup';
-import { UserData } from '@/types/user';
 import { PhoneCall } from 'lucide-react';
 import { useFieldValidation } from '@/hooks/useFormValidation/useFormValidation';
+
+import useAuth from '@/context/useAuth';
+import useGoogleSignupFlow from '@/hooks/useGoogleSignup';
+import { EventDetails } from '@/types';
+import { UserData } from '@/types/user';
+import PasswordSignupComponent from './Password';
 
 type SignupProps = {
     toggleAuthMode: () => void;
@@ -59,25 +61,23 @@ const Heading = styled.h2`
     margin-top: 12px;
 `;
 
-const Form = styled.form`
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-`;
-
 const InputGroup = styled.div`
     position: relative;
-    margin-bottom: 12px;
 `;
 
-const PasswordVisibilityToggle = styled.div`
-    position: absolute;
-    right: 16px;
-    top: 40%;
-    transform: translateY(-20%);
-    color: ${themeColors.gray_text};
-    cursor: pointer;
-    z-index: 1;
+const StyledButton = styled(Button)`
+    font-size: 16px;
+    text-transform: none;
+    border-radius: 4px;
+    width: 100%;
+    margin-top: 10px;
+    background-color: ${themeColors.blue};
+    color: ${themeColors.white};
+    margin-bottom: 20px;
+
+    &:hover {
+        background-color: ${themeColors.blue};
+    }
 `;
 
 const Divider = styled.div`
@@ -125,33 +125,19 @@ const ToggleButton = styled.button`
     }
 `;
 
-const StyledButton = styled(Button)`
-    font-size: 16px;
-    text-transform: none;
-    padding: 12px 16px;
-    border-radius: 4px;
-    background-color: ${themeColors.blue};
-    color: ${themeColors.white};
-
-    &:hover {
-        background-color: ${themeColors.blue};
-    }
+const Form = styled.form`
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
 `;
 
-/**
- * Signup - Page component for user registration
- * @param {Function} toggleAuthMode - Function to toggle between login and signup modes
- * @param {string} [returnUrl] - Optional URL to redirect after successful signup
- * @param {Object} [eventDetails] - Optional event details for redirection
- * @description This component handles user registration, including email and password signup,
- * Google authentication, and form validation. It uses Ant Design for UI components and styled-components for styling.
- */
 export default function Signup({ toggleAuthMode, returnUrl, eventDetails }: SignupProps) {
     const navigate = useNavigate();
     const { user } = useAuth();
     const [isLoading, setIsLoading] = useState(false);
-
-    const [showPassword, setShowPassword] = useState(false);
+    const [authError, setAuthError] = useState('');
+    const [currentStep, setCurrentStep] = useState<'info' | 'password'>('info');
     const [messageApi, contextHolder] = message.useMessage();
 
     const email = useFieldValidation('email', { emailFormat: 'standard' });
@@ -173,12 +159,67 @@ export default function Signup({ toggleAuthMode, returnUrl, eventDetails }: Sign
         handleGoogleSignupError,
     } = useGoogleSignupFlow();
 
-    const handleFinishSignup = async () => {
-        setIsLoading(true);
+    const resetForm = () => {
+        email.setValue('');
+        password.setValue('');
+        confirmPassword.setValue('');
+        phoneNumber.setValue('');
+        setCurrentStep('info');
+    };
+
+    const handleSuccessfulAuth = useCallback(() => {
         try {
-            if (!password.value) {
-                throw new Error('Password is required');
+            if (returnUrl && eventDetails) {
+                navigate(returnUrl, { state: eventDetails });
+            } else {
+                navigate('/mypage');
             }
+        } catch (error) {
+            console.error('Error happened here: ', error);
+        }
+    }, [navigate, returnUrl, eventDetails]);
+
+    useEffect(() => {
+        if (user) {
+            handleSuccessfulAuth();
+        }
+    }, [user, handleSuccessfulAuth]);
+
+    const handleContinue = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setAuthError('');
+
+        try {
+            const emailResult = email.validate(email.value);
+            const phoneResult = phoneNumber.validate(phoneNumber.value);
+
+            if (!emailResult.isValid || !phoneResult.isValid) {
+                setAuthError('Please fix all errors before continuing');
+                return;
+            }
+
+            setCurrentStep('password');
+        } catch (error) {
+            console.error('Validation error:', error);
+            setAuthError('Please check your information and try again');
+        }
+    };
+
+    const handlePasswordSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setIsLoading(true);
+        setAuthError('');
+
+        try {
+            const passwordResult = password.validate(password.value);
+            const confirmResult = confirmPassword.validate(confirmPassword.value, password.value);
+
+            if (!passwordResult.isValid || !confirmResult.isValid) {
+                setAuthError('Please fix password errors before submitting');
+                setIsLoading(false);
+                return;
+            }
+
             const userData = {
                 email: email.value,
                 password: password.value,
@@ -200,67 +241,18 @@ export default function Signup({ toggleAuthMode, returnUrl, eventDetails }: Sign
                 }, 3000);
             }
         } catch (error) {
-            resetForm();
             if (error instanceof Error && error.message) {
-                messageApi.error(error.message || 'Registration failed');
+                setAuthError(error.message || 'Registration failed');
             } else {
-                messageApi.error('An unexpected error occurred');
+                setAuthError('An unexpected error occurred');
             }
         } finally {
             setIsLoading(false);
         }
     };
 
-    const resetForm = () => {
-        email.setValue('');
-        password.setValue('');
-        confirmPassword.setValue('');
-        phoneNumber.setValue('');
-    };
-
-    const handleSuccessfulAuth = useCallback(() => {
-        try {
-            if (returnUrl && eventDetails) {
-                navigate(returnUrl, { state: eventDetails });
-            } else {
-                navigate('/mypage');
-            }
-        } catch (error) {
-            console.error('Error happened here: ', error);
-        }
-    }, [navigate, returnUrl, eventDetails]);
-
-    useEffect(() => {
-        if (user) {
-            handleSuccessfulAuth();
-        }
-    }, [user, handleSuccessfulAuth]);
-
-    const handleEmailAuth = async (e: React.FormEvent) => {
-        e.preventDefault();
-        try {
-            const passwordResult = password.validate(password.value);
-            const confirmResult = confirmPassword.validate(confirmPassword.value, password.value);
-            const phoneResult = phoneNumber.validate(phoneNumber.value);
-
-            if (!passwordResult.isValid || !confirmResult.isValid || !phoneResult.isValid) {
-                messageApi.error('Please fix all errors before submitting');
-                return;
-            }
-
-            await handleFinishSignup();
-        } catch (error) {
-            console.error('Authentication error:', error);
-            if (error instanceof Error) {
-                messageApi.error(error.message || 'Authentication failed');
-            } else {
-                messageApi.error('An unexpected error occurred');
-            }
-        }
-    };
-
-    const togglePasswordVisibility = () => {
-        setShowPassword(!showPassword);
+    const isStep1Valid = () => {
+        return email.value && phoneNumber.value && !email.error && !phoneNumber.error;
     };
 
     return (
@@ -274,93 +266,109 @@ export default function Signup({ toggleAuthMode, returnUrl, eventDetails }: Sign
                 </EventNotification>
             )}
             <Heading>Create an Account</Heading>
-            <Form onSubmit={handleEmailAuth}>
-                <InputGroup>
-                    <Input
-                        icon={<HiOutlineMail size={20} />}
-                        type="email"
-                        placeholder="Email"
-                        value={email.value}
-                        onChange={email.onChange}
-                        onBlur={email.onBlur}
-                        error={email.error}
-                        required
-                        fullWidth={true}
-                        hideIconOnFocus={true}
-                        transparent={true}
-                    />
-                </InputGroup>
-                <InputGroup>
-                    <Input
-                        icon={<HiOutlineLockClosed size={20} />}
-                        type={showPassword ? 'text' : 'password'}
-                        placeholder="Password"
-                        value={password.value}
-                        onBlur={password.onBlur}
-                        onChange={password.onChange}
-                        error={password.error}
-                        required
-                        fullWidth={true}
-                        hideIconOnFocus={true}
-                        transparent={true}
-                    />
-                    <PasswordVisibilityToggle onClick={togglePasswordVisibility}>
-                        {showPassword ? <HiOutlineEyeOff size={20} /> : <HiOutlineEye size={20} />}
-                    </PasswordVisibilityToggle>
-                </InputGroup>
-                <InputGroup>
-                    <Input
-                        icon={<HiOutlineLockClosed size={20} />}
-                        type={showPassword ? 'text' : 'password'}
-                        placeholder="Confirm Password"
-                        value={confirmPassword.value}
-                        onBlur={confirmPassword.onBlur}
-                        onChange={confirmPassword.onChange}
-                        error={confirmPassword.error}
-                        required
-                        fullWidth={true}
-                        hideIconOnFocus={true}
-                        transparent={true}
-                    />
-                </InputGroup>
-                <InputGroup>
-                    <Input
-                        icon={<PhoneCall size={20} />}
-                        type="text"
-                        placeholder="Phone Number: 010XXXXXXXX"
-                        value={phoneNumber.value}
-                        onChange={phoneNumber.onChange}
-                        onBlur={phoneNumber.onBlur}
-                        error={phoneNumber.error}
-                        maxLength={11}
-                        required
-                        fullWidth={true}
-                        hideIconOnFocus={true}
-                        transparent={true}
-                    />
-                </InputGroup>
-                <StyledButton color="blue" size="md" fullWidth={true} as="button" disabled={isLoading}>
-                    {isLoading ? 'Creating Account...' : 'SIGN UP'}
-                </StyledButton>
-            </Form>
 
-            <Divider>
-                <span>OR</span>
-            </Divider>
+            {currentStep === 'info' && (
+                <>
+                    <Form onSubmit={handleContinue}>
+                        <InputGroup>
+                            <Input
+                                icon={<HiOutlineMail size={20} />}
+                                type="email"
+                                placeholder="Email"
+                                value={email.value}
+                                onChange={email.onChange}
+                                onBlur={email.onBlur}
+                                error={email.error}
+                                required
+                                fullWidth={true}
+                                hideIconOnFocus={true}
+                                transparent={true}
+                            />
+                        </InputGroup>
 
-            <GoogleLogin
-                onSuccess={handleGoogleSignupSuccess}
-                onError={handleGoogleSignupError}
-                useOneTap
-                text="signup_with"
-                shape="rectangular"
-                width="100%"
-            />
+                        <InputGroup>
+                            <Input
+                                icon={<PhoneCall size={20} />}
+                                type="text"
+                                placeholder="Phone Number: 010XXXXXXXX"
+                                value={phoneNumber.value}
+                                onChange={phoneNumber.onChange}
+                                onBlur={phoneNumber.onBlur}
+                                error={phoneNumber.error}
+                                maxLength={11}
+                                required
+                                fullWidth={true}
+                                hideIconOnFocus={true}
+                                transparent={true}
+                            />
+                        </InputGroup>
 
-            <AccountPrompt>
-                <AccountText>Already have an account?</AccountText>
-                <ToggleButton onClick={toggleAuthMode}>Login</ToggleButton>
-            </AccountPrompt>
+                        {authError && (
+                            <div style={{ color: themeColors.red_text, fontSize: '12px', marginBottom: '12px' }}>
+                                {authError}
+                            </div>
+                        )}
+
+                        <StyledButton
+                            color="blue"
+                            size="md"
+                            fullWidth={true}
+                            as="button"
+                            type="submit"
+                            disabled={!isStep1Valid()}
+                        >
+                            CONTINUE
+                        </StyledButton>
+                    </Form>
+
+                    <Divider>
+                        <span>OR</span>
+                    </Divider>
+
+                    <GoogleLogin
+                        onSuccess={handleGoogleSignupSuccess}
+                        onError={handleGoogleSignupError}
+                        useOneTap
+                        text="signup_with"
+                        shape="rectangular"
+                        width="100%"
+                    />
+
+                    <AccountPrompt>
+                        <AccountText>Already have an account?</AccountText>
+                        <ToggleButton onClick={toggleAuthMode}>Login</ToggleButton>
+                    </AccountPrompt>
+                </>
+            )}
+
+            {currentStep === 'password' && (
+                <>
+                    <div style={{ marginBottom: '16px', color: themeColors.gray_text, fontSize: '14px' }}>
+                        Email: <strong style={{ color: themeColors.white }}>{email.value}</strong>
+                    </div>
+
+                    <PasswordSignupComponent
+                        passwordField={{
+                            value: password.value,
+                            error: password.error,
+                            onChange: password.onChange,
+                            onBlur: password.onBlur,
+                        }}
+                        confirmPasswordField={{
+                            value: confirmPassword.value,
+                            error: confirmPassword.error,
+                            onChange: confirmPassword.onChange,
+                            onBlur: confirmPassword.onBlur,
+                        }}
+                        onSubmit={handlePasswordSubmit}
+                        isLoading={isLoading}
+                        submitButtonText="SIGN UP"
+                        error={authError}
+                        showPasswordRequirements={true}
+                        hideValidationErrors={true}
+                    />
+                </>
+            )}
         </FormContainer>
     );
 }
