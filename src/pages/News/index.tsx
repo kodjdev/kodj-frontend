@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 import { Calendar, Bookmark, MessageSquare, ThumbsUp } from 'lucide-react';
@@ -131,6 +131,7 @@ const NewsCardMain = styled.div`
     justify-content: space-between;
     min-height: 0;
     flex: 1;
+    min-width: 0;
 `;
 
 const NewsCardImage = styled.div`
@@ -164,14 +165,21 @@ const NewsTitle = styled.h2`
     line-height: 1.4;
     margin-top: 0;
 
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+
     @media (max-width: ${themeColors.breakpoints.mobile}) {
         margin-bottom: ${themeColors.spacing.sm};
         font-size: 20px;
         line-height: 1.4;
         letter-spacing: -0.05em;
         padding-right: 0;
-        word-break: break-word;
-        overflow-wrap: break-word;
+
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 `;
 
@@ -322,6 +330,7 @@ export default function NewsList() {
     const [searchTerm, setSearchTerm] = useState('');
     const [visibleCount, setVisibleCount] = useState(4);
     const [hasMore, setHasMore] = useState(true);
+    const hasFetched = useRef(false);
 
     const techNews = useRecoilValue(techNewsAtom);
     const meetupNews = useRecoilValue(meetupNewsAtom);
@@ -359,7 +368,8 @@ export default function NewsList() {
     const visibleNews = filteredNews.slice(0, visibleCount);
 
     useEffect(() => {
-        let isMounted = true;
+        if (hasFetched.current) return;
+        hasFetched.current = true;
 
         const fetchNews = async () => {
             const cacheInfo = cacheStatus[activeCategory];
@@ -369,25 +379,17 @@ export default function NewsList() {
                 return;
             }
 
-            if (!isMounted) return;
-
             try {
                 setLoading(true);
                 await newsService.getAllNews(activeCategory);
             } catch (error) {
                 console.error('Error fetching news:', error);
             } finally {
-                if (isMounted) {
-                    setLoading(false);
-                }
+                setLoading(false);
             }
         };
 
         fetchNews();
-
-        return () => {
-            isMounted = false;
-        };
     }, [activeCategory]);
 
     useEffect(() => {

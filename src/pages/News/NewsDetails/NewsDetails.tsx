@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { Calendar, ArrowLeft, Timer, Twitter, LinkedinIcon } from 'lucide-react';
@@ -56,7 +56,7 @@ const ArticleHeader = styled.div`
 
 const ArticleTitle = styled.h1`
     color: ${themeColors.colors.neutral.white};
-    font-size: ${themeColors.typography.headings.desktop.h2.fontSize}px;
+    font-size: ${themeColors.typography.headings.desktop.h3.fontSize}px;
     font-weight: ${themeColors.typography.headings.desktop.h2.fontWeight};
     margin-bottom: ${themeColors.spacing.md};
     margin-top: 0;
@@ -210,11 +210,14 @@ const NewsCardLink = styled(Link)`
  * Fetches the specific news item by ID from the API or falls back to sample data if needed.
  * Handles loading states and error cases with Recoil for global error management.
  */
-export default function NewsDetail() {
+export default function NewsDetails() {
     const { id } = useParams<{ id: string }>();
     const [newsItem, setNewsItem] = useState<NewsItem | null>(null);
     const [loading, setLoading] = useState(true);
     const [relatedNews, setRelatedNews] = useState<NewsItem[]>([]);
+
+    const hasFetched = useRef(false);
+    const relatedHasFetched = useRef(false);
 
     const [newsError, setNewsError] = useRecoilState(errorAtom);
     const newsService = useApiService();
@@ -222,26 +225,22 @@ export default function NewsDetail() {
     const { formatDate } = useFormatDate();
 
     useEffect(() => {
-        let isMounted = true;
+        if (hasFetched.current) return;
+        hasFetched.current = true;
 
         const fetchNewsItem = async () => {
             if (!id) {
-                if (isMounted) {
-                    setNewsError({
-                        title: 'Invalid Article ID',
-                        message: 'The article ID provided is invalid.',
-                        record: null,
-                    });
-                }
+                setNewsError({
+                    title: 'Invalid Article ID',
+                    message: 'The article ID provided is invalid.',
+                    record: null,
+                });
+
                 return;
             }
 
-            if (isMounted) setLoading(true);
-
             try {
                 const response = await newsService.getNewsById(id);
-
-                if (!isMounted) return;
 
                 if (response.statusCode === 200 && response.data) {
                     const newsData = response.data.data;
@@ -256,28 +255,24 @@ export default function NewsDetail() {
                 }
             } catch (error) {
                 console.error('Error loading news item:', error);
-                if (isMounted) {
-                    setNewsError({
-                        title: 'Error Loading Article',
-                        message: 'There was a problem loading this article. Please try again.',
-                        record: id || null,
-                    });
-                }
+
+                setNewsError({
+                    title: 'Error Loading Article',
+                    message: 'There was a problem loading this article. Please try again.',
+                    record: id || null,
+                });
             } finally {
-                if (isMounted) {
-                    setLoading(false);
-                }
+                setLoading(false);
             }
         };
 
         fetchNewsItem();
-
-        return () => {
-            isMounted = false;
-        };
     }, [id]);
 
     useEffect(() => {
+        if (relatedHasFetched.current || !newsItem?.type) return;
+        relatedHasFetched.current = true;
+
         if (newsItem && newsItem.type) {
             const fetchRelatedNews = async () => {
                 try {
@@ -295,7 +290,11 @@ export default function NewsDetail() {
 
             fetchRelatedNews();
         }
-    }, [newsItem?.id, newsItem?.type, id]);
+    }, []);
+
+    useEffect(() => {
+        relatedHasFetched.current = false;
+    }, [newsItem?.id]);
 
     if (loading) {
         return <PageLoading message="Loading details.." />;

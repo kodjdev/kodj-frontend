@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import themeColors from '@/tools/themeColors';
 import useApiService from '@/services';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { StatsOverview } from '@/services/api/fetchStatsService';
 
 const StatisticsSection = styled.section`
@@ -243,8 +243,11 @@ export default function Statistics() {
     const [stats, setStats] = useState<StatsOverview | null>(null);
     const { t } = useTranslation('home');
     const statsService = useApiService();
+    const hasFetched = useRef(false);
 
     useEffect(() => {
+        if (hasFetched.current) return;
+        hasFetched.current = true;
         setIsVisible(true);
 
         const fetchStats = async () => {

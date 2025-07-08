@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { useRecoilValue } from 'recoil';
@@ -120,24 +120,22 @@ export default function EventsList({ onFilterChange, defaultFilter = EventFilter
 
     const [loading, setLoading] = useState(true);
     const [activeFilter, setActiveFilter] = useState<EventFilter>(defaultFilter);
+    const hasFetched = useRef(false);
 
     const { formatDate } = useFormatDate();
 
     useEffect(() => {
-        let isMounted = true;
+        if (hasFetched.current) return;
+        hasFetched.current = true;
 
         const fetchData = async () => {
             const needsUpcomingData = !cacheStatus.upcoming.loaded;
             const needsPastData = !cacheStatus.past.loaded;
 
             if (!needsUpcomingData && !needsPastData) {
-                if (isMounted) {
-                    setLoading(false);
-                }
+                setLoading(false);
                 return;
             }
-
-            if (!isMounted) return;
 
             try {
                 setLoading(true);
@@ -169,17 +167,11 @@ export default function EventsList({ onFilterChange, defaultFilter = EventFilter
                     error instanceof Error ? error.message : 'An unexpected error occurred while fetching events.',
                 );
             } finally {
-                if (isMounted) {
-                    setLoading(false);
-                }
+                setLoading(false);
             }
         };
 
         fetchData();
-
-        return () => {
-            isMounted = false;
-        };
     }, []);
 
     const handleFilterChange = (filter: EventFilter) => {

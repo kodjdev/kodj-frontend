@@ -213,22 +213,6 @@ export default function Password({
                     </PasswordVisibilityToggle>
                 </InputGroup>
 
-                <InputGroup>
-                    <Input
-                        icon={<HiOutlineLockClosed size={20} />}
-                        type={showPassword ? 'text' : 'password'}
-                        placeholder="Confirm Password"
-                        value={confirmPasswordField.value}
-                        onChange={handleConfirmPasswordChange}
-                        onBlur={confirmPasswordField.onBlur}
-                        error={hideValidationErrors ? '' : confirmPasswordField.error}
-                        required
-                        fullWidth={true}
-                        hideIconOnFocus={true}
-                        transparent={true}
-                    />
-                </InputGroup>
-
                 {passwordField.value && showPasswordRequirements && (
                     <PasswordRequirements>
                         <RequirementsTitle>Password Requirements</RequirementsTitle>
@@ -249,6 +233,22 @@ export default function Password({
                         </RequirementsList>
                     </PasswordRequirements>
                 )}
+
+                <InputGroup>
+                    <Input
+                        icon={<HiOutlineLockClosed size={20} />}
+                        type={showPassword ? 'text' : 'password'}
+                        placeholder="Confirm Password"
+                        value={confirmPasswordField.value}
+                        onChange={handleConfirmPasswordChange}
+                        onBlur={confirmPasswordField.onBlur}
+                        error={hideValidationErrors ? '' : confirmPasswordField.error}
+                        required
+                        fullWidth={true}
+                        hideIconOnFocus={true}
+                        transparent={true}
+                    />
+                </InputGroup>
 
                 {error && <ErrorMessage>{error}</ErrorMessage>}
 

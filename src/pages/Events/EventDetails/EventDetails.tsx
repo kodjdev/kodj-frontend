@@ -201,6 +201,7 @@ export default function EventDetails() {
     const scheduleRef = useRef<HTMLDivElement>(null);
     const speakersRef = useRef<HTMLDivElement>(null);
     const locationRef = useRef<HTMLDivElement>(null);
+    const hasFetched = useRef(false);
 
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<Error | null>(null);
@@ -220,26 +221,22 @@ export default function EventDetails() {
     const eventFetchService = useApiService();
 
     useEffect(() => {
-        let isMounted = true;
+        if (hasFetched.current) return;
+        hasFetched.current = true;
 
         const fetchEventDetails = async () => {
             if (!eventId) {
-                if (isMounted) setLoading(false);
+                setLoading(false);
                 return;
             }
 
             try {
-                if (isMounted) setLoading(true);
+                setLoading(true);
 
                 const response = await eventFetchService.getEventDetails(eventId);
 
-                if (!isMounted) return;
-
                 if (response?.statusCode && response.statusCode >= 200 && response.statusCode < 300) {
                     setEventDetails(response);
-                    // Log event details if necessary using a proper logging mechanism
-                    // Example: logger.info('mappedEvent event logged: ', response);
-                    // For now, removing the console.log statement
 
                     if (!locationEventData) {
                         const mappedEvent = mapApiResponseToEvent(eventId, response.data);
@@ -249,14 +246,10 @@ export default function EventDetails() {
                     throw new Error(response.message || 'Failed to fetch event details');
                 }
             } catch (err) {
-                if (isMounted) {
-                    setError(err instanceof Error ? err : new Error('An unknown error occurred'));
-                    console.error('Error fetching event details:', err);
-                }
+                setError(err instanceof Error ? err : new Error('An unknown error occurred'));
+                console.error('Error fetching event details:', err);
             } finally {
-                if (isMounted) {
-                    setLoading(false);
-                }
+                setLoading(false);
             }
         };
 
@@ -265,10 +258,6 @@ export default function EventDetails() {
         }
 
         fetchEventDetails();
-
-        return () => {
-            isMounted = false;
-        };
     }, [eventId]);
 
     /**
