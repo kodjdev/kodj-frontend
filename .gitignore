@@ -28,5 +28,11 @@ dist-ssr
 .env.prod
 .env.local
 
-
+#firebase related files
 .firebase
+
+#build artifacts
+build/
+build/assets
+build/index.html
+
