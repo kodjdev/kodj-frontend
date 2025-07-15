@@ -5,7 +5,7 @@ import { RecoilRoot } from 'recoil';
 import RootLayout from '@/pages/RootLayout';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import AuthProvider from '@/context/authProvider';
-import UnderMaintenance from './pages/UnderMaintenance';
+import UnderMaintenance from '@/pages/UnderMaintenance';
 
 type AppProps = {
     isMaintenanceMode?: boolean;
