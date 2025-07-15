@@ -1,18 +1,46 @@
-import { Timestamp } from "firebase/firestore";
+import { ReactNode } from 'react';
+import { ApiResponse, RegisterFormData } from './fetch';
+import { EventRegistrationResponse } from './user';
 
 export type User = {
-    id: string;
-    email: string;
-    isAdmin?: boolean;
-    username?: string;
-  }
-  export type AuthType ={
-    accessToken?: string | null;
-    refreshToken?: string | null;
-    user?: User | null;
-  }
+    data: {
+        id: string;
+        email: string;
+        firstName?: string;
+        lastName?: string;
+        imageUrl?: string;
+        bio?: string;
+        role: 'user' | 'admin' | 'speaker';
+        createdAt: string;
+        username: string;
+        phone?: string;
+        oauthProvider?: string;
+        region?: string;
+        category?: string;
+        provider?: string;
+    };
+};
 
-  export type CustomUserProps = User & {
-    createdAt?: Timestamp;
-    displayName?: string;
-  }
+export type TokenResponse = {
+    data: {
+        access_token: string;
+        refresh_token: string;
+    };
+};
+
+export type AuthContextType = {
+    user: User | null;
+    isAuthenticated: boolean;
+    isLoading: boolean;
+    login: (email: string, password: string) => Promise<ApiResponse>;
+    register: (formData: RegisterFormData) => Promise<ApiResponse<EventRegistrationResponse>>;
+    validateOTP: (email: string, otp: string) => Promise<ApiResponse<TokenResponse>>;
+    loginWithGoogle: (credential: string) => Promise<ApiResponse<TokenResponse>>;
+    signUpWithGoogle: (credential: string) => Promise<ApiResponse>;
+    logout: () => Promise<void>;
+    refreshTokens: () => Promise<boolean>;
+};
+
+export type AuthProviderProps = {
+    children: ReactNode;
+};

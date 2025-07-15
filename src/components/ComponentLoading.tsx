@@ -1,17 +1,22 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+import styled from 'styled-components';
+import PageLoading from '@/components/Loading/LoadingAnimation';
 
-const ComponentLoading: React.FC = () => {
-  return (
-    <div className="flex items-center justify-center h-screen">
-      <motion.div
-        className="w-16 h-16 border-t-4 border-blue-500 border-solid rounded-full animate-spin"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.5 }}
-      />
-    </div>
-  );
-};
+const LoadingWrapper = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+`;
 
-export default ComponentLoading;
+/**
+ * ComponentLoading - A Molecule Component
+ * @description This component displays a loading spinner while content is being fetched or processed.
+ * It wraps the LoadingAnimation Atom Component to provide a consistent loading experience across the application.
+ */
+export default function ComponentLoading() {
+    return (
+        <LoadingWrapper>
+            <PageLoading message="Loading a page" />
+        </LoadingWrapper>
+    );
+}

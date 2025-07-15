@@ -1,158 +1,258 @@
-import EventCard from "../../components/Event/EventContainer";
-import { useEffect, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
-import { Spin } from "antd";
-import { eventCacheAtom, pastEventsAtom, upcomingEventsAtom } from "@/atoms/events";
-import { useEventFetcher } from "@/hooks/event/useEventFetch";
-import { useRecoilValue, useSetRecoilState } from "recoil";
-import { Event, EventForServer } from "@/types";
+import { useEffect, useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
+import styled from 'styled-components';
+import { useRecoilValue } from 'recoil';
+import { eventsCacheStatusAtom, pastEventsAtom, upcomingEventsAtom } from '@/atoms/events';
+import themeColors from '@/tools/themeColors';
+import EventCard from '@/components/Card/EventCard';
+import Button from '@/components/Button/Button';
+import useApiService from '@/services';
+import useFormatDate from '@/hooks/useFormatDate';
+import { message } from 'antd';
+import PageLoading from '@/components/Loading/LoadingAnimation';
+import { Event } from '@/types/event';
 
-export default function EventsList() {
-  const { fetchEventsData, moveOldEvents } = useEventFetcher();
+enum EventFilter {
+    ALL = 'all',
+    UPCOMING = 'upcoming',
+    PAST = 'past',
+}
 
-  // ** Read-Only** faqat (atomdan oqiymiz)
-  const upcomingEvents = useRecoilValue(upcomingEventsAtom);
-  const pastEvents = useRecoilValue(pastEventsAtom);
+type EventFiltersProps = {
+    onFilterChange?: (filter: EventFilter) => void;
+    defaultFilter?: EventFilter;
+};
 
-  const setEventCache = useSetRecoilState(eventCacheAtom);
+const Container = styled.div`
+    max-width: ${themeColors.breakpoints.desktop};
+    margin: 0 auto;
+`;
 
-  const [loading, setLoading] = useState(true);
+const SectionHeader = styled.div`
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: ${themeColors.spacing.sm};
+    margin-bottom: ${themeColors.spacing.lg};
+`;
 
-  // memoize qildik, chunki bir marta calulate qilishimiz yetadi
-  const shouldRunMoveOldEvents = useMemo(() => {
-    const currTime = new Date();
+const SectionTitle = styled.h2`
+    color: ${themeColors.colors.neutral.white};
+    font-weight: ${themeColors.typography.headings.desktop.h2.fontWeight};
+    font-size: ${themeColors.typography.headings.desktop.h2.fontSize}px;
+    line-height: ${themeColors.typography.headings.desktop.h2.lineHeight};
+    margin: 0;
+`;
 
-    // this checks for the 10:00 pm time
-    const isTenPmNow = currTime.getHours() === 22;
+const SectionTitleGray = styled.h2`
+    color: ${themeColors.colors.gray.main};
+    font-weight: ${themeColors.typography.headings.desktop.h2.fontWeight};
+    font-size: ${themeColors.typography.headings.desktop.h2.fontSize}px;
+    line-height: ${themeColors.typography.headings.desktop.h2.lineHeight};
+    margin: 0 ${themeColors.spacing.sm};
+`;
 
-    if (!isTenPmNow) {
-      return false;
+const EventsGrid = styled.div`
+    display: grid;
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+    gap: ${themeColors.spacing.xl};
+    justify-content: center;
+    padding-bottom: 80px;
+
+    @media (min-width: ${themeColors.breakpoints.mobile}) {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
-    const lastRunEventString = localStorage.getItem("moveOldEventsLastRun");
 
-    if (!lastRunEventString) {
-      // agar topilmasa demak hali run qilmadik, shuning uchun true
-      return true;
+    @media (min-width: ${themeColors.breakpoints.laptop}) {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        justify-content: flex-start;
     }
+`;
 
-    const lastRun = new Date(Number(lastRunEventString));
-    // if last run is today, we skip
-    return lastRun.toDateString() !== currTime.toDateString();
-  }, []);
+const EventFilterContainer = styled.div`
+    display: flex;
+    gap: ${themeColors.spacing.md};
+    margin-bottom: ${themeColors.spacing.lg};
+`;
 
-  useEffect(() => {
-    let isMounted = true;
-    const initializeData = async () => {
-      try {
-        await fetchEventsData();
+const FilterButton = styled(Button)<{ isActive: boolean }>`
+    background-color: ${(props) => (props.isActive ? themeColors.white : 'transparent')}!important;
+    color: ${(props) => (props.isActive ? themeColors.colors.neutral.black : themeColors.colors.gray.main)} !important;
+    border: 1px solid ${themeColors.cardBorder.color};
+    border-radius: ${themeColors.radiusSizes.two_xl};
+    padding: 6px 10px;
+    height: auto;
+    font-size: ${themeColors.typography.body.small.fontSize}px;
+    font-weight: ${themeColors.font16.lineHeight};
+    text-transform: none;
+    outline: none !important;
+    box-shadow: none !important;
 
-        if (shouldRunMoveOldEvents) {
-          await moveOldEvents();
-          localStorage.setItem("moveOldEventsLastRun", Date.now().toString());
+    @media (max-width: ${themeColors.breakpoints.mobile}) {
+        font-size: ${themeColors.typography.body.xsmall.fontSize}px;
+        padding: 3px 6px !important;
+    }
+`;
+
+const StyledLink = styled(Link)`
+    text-decoration: none;
+`;
+
+const filterOptions = [
+    { value: EventFilter.ALL, label: 'All' },
+    { value: EventFilter.UPCOMING, label: 'Upcoming Events' },
+    { value: EventFilter.PAST, label: 'Past Events' },
+];
+
+/**
+ * EventsList - Page to display a list of events with filtering options.
+ * @param {Function} onFilterChange - Callback function to handle filter changes.
+ * @param {EventFilter} defaultFilter - Default filter to be applied on load.
+ */
+export default function EventsList({ onFilterChange, defaultFilter = EventFilter.ALL }: EventFiltersProps) {
+    const eventFetchService = useApiService();
+
+    const upcomingEvents = useRecoilValue(upcomingEventsAtom);
+    const pastEvents = useRecoilValue(pastEventsAtom);
+    const cacheStatus = useRecoilValue(eventsCacheStatusAtom);
+
+    const [messageApi, contextHolder] = message.useMessage();
+
+    const [loading, setLoading] = useState(true);
+    const [activeFilter, setActiveFilter] = useState<EventFilter>(defaultFilter);
+    const hasFetched = useRef(false);
+
+    const { formatDate } = useFormatDate();
+
+    useEffect(() => {
+        if (hasFetched.current) return;
+        hasFetched.current = true;
+
+        const fetchData = async () => {
+            const needsUpcomingData = !cacheStatus.upcoming.loaded;
+            const needsPastData = !cacheStatus.past.loaded;
+
+            if (!needsUpcomingData && !needsPastData) {
+                setLoading(false);
+                return;
+            }
+
+            try {
+                setLoading(true);
+
+                const promises = [];
+
+                if (needsUpcomingData) {
+                    promises.push(
+                        eventFetchService.getEvents({
+                            type: 'upcoming',
+                            size: 50,
+                            page: 0,
+                        }),
+                    );
+                }
+
+                if (needsPastData) {
+                    promises.push(
+                        eventFetchService.getEvents({
+                            type: 'past',
+                            size: 50,
+                            page: 0,
+                        }),
+                    );
+                }
+                await Promise.all(promises);
+            } catch (error) {
+                messageApi.error(
+                    error instanceof Error ? error.message : 'An unexpected error occurred while fetching events.',
+                );
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchData();
+    }, []);
+
+    const handleFilterChange = (filter: EventFilter) => {
+        setActiveFilter(filter);
+        if (onFilterChange) {
+            onFilterChange(filter);
         }
-      } catch (error) {
-        console.log("Error initializing data: ", error);
-      } finally {
-        if (isMounted) {
-          setLoading(false);
-        }
-      }
     };
 
-    initializeData();
-
-    return () => {
-      isMounted = false;
-    };
-  }, [fetchEventsData, moveOldEvents, shouldRunMoveOldEvents]);
-
-
-  // caching events uchun
-  useEffect(() => {
-    // event load bo;lganda eventlarni cache qilamiz
-    if (upcomingEvents.length > 0 || pastEvents.length > 0) {
-      const newCache: Record<string, EventForServer> = {};
-
-      [...upcomingEvents, ...pastEvents].forEach(event => {
-        newCache[event.id] = event as EventForServer;
-      });
-
-      setEventCache(newCache);
-    }
-  }, [upcomingEvents, pastEvents, setEventCache]);
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-black bg-opacity-50 text-blue-600 text-md">
-        <Spin tip="Wait a little bit" size="large"></Spin>
-      </div>
+    const renderEventCard = (event: Event, isUpcoming: boolean) => (
+        <StyledLink
+            to={`/events/${isUpcoming ? 'upcoming' : 'past'}/details/${event.id}`}
+            key={event.id}
+            state={{ eventData: event, speakers: [], eventSchedule: [] }}
+        >
+            <EventCard
+                isFreeEvent={true}
+                title={event.title}
+                description={Array.isArray(event.description) ? event.description.join(' ') : event.description}
+                date={formatDate(event.date)}
+                author={event.author || "KO'DJ"}
+                imageUrl={event.imageUrl || ''}
+                registeredCount={event.registeredCount}
+                maxSeats={event.maxSeats || 50}
+                availableSeats={event.availableSeats}
+            />
+        </StyledLink>
     );
-  }
 
-  // 2 xil turdagi eventlarni render qilish uchun custom function
-  const renderEventCard = (event: Event, isUpcoming: boolean) => (
-    <Link
-      to={`/events/${isUpcoming ? "upcoming" : "past"}/details/${event.id}`}
-      key={event.id}
-      state={{ eventData: event, speakers: [], eventSchedule: [] }}
-    >
-      {" "}
-      <EventCard
-        title={event.title}
-        description={event.description}
-        date={
-          typeof event.date === "string"
-            ? event.date
-            : event.date ? new Date(event.date.seconds * 1000).toDateString() : "Date not available"
-        }
-        author={event.author}
-        imageUrl={event.imageUrl || ""}
-        isUpcoming={isUpcoming}
-        registeredCount={event.registeredCount}
-        maxSeats={event.maxSeats}
-      />
-    </Link>
-  );
+    if (loading) {
+        return <PageLoading message="Loading Events ..." />;
+    }
 
-  return (
-    <div className="container mx-auto py-8">
-      <div className="flex flex-wrap items-baseline gap-2 mb-5">
-        <h1 className="text-white font-bold text-3xl leading-none">Upcoming</h1>
-        <h1 className="text-gray-500 font-bold text-3xl leading-none mx-2">
-          Events
-        </h1>
-      </div>
-      <h4 className="font-semibold text-white mb-9">
-        Check out our past events below:
-      </h4>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 justify-center md:justify-start pb-40">
-        {upcomingEvents && upcomingEvents.length > 0 ? (
-          <>
-            {upcomingEvents &&
-              upcomingEvents.map((event) => renderEventCard(event, true))}
-            <EventCard isPlaceholder />
-          </>
-        ) : (
-          // if no events we show the empty placeholder
-          <EventCard isPlaceholder />
-        )}
-      </div>
-      <div className="flex flex-wrap items-baseline gap-2 mb-5">
-        <h1 className="text-white font-bold text-3xl leading-none">Past</h1>
-        <h1 className="text-gray-500 font-bold text-3xl leading-none mx-2">
-          Events
-        </h1>
-      </div>
-      <h4 className="font-semibold text-white mb-9">
-        Check out our past events below:
-      </h4>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 justify-center md:justify-start pb-40">
-        {pastEvents && pastEvents.length > 0 ? (
-          pastEvents.map((event) => renderEventCard(event, false))
-        ) : (
-          <EventCard isPlaceholder />
-        )}
-      </div>
-    </div>
-  );
+    return (
+        <Container>
+            {contextHolder}
+            <EventFilterContainer>
+                {filterOptions.map((option) => (
+                    <FilterButton
+                        variant={activeFilter === option.value ? 'primary' : 'text'}
+                        size="sm"
+                        key={option.value}
+                        isActive={activeFilter === option.value}
+                        onClick={() => handleFilterChange(option.value)}
+                    >
+                        {option.label}
+                    </FilterButton>
+                ))}
+            </EventFilterContainer>
+            <SectionHeader>
+                <SectionTitle>{activeFilter === EventFilter.PAST ? 'Past' : 'Upcoming'}</SectionTitle>
+                <SectionTitleGray>Events</SectionTitleGray>
+            </SectionHeader>
+            <EventsGrid>
+                {activeFilter === EventFilter.ALL || activeFilter === EventFilter.UPCOMING ? (
+                    upcomingEvents && upcomingEvents.length > 0 ? (
+                        <>{upcomingEvents.map((event) => renderEventCard(event, true))}</>
+                    ) : (
+                        <EventCard isPlaceholder />
+                    )
+                ) : pastEvents && pastEvents.length > 0 ? (
+                    pastEvents.map((event) => renderEventCard(event, false))
+                ) : (
+                    <EventCard isPlaceholder />
+                )}
+            </EventsGrid>
+            {activeFilter === EventFilter.ALL && (
+                <>
+                    <SectionHeader>
+                        <SectionTitle>Past</SectionTitle>
+                        <SectionTitleGray>Events</SectionTitleGray>
+                    </SectionHeader>
+                    <EventsGrid>
+                        {pastEvents && pastEvents.length > 0 ? (
+                            pastEvents.map((event) => renderEventCard(event, false))
+                        ) : (
+                            <EventCard isPlaceholder />
+                        )}
+                    </EventsGrid>
+                </>
+            )}
+        </Container>
+    );
 }

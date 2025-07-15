@@ -1,105 +1,88 @@
-import { useEffect, useRef, useState } from "react";
-import { useAuth } from "@/context/useAuth";
-import { useTranslation } from "react-i18next";
-import { useLocation } from "react-router-dom";
-import { HeaderContainer } from "@/components/Header/HeaderContainer";
-import DesktopMenu from "@/components/Header/DesktopMenu";
-import { MobileMenu } from "@/components/Header/MobilMenu";
-import FlipLogo from "@/components/FlipLogo";
-import { useLogout } from "../Modal/LogoutModal";
+import { useMediaQuery } from 'react-responsive';
+import HeaderDesktop from '@/components/Header/HeaderDesktop';
+import HeaderMobile from '@/components/Header/HeaderMobile';
+import themeColors from '@/tools/themeColors';
+import { useTranslation } from 'react-i18next';
+import { useState } from 'react';
+import useAuth from '@/context/useAuth';
+import ConfirmModal from '@/components/Modal/ModalTypes/ConfirmModal';
+import useModal from '@/hooks/useModal';
 
-const tabs = [
-  { id: "about", labelKey: "header.aboutUs", path: "/about" },
-  { id: "news", labelKey: "header.news", path: "/news" },
-  { id: "events", labelKey: "header.events", path: "/events" },
-  { id: "speakers", labelKey: "header.speakers", path: "/speakers" },
-  { id: "mypage", labelKey: "header.myPage", path: "/mypage" },
-  { id: "login", labelKey: "header.login", path: "/login" },
-];
-
+/**
+ * Header Root Component:
+ * Here we wrap the mobile and desktop headers.
+ * This root components renders either the desktop or mobile
+ * header based on the viewport width.
+ */
 export default function Header() {
-  const location = useLocation();
-  const { i18n, t } = useTranslation();
-  const { user } = useAuth();
+    const [langMenuOpen, setLangMenuOpen] = useState(false);
+    const { i18n } = useTranslation();
+    const { isAuthenticated, logout } = useAuth();
+    const { isOpen, openModal, closeModal } = useModal();
 
-  const [activeTab, setActiveTab] = useState(() => {
-    const match = tabs.find((tab) => location.pathname.startsWith(tab.path));
-    return match?.id || "";
-  });
+    const isMobile = useMediaQuery({
+        query: `(max-width: ${themeColors.breakpoints.mobile})`,
+    });
 
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [showProfileMenu, setShowProfileMenu] = useState(false);
-  const [langMenuOpen, setLangMenuOpen] = useState(false);
-  const triggerLogoutModal = useLogout();
-
-  const profileMenuRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    setActiveTab(
-      tabs.find((tab) => location.pathname.startsWith(tab.path))?.id || ""
-    );
-  }, [location.pathname]);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 0);
+    const handleLanguageChange = (lang: string) => {
+        i18n.changeLanguage(lang);
+        setLangMenuOpen(false);
     };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
 
-  const handleLanguageChange = (lang: string) => {
-    i18n.changeLanguage(lang);
-    setLangMenuOpen(false);
-  };
+    const toggleMenu = () => {
+        setLangMenuOpen(!langMenuOpen);
+    };
 
-  return (
-    <>
-      <HeaderContainer
-        className={isScrolled ? "bg-black shadow-lg" : "bg-transparent"}
-      >
-        <div className="flex items-center space-x-2">
-          <div className="mr-auto">
-            <FlipLogo />
-          </div>
-        </div>
-        {/* // this is mobikle toogler  */}
-        <div className="md:hidden">
-          <button
-            onClick={() => setIsMobileMenuOpen(true)}
-            className="text-sm font-medium text-white bg-gray-700 outline-sky-400 transition focus-visible:outline-2"
-          >
-            ☰
-          </button>
-        </div>
-        <DesktopMenu
-          tabs={tabs}
-          t={t}
-          user={user}
-          activeTab={activeTab}
-          setActiveTab={setActiveTab}
-          showProfileMenu={showProfileMenu}
-          setShowProfileMenu={setShowProfileMenu}
-          profileMenuRef={profileMenuRef}
-          handleLogoutClick={triggerLogoutModal}
-          currentLanguage={i18n.language || "en"}
-          langMenuOpen={langMenuOpen}
-          setLangMenuOpen={setLangMenuOpen}
-          handleLanguageChange={handleLanguageChange}
-        />
-      </HeaderContainer>
-      {isMobileMenuOpen && (
-        <MobileMenu
-          tabs={tabs}
-          t={t}
-          user={user}
-          activeTab={activeTab}
-          setActiveTab={setActiveTab}
-          setIsMobileMenuOpen={setIsMobileMenuOpen}
-          handleLogoutClick={triggerLogoutModal}
-        />
-      )}
-    </>
-  );
+    const handleLogoutClick = () => {
+        if (isAuthenticated) {
+            openModal();
+        }
+    };
+
+    const handleConfirmedLogout = async () => {
+        closeModal();
+
+        setTimeout(async () => {
+            await logout();
+        }, 50);
+    };
+
+    const authProps = {
+        isAuthenticated: !!isAuthenticated,
+        onLogout: handleLogoutClick,
+    };
+
+    return (
+        <>
+            {isMobile ? (
+                <HeaderMobile
+                    handleLangChange={handleLanguageChange}
+                    currentLang={i18n.language}
+                    langMenuOpen={langMenuOpen}
+                    toggleLangMenu={toggleMenu}
+                    {...authProps}
+                />
+            ) : (
+                <HeaderDesktop
+                    handleLangChange={handleLanguageChange}
+                    currentLang={i18n.language}
+                    langMenuOpen={langMenuOpen}
+                    toggleLangMenu={toggleMenu}
+                    {...authProps}
+                />
+            )}
+            {
+                <ConfirmModal
+                    isOpen={isOpen}
+                    onClose={closeModal}
+                    title={'Confirm Logout'}
+                    message={'Are you sure you want to log out?'}
+                    onConfirm={handleConfirmedLogout}
+                    confirmLabel={'Yes, log out'}
+                    cancelLabel={'Cancel'}
+                    size="sm"
+                />
+            }
+        </>
+    );
 }

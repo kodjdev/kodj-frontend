@@ -1,266 +1,135 @@
-import { useEffect, useState } from "react";
-import { useAuth } from "../../context/useAuth";
-import { useNavigate } from "react-router-dom";
-import {
-  collection,
-  query,
-  where,
-  getDocs,
-  deleteDoc,
-  doc,
-  getDoc,
-  Timestamp,
-} from "firebase/firestore";
-import { db } from "../../firebase/firebaseConfig";
-import { Spin, message } from "antd";
-import { EventDetails } from "../../types";
+import { useState } from 'react';
+import styled from 'styled-components';
+import themeColors from '@/tools/themeColors';
+import AccountDetails from '@/pages/MyPage/AccountDetails';
+import MyEvents from '@/pages/MyPage/MyEvents';
+import BlogEditor from '@/pages/MyPage/BlogEditor';
+import Sidebar from '@/pages/MyPage/SideBar';
+import ConfirmModal from '@/components/Modal/ModalTypes/ConfirmModal';
+import useAuth from '@/context/useAuth';
+import useModal from '@/hooks/useModal';
+import JobPosting from '@/pages/MyPage/JobPosting/index';
 
-import MyPageProfile from "./MyPageProfile";
-import MyPageEvents from "./MyPageEvents";
-import { useRecoilState } from "recoil";
-import { Event, upcomingEventsAtom } from "@/atoms/events";
-import { pastEventsAtom } from "@/atoms/events";
-import Calendar from "./Calendar";
+enum PageSection {
+    EVENTS = 'events',
+    JOB_POSTING = 'jobPosting',
+    BLOGS = 'blogs',
+    ACCOUNT = 'account',
+}
 
-export type Registration = {
-  id: string;
-  uid: string;
-  eventDetails: EventDetails;
-  eventId: string;
-  createdAt: Timestamp;
-};
+const PageContainer = styled.div`
+    max-width: 1200px;
+    margin: 0 auto;
+    color: ${themeColors.colors.neutral.white};
+`;
 
-const convertTimestampToDate = (
-  timestamp: Timestamp | { seconds: number; nanoseconds?: number } | null
-): Date => {
-  if (timestamp instanceof Timestamp) {
-    return timestamp.toDate();
-  }
-  if (timestamp && typeof timestamp.seconds === "number") {
-    return new Date(
-      timestamp.seconds * 1000 + (timestamp.nanoseconds || 0) / 1_000_000
-    );
-  }
-  return new Date();
-};
+const ContentLayout = styled.div`
+    display: flex;
+    gap: ${themeColors.spacing.xxl};
 
-const formatEventDate = (date: Date): string => {
-  return date.toLocaleString("en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: true,
-  });
-};
+    @media (max-width: ${themeColors.breakpoints.tablet}) {
+        flex-direction: column;
+        gap: ${themeColors.spacing.md};
+    }
+`;
 
+const LeftColumn = styled.div`
+    flex: 2;
+    max-width: 300px;
+
+    @media (max-width: ${themeColors.breakpoints.tablet}) {
+        max-width: 100%;
+        margin-bottom: ${themeColors.spacing.md};
+    }
+`;
+
+const RightColumn = styled.div`
+    flex: 5;
+    min-height: 600px;
+
+    @media (max-width: ${themeColors.breakpoints.tablet}) {
+        margin-bottom: ${themeColors.spacing.md};
+    }
+`;
+
+const SectionContainer = styled.div<{ showBorder?: boolean }>`
+    border-radius: ${themeColors.cardBorder.md};
+    border: ${(props) => (props.showBorder ? `1px solid ${themeColors.cardBorder.color}` : 'none')};
+    padding: ${(props) => (props.showBorder ? themeColors.spacing.lg : '0')};
+    margin-bottom: ${themeColors.spacing.lg};
+    overflow: hidden;
+    min-height: 500px;
+`;
+
+/**
+ * MyPage Component - Root Page Component
+ * Main component for user's personal page where they can view their events,
+ * manage blogs, and update account details.
+ */
 export default function MyPage() {
-  const { user, loading } = useAuth();
-  const navigate = useNavigate();
-  const [messageApi, contextHolder] = message.useMessage();
+    const [activeSection, setActiveSection] = useState<PageSection>(PageSection.EVENTS);
+    const { isAuthenticated, logout } = useAuth();
+    const { isOpen, openModal, closeModal } = useModal();
+    const [isJobPostingFormActive, setIsJobPostingFormActive] = useState(false);
 
-  const [pastEvents, setPastEvents] = useRecoilState(pastEventsAtom);
-  const [upcomingEvents, setUpcomingEvents] =
-    useRecoilState(upcomingEventsAtom);
-
-  const [fetchStatus, setFetchStatus] = useState({
-    loading: true,
-    error: null as string | null,
-    dataFetched: false,
-  });
-
-  const [isMobileView, setIsMobileView] = useState(false);
-  // If user not logged in, go to login
-  if (!loading && !user) {
-    navigate("/login");
-  }
-
-  useEffect(() => {
-    const handleSizeChange = () => {
-      setIsMobileView(window.innerWidth < 1024);
+    /* render the content based on active section */
+    const renderContent = () => {
+        switch (activeSection) {
+            case PageSection.EVENTS:
+                return <MyEvents />;
+            case PageSection.BLOGS:
+                return <BlogEditor />;
+            case PageSection.JOB_POSTING:
+                return <JobPosting onFormStateChange={setIsJobPostingFormActive} />;
+            case PageSection.ACCOUNT:
+                return <AccountDetails />;
+            default:
+                return <MyEvents />;
+        }
     };
 
-    handleSizeChange();
-
-    window.addEventListener("resize", handleSizeChange);
-
-    // we remove the event listener
-    return () => {
-      window.removeEventListener("resize", handleSizeChange);
+    const handleLogoutClick = () => {
+        if (isAuthenticated) {
+            openModal();
+        }
     };
-  }, []);
 
-  // Fetch events on mount
-  useEffect(() => {
-    const fetchEvents = async () => {
-      if (!user) return;
-      try {
-        const regsQuery = query(
-          collection(db, "registrations"),
-          where("uid", "==", user.uid)
-        );
-        const snapshot = await getDocs(regsQuery);
-        const registrations = snapshot.docs.map((doc) => ({
-          id: doc.id,
-          uid: doc.data().uid,
-          eventDetails: doc.data().eventDetails,
-          eventId: doc.data().eventId,
-          createdAt: doc.data().createdAt,
-        })) as Registration[];
+    const handleConfirmedLogout = () => {
+        closeModal();
 
-        const upcoming: Event[] = [];
-        const past: Event[] = [];
-
-        await Promise.all(
-          registrations.map(async (reg) => {
-            const eventDate = convertTimestampToDate(reg.eventDetails.date);
-
-            const eventDocRef = doc(db, "upcomingEvents", reg.eventId);
-            const eventDocSnap = await getDoc(eventDocRef);
-            const eventData = eventDocSnap.data();
-
-            if (!eventData) return; // we skip if no event data
-            // const eDate = new Date(
-            //   reg.eventDetails.date.seconds * 1000 +
-            //     reg.eventDetails.date.nanoseconds / 1_000_000
-            // );
-
-            const item: Event = {
-              id: reg.eventId || "",
-              title: reg.eventDetails.title,
-              date: formatEventDate(eventDate),
-              imageUrls: eventData?.images || [], 
-              // date: eDate.toDateString(),
-              location: reg.eventDetails.eventLocation,
-              images: eventData?.images || "No img found",
-              docId: reg.id,
-              rawDate: eventDate,
-              formattedDate: formatEventDate(eventDate),
-              registrationId: reg.id, // we store the registration id
-            };
-
-            if (eventDate < new Date()) {
-              past.push(item);
-            } else {
-              upcoming.push(item);
-            }
-          })
-        );
-
-        upcoming.sort(
-          (a, b) =>
-            (a.rawDate as Date).getTime() - (b.rawDate as Date).getTime()
-        );
-        past.sort(
-          (a, b) =>
-            (b.rawDate as Date).getTime() - (a.rawDate as Date).getTime()
-        );
-
-        setUpcomingEvents(upcoming);
-        setPastEvents(past);
-        setFetchStatus({
-          loading: false,
-          error: null,
-          dataFetched: true,
+        setTimeout(async () => {
+            await logout();
         });
-      } catch (err) {
-        console.error("Error fetching events:", err);
-        setFetchStatus({
-          loading: false,
-          error: null,
-          dataFetched: true,
-        });
-      }
     };
-    if (user) {
-      fetchEvents();
-    }
-  }, [user, setUpcomingEvents, setPastEvents]);
 
-  const createdDate = user?.metadata?.creationTime
-    ? new Date(user.metadata.creationTime)
-    : new Date();
+    const autProps = {
+        onLogout: handleLogoutClick,
+    };
 
-  const handleCancelAttendance = async (registrationId: string) => {
-    if (!user || !registrationId) return;
+    const shouldShowBorder = activeSection === PageSection.JOB_POSTING && isJobPostingFormActive;
 
-    try {
-      // First verify the registration exists
-      const registrationRef = doc(db, "registrations", registrationId);
-      const registrationDoc = await getDoc(registrationRef);
-
-      if (!registrationDoc.exists()) {
-        console.error("Registration document not found");
-        messageApi.error("Registration not found");
-        return;
-      }
-
-      // Delete the registration
-      await deleteDoc(registrationRef);
-
-      // then we update local state
-      setUpcomingEvents((prevEvents) => {
-        const updatedEvents = prevEvents.filter(
-          (event) => event.registrationId !== registrationId
-        );
-        // console.log("Updated events:", updatedEvents);
-        return updatedEvents;
-      });
-
-      messageApi.success("Successfully cancelled registration");
-    } catch (error) {
-      console.error("Error cancelling registration:", error);
-      messageApi.error("Failed to cancel registration. Please try again.");
-    }
-  };
-
-  if (loading || !fetchStatus.dataFetched) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-black bg-opacity-50 text-blue-600 text-md">
-        <Spin tip="Wait a little bit" size="large"></Spin>
-      </div>
+        <>
+            <PageContainer>
+                <ContentLayout>
+                    <LeftColumn>
+                        <Sidebar activeSection={activeSection} onSectionChange={setActiveSection} {...autProps} />
+                    </LeftColumn>
+                    <RightColumn>
+                        <SectionContainer showBorder={shouldShowBorder}>{renderContent()}</SectionContainer>
+                    </RightColumn>
+                </ContentLayout>
+            </PageContainer>
+            <ConfirmModal
+                isOpen={isOpen}
+                onClose={closeModal}
+                title={'Confirm Logout'}
+                message={'Are you sure you want to log out?'}
+                onConfirm={handleConfirmedLogout}
+                confirmLabel={'Yes, log out'}
+                cancelLabel={'Cancel'}
+                size="sm"
+            />
+        </>
     );
-  }
-
-  return (
-    <>
-      {contextHolder}
-      <div className="container w-full h-full">
-        <div className="grid grid-cols-1  lg:grid-cols-3 gap-8">
-          {/* // left side of the page */}
-          <div className="lg:col-span-1 space-y-6">
-            <div className="bg-gray-800 rounded-lg p-6">
-              <MyPageProfile
-                user={user}
-                // onLogoutClick={triggerLogoutModal}
-                isMobileView={isMobileView}
-                createdAt={createdDate}
-              />
-            </div>
-
-            <div className="bg-gray-800 rounded-lg p-6">
-              <h2 className="text-xl font-semibold text-white mb-4">
-                Calendar
-              </h2>
-              {/* // here will add the calendar component */}
-              <Calendar
-                upcomingEvents={upcomingEvents}
-                pastEvents={pastEvents}
-              />
-            </div>
-          </div>
-          <div className="lg:col-span-2 space-y-6">
-            <div className="bg-gray-800 rounded-lg p-6">
-              <MyPageEvents
-                upcomingEvents={upcomingEvents}
-                pastEvents={pastEvents}
-                onCancelAttendance={handleCancelAttendance}
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-    </>
-  );
 }

@@ -1,27 +1,34 @@
-import "./App.css";
-import { BrowserRouter } from "react-router-dom";
-import RouterPage from "@/router/index";
-import ErrorBoundary from "@/components/ErrorBoundary";
-import RootLayout from "@/pages/layout";
-import { RecoilRoot } from "recoil";
-import { ModalProvider } from "./components/Modal/ModalProvider";
+import '@/App.css';
+import { BrowserRouter } from 'react-router-dom';
+import RouterPage from '@/router/index';
+import { RecoilRoot } from 'recoil';
+import RootLayout from '@/pages/RootLayout';
+import { GoogleOAuthProvider } from '@react-oauth/google';
+import AuthProvider from '@/context/authProvider';
+import UnderMaintenance from '@/pages/UnderMaintenance';
 
-function App() {
-  return (
-    <>
-      <ModalProvider>
+type AppProps = {
+    isMaintenanceMode?: boolean;
+};
+
+export default function App({ isMaintenanceMode = false }: AppProps) {
+    const MAINTENANCE_MODE = isMaintenanceMode || import.meta.env.VITE_APP_MAINTENANCE_MODE === 'true';
+
+    if (MAINTENANCE_MODE) {
+        return <UnderMaintenance />;
+    }
+
+    return (
         <RecoilRoot>
-          <ErrorBoundary>
             <BrowserRouter>
-              <RootLayout>
-                <RouterPage />
-              </RootLayout>
+                <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
+                    <AuthProvider>
+                        <RootLayout>
+                            <RouterPage />
+                        </RootLayout>
+                    </AuthProvider>
+                </GoogleOAuthProvider>
             </BrowserRouter>
-          </ErrorBoundary>
         </RecoilRoot>
-      </ModalProvider>
-    </>
-  );
+    );
 }
-
-export default App;

@@ -1,192 +1,284 @@
-import * as React from "react";
-import { Slot } from "@radix-ui/react-slot";
-import { cva, VariantProps } from "class-variance-authority";
-import { cn } from "../../lib/utils";
+import React, { ButtonHTMLAttributes } from 'react';
+import styled, { css } from 'styled-components';
+import { Link, LinkProps } from 'react-router-dom';
+import themeColor from '@/tools/themeColors';
 
-import theme from "@/tools/theme";
-import useHover from "@/hooks/theme/useHover";
+type ButtonVariant =
+    | 'primary'
+    | 'secondary'
+    | 'text'
+    | 'light'
+    | 'redText'
+    | 'blueText'
+    | 'outline'
+    | 'navItem'
+    | 'navItemActive'
+    | 'signOut';
 
-export interface ButtonColorConfig {
-  backgroundColor: string;
-  hoverBackgroundColor: string;
-  disabledBackgroundColor: string;
-  defaultTextColor: string;
-  boxShadow?: string;
-  hoverBoxShadow?: string;
-  clickedBoxShadow?: string;
-}
+type BaseButtonProps = {
+    variant?: ButtonVariant;
+    size?: 'sm' | 'md' | 'lg' | 'mini' | 'xs';
+    fullWidth?: boolean;
+    children?: React.ReactNode;
+    disabled?: boolean;
+    htmlType?: ButtonHTMLAttributes<HTMLButtonElement>['type'];
+    active?: boolean;
+    icon?: React.ReactElement;
+} & Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'type'>;
 
-type CustomColor = "blue" | "purple_inset" | "gray" | "white" | "red" | "link";
-type BorderRadius =
-  | "none"
-  | "sm"
-  | "md"
-  | "lg"
-  | "xl"
-  | "two_xl"
-  | "three_xl"
-  | "full";
-
-// CVA factory for “base” stylelarni yaratamiz
-const baseButtonVariants = cva(
-  // basic tailwind classlarni define qilamiz
-  ` inline-flex items-center justify-center gap-2 
-    whitespace-nowrap rounded-md transition-colors 
-    focus-visible:outline-none focus-visible:ring-1 
-    disabled:pointer-events-none disabled:opacity-50
-  `,
-  {
-    variants: {
-      size: {
-        default: theme.variantSizes.default,
-        sm: theme.variantSizes.sm,
-        md: theme.variantSizes.md,
-        lg: theme.variantSizes.lg,
-      },
-      fullWidth: {
-        true: "w-full",
-        false: "w-auto",
-      },
-      radius: {
-        none: theme.radiusSizes.none,
-        sm: theme.radiusSizes.sm,
-        md: theme.radiusSizes.md,
-        lg: theme.radiusSizes.lg,
-        xl: theme.radiusSizes.xl,
-        two_xl: theme.radiusSizes.two_xl,
-        three_xl: theme.radiusSizes.three_xl,
-        full: theme.radiusSizes.full,
-      },
-      defaultVariants: {
-        size: "default",
-        fullWidth: false,
-        radius: "md",
-        variants: "solid",
-      },
-    },
-  }
-);
-
-const buttonColorConfigs: Record<CustomColor, ButtonColorConfig> = {
-  blue: {
-    backgroundColor: theme.blue,
-    hoverBackgroundColor: theme.blue_dark,
-    disabledBackgroundColor: theme.blue_disabled,
-    defaultTextColor: theme.white,
-    boxShadow: theme.shadow,
-    clickedBoxShadow: theme.shadow_clicked,
-  },
-  purple_inset: {
-    backgroundColor: theme.purple,
-    hoverBackgroundColor: theme.purple_dark,
-    disabledBackgroundColor: theme.purple_disabled,
-    defaultTextColor: theme.white,
-    boxShadow: theme.shadow_purple_button_inset,
-  },
-  gray: {
-    backgroundColor: theme.gray_dark,
-    hoverBackgroundColor: theme.gray_dark,
-    disabledBackgroundColor: theme.gray,
-    defaultTextColor: theme.gray,
-    boxShadow: theme.shadow_gray_button_inset,
-  },
-  white: {
-    backgroundColor: theme.white,
-    hoverBackgroundColor: theme.white_dark,
-    disabledBackgroundColor: theme.white,
-    defaultTextColor: theme.purple,
-    boxShadow: theme.shadow,
-    clickedBoxShadow: theme.shadow_clicked,
-  },
-  red: {
-    backgroundColor: theme.red_button,
-    hoverBackgroundColor: theme.red_button,
-    disabledBackgroundColor: theme.red_background,
-    defaultTextColor: theme.red_text,
-  },
-  link: {
-    backgroundColor: "transparent",
-    hoverBackgroundColor: "transparent",
-    disabledBackgroundColor: "transparent",
-    defaultTextColor: theme.blue_text,
-  },
+type LinkButtonProps = {
+    asLink: true;
+    to: LinkProps['to'];
+    replace?: LinkProps['replace'];
+    state?: LinkProps['state'];
 };
 
-// extended props type bilan  HTML props + CVA variant + theme-lens ni merge qilamniz
-export interface AtomicButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
-    VariantProps<typeof baseButtonVariants> {
-  asChild?: boolean;
-  fullWidth?: boolean;
-  color?: CustomColor;
-  textColor?: string;
-  radius?: BorderRadius;
-  disabled?: boolean;
-  varint?: "solid" | "outline" | "red" | "ghost_gray";
-}
+// when we use it with a regular button case
+type RegularButtonProps = {
+    asLink?: false;
+    to?: never;
+    replace?: never;
+    state?: never;
+};
 
-export const Button = React.forwardRef<HTMLButtonElement, AtomicButtonProps>(
-  (
-    {
-      className,
-      size,
-      fullWidth,
-      asChild = false,
-      color = "blue",
-      textColor,
-      // radius = "md",
-      // variant = "solid",
-      disabled,
-      onClick,
-      ...props
-    },
-    ref
-  ) => {
-    const Comp = asChild ? Slot : "button";
+// discriminated union
+type ButtonProps = BaseButtonProps & (LinkButtonProps | RegularButtonProps);
 
-    // useHover hook use
-    const [hoverProps, isHover, isClicked] = useHover();
+const StyledButton = styled('button')<{
+    variant: ButtonVariant;
+    size: 'sm' | 'md' | 'lg' | 'mini' | 'xs';
+    fullWidth?: boolean;
+    disabled?: boolean;
+    as?: typeof Link;
+}>`
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+    transition:
+        background-color 150ms,
+        opacity 150ms;
+    width: ${(props) => (props.fullWidth ? '100%' : 'auto')};
+    text-transform: uppercase;
+    text-decoration: none;
+    box-sizing: border-box;
 
-    // style object orqali themeni ishlatish:
-    const getStyleFromTheme = React.useMemo(() => {
-      const colorConfig = buttonColorConfigs[color];
-      const isDisabled = Boolean(disabled);
+    ${(props) =>
+        props.disabled &&
+        css`
+            cursor: not-allowed;
+            opacity: 0.6;
+            pointer-events: none;
+        `}
 
-      return {
-        backgroundColor: isDisabled
-          ? colorConfig.disabledBackgroundColor
-          : isHover
-          ? colorConfig.hoverBackgroundColor
-          : colorConfig.backgroundColor,
-        color: textColor || colorConfig.defaultTextColor,
-        boxShadow:
-          isClicked && !isDisabled && colorConfig.clickedBoxShadow
-            ? colorConfig.clickedBoxShadow
-            : colorConfig.boxShadow || "none",
-        fontWeight: color === "gray" && isHover ? 500 : undefined,
-      };
-    }, [color, disabled, isHover, isClicked, textColor]);
+    ${(props) => {
+        switch (props.size) {
+            case 'sm':
+                return css`
+                    height: 36px;
+                    padding: 0 16px;
+                    font-size: ${themeColor.typography.body.small.fontSize || 14}px;
+                `;
+            case 'lg':
+                return css`
+                    height: 52px;
+                    padding: 0 24px;
+                    font-size: ${themeColor.typography.body.large.fontSize || 16}px;
+                `;
+            case 'mini':
+                return css`
+                    height: 32px;
+                    padding: 7px 20px;
+                    font-size: ${themeColor.typography.body.xsmall.fontSize || 14}px;
+                `;
+            case 'xs':
+                return css`
+                    height: 36px;
+                    padding: 4px 18px;
+                    font-size: ${themeColor.typography.body.xsmall.fontSize || 14}px;
+                `;
+            default: // 'md'
+                return css`
+                    height: 44px;
+                    padding: 0 16px;
+                    font-size: ${themeColor.typography.body.medium.fontSize || 14}px;
+                `;
+        }
+    }}
 
-    // CVA va boshqa classlarni qo'shamiz
-    const classes = cn(baseButtonVariants({ size, className, fullWidth }));
+  ${(props) => {
+        switch (props.variant) {
+            case 'secondary':
+                return css`
+                    background-color: ${themeColor.colors.gray.main};
+                    color: ${themeColor.colors.neutral.white};
 
+                    &:hover:not(:disabled) {
+                        background-color: ${themeColor.colors.gray.dark};
+                    }
+                `;
+            case 'text':
+                return css`
+                    background-color: ${themeColor.colors.ui.transparent};
+                    color: ${themeColor.colors.neutral.white || 'white'};
+                    &:hover:not(:disabled) {
+                        background-color: ${themeColor.colors.ui.overlay.whiteHover};
+                    }
+                `;
+            case 'light': // for login
+                return css`
+                    background-color: ${themeColor.colors.neutral.white};
+                    color: ${themeColor.colors.neutral.black};
+
+                    &:hover:not(:disabled) {
+                        background-color: ${themeColor.colors.gray.main};
+                    }
+                `;
+            case 'outline':
+                return css`
+                    background-color: ${themeColor.colors.ui.transparent};
+                    color: ${themeColor.colors.neutral.white};
+                    border: 1px solid ${themeColor.cardBorder.color};
+                    border-radius: ${themeColor.radiusSizes.two_xl};
+
+                    &:hover:not(:disabled) {
+                        background-color: ${themeColor.colors.neutral.white};
+                        color: ${themeColor.colors.neutral.black};
+                        border: 1px solid ${themeColor.cardBorder.color};
+                        border-radius: ${themeColor.radiusSizes.two_xl};
+                    }
+                `;
+            case 'redText':
+                return css`
+                    background-color: ${themeColor.colors.ui.transparent};
+                    color: ${themeColor.colors.status.error.action};
+                    &:hover:not(:disabled) {
+                        background-color: ${themeColor.colors.ui.overlay.redHover};
+                    }
+                `;
+            case 'blueText':
+                return css`
+                    background-color: ${themeColor.colors.ui.transparent};
+                    color: ${themeColor.colors.status.info.action};
+                    &:hover:not(:disabled) {
+                        background-color: ${themeColor.colors.ui.overlay.blueHover};
+                    }
+                `;
+            case 'navItem':
+                return css`
+                    background-color: ${themeColor.colors.ui.transparent};
+                    color: ${themeColor.colors.neutral.white};
+                    text-transform: none;
+                    justify-content: flex-start;
+                    border: none;
+                    border-radius: 8px;
+
+                    &:hover:not(:disabled) {
+                        background-color: ${themeColor.colors.gray.light};
+                    }
+
+                    svg {
+                        color: ${themeColor.colors.neutral.white};
+                        margin-right: ${themeColor.spacing.md};
+                    }
+
+                    &:hover:not(:disabled) svg {
+                        color: ${themeColor.colors.ui.navItem.activeBg};
+                    }
+                `;
+            case 'navItemActive':
+                return css`
+                    background-color: ${themeColor.colors.ui.navItem.hoverBg};
+                    color: ${themeColor.colors.neutral.white};
+                    text-transform: none;
+                    justify-content: flex-start;
+                    border: none;
+                    border-radius: 8px;
+
+                    svg {
+                        color: ${themeColor.colors.neutral.white};
+                        margin-right: ${themeColor.spacing.md};
+                    }
+                `;
+            case 'signOut':
+                return css`
+                    background-color: ${themeColor.colors.ui.signOut.bg};
+                    color: ${themeColor.colors.neutral.white};
+                    text-transform: none;
+                    justify-content: flex-start;
+                    border: none;
+                    border-radius: 8px;
+
+                    &:hover:not(:disabled) {
+                        background-color: ${themeColor.colors.ui.signOut.hoverBg};
+                    }
+
+                    svg {
+                        color: ${themeColor.colors.status.error.text};
+                        margin-right: ${themeColor.spacing.md};
+                    }
+                `;
+            default:
+                return css`
+                    background-color: ${themeColor.colors.primary.main};
+                    color: ${themeColor.colors.neutral.white};
+
+                    &:hover:not(:disabled) {
+                        background-color: ${themeColor.colors.primary.dark};
+                    }
+                `;
+        }
+    }}
+`;
+
+/**
+ * Button component - Atom Component
+ * @param variant - Visual style variant ("primary" | "secondary" | "text" | "light")
+ * @param size - Button size ("sm" | "md" | "lg" | "mini")
+ * @param fullWidth - Whether button should expand to fill container width
+ * @param children - Button content/label
+ * @param asLink - Whether to render as a React Router Link
+ * @param to - Target path when used as a Link (required if asLink=true)
+ * @param replace - Whether to replace current history entry when used as Link
+ * @param state - State to pass to the new location
+ * @param htmlType - HTML button type attribute ("button" | "submit" | "reset")
+ * @param disabled - Whether the button is disabled
+ * @param rest - Additional HTML button or Link props
+ * @returns A button or Link element with specified styles.
+ */
+export default function Button({
+    variant = 'primary',
+    size = 'md',
+    fullWidth = false,
+    children,
+    asLink = false,
+    to,
+    replace,
+    state,
+    htmlType = 'button',
+    disabled,
+    ...rest
+}: ButtonProps) {
+    const commonStyledProps = {
+        variant,
+        size,
+        fullWidth,
+        disabled,
+    };
+
+    if (asLink) {
+        return (
+            <StyledButton as={Link} {...commonStyledProps} {...{ to, replace, state }} {...rest}>
+                {children}
+            </StyledButton>
+        );
+    }
     return (
-      <Comp
-        ref={ref}
-        className={classes}
-        onClick={disabled ? undefined : onClick}
-        style={{
-          transitionDuration: theme.duration,
-          textAlign: "center",
-          cursor: disabled ? "not-allowed" : "pointer",
-          ...getStyleFromTheme,
-        }}
-        disabled={disabled}
-        {...hoverProps}
-        {...props}
-      />
+        <StyledButton as="button" type={htmlType} {...commonStyledProps} {...rest}>
+            {children}
+        </StyledButton>
     );
-  }
-);
-
-Button.displayName = "MainButton";
+}

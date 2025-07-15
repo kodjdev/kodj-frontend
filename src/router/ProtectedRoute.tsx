@@ -1,22 +1,25 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { Navigate } from "react-router-dom";
-import React from "react";
-import { useAuth } from "../context/useAuth";
+import { Navigate } from 'react-router-dom';
+import React from 'react';
+import useAuth from '@/context/useAuth';
 
-interface ProtectedRouteProps {
-  children: React.ReactElement;
-}
-
-const PrivateWrapper: React.FC<ProtectedRouteProps> = ({ children }) => {
-  const { user } = useAuth();
-
-  if (!user) {
-    return <Navigate to="/login" replace />;
-  }
-
-  return children;
+type ProtectedRouteProps = {
+    children: React.ReactElement;
 };
 
-export default PrivateWrapper;
+/**
+ * ProtectedRoute - A component that protects routes based on authentication status.
+ * @param {ProtectedRouteProps} props - The props for the ProtectedRoute component.
+ * @returns {React.ReactElement} - The protected route or a redirect to the login page.
+ */
+export default function ProtectedRoute({ children }: ProtectedRouteProps) {
+    const { isAuthenticated } = useAuth();
+
+    if (!isAuthenticated) {
+        return <Navigate to="/login" replace state={{ from: location.pathname }} />;
+    }
+
+    return children;
+}
