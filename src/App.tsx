@@ -5,8 +5,19 @@ import { RecoilRoot } from 'recoil';
 import RootLayout from '@/pages/RootLayout';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import AuthProvider from '@/context/authProvider';
+import UnderMaintenance from './pages/UnderMaintenance';
 
-export default function App() {
+type AppProps = {
+    isMaintenanceMode?: boolean;
+};
+
+export default function App({ isMaintenanceMode = false }: AppProps) {
+    const MAINTENANCE_MODE = isMaintenanceMode || import.meta.env.VITE_APP_MAINTENANCE_MODE === 'true';
+
+    if (MAINTENANCE_MODE) {
+        return <UnderMaintenance />;
+    }
+
     return (
         <RecoilRoot>
             <BrowserRouter>
