@@ -241,7 +241,7 @@ export default function UnderMaintenance() {
 
                     <ContactInfo>
                         <ContactText>
-                            Savollar uchun / For questions: <a href="mailto:info@kodj.dev">teamkodj@gmail.com</a>
+                            Savollar uchun / For questions: <a href="mailto:teamkodj@gmail.com">teamkodj@gmail.com</a>
                         </ContactText>
                     </ContactInfo>
                 </ContentWrapper>
