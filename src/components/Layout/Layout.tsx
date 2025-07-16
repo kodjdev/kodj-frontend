@@ -78,13 +78,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         handleScroll();
 
         window.addEventListener('scroll', handleScroll, { passive: true, capture: true });
-        document.addEventListener('scroll', handleScroll, { passive: true, capture: true });
-        document.body.addEventListener('scroll', handleScroll, { passive: true, capture: true });
 
         return () => {
             window.removeEventListener('scroll', handleScroll, true);
-            document.removeEventListener('scroll', handleScroll, true);
-            document.body.removeEventListener('scroll', handleScroll, true);
         };
     }, []);
 
