@@ -33,17 +33,6 @@ body {
     overflow-y: scroll;
 }
 
-/* 
-html,
-body {
-    font-family: 'Fira Code', monospace;
-    font-weight: 300;
-    font-style: normal;
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    overflow-x: hidden;
-} */
 
 .container {
     max-width: 100%;
