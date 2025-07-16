@@ -190,6 +190,7 @@ export default function OtpVerification({
                             onKeyDown={(e) => handleKeyDown(index, e)}
                             onPaste={handlePaste}
                             placeholder=""
+                            aria-label={`OTP digit ${index + 1}`}
                         />
                     ))}
                 </OtpInputContainer>

@@ -1,7 +1,7 @@
 import React, { ButtonHTMLAttributes } from 'react';
 import styled, { css } from 'styled-components';
 import { Link, LinkProps } from 'react-router-dom';
-import themeColor from '@/tools/themeColors';
+import themeColors from '@/tools/themeColors';
 
 type ButtonVariant =
     | 'primary'
@@ -73,12 +73,12 @@ const StyledButton = styled('button')<{
         css`
             cursor: not-allowed;
             opacity: 0.5;
-            background-color: ${themeColor.colors.gray.main} !important;
-            color: ${themeColor.colors.neutral.white} !important;
+            background-color: ${themeColors.colors.gray.main} !important;
+            color: ${themeColors.colors.neutral.white} !important;
             pointer-events: none;
 
             &:hover {
-                background-color: ${themeColor.colors.gray.main} !important;
+                background-color: ${themeColors.colors.gray.main} !important;
                 transform: none !important;
             }
         `}
@@ -89,31 +89,31 @@ const StyledButton = styled('button')<{
                 return css`
                     height: 36px;
                     padding: 0 16px;
-                    font-size: ${themeColor.typography.body.small.fontSize || 14}px;
+                    font-size: ${themeColors.typography.body.small.fontSize || 14}px;
                 `;
             case 'lg':
                 return css`
                     height: 52px;
                     padding: 0 24px;
-                    font-size: ${themeColor.typography.body.large.fontSize || 16}px;
+                    font-size: ${themeColors.typography.body.large.fontSize || 16}px;
                 `;
             case 'mini':
                 return css`
                     height: 32px;
                     padding: 7px 20px;
-                    font-size: ${themeColor.typography.body.xsmall.fontSize || 14}px;
+                    font-size: ${themeColors.typography.body.xsmall.fontSize || 14}px;
                 `;
             case 'xs':
                 return css`
                     height: 36px;
                     padding: 4px 18px;
-                    font-size: ${themeColor.typography.body.xsmall.fontSize || 14}px;
+                    font-size: ${themeColors.typography.body.xsmall.fontSize || 14}px;
                 `;
             default: // 'md'
                 return css`
                     height: 44px;
                     padding: 0 16px;
-                    font-size: ${themeColor.typography.body.medium.fontSize || 14}px;
+                    font-size: ${themeColors.typography.body.medium.fontSize || 14}px;
                 `;
         }
     }}
@@ -122,121 +122,121 @@ const StyledButton = styled('button')<{
         switch (props.variant) {
             case 'secondary':
                 return css`
-                    background-color: ${themeColor.colors.gray.main};
-                    color: ${themeColor.colors.neutral.white};
+                    background-color: ${themeColors.colors.gray.main};
+                    color: ${themeColors.colors.neutral.white};
 
                     &:hover:not(:disabled) {
-                        background-color: ${themeColor.colors.gray.dark};
+                        background-color: ${themeColors.colors.gray.dark};
                     }
                 `;
             case 'text':
                 return css`
-                    background-color: ${themeColor.colors.ui.transparent};
-                    color: ${themeColor.colors.neutral.white || 'white'};
+                    background-color: ${themeColors.colors.ui.transparent};
+                    color: ${themeColors.colors.neutral.white || 'white'};
                     &:hover:not(:disabled) {
-                        background-color: ${themeColor.colors.ui.overlay.whiteHover};
+                        background-color: ${themeColors.colors.ui.overlay.whiteHover};
                     }
                 `;
             case 'light': // for login
                 return css`
-                    background-color: ${themeColor.colors.neutral.white};
-                    color: ${themeColor.colors.neutral.black};
+                    background-color: ${themeColors.colors.neutral.white};
+                    color: ${themeColors.colors.neutral.black};
 
                     &:hover:not(:disabled) {
-                        background-color: ${themeColor.colors.gray.main};
+                        background-color: ${themeColors.colors.gray.main};
                     }
                 `;
             case 'outline':
                 return css`
-                    background-color: ${themeColor.colors.ui.transparent};
-                    color: ${themeColor.colors.neutral.white};
-                    border: 1px solid ${themeColor.cardBorder.color};
-                    border-radius: ${themeColor.radiusSizes.two_xl};
+                    background-color: ${themeColors.colors.ui.transparent};
+                    color: ${themeColors.colors.neutral.white};
+                    border: 1px solid ${themeColors.cardBorder.color};
+                    border-radius: ${themeColors.radiusSizes.two_xl};
 
                     &:hover:not(:disabled) {
-                        background-color: ${themeColor.colors.neutral.white};
-                        color: ${themeColor.colors.neutral.black};
-                        border: 1px solid ${themeColor.cardBorder.color};
-                        border-radius: ${themeColor.radiusSizes.two_xl};
+                        background-color: ${themeColors.colors.neutral.white};
+                        color: ${themeColors.colors.neutral.black};
+                        border: 1px solid ${themeColors.cardBorder.color};
+                        border-radius: ${themeColors.radiusSizes.two_xl};
                     }
                 `;
             case 'redText':
                 return css`
-                    background-color: ${themeColor.colors.ui.transparent};
-                    color: ${themeColor.colors.status.error.action};
+                    background-color: ${themeColors.colors.ui.transparent};
+                    color: ${themeColors.colors.status.error.action};
                     &:hover:not(:disabled) {
-                        background-color: ${themeColor.colors.ui.overlay.redHover};
+                        background-color: ${themeColors.colors.ui.overlay.redHover};
                     }
                 `;
             case 'blueText':
                 return css`
-                    background-color: ${themeColor.colors.ui.transparent};
-                    color: ${themeColor.colors.status.info.action};
+                    background-color: ${themeColors.colors.ui.transparent};
+                    color: ${themeColors.colors.status.info.action};
                     &:hover:not(:disabled) {
-                        background-color: ${themeColor.colors.ui.overlay.blueHover};
+                        background-color: ${themeColors.colors.ui.overlay.blueHover};
                     }
                 `;
             case 'navItem':
                 return css`
-                    background-color: ${themeColor.colors.ui.transparent};
-                    color: ${themeColor.colors.neutral.white};
+                    background-color: ${themeColors.colors.ui.transparent};
+                    color: ${themeColors.colors.neutral.white};
                     text-transform: none;
                     justify-content: flex-start;
                     border: none;
                     border-radius: 8px;
 
                     &:hover:not(:disabled) {
-                        background-color: ${themeColor.colors.gray.light};
+                        background-color: ${themeColors.colors.gray.light};
                     }
 
                     svg {
-                        color: ${themeColor.colors.neutral.white};
-                        margin-right: ${themeColor.spacing.md};
+                        color: ${themeColors.colors.neutral.white};
+                        margin-right: ${themeColors.spacing.md};
                     }
 
                     &:hover:not(:disabled) svg {
-                        color: ${themeColor.colors.ui.navItem.activeBg};
+                        color: ${themeColors.colors.ui.navItem.activeBg};
                     }
                 `;
             case 'navItemActive':
                 return css`
-                    background-color: ${themeColor.colors.ui.navItem.hoverBg};
-                    color: ${themeColor.colors.neutral.white};
+                    background-color: ${themeColors.colors.ui.navItem.hoverBg};
+                    color: ${themeColors.colors.neutral.white};
                     text-transform: none;
                     justify-content: flex-start;
                     border: none;
                     border-radius: 8px;
 
                     svg {
-                        color: ${themeColor.colors.neutral.white};
-                        margin-right: ${themeColor.spacing.md};
+                        color: ${themeColors.colors.neutral.white};
+                        margin-right: ${themeColors.spacing.md};
                     }
                 `;
             case 'signOut':
                 return css`
-                    background-color: ${themeColor.colors.ui.signOut.bg};
-                    color: ${themeColor.colors.neutral.white};
+                    background-color: ${themeColors.colors.ui.signOut.bg};
+                    color: ${themeColors.colors.neutral.white};
                     text-transform: none;
                     justify-content: flex-start;
                     border: none;
                     border-radius: 8px;
 
                     &:hover:not(:disabled) {
-                        background-color: ${themeColor.colors.ui.signOut.hoverBg};
+                        background-color: ${themeColors.colors.ui.signOut.hoverBg};
                     }
 
                     svg {
-                        color: ${themeColor.colors.status.error.text};
-                        margin-right: ${themeColor.spacing.md};
+                        color: ${themeColors.colors.status.error.text};
+                        margin-right: ${themeColors.spacing.md};
                     }
                 `;
             default:
                 return css`
-                    background-color: ${themeColor.colors.primary.main};
-                    color: ${themeColor.colors.neutral.white};
+                    background-color: ${themeColors.colors.primary.main};
+                    color: ${themeColors.colors.neutral.white};
 
                     &:hover:not(:disabled) {
-                        background-color: ${themeColor.colors.primary.dark};
+                        background-color: ${themeColors.colors.primary.dark};
                     }
                 `;
         }
