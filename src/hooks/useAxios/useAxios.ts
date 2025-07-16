@@ -14,6 +14,7 @@ type AxiosOptions<T> = {
     onSuccess?: (response: ApiResponse<T>) => void;
     onError?: (error: Error | unknown) => void;
     withCredentials?: boolean;
+    skipGlobalErrorHandler?: boolean;
 };
 
 const apiUrl = import.meta.env.VITE_API_BASE_URL;
@@ -34,7 +35,12 @@ export default function useAxios() {
         axiosInstance.interceptors.response.use(
             (response) => response,
             (error) => {
-                if (error.response?.status === 401) {
+                /* here we only handle 401 for authentication endpoints, not all 401s */
+                if (
+                    error.response?.status === 401 &&
+                    !error.config?.url?.includes('verify-login-otp') &&
+                    !error.config?.url?.includes('login')
+                ) {
                     localStorage.removeItem('access_token');
                     localStorage.removeItem('refresh_token');
                     navigate('/login');
@@ -56,7 +62,8 @@ export default function useAxios() {
             onSuccess,
             onError,
             withCredentials = true,
-        }: AxiosOptions<T>): Promise<ApiResponse<T>> => {
+            skipGlobalErrorHandler = false,
+        }: AxiosOptions<T> & { skipGlobalErrorHandler?: boolean }): Promise<ApiResponse<T>> => {
             const url = endpoint;
             console.log(`useAxios: Making ${method} request to ${url}`);
 
@@ -75,7 +82,7 @@ export default function useAxios() {
                             credential: data.credential,
                         };
                     } else {
-                        // for normal use we do proper json stringification
+                        /* for normal use we do proper json stringification */
                         config.data = data;
                     }
                 }
@@ -83,7 +90,7 @@ export default function useAxios() {
                 const response: AxiosResponse = await axiosInstance(config);
                 console.log(`useAxios: Received response with status ${response.status}`);
 
-                // format the response to match expected API response structure
+                /* format the response to match expected API response structure */
                 const apiResponse: ApiResponse<T> = {
                     data: response.data,
                     statusCode: response.status,
@@ -108,7 +115,7 @@ export default function useAxios() {
 
                 if (onError) {
                     onError(error);
-                } else {
+                } else if (!skipGlobalErrorHandler) {
                     setError({
                         title: 'API Error',
                         message: `Request to ${endpoint} failed: ${errorMessage}`,
