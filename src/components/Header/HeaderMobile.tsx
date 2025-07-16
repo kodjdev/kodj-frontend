@@ -6,7 +6,7 @@ import Button from '@/components/Button/Button';
 import { HeaderProps } from '@/types';
 import kodjLogo from '@/static/icons/kodj_new.jpg';
 import useAuth from '@/context/useAuth';
-import avatar from '@/static/icons/avatar.svg';
+import { User2 } from 'lucide-react';
 
 type MobileMenuProps = {
     isOpen: boolean;
@@ -62,12 +62,23 @@ const HamburgerButton = styled.button`
     z-index: 1002;
 `;
 
-const MobileMenu = styled.div<MobileMenuProps>`
+const MobileMenuOverlay = styled.div<MobileMenuProps>`
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: ${({ isOpen }) => (isOpen ? 'block' : 'none')};
+    z-index: 999;
+`;
+
+const MobileMenu = styled.div<MobileMenuProps>`
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 90%;
+    height: 48vh;
     background-color: ${themeColors.colors.neutral.black};
     display: flex;
     flex-direction: column;
@@ -75,6 +86,8 @@ const MobileMenu = styled.div<MobileMenuProps>`
     transform: ${({ isOpen }) => (isOpen ? 'translateX(0)' : 'translateX(100%)')};
     transition: transform 0.3s ease-in-out;
     z-index: 1000;
+    border-bottom: 0.5px solid ${themeColors.cardBorder.color};
+    box-shadow: -2px 0 10px rgba(0, 0, 0, 0.3);
 `;
 
 const MobileNavigation = styled.nav`
@@ -82,70 +95,133 @@ const MobileNavigation = styled.nav`
     flex-direction: column;
     gap: 20px;
     margin-bottom: 40px;
+    flex-shrink: 0;
 `;
 
 const MobileNavLink = styled(RouterNavLink)`
     color: ${themeColors.colors.neutral.white};
     text-decoration: none;
-    font-size: 20px;
-    padding: 10px 0;
+    font-size: 18px;
+    padding: 12px 0;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 
     &.active {
         color: ${themeColors.colors.primary.main};
         font-weight: bold;
     }
+
+    &:hover {
+        color: ${themeColors.colors.primary.main};
+        transition: color 0.2s ease;
+    }
 `;
 
-const MobileAuthButtons = styled.div`
+const BottomSection = styled.div`
+    margin-top: 0;
+    margin-bottom: 0;
+    padding-bottom: 0;
     display: flex;
-    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-end;
     gap: 16px;
-    margin-top: auto;
 `;
 
 const LanguageSection = styled.div`
-    margin-bottom: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    flex-shrink: 0;
 `;
 
 const LanguageTitle = styled.p`
     color: ${themeColors.colors.gray.main};
     font-size: 14px;
-    margin-bottom: 12px;
+    margin: 0;
 `;
 
-const LanguageOptions = styled.div`
-    display: flex;
-    gap: 12px;
-    flex-wrap: wrap;
+const LanguageToggle = styled.div`
+    position: relative;
+    width: fit-content;
 `;
 
-const LanguageButton = styled.button<{ isActive: boolean }>`
-    background: ${({ isActive }) => (isActive ? themeColors.colors.primary.main : 'transparent')};
-    border: 1px solid ${({ isActive }) => (isActive ? themeColors.colors.primary.main : themeColors.colors.gray.line)};
-    border-radius: 4px;
-    color: ${({ isActive }) => (isActive ? themeColors.colors.neutral.white : themeColors.colors.neutral.white)};
-    font-size: 16px;
+const LanguageButton = styled.button`
+    background: transparent;
+    border: 1px solid ${themeColors.colors.primary.main};
+    border-radius: 50px;
+    color: ${themeColors.colors.neutral.white};
+    font-size: 14px;
     padding: 8px 16px;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-width: 100px;
     transition: all 0.2s ease;
 
     &:hover {
-        background-color: ${({ isActive }) =>
-            isActive ? themeColors.colors.primary.main : 'rgba(255, 255, 255, 0.1)'};
-    }
-    @media (max-width: ${themeColors.breakpoints.mobile}) {
-        padding-left: 12px;
-        padding-right: 12px;
+        background-color: rgba(255, 255, 255, 0.1);
     }
 `;
 
+const LanguageDropdown = styled.div<{ isOpen: boolean }>`
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    width: 100%;
+    display: ${({ isOpen }) => (isOpen ? 'block' : 'none')};
+    background-color: ${themeColors.colors.neutral.black};
+    border: 1px solid ${themeColors.colors.primary.main};
+    border-radius: 15px;
+    overflow: hidden;
+    z-index: 1001;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+`;
+
+const LanguageOption = styled.button<{ isActive: boolean }>`
+    width: 100%;
+    background: transparent;
+    border: none;
+    color: ${({ isActive }) => (isActive ? themeColors.colors.primary.main : themeColors.colors.neutral.white)};
+    font-size: 14px;
+    padding: 12px 16px;
+    cursor: pointer;
+    text-align: center;
+    font-weight: ${({ isActive }) => (isActive ? 'bold' : 'normal')};
+    transition: background-color 0.2s ease;
+
+    &:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    &:not(:last-child) {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+`;
+
+const AuthSection = styled.div`
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    flex-shrink: 0;
+`;
+
 const UserAvatar = styled.div`
-    width: 30px;
-    height: 30px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
     overflow: hidden;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: ${themeColors.colors.gray.main};
+    border: 2px solid ${themeColors.colors.primary.main};
+    transition: transform 0.2s ease;
+
+    &:hover {
+        transform: scale(1.05);
+    }
 
     img {
         width: 100%;
@@ -154,18 +230,37 @@ const UserAvatar = styled.div`
     }
 `;
 
+const StyledLoginButton = styled(Button)`
+    width: 100%;
+    max-width: 120px;
+`;
+
 /**
  * Mobile Header component
  * @param handleLangChange - Callback function to handle language changes
  * @param currentLang - Current active language code
  */
-export default function HeaderMobile({ handleLangChange, currentLang, isAuthenticated }: HeaderProps) {
+export default function HeaderMobile({
+    handleLangChange,
+    currentLang,
+    isAuthenticated,
+    langMenuRef,
+    langMenuOpen,
+    toggleLangMenu,
+}: HeaderProps) {
     const { user } = useAuth();
-
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     const toggleMenu = () => {
         setIsMenuOpen(!isMenuOpen);
+    };
+
+    const closeMenu = () => {
+        setIsMenuOpen(false);
+    };
+
+    const handleLanguageSelect = (lang: string) => {
+        handleLangChange(lang);
     };
 
     return (
@@ -179,55 +274,67 @@ export default function HeaderMobile({ handleLangChange, currentLang, isAuthenti
 
                 <HamburgerButton onClick={toggleMenu}>{isMenuOpen ? '✕' : '☰'}</HamburgerButton>
 
+                <MobileMenuOverlay isOpen={isMenuOpen} onClick={closeMenu} />
+
                 <MobileMenu isOpen={isMenuOpen}>
                     <MobileNavigation>
-                        <MobileNavLink to="/about" onClick={() => setIsMenuOpen(false)}>
+                        <MobileNavLink to="/about" onClick={closeMenu}>
                             About Us
                         </MobileNavLink>
-                        <MobileNavLink to="/news" onClick={() => setIsMenuOpen(false)}>
+                        <MobileNavLink to="/news" onClick={closeMenu}>
                             News
                         </MobileNavLink>
-                        <MobileNavLink to="/events" onClick={() => setIsMenuOpen(false)}>
+                        <MobileNavLink to="/events" onClick={closeMenu}>
                             Events
                         </MobileNavLink>
                     </MobileNavigation>
 
-                    <LanguageSection>
-                        <LanguageTitle>lang</LanguageTitle>
-                        <LanguageOptions>
-                            <LanguageButton isActive={currentLang === 'en'} onClick={() => handleLangChange('en')}>
-                                eng
-                            </LanguageButton>
-                            <LanguageButton isActive={currentLang === 'uz'} onClick={() => handleLangChange('uz')}>
-                                uz
-                            </LanguageButton>
-                        </LanguageOptions>
-                    </LanguageSection>
+                    <BottomSection>
+                        <LanguageSection>
+                            <LanguageTitle>Language</LanguageTitle>
+                            <LanguageToggle ref={langMenuRef}>
+                                <LanguageButton onClick={toggleLangMenu}>
+                                    {currentLang === 'en' ? 'English' : 'Uzbek'}
+                                </LanguageButton>
 
-                    <MobileAuthButtons>
-                        {isAuthenticated ? (
-                            <Link to={'/mypage'}>
-                                <UserAvatar>
-                                    {user?.data.imageUrl ? (
-                                        <img src={user?.data.imageUrl} alt="User Avatar" />
-                                    ) : (
-                                        <img src={avatar} alt="User Avatar" />
-                                    )}
-                                </UserAvatar>
-                            </Link>
-                        ) : (
-                            <Button
-                                asLink
-                                to="/login"
-                                variant="light"
-                                size="md"
-                                onClick={() => setIsMenuOpen(false)}
-                                style={{ width: '100%' }}
-                            >
-                                Login
-                            </Button>
-                        )}
-                    </MobileAuthButtons>
+                                <LanguageDropdown isOpen={langMenuOpen}>
+                                    <LanguageOption
+                                        isActive={currentLang === 'en'}
+                                        onClick={() => handleLanguageSelect('en')}
+                                    >
+                                        English
+                                    </LanguageOption>
+                                    <LanguageOption
+                                        isActive={currentLang === 'uz'}
+                                        onClick={() => handleLanguageSelect('uz')}
+                                    >
+                                        Uzbek
+                                    </LanguageOption>
+                                </LanguageDropdown>
+                            </LanguageToggle>
+                        </LanguageSection>
+
+                        <AuthSection>
+                            {isAuthenticated ? (
+                                <Link to={'/mypage'} onClick={closeMenu} style={{ textDecoration: 'none' }}>
+                                    <UserAvatar>
+                                        {user?.data.imageUrl ? (
+                                            <img
+                                                src={user?.data.imageUrl}
+                                                alt={`${user.data.firstName || 'User'}'s Avatar`}
+                                            />
+                                        ) : (
+                                            <User2 size={28} color={themeColors.colors.neutral.white} />
+                                        )}
+                                    </UserAvatar>
+                                </Link>
+                            ) : (
+                                <StyledLoginButton asLink to="/login" variant="light" size="sm" onClick={closeMenu}>
+                                    Login
+                                </StyledLoginButton>
+                            )}
+                        </AuthSection>
+                    </BottomSection>
                 </MobileMenu>
             </HeaderInnerContainer>
         </HeaderOuterContainer>
