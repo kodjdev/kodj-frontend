@@ -52,6 +52,16 @@ export const useFormValidation = () => {
                 return { isValid: false, error: 'Email cannot contain consecutive dots' };
             }
 
+            const domainParts = domain.split('.');
+            if (domainParts.length < 2 || domainParts[domainParts.length - 1].length < 2) {
+                return { isValid: false, error: 'Please enter a valid email domain' };
+            }
+
+            const invalidDomains = ['gmsdff.com', 'test.com', 'example.com', 'temp.com'];
+            if (invalidDomains.includes(domain.toLowerCase())) {
+                return { isValid: false, error: 'Please enter a valid email address' };
+            }
+
             return { isValid: true, error: '' };
         },
         [],
@@ -143,22 +153,57 @@ export const useFormValidation = () => {
         return { isValid: true, error: '' };
     }, []);
 
+    const validateOtp = useCallback((otp: string): ValidationResult => {
+        return !otp
+            ? { isValid: false, error: 'OTP is required' }
+            : !/^\d*$/.test(otp)
+              ? { isValid: false, error: 'OTP must contain only numbers' }
+              : otp.length < 5
+                ? { isValid: false, error: `OTP must be 5 digits (${otp.length}/5)` }
+                : otp.length > 5
+                  ? { isValid: false, error: 'OTP cannot be more than 5 digits' }
+                  : { isValid: true, error: '' };
+    }, []);
+
+    const validateUsername = useCallback((username: string): ValidationResult => {
+        if (!username.trim()) {
+            return { isValid: false, error: 'Username is required' };
+        }
+
+        if (username.length < 3) {
+            return { isValid: false, error: 'Username must be at least 3 characters' };
+        }
+
+        if (username.length > 20) {
+            return { isValid: false, error: 'Username must be less than 20 characters' };
+        }
+
+        if (!/^[a-zA-Z\s]+$/.test(username)) {
+            return { isValid: false, error: 'Username can only contain letters and spaces' };
+        }
+
+        return { isValid: true, error: '' };
+    }, []);
+
     return {
         validateEmail,
         validatePassword,
         validatePhone,
         validateMatch,
+        validateOtp,
+        validateUsername,
     };
 };
 
 export const useFieldValidation = (
-    validationType: 'email' | 'password' | 'phone' | 'match',
+    validationType: 'email' | 'password' | 'phone' | 'match' | 'otp' | 'username',
     rules?: ValidationRules,
 ) => {
     const [value, setValue] = useState('');
     const [error, setError] = useState('');
     const [touched, setTouched] = useState(false);
-    const { validateEmail, validatePassword, validatePhone, validateMatch } = useFormValidation();
+    const { validateEmail, validatePassword, validatePhone, validateMatch, validateOtp, validateUsername } =
+        useFormValidation();
 
     const validate = useCallback(
         (inputValue: string, matchValue?: string) => {
@@ -167,13 +212,25 @@ export const useFieldValidation = (
                 password: () => validatePassword(inputValue, rules),
                 phone: () => validatePhone(inputValue, rules?.phoneFormat || 'kr'),
                 match: () => validateMatch(inputValue, matchValue || ''),
+                otp: () => validateOtp(inputValue),
+                username: () => validateUsername(inputValue),
             };
 
             const result = validators[validationType]() || { isValid: true, error: '' };
             setError(touched ? result.error : '');
             return result;
         },
-        [validationType, validateEmail, validatePassword, validatePhone, validateMatch, rules, touched],
+        [
+            validationType,
+            validateEmail,
+            validatePassword,
+            validatePhone,
+            validateMatch,
+            validateOtp,
+            validateUsername,
+            rules,
+            touched,
+        ],
     );
 
     const handleChange = useCallback(
@@ -181,7 +238,15 @@ export const useFieldValidation = (
             const newValue = e.target.value;
 
             /* we only allow the digits for phone validation */
-            if (validationType === 'phone' && !/^\d*$/.test(newValue)) {
+            if ((validationType === 'phone' || validationType === 'otp') && !/^\d*$/.test(newValue)) {
+                return;
+            }
+
+            if (validationType === 'otp' && newValue.length > 5) {
+                return;
+            }
+
+            if (validationType === 'username' && !/^[a-zA-Z\s]*$/.test(newValue)) {
                 return;
             }
 
