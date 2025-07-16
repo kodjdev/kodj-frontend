@@ -24,6 +24,7 @@ type BaseButtonProps = {
     htmlType?: ButtonHTMLAttributes<HTMLButtonElement>['type'];
     active?: boolean;
     icon?: React.ReactElement;
+    isDisabled?: boolean;
 } & Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'type'>;
 
 type LinkButtonProps = {
@@ -50,6 +51,7 @@ const StyledButton = styled('button')<{
     fullWidth?: boolean;
     disabled?: boolean;
     as?: typeof Link;
+    isDisabled?: boolean;
 }>`
     display: inline-flex;
     align-items: center;
@@ -67,11 +69,18 @@ const StyledButton = styled('button')<{
     box-sizing: border-box;
 
     ${(props) =>
-        props.disabled &&
+        (props.disabled || props.isDisabled) &&
         css`
             cursor: not-allowed;
-            opacity: 0.6;
+            opacity: 0.5;
+            background-color: ${themeColor.colors.gray.main} !important;
+            color: ${themeColor.colors.neutral.white} !important;
             pointer-events: none;
+
+            &:hover {
+                background-color: ${themeColor.colors.gray.main} !important;
+                transform: none !important;
+            }
         `}
 
     ${(props) => {
@@ -260,6 +269,7 @@ export default function Button({
     state,
     htmlType = 'button',
     disabled,
+    isDisabled,
     ...rest
 }: ButtonProps) {
     const commonStyledProps = {
@@ -267,6 +277,7 @@ export default function Button({
         size,
         fullWidth,
         disabled,
+        isDisabled,
     };
 
     if (asLink) {
