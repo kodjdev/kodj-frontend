@@ -172,23 +172,42 @@ export const useFetchEventService = () => {
                     };
                 }
 
-                const response = await fetchData<EventDetailsResponse>({
+                const response = await fetchData<{ data: EventDetailsResponse }>({
                     endpoint: `/public/meetups/${meetupId}/details`,
                     method: 'GET',
                 });
 
                 if (response.statusCode === 200 && response.data) {
+                    const eventDetailsData = response.data.data;
+
                     setEventDetailsCache((prev) => ({
                         ...prev,
                         [eventId]: {
-                            data: response.data,
+                            data: eventDetailsData,
                             lastFetch: Date.now(),
                         },
                     }));
                     console.log(`Event details cached for ID: ${eventId}`);
+
+                    return {
+                        data: eventDetailsData,
+                        statusCode: response.statusCode,
+                        message: response.message,
+                    };
                 }
 
-                return response;
+                return {
+                    data: {
+                        availableSeats: 0,
+                        speakers: [],
+                        keynoteSessions: [],
+                        meetupRegistrations: [],
+                        notes: [],
+                        reviews: [],
+                    },
+                    statusCode: response.statusCode || 500,
+                    message: response.message || 'Failed to fetch event details',
+                };
             },
 
             getEventById: async (id: string | number): Promise<ApiResponse<MeetupResponse>> => {

@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import themeColors from '@/tools/themeColors';
-import { FaLinkedin, FaGithub, FaTwitter, FaGlobe } from 'react-icons/fa';
+import { FaLinkedin, FaGithub, FaTwitter, FaGlobe, FaUser } from 'react-icons/fa';
 import { Speaker } from '@/types/speakers';
 import EventCard from '@/components/Card/EventCard';
 
@@ -34,7 +34,9 @@ const CustomEventCard = styled(EventCard)`
     img {
         border-radius: 8px 8px 0 0 !important;
         height: 180px !important;
-        object-fit: cover;
+        width: 100% !important;
+        object-fit: cover !important;
+        object-position: center !important;
     }
 
     & > div {
@@ -42,16 +44,36 @@ const CustomEventCard = styled(EventCard)`
         flex-direction: column;
         flex: 1;
         justify-content: space-between;
+        padding: 12px !important;
     }
 
-    // Make title and description more compact
     h3 {
-        margin-bottom: 4px;
+        margin-bottom: 0;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        width: 100%;
     }
 
     p {
         margin-bottom: 8px;
         flex-grow: 0;
+        flex-shrink: 0;
+    }
+`;
+
+const DefaultUserIcon = styled.div`
+    width: 100%;
+    height: 120px;
+    background-color: #2a2a2a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px 8px 0 0;
+
+    svg {
+        font-size: 48px;
+        color: #666;
     }
 `;
 
@@ -122,14 +144,22 @@ export default function Speakers({ speakers = [] }: SpeakersProps) {
             <SectionTitle>Speakers</SectionTitle>
             <SpeakersGrid>
                 {speakers.map((speaker) => {
-                    const speakerBio = speaker.bio || speaker.topic || 'No bio available';
+                    const speakerName = speaker.firstName || speaker.username || 'Not given';
+                    const speakerBio = speaker.bio || speaker.shortDescription || speaker.topic || 'Not given';
+                    const speakerImage = speaker.imageURL;
+
                     return (
                         <CustomEventCard
                             key={speaker.id}
-                            title={speaker.firstName}
+                            title={speakerName}
                             description={speakerBio}
-                            imageUrl={speaker.imageURL || '/placeholder-avatar.png'}
+                            imageUrl={speakerImage}
                         >
+                            {!speakerImage && (
+                                <DefaultUserIcon>
+                                    <FaUser />
+                                </DefaultUserIcon>
+                            )}
                             {renderSocialIcons(speaker)}
                         </CustomEventCard>
                     );
