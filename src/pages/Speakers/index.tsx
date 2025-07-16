@@ -16,5 +16,13 @@ export default function SpeakerRegistrationForm() {
         },
     });
 
-    return <FormProvider {...methods}>{/* <SpeakersRegister /> */}</FormProvider>;
+    return (
+        <FormProvider {...methods}>
+            <div>
+                <form>
+                    <p>Will be updated soon. Please check back later or contact us for more information.</p>
+                </form>
+            </div>
+        </FormProvider>
+    );
 }

@@ -15,6 +15,7 @@ import useGoogleSignupFlow from '@/hooks/useGoogleSignup';
 import { EventDetails } from '@/types';
 import { UserData } from '@/types/user';
 import PasswordSignupComponent from './Password';
+import { useStatusHandler } from '@/hooks/useStatusHandler/useStatusHandler';
 
 type SignupProps = {
     toggleAuthMode: () => void;
@@ -58,7 +59,7 @@ const Heading = styled.h2`
     color: ${themeColors.white};
     margin-bottom: 40px;
     text-align: left;
-    margin-top: 12px;
+    margin-top: 0;
 `;
 
 const InputGroup = styled.div`
@@ -104,7 +105,7 @@ const AccountPrompt = styled.div`
     align-items: center;
     justify-content: space-between;
     margin-top: 20px;
-    margin-bottom: 20px;
+    margin-bottom: 0;
 `;
 
 const AccountText = styled.span`
@@ -135,11 +136,11 @@ const Form = styled.form`
 export default function Signup({ toggleAuthMode, returnUrl, eventDetails }: SignupProps) {
     const navigate = useNavigate();
     const { user } = useAuth();
-    const [isLoading, setIsLoading] = useState(false);
     const [authError, setAuthError] = useState('');
     const [currentStep, setCurrentStep] = useState<'info' | 'password'>('info');
     const [messageApi, contextHolder] = message.useMessage();
 
+    const { loading, handleAsyncOperation } = useStatusHandler(messageApi);
     const email = useFieldValidation('email', { emailFormat: 'standard' });
     const password = useFieldValidation('password', {
         minLength: 8,
@@ -153,11 +154,7 @@ export default function Signup({ toggleAuthMode, returnUrl, eventDetails }: Sign
 
     const { register } = useAuth();
 
-    const {
-        contextHolder: googleContextHolder,
-        handleGoogleSignupSuccess,
-        handleGoogleSignupError,
-    } = useGoogleSignupFlow();
+    const { handleGoogleSignupSuccess, handleGoogleSignupError } = useGoogleSignupFlow();
 
     const resetForm = () => {
         email.setValue('');
@@ -194,7 +191,6 @@ export default function Signup({ toggleAuthMode, returnUrl, eventDetails }: Sign
             const phoneResult = phoneNumber.validate(phoneNumber.value);
 
             if (!emailResult.isValid || !phoneResult.isValid) {
-                setAuthError('Please fix all errors before continuing');
                 return;
             }
 
@@ -204,50 +200,39 @@ export default function Signup({ toggleAuthMode, returnUrl, eventDetails }: Sign
             setAuthError('Please check your information and try again');
         }
     };
-
     const handlePasswordSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        setIsLoading(true);
-        setAuthError('');
 
-        try {
-            const passwordResult = password.validate(password.value);
-            const confirmResult = confirmPassword.validate(confirmPassword.value, password.value);
+        const userData = {
+            email: email.value,
+            password: password.value,
+            username: email.value.split('@')[0],
+            name: email.value.split('@')[0],
+            phone: phoneNumber.value,
+        };
 
-            if (!passwordResult.isValid || !confirmResult.isValid) {
-                setAuthError('Please fix password errors before submitting');
-                setIsLoading(false);
-                return;
-            }
+        const { data } = await handleAsyncOperation(() => register(userData), {
+            loadingMessage: 'Creating account...',
+            successMessage: 'Account created successfully!',
+            showError: false,
+            onError: (apiError) => {
+                if (apiError.statusCode === 400) {
+                    setAuthError('Invalid information. Please check your details.');
+                } else if (apiError.statusCode === 409) {
+                    setAuthError('Email already exists. Please use a different email.');
+                } else if (apiError.statusCode === 500) {
+                    setAuthError('Server error. Please try again later.');
+                } else {
+                    setAuthError('Registration failed. Please try again.');
+                }
+            },
+        });
 
-            const userData = {
-                email: email.value,
-                password: password.value,
-                username: email.value.split('@')[0],
-                name: email.value.split('@')[0],
-                phone: phoneNumber.value,
-            };
-
-            const response = await register(userData);
-            if (response && response.statusCode === 200) {
-                messageApi.success({
-                    content: 'Account creation is successful!',
-                    duration: 3,
-                    style: { marginTop: '5vh' },
-                });
-                resetForm();
-                setTimeout(() => {
-                    navigate('/');
-                }, 3000);
-            }
-        } catch (error) {
-            if (error instanceof Error && error.message) {
-                setAuthError(error.message || 'Registration failed');
-            } else {
-                setAuthError('An unexpected error occurred');
-            }
-        } finally {
-            setIsLoading(false);
+        if (data) {
+            resetForm();
+            setTimeout(() => {
+                navigate('/');
+            }, 2000);
         }
     };
 
@@ -258,7 +243,6 @@ export default function Signup({ toggleAuthMode, returnUrl, eventDetails }: Sign
     return (
         <FormContainer>
             {contextHolder}
-            {googleContextHolder}
             {returnUrl && (
                 <EventNotification>
                     Sign up to continue registration for: <br />
@@ -361,7 +345,7 @@ export default function Signup({ toggleAuthMode, returnUrl, eventDetails }: Sign
                             onBlur: confirmPassword.onBlur,
                         }}
                         onSubmit={handlePasswordSubmit}
-                        isLoading={isLoading}
+                        isLoading={loading}
                         submitButtonText="SIGN UP"
                         error={authError}
                         showPasswordRequirements={true}

@@ -228,7 +228,7 @@ type JobPostingBasicInfoProps = {
 
 export default function JobPostingBasicInfo({ onNext, onFormStateChange }: JobPostingBasicInfoProps) {
     const [hasJobs, setHasJobs] = useState(false);
-    const [, contextHolder] = message.useMessage();
+    const [messageApi, contextHolder] = message.useMessage();
 
     const defaultFormValues: JobFormData = {
         title: '',
@@ -264,8 +264,9 @@ export default function JobPostingBasicInfo({ onNext, onFormStateChange }: JobPo
     }, [hasJobs, onFormStateChange]);
 
     const handleStartPosting = () => {
-        setHasJobs(true);
-        onFormStateChange?.(true);
+        messageApi.info('Not available now, coming soon !');
+        setHasJobs(false);
+        // onFormStateChange?.(true);
     };
 
     const watchedTags = watch(['companyTags', 'techTags']);

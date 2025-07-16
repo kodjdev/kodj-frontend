@@ -14,14 +14,25 @@
     -moz-osx-font-smoothing: grayscale;
 }
 
-html,
+html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow-x: hidden;
+    overflow-y: scroll;
+}
+
 body {
     font-family: 'Fira Code', monospace;
     font-weight: 300;
     font-style: normal;
     margin: 0;
     padding: 0;
+    height: 100%;
+    overflow-x: hidden;
+    overflow-y: scroll;
 }
+
 
 .container {
     max-width: 100%;

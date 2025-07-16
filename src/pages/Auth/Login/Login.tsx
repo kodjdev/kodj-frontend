@@ -9,6 +9,8 @@ import Button from '@/components/Button/Button';
 import { CredentialResponse, GoogleLogin } from '@react-oauth/google';
 import { EventDetails } from '@/types';
 import useAuth from '@/context/useAuth';
+import OtpVerification from './OtpVerification';
+import { useStatusHandler } from '@/hooks/useStatusHandler/useStatusHandler';
 
 type LoginProps = {
     toggleAuthMode: () => void;
@@ -50,7 +52,7 @@ const Heading = styled.h2`
     color: ${themeColors.white};
     margin-bottom: 40px;
     text-align: left;
-    margin-top: 12px;
+    margin-top: 0;
 `;
 
 const Form = styled.form`
@@ -115,7 +117,6 @@ const AccountPrompt = styled.div`
     align-items: center;
     justify-content: space-between;
     margin-top: 20px;
-    margin-bottom: 20px;
 `;
 
 const AccountText = styled.span`
@@ -169,13 +170,14 @@ const GoogleLoginWrapper = styled.div`
 export default function Login({ toggleAuthMode, returnUrl, eventDetails }: LoginProps) {
     const navigate = useNavigate();
     const { user, login, validateOTP, loginWithGoogle } = useAuth();
+    const [messageApi, contextHolder] = message.useMessage();
+    const { loading, execute, handleAsyncOperation } = useStatusHandler(messageApi);
+
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [showPassword, setShowPassword] = useState(false);
-    const [messageApi, contextHolder] = message.useMessage();
-
-    const [otpSent, setOtpSent] = useState(false);
     const [otp, setOtp] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
+    const [otpSent, setOtpSent] = useState(false);
 
     const handleSuccessfulAuth = useCallback(() => {
         if (returnUrl && eventDetails) {
@@ -201,147 +203,171 @@ export default function Login({ toggleAuthMode, returnUrl, eventDetails }: Login
         }
     }, [user, handleSuccessfulAuth]);
 
-    const handleEmailAuth = async (e: React.FormEvent) => {
+    const handleEmailLogin = async (e: React.FormEvent) => {
         e.preventDefault();
-        try {
-            if (!otpSent) {
-                await login(email, password);
-                setOtpSent(true);
-                messageApi.success('OTP has been sent to your email');
-            } else {
-                await validateOTP(email, otp);
-                messageApi.success('Login successful');
-            }
-        } catch (error) {
-            console.error('Authentication error:', error);
-            if (error instanceof Error) {
-                messageApi.error(error.message || 'Authentication failed');
-            } else {
-                messageApi.error('An unexpected error occurred');
-            }
+
+        const result = await execute(() => login(email, password), {
+            loading: 'Logging in...',
+            success: 'OTP has been sent to your email',
+            error: 'Login failed. Please check your credentials.',
+        });
+
+        if (result) {
+            setOtpSent(true);
         }
     };
 
-    const handleGoogleLoginSuccess = async (credentialResponse: CredentialResponse) => {
-        try {
-            if (!credentialResponse.credential) {
-                throw new Error('No credential received from Google');
-            }
+    const handleOtpVerification = async (e: React.FormEvent) => {
+        e.preventDefault();
 
-            messageApi.loading('Authenticating with Google...');
-            const response = await loginWithGoogle(credentialResponse.credential);
+        const { error } = await handleAsyncOperation(() => validateOTP(email, otp), {
+            loadingMessage: 'Verifying OTP...',
+            successMessage: 'Login successful! Redirecting...',
+            showError: false,
+            onError: (apiError) => {
+                if (apiError.statusCode === 400) {
+                    messageApi.error('Invalid OTP code. Please check and try again.');
+                } else if (apiError.statusCode === 401) {
+                    messageApi.error('OTP has expired. Please request a new one.');
+                } else {
+                    messageApi.error('Verification failed. Please try again.');
+                }
+            },
+        });
 
-            if (response && response.data) {
-                messageApi.success('Successfully logged in with Google');
-
-                handleSuccessfulAuth();
-            } else {
-                messageApi.error('Authentication failed - invalid response');
-                console.error('Invalid auth response:', response);
-            }
-        } catch (error) {
-            messageApi.error(error instanceof Error ? error.message : 'Failed to authenticate with Google');
+        if (error) {
+            return;
         }
     };
 
-    const handleGoogleLoginError = () => {
-        console.error('Google login failed');
-        messageApi.error('Google login failed');
+    const handleGoogleLogin = async (credentialResponse: CredentialResponse) => {
+        if (!credentialResponse.credential) {
+            messageApi.error('No credential received from Google');
+            return;
+        }
+
+        const result = await execute(() => loginWithGoogle(credentialResponse.credential!), {
+            loading: 'Authenticating with Google...',
+            success: 'Successfully logged in with Google',
+            error: 'Google authentication failed. Please try again.',
+        });
+
+        if (result) {
+            /* handleSuccessfulAuth will be called
+             * via useEffect when user state updates
+             */
+        }
     };
 
-    const navigateToForgotPassword = () => {
+    const handleGoogleLoginError = useCallback(() => {
+        messageApi.error('Google login failed. Please try again.');
+    }, [messageApi]);
+
+    const handleBackToLogin = useCallback(() => {
+        setOtpSent(false);
+        setOtp('');
+    }, []);
+
+    const togglePasswordVisibility = useCallback(() => {
+        setShowPassword((prev) => !prev);
+    }, []);
+
+    const navigateToForgotPassword = useCallback(() => {
         navigate('/forgot-password');
-    };
-
-    const togglePasswordVisibility = () => {
-        setShowPassword(!showPassword);
-    };
+    }, [navigate]);
 
     return (
-        <FormContainer>
+        <>
+            {' '}
             {contextHolder}
-            {returnUrl && (
-                <EventNotification>
-                    Login to continue registration for: <br />
-                    <EventTitle>{eventDetails?.title}</EventTitle>
-                </EventNotification>
-            )}
-            <Heading>Welcome Back</Heading>
-            <Form onSubmit={handleEmailAuth}>
-                <InputGroup>
-                    <Input
-                        icon={<HiOutlineMail size={20} />}
-                        type="email"
-                        placeholder="Email"
-                        value={email}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
-                        required
-                        fullWidth={true}
-                        disabled={otpSent}
-                        transparent={true}
-                        hideIconOnFocus={true}
-                    />
-                </InputGroup>
+            <FormContainer>
+                {returnUrl && (
+                    <EventNotification>
+                        Login to continue registration for: <br />
+                        <EventTitle>{eventDetails?.title}</EventTitle>
+                    </EventNotification>
+                )}
+                <Heading>{!otpSent ? 'Welcome back' : 'Confirm email'}</Heading>
 
                 {!otpSent ? (
-                    <InputGroup>
-                        <Input
-                            icon={<HiOutlineLockClosed size={20} />}
-                            type={showPassword ? 'text' : 'password'}
-                            placeholder="Password"
-                            value={password}
-                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
-                            required
+                    <Form onSubmit={handleEmailLogin}>
+                        <InputGroup>
+                            <Input
+                                icon={<HiOutlineMail size={20} />}
+                                type="email"
+                                placeholder="Email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                required
+                                fullWidth={true}
+                                transparent={true}
+                                hideIconOnFocus={true}
+                            />
+                        </InputGroup>
+
+                        <InputGroup>
+                            <Input
+                                icon={<HiOutlineLockClosed size={20} />}
+                                type={showPassword ? 'text' : 'password'}
+                                placeholder="Password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                required
+                                fullWidth={true}
+                                hideIconOnFocus={true}
+                                transparent={true}
+                            />
+                            <PasswordVisibilityToggle onClick={togglePasswordVisibility}>
+                                {showPassword ? <HiOutlineEyeOff size={20} /> : <HiOutlineEye size={20} />}
+                            </PasswordVisibilityToggle>
+                        </InputGroup>
+
+                        <ForgotPasswordLink onClick={navigateToForgotPassword}>Forgot Password</ForgotPasswordLink>
+
+                        <StyledButton
+                            color="blue"
+                            size="md"
                             fullWidth={true}
-                            hideIconOnFocus={true}
-                            transparent={true}
-                        />
-                        <PasswordVisibilityToggle onClick={togglePasswordVisibility}>
-                            {showPassword ? <HiOutlineEyeOff size={20} /> : <HiOutlineEye size={20} />}
-                        </PasswordVisibilityToggle>
-                    </InputGroup>
+                            as="button"
+                            disabled={loading}
+                            type="submit"
+                        >
+                            {loading ? 'LOGGING IN...' : 'LOGIN'}
+                        </StyledButton>
+                    </Form>
                 ) : (
-                    <InputGroup>
-                        <Input
-                            icon={<HiOutlineLockClosed size={20} />}
-                            type="text"
-                            placeholder="Enter OTP from email"
-                            value={otp}
-                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setOtp(e.target.value)}
-                            required
-                            fullWidth={true}
-                            transparent={true}
-                            hideIconOnFocus={true}
-                        />
-                    </InputGroup>
+                    <OtpVerification
+                        email={email}
+                        otp={otp}
+                        onOtpChange={setOtp}
+                        onSubmit={handleOtpVerification}
+                        onBackClick={handleBackToLogin}
+                        isLoading={loading}
+                    />
                 )}
 
                 {!otpSent && (
-                    <ForgotPasswordLink onClick={navigateToForgotPassword}>Forgot Password</ForgotPasswordLink>
+                    <>
+                        <Divider>
+                            <span>OR</span>
+                        </Divider>
+                        <GoogleLoginWrapper>
+                            <GoogleLogin
+                                onSuccess={handleGoogleLogin}
+                                onError={handleGoogleLoginError}
+                                text="signin_with"
+                                shape="rectangular"
+                                theme="outline"
+                            />
+                        </GoogleLoginWrapper>
+
+                        <AccountPrompt>
+                            <AccountText>No account yet?</AccountText>
+                            <ToggleButton onClick={toggleAuthMode}>Sign up here</ToggleButton>
+                        </AccountPrompt>
+                    </>
                 )}
-
-                <StyledButton color="blue" size="md" fullWidth={true} as="button">
-                    {otpSent ? 'VERIFY OTP' : 'LOGIN'}
-                </StyledButton>
-            </Form>
-
-            <Divider>
-                <span>OR</span>
-            </Divider>
-            <GoogleLoginWrapper>
-                <GoogleLogin
-                    onSuccess={handleGoogleLoginSuccess}
-                    onError={handleGoogleLoginError}
-                    text="signin_with"
-                    shape="rectangular"
-                    theme="outline"
-                />
-            </GoogleLoginWrapper>
-
-            <AccountPrompt>
-                <AccountText>No account yet?</AccountText>
-                <ToggleButton onClick={toggleAuthMode}>Sign up here</ToggleButton>
-            </AccountPrompt>
-        </FormContainer>
+            </FormContainer>
+        </>
     );
 }
