@@ -59,15 +59,15 @@ const CardTitle = styled.h3`
 `;
 
 const CardDescription = styled.p<CardDescriptionProps>`
-  color: ${(props) => props.color || themeColors.colors.gray.main};
-  font-size: ${themeColors.typography.body.small.fontSize}px;
-  line-height: 1.5;
-  margin: 0;
-  whiteSpace: "normal",
-  overflow: "hidden",
-  textOverflow: "ellipsis",
-  maxWidth: "100%",
-  wordBreak: "break-word"
+    color: ${(props) => props.color || themeColors.colors.gray.main};
+    font-size: ${themeColors.typography.body.small.fontSize}px;
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin: 8px 0;
 `;
 
 /**

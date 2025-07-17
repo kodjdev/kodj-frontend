@@ -179,6 +179,7 @@ export default function AuthProvider({ children }: AuthProviderProps) {
                         ipAddress: window.location.hostname,
                         deviceType: 'web',
                     },
+                    skipGlobalErrorHandler: true,
                 });
             } catch (error) {
                 console.error('Login error:', error);
@@ -196,6 +197,7 @@ export default function AuthProvider({ children }: AuthProviderProps) {
                     endpoint: '/auth/register',
                     method: 'POST',
                     data: formData,
+                    skipGlobalErrorHandler: true,
                 });
                 return response;
             } catch (error) {
@@ -206,7 +208,7 @@ export default function AuthProvider({ children }: AuthProviderProps) {
         [fetchData],
     );
 
-    // OTP validation to complete the login
+    /* OTP validation to complete the login */
     const validateOTP = useCallback(
         async (email: string, otp: string) => {
             try {
@@ -214,6 +216,7 @@ export default function AuthProvider({ children }: AuthProviderProps) {
                     endpoint: '/auth/verify-login-otp',
                     method: 'POST',
                     data: { email, otp },
+                    skipGlobalErrorHandler: true,
                 });
 
                 if (response.data?.data?.access_token) {
@@ -260,15 +263,33 @@ export default function AuthProvider({ children }: AuthProviderProps) {
     );
 
     const signUpWithGoogle = useCallback(
-        async (credential: string) => {
+        async (credential: string, additionalData?: { username: string; phone: string }) => {
             try {
+                let requestData;
+                let headers;
+
+                if (additionalData) {
+                    requestData = {
+                        credential,
+                        username: additionalData.username,
+                        phone: additionalData.phone,
+                    };
+                    headers = {
+                        'Content-Type': 'application/json',
+                    };
+                } else {
+                    requestData = credential;
+                    headers = {
+                        'Content-Type': 'text/plain',
+                    };
+                }
+
                 const response = await fetchData({
                     endpoint: '/auth/google/sign-up',
                     method: 'POST',
-                    data: credential,
-                    customHeaders: {
-                        'Content-Type': 'text/plain',
-                    },
+                    data: requestData,
+                    customHeaders: headers,
+                    skipGlobalErrorHandler: true,
                 });
                 return response;
             } catch (error) {

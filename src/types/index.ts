@@ -137,6 +137,7 @@ export type HeaderProps = {
     langMenuOpen: boolean;
     toggleLangMenu: () => void;
     isAuthenticated: boolean;
+    langMenuRef?: React.RefObject<HTMLDivElement>;
 };
 
 export type JobFormData = {

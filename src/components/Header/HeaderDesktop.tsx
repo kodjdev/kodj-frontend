@@ -175,6 +175,7 @@ export default function HeaderDesktop({
     langMenuOpen,
     toggleLangMenu,
     isAuthenticated,
+    langMenuRef,
 }: HeaderProps) {
     const { user } = useAuth();
 
@@ -194,7 +195,7 @@ export default function HeaderDesktop({
                 </Navigation>
 
                 <AuthButtons>
-                    <LanguageToggle>
+                    <LanguageToggle ref={langMenuRef}>
                         <LanguageButton variant="text" size="mini" onClick={toggleLangMenu}>
                             <Globe size={16} />
                             {currentLang === 'en' ? 'English' : 'Uzbek'}

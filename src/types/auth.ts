@@ -36,7 +36,10 @@ export type AuthContextType = {
     register: (formData: RegisterFormData) => Promise<ApiResponse<EventRegistrationResponse>>;
     validateOTP: (email: string, otp: string) => Promise<ApiResponse<TokenResponse>>;
     loginWithGoogle: (credential: string) => Promise<ApiResponse<TokenResponse>>;
-    signUpWithGoogle: (credential: string) => Promise<ApiResponse>;
+    signUpWithGoogle: (
+        credential: string,
+        additionalData?: { username: string; phone: string },
+    ) => Promise<ApiResponse>;
     logout: () => Promise<void>;
     refreshTokens: () => Promise<boolean>;
 };

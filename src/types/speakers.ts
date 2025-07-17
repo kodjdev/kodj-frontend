@@ -1,12 +1,12 @@
 export type Speaker = {
     id: number;
-    username?: string;
-    firstName?: string;
-    lastName?: string;
+    username?: string | null;
+    firstName?: string | null;
+    lastName?: string | null;
     organization?: string;
     position?: string;
     bio?: string;
-    shortDescription?: string;
+    shortDescription?: string | null;
     experience?: string;
     topic: string;
     linkedinUrl?: string;

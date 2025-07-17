@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { message } from 'antd';
@@ -7,14 +7,14 @@ import Input from '@/components/Input/Input';
 import Button from '@/components/Button/Button';
 import themeColors from '@/tools/themeColors';
 import useAuth from '@/context/useAuth';
+import { useStatusHandler } from '@/hooks/useStatusHandler/useStatusHandler';
+import { useFieldValidation } from '@/hooks/useFormValidation/useFormValidation';
 
 const PageContainer = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 90vh;
-    padding: 20px;
-    background-color: ${themeColors.gray_dark};
+    min-height: 80vh;
 `;
 
 const FormContainer = styled.div`
@@ -32,8 +32,8 @@ const Heading = styled.h2`
     font-size: 1.875rem;
     font-weight: 700;
     color: ${themeColors.white};
-    margin-bottom: 20px;
     text-align: center;
+    margin-top: 10px;
 `;
 
 const SubHeading = styled.p`
@@ -45,25 +45,11 @@ const SubHeading = styled.p`
 const Form = styled.form`
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 20px;
 `;
 
 const InputGroup = styled.div`
     position: relative;
-`;
-
-const StyledButton = styled(Button)`
-    font-size: 16px;
-    text-transform: none;
-    padding: 12px 16px;
-    border-radius: 4px;
-    background-color: ${themeColors.blue};
-    color: ${themeColors.white};
-    margin-top: 20px;
-
-    &:hover {
-        background-color: ${themeColors.blue};
-    }
 `;
 
 export default function CompleteAccount() {
@@ -71,10 +57,10 @@ export default function CompleteAccount() {
     const location = useLocation();
     const { signUpWithGoogle } = useAuth();
     const [messageApi, contextHolder] = message.useMessage();
+    const { loading, handleAsyncOperation } = useStatusHandler(messageApi);
 
-    const [username, setUsername] = useState('');
-    const [phone, setPhone] = useState('');
-    const [isSubmitting, setIsSubmitting] = useState(false);
+    const username = useFieldValidation('username');
+    const phone = useFieldValidation('phone', { phoneFormat: 'kr' });
 
     // we get the google credential from location state
     const googleCredential = location.state?.credential;
@@ -90,37 +76,46 @@ export default function CompleteAccount() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        if (!phone.trim()) {
-            messageApi.error('Phone number is required');
+        const usernameResult = username.validate(username.value);
+        const phoneResult = phone.validate(phone.value);
+
+        if (!usernameResult.isValid || !phoneResult.isValid) {
             return;
         }
 
-        setIsSubmitting(true);
+        const { data } = await handleAsyncOperation(
+            () =>
+                signUpWithGoogle(googleCredential, {
+                    username: username.value,
+                    phone: phone.value,
+                }),
+            {
+                loadingMessage: 'Completing registration...',
+                successMessage: 'Registration complete!',
+                showError: false,
+                onError: (apiError) => {
+                    if (apiError.statusCode === 400) {
+                        messageApi.error('Invalid information. Please check your details.');
+                    } else if (apiError.statusCode === 409) {
+                        messageApi.error('Username or phone already exists.');
+                    } else {
+                        messageApi.error('Registration failed. Please try again.');
+                    }
+                },
+            },
+        );
 
-        try {
-            const formData = new FormData();
-            formData.append('username', username);
-            formData.append('phone', phone);
-
-            formData.append('credential', googleCredential);
-
-            const response = await signUpWithGoogle(googleCredential);
-
-            if (response && response.data) {
-                messageApi.success('Registration complete!');
-
-                setTimeout(() => {
-                    navigate('/mypage');
-                }, 1500);
-            } else {
-                messageApi.error('Failed to complete registration');
-            }
-        } catch (error) {
-            console.error('Registration error:', error);
-            messageApi.error('An error occurred during registration. Please try again.');
-        } finally {
-            setIsSubmitting(false);
+        if (data) {
+            setTimeout(() => {
+                navigate('/mypage');
+            }, 1500);
         }
+    };
+
+    const isFormValid = () => {
+        const isUsernameValid = username.value.trim() !== '' && !username.error;
+        const isPhoneValid = phone.value.trim() !== '' && !phone.error;
+        return isUsernameValid && isPhoneValid;
     };
 
     return (
@@ -135,12 +130,15 @@ export default function CompleteAccount() {
                         <Input
                             icon={<HiOutlineUser size={20} />}
                             type="text"
-                            placeholder="Username"
-                            value={username}
-                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setUsername(e.target.value)}
+                            placeholder="Username (letters only)"
+                            value={username.value}
+                            onChange={username.onChange}
+                            onBlur={username.onBlur}
+                            error={username.error}
                             required
                             fullWidth={true}
-                            style={{ backgroundColor: 'transparent', border: '1px solid gray' }}
+                            hideIconOnFocus={true}
+                            transparent={true}
                         />
                     </InputGroup>
 
@@ -148,25 +146,30 @@ export default function CompleteAccount() {
                         <Input
                             icon={<HiOutlinePhone size={20} />}
                             type="tel"
-                            placeholder="Phone Number (required)"
-                            value={phone}
-                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPhone(e.target.value)}
+                            placeholder="Phone Number: 010XXXXXXXX"
+                            value={phone.value}
+                            onChange={phone.onChange}
+                            onBlur={phone.onBlur}
+                            error={phone.error}
+                            maxLength={11}
                             required
                             fullWidth={true}
-                            style={{ backgroundColor: 'transparent', border: '1px solid gray' }}
+                            hideIconOnFocus={true}
+                            transparent={true}
                         />
                     </InputGroup>
 
-                    <StyledButton
+                    <Button
                         color="blue"
-                        size="md"
+                        size="lg"
                         fullWidth={true}
                         variant="primary"
-                        disabled={isSubmitting}
-                        as="button"
+                        disabled={loading || !isFormValid()}
+                        htmlType="submit"
+                        isDisabled={!isFormValid}
                     >
-                        {isSubmitting ? 'Completing Registration...' : 'Complete Registration'}
-                    </StyledButton>
+                        {loading ? 'Completing Registration...' : 'Complete Registration'}
+                    </Button>
                 </Form>
             </FormContainer>
         </PageContainer>

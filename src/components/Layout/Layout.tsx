@@ -46,9 +46,6 @@ const ContentWrapper = styled.div`
 /**
  * Layout - Organism Component
  * Main layout wrapper for the application. Provides consistent structure with:
- * - Header
- * - Main content area with proper spacing
- * - Footer
  * Handles responsive padding and content width across different screen sizes.
  * Automatically adjusts layout when banner is visible/hidden.
  * @param children - Content to be rendered within the layout
@@ -59,12 +56,32 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     const location = useLocation();
 
     useEffect(() => {
+        let ticking = false;
+
         const handleScroll = () => {
-            setIsScrolled(window.scrollY > 50);
+            if (!ticking) {
+                requestAnimationFrame(() => {
+                    const scrollY =
+                        window.scrollY ||
+                        window.pageYOffset ||
+                        document.documentElement.scrollTop ||
+                        document.body.scrollTop ||
+                        0;
+                    const newIsScrolled = scrollY > 50;
+                    setIsScrolled(newIsScrolled);
+                    ticking = false;
+                });
+                ticking = true;
+            }
         };
 
-        window.addEventListener('scroll', handleScroll);
-        return () => window.removeEventListener('scroll', handleScroll);
+        handleScroll();
+
+        window.addEventListener('scroll', handleScroll, { passive: true, capture: true });
+
+        return () => {
+            window.removeEventListener('scroll', handleScroll, true);
+        };
     }, []);
 
     const handleCloseBanner = () => {

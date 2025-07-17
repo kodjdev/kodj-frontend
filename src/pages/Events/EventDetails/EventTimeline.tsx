@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import themeColors from '@/tools/themeColors';
 import { KeynoteSession } from '@/types/api';
+import { FaUser } from 'react-icons/fa';
 
 type EventTimelineProps = {
     schedule?: KeynoteSession[];
@@ -98,6 +99,22 @@ const NoEventsMessage = styled.div`
     font-size: ${themeColors.typography.body.medium.fontSize}px;
 `;
 
+const DefaultSpeakerIcon = styled.div`
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #2a2a2a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: ${themeColors.spacing.sm};
+
+    svg {
+        font-size: 18px;
+        color: #666;
+    }
+`;
+
 /**
  * EventTimeline Component - Organism Component
  * @param schedule - Array of event schedule items with speakers, times, and topics
@@ -124,15 +141,22 @@ export function EventTimeline({ schedule = [] }: EventTimelineProps) {
                         return (
                             <TimelineItem key={session.id}>
                                 <SpeakerInfo>
-                                    {session.speaker && (
+                                    {session.speaker ? (
                                         <>
                                             <SpeakerAvatar>
                                                 <img
                                                     src={session.speaker.imageURL || '/placeholder-avatar.png'}
-                                                    alt={`${session.speaker.firstName} ${session.speaker.lastName}`}
+                                                    alt={`${session.speaker.firstName || 'Speaker'} ${session.speaker.lastName || ''}`}
                                                 />
                                             </SpeakerAvatar>
-                                            <SpeakerName>{session.speaker.firstName}</SpeakerName>
+                                            <SpeakerName>{session.speaker.firstName || 'Not given'}</SpeakerName>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <DefaultSpeakerIcon>
+                                                <FaUser />
+                                            </DefaultSpeakerIcon>
+                                            <SpeakerName>Not given</SpeakerName>
                                         </>
                                     )}
                                 </SpeakerInfo>

@@ -102,20 +102,6 @@ const ErrorMessage = styled.div`
     padding-left: 4px;
 `;
 
-const StyledButton = styled(Button)`
-    font-size: 16px;
-    text-transform: none;
-    padding: 12px 16px;
-    border-radius: 4px;
-    background-color: ${themeColors.blue};
-    color: ${themeColors.white};
-    margin-top: 8px;
-
-    &:hover {
-        background-color: ${themeColors.blue};
-    }
-`;
-
 const Form = styled.form`
     display: flex;
     flex-direction: column;
@@ -123,6 +109,14 @@ const Form = styled.form`
     width: 100%;
 `;
 
+/**
+ * Password Signup UI Component
+ * This component provides a password input field with validation requirements,
+ * a confirm password field, and a submit button.
+ * It includes features like password visibility toggle, validation checks,
+ * and error handling.
+ * * @param {PasswordSignupProps} props - The properties for the Password component
+ */
 export default function Password({
     passwordField,
     confirmPasswordField,
@@ -173,8 +167,10 @@ export default function Password({
     const isFormValid = () => {
         const requirements = validatePassword(passwordField.value);
         const allRequirementsMet = Object.values(requirements).every(Boolean);
-        const passwordsMatch = passwordField.value === confirmPasswordField.value;
-        return allRequirementsMet && passwordsMatch && passwordField.value && confirmPasswordField.value;
+        const passwordsMatch = passwordField.value === confirmPasswordField.value && confirmPasswordField.value !== '';
+        const bothFieldsFilled = passwordField.value !== '' && confirmPasswordField.value !== '';
+
+        return allRequirementsMet && passwordsMatch && bothFieldsFilled;
     };
 
     const handleConfirmPasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -183,11 +179,10 @@ export default function Password({
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        console.log('Form submitted!'); // Debug log
         if (isFormValid()) {
             onSubmit(e);
         } else {
-            console.log('Form is not valid'); // Debug log
+            console.log('Form is not valid');
         }
     };
 
@@ -213,26 +208,28 @@ export default function Password({
                     </PasswordVisibilityToggle>
                 </InputGroup>
 
-                {passwordField.value && showPasswordRequirements && (
-                    <PasswordRequirements>
-                        <RequirementsTitle>Password Requirements</RequirementsTitle>
-                        <RequirementsList>
-                            <RequirementItem met={passwordRequirements.minLength}>
-                                At least 8 characters
-                            </RequirementItem>
-                            <RequirementItem met={passwordRequirements.hasUpperCase}>
-                                One uppercase letter
-                            </RequirementItem>
-                            <RequirementItem met={passwordRequirements.hasLowerCase}>
-                                One lowercase letter
-                            </RequirementItem>
-                            <RequirementItem met={passwordRequirements.hasNumber}>One number</RequirementItem>
-                            <RequirementItem met={passwordRequirements.hasSpecialChar}>
-                                One special character
-                            </RequirementItem>
-                        </RequirementsList>
-                    </PasswordRequirements>
-                )}
+                {passwordField.value &&
+                    showPasswordRequirements &&
+                    !Object.values(passwordRequirements).every(Boolean) && (
+                        <PasswordRequirements>
+                            <RequirementsTitle>Password Requirements</RequirementsTitle>
+                            <RequirementsList>
+                                <RequirementItem met={passwordRequirements.minLength}>
+                                    At least 8 characters
+                                </RequirementItem>
+                                <RequirementItem met={passwordRequirements.hasUpperCase}>
+                                    One uppercase letter
+                                </RequirementItem>
+                                <RequirementItem met={passwordRequirements.hasLowerCase}>
+                                    One lowercase letter
+                                </RequirementItem>
+                                <RequirementItem met={passwordRequirements.hasNumber}>One number</RequirementItem>
+                                <RequirementItem met={passwordRequirements.hasSpecialChar}>
+                                    One special character
+                                </RequirementItem>
+                            </RequirementsList>
+                        </PasswordRequirements>
+                    )}
 
                 <InputGroup>
                     <Input
@@ -250,24 +247,22 @@ export default function Password({
                     />
                 </InputGroup>
 
+                {confirmPasswordField.value && passwordField.value !== confirmPasswordField.value && (
+                    <ErrorMessage>Passwords do not match</ErrorMessage>
+                )}
+
                 {error && <ErrorMessage>{error}</ErrorMessage>}
 
-                <StyledButton
+                <Button
                     color="blue"
                     size="md"
                     fullWidth={true}
-                    as="button"
-                    disabled={!isFormValid()}
-                    type="submit"
-                    onClick={(e) => {
-                        if (!isFormValid()) {
-                            e.preventDefault();
-                            console.log('Form not valid, preventing submission');
-                        }
-                    }}
+                    htmlType="submit"
+                    disabled={isLoading || !isFormValid()}
+                    isDisabled={!isFormValid()}
                 >
                     {isLoading ? 'Creating Account...' : submitButtonText}
-                </StyledButton>
+                </Button>
             </Form>
         </Container>
     );

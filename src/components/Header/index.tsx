@@ -3,7 +3,7 @@ import HeaderDesktop from '@/components/Header/HeaderDesktop';
 import HeaderMobile from '@/components/Header/HeaderMobile';
 import themeColors from '@/tools/themeColors';
 import { useTranslation } from 'react-i18next';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import useAuth from '@/context/useAuth';
 import ConfirmModal from '@/components/Modal/ModalTypes/ConfirmModal';
 import useModal from '@/hooks/useModal';
@@ -15,6 +15,7 @@ import useModal from '@/hooks/useModal';
  * header based on the viewport width.
  */
 export default function Header() {
+    const langMenuRef = useRef<HTMLDivElement>(null);
     const [langMenuOpen, setLangMenuOpen] = useState(false);
     const { i18n } = useTranslation();
     const { isAuthenticated, logout } = useAuth();
@@ -23,6 +24,22 @@ export default function Header() {
     const isMobile = useMediaQuery({
         query: `(max-width: ${themeColors.breakpoints.mobile})`,
     });
+
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (langMenuRef.current && !langMenuRef.current.contains(event.target as Node)) {
+                setLangMenuOpen(false);
+            }
+        };
+
+        if (langMenuOpen) {
+            document.addEventListener('mousedown', handleClickOutside);
+        }
+
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [langMenuOpen]);
 
     const handleLanguageChange = (lang: string) => {
         i18n.changeLanguage(lang);
@@ -60,6 +77,7 @@ export default function Header() {
                     currentLang={i18n.language}
                     langMenuOpen={langMenuOpen}
                     toggleLangMenu={toggleMenu}
+                    langMenuRef={langMenuRef}
                     {...authProps}
                 />
             ) : (
@@ -68,6 +86,7 @@ export default function Header() {
                     currentLang={i18n.language}
                     langMenuOpen={langMenuOpen}
                     toggleLangMenu={toggleMenu}
+                    langMenuRef={langMenuRef}
                     {...authProps}
                 />
             )}

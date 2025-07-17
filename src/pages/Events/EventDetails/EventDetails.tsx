@@ -3,7 +3,7 @@ import themeColors from '@/tools/themeColors';
 import Card from '@/components/Card/Card';
 import { Calendar, Clock, MapPin, Coffee, Box, Play, ArrowLeft } from 'lucide-react';
 import { Link, useLocation, useParams } from 'react-router-dom';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { EventTimeline } from '@/pages/Events/EventDetails/EventTimeline';
 import { EventLocation } from '@/pages/Events/EventDetails/EventLocation';
 import Button from '@/components/Button/Button';
@@ -260,6 +260,12 @@ export default function EventDetails() {
         fetchEventDetails();
     }, [eventId]);
 
+    useLayoutEffect(() => {
+        window.scrollTo(0, 0);
+        document.documentElement.scrollTop = 0;
+        document.body.scrollTop = 0;
+    }, [location.pathname]);
+
     /**
      * Method to map from EventDetailsResponse to Event
      * This method has to be reviewed once the backend logic adds the data.details part
@@ -336,6 +342,11 @@ export default function EventDetails() {
         }
     };
 
+    const isPastEvent = eventData.date
+        ? (typeof eventData.date === 'string' ? new Date(eventData.date) : new Date(eventData.date.seconds * 1000)) <
+          new Date()
+        : false;
+
     const descriptionParagraphs = Array.isArray(eventData.description)
         ? eventData.description
         : typeof eventData.description === 'string'
@@ -356,6 +367,7 @@ export default function EventDetails() {
             </PageContainer>
         );
     }
+
     return (
         <PageContainer>
             <BackLink to="/events">
@@ -440,24 +452,31 @@ export default function EventDetails() {
                                 <span>{eventData.isFreeEvent ? 'Free' : 'Paid'}</span>
                             </EventInfoItem>
                         </EventInfoContainer>
-                        <Button
-                            asLink={true}
-                            to={`/events/upcoming/register/${eventId}`}
-                            state={{
-                                title: eventData.title,
-                                date: eventData.date,
-                                location: eventData.location,
-                                imageUrl: eventData.imageUrl,
-                                author: eventData.author,
-                                eventRoom: eventData.eventRoom,
-                                registeredCount: eventData.registeredCount,
-                                maxSeats: eventData.maxSeats,
-                            }}
-                            fullWidth={true}
-                            size="md"
-                        >
-                            Register for Event
-                        </Button>
+                        {isPastEvent ? (
+                            <Button fullWidth={true} size="md" disabled={true} variant="secondary">
+                                Event has passed
+                            </Button>
+                        ) : (
+                            <Button
+                                asLink={true}
+                                to={`/events/upcoming/register/${eventId}`}
+                                state={{
+                                    title: eventData.title,
+                                    date: eventData.date,
+                                    location: eventData.location,
+                                    imageUrl: eventData.imageUrl,
+                                    author: eventData.author,
+                                    eventRoom: eventData.eventRoom,
+                                    registeredCount: eventData.registeredCount,
+                                    maxSeats: eventData.maxSeats,
+                                }}
+                                fullWidth={true}
+                                size="md"
+                                variant="primary"
+                            >
+                                Register for Event
+                            </Button>
+                        )}
                     </Card>
                 </RightPanel>
             </ContentWrapper>

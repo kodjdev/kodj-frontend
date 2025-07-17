@@ -18,6 +18,17 @@ const pulse = keyframes`
   }
 `;
 
+const dotPulse = keyframes`
+  0%, 100% {
+    opacity: 0.4;
+    transform: scale(0.8);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+`;
+
 const gradientShift = keyframes`
   0% {
     background-position: 0% 50%;
@@ -35,7 +46,7 @@ const MaintenanceContainer = styled.div`
     top: 0;
     left: 0;
     width: 100vw;
-    height: 110vh;
+    height: 100vh;
     background: ${themeColors.colors.black.background};
     display: flex;
     flex-direction: column;
@@ -44,18 +55,31 @@ const MaintenanceContainer = styled.div`
     z-index: 9999;
     overflow: hidden;
     padding: ${themeColors.spacing.md};
+
+    @media (max-width: ${themeColors.breakpoints.mobile}) {
+        padding: ${themeColors.spacing.sm};
+        justify-content: center;
+        min-height: 100vh;
+    }
 `;
 
 const ContentWrapper = styled.div`
     position: relative;
     z-index: 1;
     text-align: center;
-    padding: ${themeColors.spacing.xl};
+    padding: ${themeColors.spacing.lg};
     max-width: 600px;
     width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 
-    @media (max-width: ${themeColors.breakpoints.mobile}) {
+    @media (max-width: ${themeColors.breakpoints.mobileMin}) {
         padding: ${themeColors.spacing.md};
+        max-width: 100%;
+        min-height: auto;
+        width: 90%;
+        box-sizing: border-box;
     }
 `;
 
@@ -73,8 +97,9 @@ const Logo = styled.div`
     box-shadow: ${themeColors.shadows.elevation.high};
 
     @media (max-width: ${themeColors.breakpoints.mobile}) {
-        font-size: ${themeColors.typography.presets.font16.fontSize}px;
-        padding: ${themeColors.spacing.xs} ${themeColors.spacing.md};
+        font-size: ${themeColors.typography.presets.font18.fontSize}px;
+        padding: ${themeColors.spacing.sm} ${themeColors.spacing.md};
+        letter-spacing: 1px;
     }
 `;
 
@@ -85,12 +110,15 @@ const StatusMessage = styled.div`
     border: 1px solid ${themeColors.colors.gray.line}30;
     border-radius: ${themeColors.cardBorder.xl};
     padding: ${themeColors.spacing.lg} ${themeColors.spacing.xl};
-    margin-bottom: ${themeColors.spacing.xl};
+    margin-bottom: ${themeColors.spacing.md};
     backdrop-filter: blur(10px);
+    width: 100%;
+    box-sizing: border-box;
 
     @media (max-width: ${themeColors.breakpoints.mobile}) {
-        padding: ${themeColors.spacing.md} ${themeColors.spacing.lg};
-        margin-bottom: ${themeColors.spacing.lg};
+        padding: ${themeColors.spacing.md};
+        margin-bottom: ${themeColors.spacing.sm};
+        border-radius: ${themeColors.cardBorder.lg};
     }
 `;
 
@@ -102,6 +130,7 @@ const StatusText = styled.p`
 
     @media (max-width: ${themeColors.breakpoints.mobile}) {
         font-size: ${themeColors.typography.body.small.fontSize}px;
+        line-height: 1.5;
     }
 `;
 
@@ -118,12 +147,14 @@ const ContactText = styled.p`
         color: ${themeColors.colors.primary.main};
         text-decoration: none;
         transition: color ${themeColors.animation.duration.fast} ease;
+        word-break: break-word;
 
         &:hover {
             color: ${themeColors.colors.primary.light};
         }
     }
 `;
+
 const BackgroundPattern = styled.div`
     position: absolute;
     top: 0;
@@ -139,7 +170,11 @@ const BackgroundPattern = styled.div`
 `;
 
 const LogoWrapper = styled.div`
-    margin-bottom: ${themeColors.spacing.xl};
+    margin-bottom: ${themeColors.spacing.lg};
+
+    @media (max-width: ${themeColors.breakpoints.mobile}) {
+        margin-bottom: ${themeColors.spacing.md};
+    }
 `;
 
 const MainTitle = styled.h2`
@@ -147,11 +182,13 @@ const MainTitle = styled.h2`
     font-size: ${themeColors.typography.headings.desktop.h2.fontSize}px;
     font-weight: ${themeColors.typography.headings.desktop.h2.fontWeight};
     line-height: ${themeColors.typography.headings.desktop.h2.lineHeight};
-    margin: 0 0 ${themeColors.spacing.md} 0;
+    margin: 0 0 ${themeColors.spacing.sm} 0;
     letter-spacing: -1px;
 
-    @media (max-width: ${themeColors.breakpoints.tablet}) {
-        font-size: ${themeColors.typography.headings.mobile.h1.fontSize}px;
+    @media (max-width: ${themeColors.breakpoints.mobile}) {
+        font-size: 28px;
+        line-height: 1.2;
+        margin-bottom: ${themeColors.spacing.xs};
     }
 `;
 
@@ -160,10 +197,11 @@ const SubTitle = styled.h2`
     font-size: ${themeColors.typography.body.large.fontSize}px;
     font-weight: 400;
     line-height: ${themeColors.typography.body.large.lineHeight};
-    margin: 0 0 ${themeColors.spacing.xl} 0;
+    margin: 0 0 ${themeColors.spacing.lg} 0;
 
-    @media (max-width: ${themeColors.breakpoints.tablet}) {
+    @media (max-width: ${themeColors.breakpoints.mobile}) {
         font-size: ${themeColors.typography.body.medium.fontSize}px;
+        margin-bottom: ${themeColors.spacing.md};
     }
 `;
 
@@ -172,7 +210,12 @@ const LoadingDots = styled.div`
     justify-content: center;
     align-items: center;
     gap: ${themeColors.spacing.sm};
-    margin-top: ${themeColors.spacing.xl};
+    margin-top: ${themeColors.spacing.md};
+
+    @media (max-width: ${themeColors.breakpoints.mobile}) {
+        margin-top: ${themeColors.spacing.sm};
+        gap: ${themeColors.spacing.xs};
+    }
 `;
 
 const Dot = styled.div<{ delay: number }>`
@@ -180,13 +223,25 @@ const Dot = styled.div<{ delay: number }>`
     height: 12px;
     background: ${themeColors.colors.primary.main};
     border-radius: 50%;
+    animation: ${dotPulse} 1.5s ease-in-out infinite;
     animation-delay: ${(props) => props.delay}s;
+
+    @media (max-width: ${themeColors.breakpoints.mobile}) {
+        width: 10px;
+        height: 10px;
+    }
 `;
 
 const ContactInfo = styled.div`
-    margin-top: 100px;
-    padding-top: ${themeColors.spacing.xl};
+    margin-top: ${themeColors.spacing.xl};
+    padding-top: ${themeColors.spacing.lg};
     border-top: 1px solid ${themeColors.colors.gray.line}20;
+    width: 100%;
+
+    @media (max-width: ${themeColors.breakpoints.mobile}) {
+        margin-top: ${themeColors.spacing.lg};
+        padding-top: ${themeColors.spacing.md};
+    }
 `;
 
 const ProgressBarWrapper = styled.div`
@@ -195,7 +250,12 @@ const ProgressBarWrapper = styled.div`
     background: ${themeColors.colors.gray.line}20;
     border-radius: ${themeColors.cardBorder.pill};
     overflow: hidden;
-    margin-top: ${themeColors.spacing.xl};
+    margin-top: ${themeColors.spacing.lg};
+
+    @media (max-width: ${themeColors.breakpoints.mobile}) {
+        height: 3px;
+        margin-top: ${themeColors.spacing.md};
+    }
 `;
 
 const ProgressBar = styled.div`

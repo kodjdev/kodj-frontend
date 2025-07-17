@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import themeColors from '@/tools/themeColors';
 import Card from '@/components/Card/Card';
-import { FaCalendarAlt, FaUsers } from 'react-icons/fa';
+import { FaCalendarAlt, FaUser, FaUsers } from 'react-icons/fa';
 
 export type EventCardProps = {
     isFreeEvent?: boolean;
@@ -83,6 +83,21 @@ const IsPaidEvent = styled.div`
     align-items: center;
 `;
 
+const DefaultUserIcon = styled.div`
+    width: 100%;
+    height: 120px;
+    background-color: #2a2a2a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px 8px 0 0;
+
+    svg {
+        font-size: 48px;
+        color: #666;
+    }
+`;
+
 /**
  * EventCard - Molecule Component
  * @param isPlaceholder - Whether to show placeholder content instead of event details
@@ -119,16 +134,18 @@ export default function EventCard({
 
     return (
         <Card padding="0" backgroundColor="transparent" hoverEffect={true} className={className} {...props}>
-            {imageUrl && <CardImage src={imageUrl} alt={title || 'Event'} />}
+            {imageUrl ? (
+                <CardImage src={imageUrl} alt={title || 'Event'} />
+            ) : (
+                <DefaultUserIcon>
+                    <FaUser />
+                </DefaultUserIcon>
+            )}
 
             <CardContent>
                 {title && <Card.Title>{title}</Card.Title>}
 
-                {description && (
-                    <Card.Description color={themeColors.colors.gray.text}>
-                        {description.length > 150 ? `${description.substring(0, 150).trim()}...` : description}
-                    </Card.Description>
-                )}
+                {description && <Card.Description color={themeColors.colors.gray.text}>{description}</Card.Description>}
 
                 {date && (
                     <DateText>
