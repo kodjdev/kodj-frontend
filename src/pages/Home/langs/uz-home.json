@@ -10,14 +10,6 @@
             "description": "Biz ikkala davlat dasturchilarini birlashtiramiz va har ikki dunyoning eng yaxshi tomonlarini taklif etamiz."
         }
     },
-    "header": {
-        "aboutUs": "Biz Haqimizda",
-        "news": "Yangiliklar",
-        "events": "Tadbirlar",
-        "speakers": "Spikerlar",
-        "myPage": "Mening Sahifam",
-        "login": "Kirish"
-    },
     "statisticsPage": {
         "statisticsHeader": "Statistika",
         "statisticsHeaderGray": "KO'DJ ning",
@@ -84,6 +76,28 @@
             "project6": {
                 "title": "Startup Grind",
                 "description": "Startaplar o‘sish va muvaffaqiyatga erishish uchun tadbirlar va dasturlar tashkil etadigan global starup loyihalar qilish jamoasi."
+            }
+        }
+    },
+    "header": {
+        "nav": {
+            "aboutUs": "Biz haqimizda",
+            "news": "Yangiliklar",
+            "events": "Tadbirlar",
+            "myPage": "Mening sahifam"
+        },
+        "languages": {
+            "english": "English",
+            "uzbek": "Uzbek",
+            "title": "Til"
+        },
+        "auth": {
+            "login": "Kirish",
+            "logout": {
+                "confirmTitle": "Chiqishni tasdiqlash",
+                "confirmMessage": "Haqiqatan ham chiqmoqchimisiz?",
+                "confirm": "Ha, chiqish",
+                "cancel": "Bekor qilish"
             }
         }
     }

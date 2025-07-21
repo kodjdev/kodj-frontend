@@ -4,6 +4,7 @@ import themeColors from '@/tools/themeColors';
 import speakerImage from '@/static/icons/rocket.jpg';
 import Button from '@/components/Button/Button';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 const BannerContainer = styled(motion.div)`
     background-color: ${themeColors.colors.gray.dark};
@@ -162,18 +163,19 @@ const ImageFallback = styled.div`
 `;
 
 export default function SpeakerRegistrationBanner() {
+    const { t } = useTranslation('benefits');
     const navigate = useNavigate();
 
     return (
         <BannerContainer initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
             <ContentSection>
                 <BannerTitle>
-                    KO'DJda <HighlightText>SPIKER</HighlightText> bo'ling 🚀
+                    {t('speakerBanner.titleBefore')} <HighlightText>{t('speakerBanner.titleHighlight')}</HighlightText>{' '}
+                    {t('speakerBanner.titleAfter')}
                 </BannerTitle>
                 <BannerDescription>
-                    <span>Koreyadagi O'zbek Dasturchilar Jamiyati</span> har oy{' '}
-                    <strong>texnologiya va dasturlash</strong> sohasida tajribali mutahasislar kelajakdagi
-                    uchrashuvimizda spiker bo'lish uchun bu yerda ro'yhatdan o'ting:
+                    <span>{t('speakerBanner.communityName')}</span> {t('speakerBanner.inviteText')}{' '}
+                    <strong>{t('speakerBanner.fieldText')}</strong> {t('speakerBanner.registerText')}
                 </BannerDescription>
                 <ButtonWrapper>
                     <StyledButton
@@ -182,7 +184,7 @@ export default function SpeakerRegistrationBanner() {
                         variant="light"
                         htmlType="button"
                     >
-                        Apply here
+                        {t('speakerBanner.applyButton')}
                     </StyledButton>
                 </ButtonWrapper>
             </ContentSection>

@@ -7,6 +7,7 @@ import { HeaderProps } from '@/types';
 import useAuth from '@/context/useAuth';
 import { Globe, User2 } from 'lucide-react';
 import Card from '@/components/Card/Card';
+import { useTranslation } from 'react-i18next';
 
 type LanguageMenuProps = {
     isOpen: boolean;
@@ -177,8 +178,9 @@ export default function HeaderDesktop({
     isAuthenticated,
     langMenuRef,
 }: HeaderProps) {
-    const { user } = useAuth();
+    const { t } = useTranslation('home');
 
+    const { user } = useAuth();
     return (
         <HeaderOuterContainer>
             <HeaderInnerContainer>
@@ -189,16 +191,16 @@ export default function HeaderDesktop({
                 </LogoContainer>
 
                 <Navigation>
-                    <NavLink to="/about">About Us</NavLink>
-                    <NavLink to="/news">News</NavLink>
-                    <NavLink to="/events">Events</NavLink>
+                    <NavLink to="/about">{t('header.nav.aboutUs')}</NavLink>
+                    <NavLink to="/news">{t('header.nav.news')}</NavLink>
+                    <NavLink to="/events">{t('header.nav.events')}</NavLink>
                 </Navigation>
 
                 <AuthButtons>
                     <LanguageToggle ref={langMenuRef}>
                         <LanguageButton variant="text" size="mini" onClick={toggleLangMenu}>
                             <Globe size={16} />
-                            {currentLang === 'en' ? 'English' : 'Uzbek'}
+                            {currentLang === 'en' ? t('header.languages.english') : t('header.languages.uzbek')}
                         </LanguageButton>
 
                         {langMenuOpen && (
@@ -209,7 +211,7 @@ export default function HeaderDesktop({
                                     onClick={() => handleLangChange('en')}
                                     isActive={currentLang === 'en'}
                                 >
-                                    English
+                                    {t('header.languages.english')}
                                 </LanguageOption>
                                 <LanguageOption
                                     variant="text"
@@ -217,7 +219,7 @@ export default function HeaderDesktop({
                                     onClick={() => handleLangChange('uz')}
                                     isActive={currentLang === 'uz'}
                                 >
-                                    Uzbek
+                                    {t('header.languages.uzbek')}
                                 </LanguageOption>
                             </LanguageMenu>
                         )}
@@ -226,21 +228,19 @@ export default function HeaderDesktop({
                         <Link to={'/mypage'}>
                             <UserAvatar>
                                 {user?.data.imageUrl ? (
-                                    <img src={user?.data.imageUrl} alt={`${user.data.firstName || 'User'}'s Avatar`} />
+                                    <img src={user.data.imageUrl} alt={`${user.data.firstName || 'User'}'s Avatar`} />
                                 ) : (
                                     <User2
                                         size={20}
                                         color={themeColors.colors.neutral.white}
-                                        style={{
-                                            padding: '4px',
-                                        }}
+                                        style={{ padding: '4px' }}
                                     />
                                 )}
                             </UserAvatar>
                         </Link>
                     ) : (
                         <Button asLink to="/login" variant="light" size="mini">
-                            login
+                            {t('header.auth.login')}
                         </Button>
                     )}
                 </AuthButtons>

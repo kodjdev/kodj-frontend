@@ -4,6 +4,7 @@ import themeColors from '@/tools/themeColors';
 import SectionLoading from '@/components/Loading/LoadingAnimation';
 import { ArrowUpRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 type TimeLeftType = {
     days: number;
@@ -266,6 +267,8 @@ const RegisterText = styled.span`
 
 export default function TimeFrame() {
     const navigate = useNavigate();
+    const { t } = useTranslation('benefits');
+
     const [timeLeft, setTimeLeft] = useState<TimeLeftType>({
         days: 0,
         hours: 0,
@@ -317,7 +320,6 @@ export default function TimeFrame() {
     return (
         <Container>
             <ContentWrapper>
-                {/* chap tomon */}
                 <LeftSection>
                     <AlertContainer>
                         <IconWrapper>
@@ -334,58 +336,54 @@ export default function TimeFrame() {
                                 />
                             </svg>
                         </IconWrapper>
-                        <AlertText>Hurry up, time is running out.</AlertText>
+                        <AlertText>{t('timeFrame.alert')}</AlertText>
                     </AlertContainer>
 
                     <TimeInfoContainer>
-                        <TimeLeftText>Time left until the next</TimeLeftText>
-                        <UntilNextText>MeetUp.</UntilNextText>
+                        <TimeLeftText>{t('timeFrame.timeLeft')}</TimeLeftText>
+                        <UntilNextText>{t('timeFrame.event')}</UntilNextText>
                         <EventNameText>{event?.name || ''}</EventNameText>
 
                         <RegisterButton
                             onClick={() => {
                                 navigate('/events');
-                                if (process.env.NODE_ENV !== 'production') {
-                                    console.log('Register clicked');
-                                }
                             }}
                         >
                             <ButtonContent>
                                 <ArrowIcon>
                                     <ArrowUpRight />
                                 </ArrowIcon>
-                                <RegisterText>Register</RegisterText>
+                                <RegisterText>{t('timeFrame.registerButton')}</RegisterText>
                             </ButtonContent>
                         </RegisterButton>
                     </TimeInfoContainer>
                 </LeftSection>
 
-                {/* ong tomon - timer qismi */}
                 <TimerContainer>
                     <TimeUnit>
                         <TimeValue>{formatTime(timeLeft.days)}</TimeValue>
-                        <TimeLabel>DAY</TimeLabel>
+                        <TimeLabel>{t('timeFrame.units.day')}</TimeLabel>
                     </TimeUnit>
 
                     <Separator>·</Separator>
 
                     <TimeUnit>
                         <TimeValue>{formatTime(timeLeft.hours)}</TimeValue>
-                        <TimeLabel>HOUR</TimeLabel>
+                        <TimeLabel>{t('timeFrame.units.hour')}</TimeLabel>
                     </TimeUnit>
 
                     <Separator>·</Separator>
 
                     <TimeUnit>
                         <TimeValue>{formatTime(timeLeft.minutes)}</TimeValue>
-                        <TimeLabel>MINUTE</TimeLabel>
+                        <TimeLabel>{t('timeFrame.units.minute')}</TimeLabel>
                     </TimeUnit>
 
                     <Separator>·</Separator>
 
                     <TimeUnit>
                         <TimeValue>{formatTime(timeLeft.seconds)}</TimeValue>
-                        <TimeLabel>SECOND</TimeLabel>
+                        <TimeLabel>{t('timeFrame.units.second')}</TimeLabel>
                     </TimeUnit>
                 </TimerContainer>
             </ContentWrapper>

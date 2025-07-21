@@ -17,7 +17,7 @@ import useModal from '@/hooks/useModal';
 export default function Header() {
     const langMenuRef = useRef<HTMLDivElement>(null);
     const [langMenuOpen, setLangMenuOpen] = useState(false);
-    const { i18n } = useTranslation();
+    const { t, i18n } = useTranslation('home');
     const { isAuthenticated, logout } = useAuth();
     const { isOpen, openModal, closeModal } = useModal();
 
@@ -94,11 +94,11 @@ export default function Header() {
                 <ConfirmModal
                     isOpen={isOpen}
                     onClose={closeModal}
-                    title={'Confirm Logout'}
-                    message={'Are you sure you want to log out?'}
+                    title={t('header.auth.logout.confirmTitle')}
+                    message={t('header.auth.logout.confirmMessage')}
                     onConfirm={handleConfirmedLogout}
-                    confirmLabel={'Yes, log out'}
-                    cancelLabel={'Cancel'}
+                    confirmLabel={t('header.auth.logout.confirm')}
+                    cancelLabel={t('header.auth.logout.cancel')}
                     size="sm"
                 />
             }

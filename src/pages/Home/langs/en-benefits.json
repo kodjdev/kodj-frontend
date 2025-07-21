@@ -1,0 +1,58 @@
+{
+    "benefitsSection": {
+        "heading": {
+            "part1": "Come and see",
+            "part2": "what we have to offer:"
+        },
+        "joinCommunity": "Join the Community",
+        "benefits": {
+            "benefit1": {
+                "title": "Technical Knowledge Sharing",
+                "description": "Deep dive into coding practices, system architecture, and cutting-edge tech trends with experienced developers."
+            },
+            "benefit2": {
+                "title": "Networking Opportunities",
+                "description": "Connect with like-minded developers, potential employers, and collaborators for your next big project."
+            },
+            "benefit3": {
+                "title": "Hands-on Workshops",
+                "description": "Participate in practical coding sessions and tech demos led by industry experts in both Uzbekistan and South Korea."
+            },
+            "benefit4": {
+                "title": "Career Development",
+                "description": "Discover job opportunities, get mentorship, and receive guidance on advancing your developer career path."
+            },
+            "benefit5": {
+                "title": "Open Source Collaboration",
+                "description": "Find contributors for your projects, join exciting open source initiatives, and build your portfolio through community work."
+            },
+            "benefit6": {
+                "title": "Cross-Cultural Tech Exchange",
+                "description": "Bridge technological approaches between Asian and Western development practices through international developer meetups."
+            }
+        }
+    },
+    "speakerBanner": {
+        "titleBefore": "Become a",
+        "titleHighlight": "SPEAKER",
+        "titleAfter": "at KO'DJ 🚀",
+        "communityName": "Korean-Uzbek Developers Community",
+        "inviteText": "invites",
+        "fieldText": "technology and programming",
+        "registerText": "specialists to register here to become a speaker at our upcoming meetups:",
+        "applyButton": "Apply here"
+    },
+
+    "timeFrame": {
+        "alert": "Hurry up, time is running out.",
+        "timeLeft": "Time left until the next",
+        "event": "MeetUp.",
+        "registerButton": "Register",
+        "units": {
+            "day": "DAY",
+            "hour": "HOUR",
+            "minute": "MINUTE",
+            "second": "SECOND"
+        }
+    }
+}
