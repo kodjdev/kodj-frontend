@@ -1,23 +1,14 @@
-import React from 'react';
 import styled from 'styled-components';
 import themeColors from '@/tools/themeColors';
 import Card from '@/components/Card/Card';
-import Button from '@/components/Button/Button';
+import { AirVentIcon, Brain, GitFork, Globe, GraduationCap, Laptop, UsersRound } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 type EventCard = {
     id: number;
     title: string;
     description: string;
 };
-
-const AIIcon: React.FC = () => (
-    <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect width="40" height="40" fill="#1A1A1A" />
-        <path d="M12 11H25V25H12V11Z" stroke="white" strokeWidth="2" />
-        <path d="M25 11L30 7" stroke="white" strokeWidth="2" />
-        <path d="M25 25L30 29" stroke="white" strokeWidth="2" />
-    </svg>
-);
 
 const SectionContainer = styled.section`
     width: 100%;
@@ -59,14 +50,25 @@ const Title = styled.h2`
     }
 `;
 
-const JoinButton = styled(Button)`
+const JoinLink = styled.a`
     border: 1px solid ${themeColors.cardBorder.color};
     border-radius: 8px;
-    transition: all 0.2s ease;
+    transition: all 0.3s ease;
+    padding: 10px 18px;
+    font-size: ${themeColors.typography.body.small.fontSize}px;
+    color: ${themeColors.colors.neutral.white};
+    text-decoration: none;
+    display: inline-block;
 
     &:hover {
-        background-color: ${themeColors.colors.gray.main};
-        color: ${themeColors.colors.primary.light};
+        background-color: ${themeColors.colors.primary.main};
+        border-color: ${themeColors.colors.primary.main};
+        color: ${themeColors.colors.neutral.white};
+        transform: translateY(-1px);
+    }
+
+    &:active {
+        transform: translateY(0);
     }
 `;
 
@@ -85,66 +87,84 @@ const StyledCard = styled(Card)`
 `;
 
 /**
- * EventBenefits - A page component
+ * EventBenefits - Ui Component
  * @description This component displays a section with event cards showcasing AI and ML events.
  */
 export default function EventBenefits() {
+    const { t } = useTranslation('benefits');
+
     const eventCards: EventCard[] = [
         {
             id: 1,
-            title: 'AI & ML Events',
-            description:
-                'A platform for discovering and sharing AI and Machine Learning events in Uzbekistan and South Korea.',
+            title: t('benefitsSection.benefits.benefit1.title'),
+            description: t('benefitsSection.benefits.benefit1.description'),
         },
         {
             id: 2,
-            title: 'AI & ML Events',
-            description:
-                'A platform for discovering and sharing AI and Machine Learning events in Uzbekistan and South Korea.',
+            title: t('benefitsSection.benefits.benefit2.title'),
+            description: t('benefitsSection.benefits.benefit2.description'),
         },
         {
             id: 3,
-            title: 'AI & ML Events',
-            description:
-                'A platform for discovering and sharing AI and Machine Learning events in Uzbekistan and South Korea.',
+            title: t('benefitsSection.benefits.benefit3.title'),
+            description: t('benefitsSection.benefits.benefit3.description'),
         },
         {
             id: 4,
-            title: 'AI & ML Events',
-            description:
-                'A platform for discovering and sharing AI and Machine Learning events in Uzbekistan and South Korea.',
+            title: t('benefitsSection.benefits.benefit4.title'),
+            description: t('benefitsSection.benefits.benefit4.description'),
         },
         {
             id: 5,
-            title: 'AI & ML Events',
-            description:
-                'A platform for discovering and sharing AI and Machine Learning events in Uzbekistan and South Korea.',
+            title: t('benefitsSection.benefits.benefit5.title'),
+            description: t('benefitsSection.benefits.benefit5.description'),
         },
         {
             id: 6,
-            title: 'AI & ML Events',
-            description:
-                'A platform for discovering and sharing AI and Machine Learning events in Uzbekistan and South Korea.',
+            title: t('benefitsSection.benefits.benefit6.title'),
+            description: t('benefitsSection.benefits.benefit6.description'),
         },
     ];
-
+    const getIconForCard = (cardId: number) => {
+        switch (cardId) {
+            case 1:
+                return <Brain size={24} />;
+            case 2:
+                return <UsersRound size={24} />;
+            case 3:
+                return <Laptop size={24} />;
+            case 4:
+                return <GraduationCap size={24} />;
+            case 5:
+                return <GitFork size={24} />;
+            case 6:
+                return <Globe size={24} />;
+            default:
+                return <AirVentIcon />;
+        }
+    };
     return (
         <SectionContainer>
             <SectionHeader>
                 <Title>
-                    <span>Come and see </span>
-                    <span>what we have to offer:</span>
+                    <span>{t('benefitsSection.heading.part1')} </span>
+                    <span>{t('benefitsSection.heading.part2')}</span>
                 </Title>
-                <JoinButton asLink to="/join" variant="text" size="md">
-                    Join the Community
-                </JoinButton>
+                <JoinLink
+                    href="https://t.me/+_ERUg8xBsiVkNTJl"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="Telegram"
+                >
+                    {t('benefitsSection.joinCommunity')}
+                </JoinLink>
             </SectionHeader>
 
             <CardsGrid>
                 {eventCards.map((card: EventCard) => (
                     <StyledCard
                         key={card.id}
-                        icon={<AIIcon />}
+                        icon={getIconForCard(card.id)}
                         title={card.title}
                         description={card.description}
                         hoverEffect={true}

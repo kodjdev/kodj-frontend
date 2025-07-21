@@ -1,0 +1,57 @@
+{
+    "benefitsSection": {
+        "heading": {
+            "part1": "Keling va ",
+            "part2": "ko'ring:"
+        },
+        "joinCommunity": "Jamiyatga qo'shiling",
+        "benefits": {
+            "benefit1": {
+                "title": "Texnik bilimlar almashish",
+                "description": "Tajribali dasturchilər bilan koding amaliyoti, tizim arxitekturasi va eng zamonaviy texnologik tendentsiyalarni o'rganish."
+            },
+            "benefit2": {
+                "title": "Tarmoq imkoniyatlari",
+                "description": "Bir xil fikrli dasturchilər, potentsial ish beruvchilar va keyingi katta loyihangiz uchun hamkorlar bilan bog'laning."
+            },
+            "benefit3": {
+                "title": "Amaliy seminarlar",
+                "description": "O'zbekiston va Janubiy Koreyada sanoat ekspertlari tomonidan o'tkaziladigan amaliy kodlash mashg'ulotlari va texnologik namoyishlar."
+            },
+            "benefit4": {
+                "title": "Karyera rivojlanishi",
+                "description": "Ish imkoniyatlarini kashf eting, mentorlık oling va dasturchilık karyerangizni rivojlantirishda ko'rsatmalar oling."
+            },
+            "benefit5": {
+                "title": "Ochiq manba hamkorligi",
+                "description": "Loyihalaringiz uchun hamkorlar toping, qiziqarli ochiq manbali tashabbuslarga qo'shiling va jamoa ishi orqali portfolingizni yarating."
+            },
+            "benefit6": {
+                "title": "Madaniyatlararo texnologik almashuv",
+                "description": "Xalqaro dasturchilər uchrashuvlari orqali Osiyo va G'arb dasturlash amaliyotlari o'rtasida bog'lanish o'rnating."
+            }
+        }
+    },
+    "speakerBanner": {
+        "titleBefore": "KO'DJda",
+        "titleHighlight": "SPIKER",
+        "titleAfter": "bo'ling 🚀",
+        "communityName": "Koreyadagi O'zbek Dasturchilar Jamiyati",
+        "inviteText": "har oy",
+        "fieldText": "texnologiya va dasturlash",
+        "registerText": "sohasida tajribali mutahasislar kelajakdagi uchrashuvimizda spiker bo'lish uchun bu yerda ro'yhatdan o'ting:",
+        "applyButton": "Ariza topshiring"
+    },
+    "timeFrame": {
+        "alert": "Shoshiling, vaqt tugab bormoqda.",
+        "timeLeft": "Keyingi tadbirga",
+        "event": "Uchrashuv.",
+        "registerButton": "Register",
+        "units": {
+            "day": "KUN",
+            "hour": "SOAT",
+            "minute": "DAQIQA",
+            "second": "SONIYA"
+        }
+    }
+}

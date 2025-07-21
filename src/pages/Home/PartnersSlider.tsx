@@ -120,7 +120,7 @@ const companies = [
 export default function PartnersSlider() {
     return (
         <Container>
-            <Title>Trusted by fast-growing companies worldwide</Title>
+            <Title>Our partners and sponsors</Title>
             <SliderWrapper>
                 <LogoContainer>
                     {companies.map((company, index) => (

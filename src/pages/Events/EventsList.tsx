@@ -11,6 +11,7 @@ import useFormatDate from '@/hooks/useFormatDate';
 import { message } from 'antd';
 import PageLoading from '@/components/Loading/LoadingAnimation';
 import { Event } from '@/types/event';
+import { useTranslation } from 'react-i18next';
 
 enum EventFilter {
     ALL = 'all',
@@ -98,12 +99,6 @@ const StyledLink = styled(Link)`
     text-decoration: none;
 `;
 
-const filterOptions = [
-    { value: EventFilter.ALL, label: 'All' },
-    { value: EventFilter.UPCOMING, label: 'Upcoming Events' },
-    { value: EventFilter.PAST, label: 'Past Events' },
-];
-
 /**
  * EventsList - Page to display a list of events with filtering options.
  * @param {Function} onFilterChange - Callback function to handle filter changes.
@@ -121,6 +116,8 @@ export default function EventsList({ onFilterChange, defaultFilter = EventFilter
     const [loading, setLoading] = useState(true);
     const [activeFilter, setActiveFilter] = useState<EventFilter>(defaultFilter);
     const hasFetched = useRef(false);
+
+    const { t } = useTranslation('events');
 
     const { formatDate } = useFormatDate();
 
@@ -174,6 +171,12 @@ export default function EventsList({ onFilterChange, defaultFilter = EventFilter
         fetchData();
     }, []);
 
+    const filterOptions = [
+        { value: EventFilter.ALL, label: t('events.filters.all') },
+        { value: EventFilter.UPCOMING, label: t('events.filters.upcoming') },
+        { value: EventFilter.PAST, label: t('events.filters.past') },
+    ];
+
     const handleFilterChange = (filter: EventFilter) => {
         setActiveFilter(filter);
         if (onFilterChange) {
@@ -222,8 +225,10 @@ export default function EventsList({ onFilterChange, defaultFilter = EventFilter
                 ))}
             </EventFilterContainer>
             <SectionHeader>
-                <SectionTitle>{activeFilter === EventFilter.PAST ? 'Past' : 'Upcoming'}</SectionTitle>
-                <SectionTitleGray>Events</SectionTitleGray>
+                <SectionTitle>
+                    {activeFilter === EventFilter.PAST ? t('events.sections.past') : t('events.sections.upcoming')}
+                </SectionTitle>
+                <SectionTitleGray>{t('events.sections.events')}</SectionTitleGray>
             </SectionHeader>
             <EventsGrid>
                 {activeFilter === EventFilter.ALL || activeFilter === EventFilter.UPCOMING ? (
@@ -241,8 +246,8 @@ export default function EventsList({ onFilterChange, defaultFilter = EventFilter
             {activeFilter === EventFilter.ALL && (
                 <>
                     <SectionHeader>
-                        <SectionTitle>Past</SectionTitle>
-                        <SectionTitleGray>Events</SectionTitleGray>
+                        <SectionTitle>{t('events.sections.past')}</SectionTitle>
+                        <SectionTitleGray>{t('events.sections.events')}</SectionTitleGray>
                     </SectionHeader>
                     <EventsGrid>
                         {pastEvents && pastEvents.length > 0 ? (

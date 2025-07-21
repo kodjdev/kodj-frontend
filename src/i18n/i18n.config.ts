@@ -5,8 +5,12 @@ import { initReactI18next, useTranslation } from 'react-i18next';
 
 import uzHome from '@/pages/Home/langs/uz-home.json';
 import enHome from '@/pages/Home/langs/en-home.json';
+import uzBenefits from '@/pages/Home/langs/uz-benefits.json';
+import enBenefits from '@/pages/Home/langs/en-benefits.json';
 import enSpeakers from '@/pages/Speakers/langs/en-speakers.json';
 import uzSpeakers from '@/pages/Speakers/langs/uz-speakers.json';
+import enEvents from '@/pages/Events/langs/en-events.json';
+import uzEvents from '@/pages/Events/langs/uz-events.json';
 import enEventRegister from '@/pages/Events/EventRegister/langs/en-register.json';
 import uzEventRegister from '@/pages/Events/EventRegister/langs/uz-register.json';
 
@@ -15,7 +19,9 @@ declare module 'i18next' {
         defaultNS: 'about';
         resources: {
             home: typeof enHome;
+            benefits: typeof enBenefits;
             speakers: typeof enSpeakers;
+            events: typeof enEvents;
             eventRegister: typeof enEventRegister;
         };
     }
@@ -31,12 +37,16 @@ i18n.use(initReactI18next)
         resources: {
             en: {
                 home: enHome,
+                benefits: enBenefits,
                 speakers: enSpeakers,
+                events: enEvents,
                 eventRegister: enEventRegister,
             },
             uz: {
                 home: uzHome,
+                benefits: uzBenefits,
                 speakers: uzSpeakers,
+                events: uzEvents,
                 eventRegister: uzEventRegister,
             },
         },
@@ -44,7 +54,7 @@ i18n.use(initReactI18next)
         interpolation: {
             escapeValue: false,
         },
-        ns: ['home', 'speakers', 'eventRegister'],
+        ns: ['home', 'benefits', 'speakers', 'events', 'eventRegister'],
         defaultNS: 'about',
         detection: {
             order: ['localStorage', 'navigator'],

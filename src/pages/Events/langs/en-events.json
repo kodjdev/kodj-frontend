@@ -1,0 +1,14 @@
+{
+    "events": {
+        "filters": {
+            "all": "All",
+            "upcoming": "Upcoming Events",
+            "past": "Past Events"
+        },
+        "sections": {
+            "upcoming": "Upcoming",
+            "past": "Past",
+            "events": "Events"
+        }
+    }
+}

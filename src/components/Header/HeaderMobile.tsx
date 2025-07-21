@@ -7,6 +7,7 @@ import { HeaderProps } from '@/types';
 import kodjLogo from '@/static/icons/kodj_new.jpg';
 import useAuth from '@/context/useAuth';
 import { User2 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 type MobileMenuProps = {
     isOpen: boolean;
@@ -248,6 +249,8 @@ export default function HeaderMobile({
     langMenuOpen,
     toggleLangMenu,
 }: HeaderProps) {
+    const { t } = useTranslation('home');
+
     const { user } = useAuth();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -279,22 +282,22 @@ export default function HeaderMobile({
                 <MobileMenu isOpen={isMenuOpen}>
                     <MobileNavigation>
                         <MobileNavLink to="/about" onClick={closeMenu}>
-                            About Us
+                            {t('header.nav.aboutUs')}
                         </MobileNavLink>
                         <MobileNavLink to="/news" onClick={closeMenu}>
-                            News
+                            {t('header.nav.news')}
                         </MobileNavLink>
                         <MobileNavLink to="/events" onClick={closeMenu}>
-                            Events
+                            {t('header.nav.events')}
                         </MobileNavLink>
                     </MobileNavigation>
 
                     <BottomSection>
                         <LanguageSection>
-                            <LanguageTitle>Language</LanguageTitle>
+                            <LanguageTitle>{t('header.languages.title')}</LanguageTitle>
                             <LanguageToggle ref={langMenuRef}>
                                 <LanguageButton onClick={toggleLangMenu}>
-                                    {currentLang === 'en' ? 'English' : 'Uzbek'}
+                                    {currentLang === 'en' ? t('header.languages.english') : t('header.languages.uzbek')}
                                 </LanguageButton>
 
                                 <LanguageDropdown isOpen={langMenuOpen}>
@@ -302,13 +305,13 @@ export default function HeaderMobile({
                                         isActive={currentLang === 'en'}
                                         onClick={() => handleLanguageSelect('en')}
                                     >
-                                        English
+                                        {t('header.languages.english')}
                                     </LanguageOption>
                                     <LanguageOption
                                         isActive={currentLang === 'uz'}
                                         onClick={() => handleLanguageSelect('uz')}
                                     >
-                                        Uzbek
+                                        {t('header.languages.uzbek')}
                                     </LanguageOption>
                                 </LanguageDropdown>
                             </LanguageToggle>
@@ -320,7 +323,7 @@ export default function HeaderMobile({
                                     <UserAvatar>
                                         {user?.data.imageUrl ? (
                                             <img
-                                                src={user?.data.imageUrl}
+                                                src={user.data.imageUrl}
                                                 alt={`${user.data.firstName || 'User'}'s Avatar`}
                                             />
                                         ) : (
@@ -330,7 +333,7 @@ export default function HeaderMobile({
                                 </Link>
                             ) : (
                                 <StyledLoginButton asLink to="/login" variant="light" size="sm" onClick={closeMenu}>
-                                    Login
+                                    {t('header.auth.login')}
                                 </StyledLoginButton>
                             )}
                         </AuthSection>
