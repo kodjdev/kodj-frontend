@@ -5,6 +5,8 @@ import { initReactI18next, useTranslation } from 'react-i18next';
 
 import uzHome from '@/pages/Home/langs/uz-home.json';
 import enHome from '@/pages/Home/langs/en-home.json';
+import enAbout from '@/pages/About/langs/en-about.json';
+import uzAbout from '@/pages/About/langs/uz-about.json';
 import uzBenefits from '@/pages/Home/langs/uz-benefits.json';
 import enBenefits from '@/pages/Home/langs/en-benefits.json';
 import enSpeakers from '@/pages/Speakers/langs/en-speakers.json';
@@ -19,6 +21,7 @@ declare module 'i18next' {
         defaultNS: 'about';
         resources: {
             home: typeof enHome;
+            about: typeof enAbout;
             benefits: typeof enBenefits;
             speakers: typeof enSpeakers;
             events: typeof enEvents;
@@ -37,6 +40,7 @@ i18n.use(initReactI18next)
         resources: {
             en: {
                 home: enHome,
+                about: enAbout,
                 benefits: enBenefits,
                 speakers: enSpeakers,
                 events: enEvents,
@@ -44,6 +48,7 @@ i18n.use(initReactI18next)
             },
             uz: {
                 home: uzHome,
+                about: uzAbout,
                 benefits: uzBenefits,
                 speakers: uzSpeakers,
                 events: uzEvents,
@@ -54,7 +59,7 @@ i18n.use(initReactI18next)
         interpolation: {
             escapeValue: false,
         },
-        ns: ['home', 'benefits', 'speakers', 'events', 'eventRegister'],
+        ns: ['home', 'about', 'benefits', 'speakers', 'events', 'eventRegister'],
         defaultNS: 'about',
         detection: {
             order: ['localStorage', 'navigator'],

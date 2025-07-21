@@ -15,7 +15,7 @@ import useApiService from '@/services';
 import { ApiResponse } from '@/types/fetch';
 import { EventRegistrationData, EventRegistrationResponse } from '@/types/user';
 import ConfirmModal from '@/components/Modal/ModalTypes/ConfirmModal';
-import RightSideDetails from '@/pages/Events/EventRegister/RightSideDetails';
+import RightSideDetails from '@/pages/Events/EventRegister/RightsideDetails';
 import InfoModal from '@/components/Modal/ModalTypes/InfoModal';
 
 type FirstStepFields = Pick<

@@ -1,0 +1,20 @@
+{
+    "aboutUs": {
+        "subtitle": "KO'DJ'da biz Janubiy Koreyada gullab-yashnayotgan dasturchilar jamiyatini yaratishga ishtiyoqmandmiz. Bizning tadbirlarimiz dasturchilarga kuch berish, ijodkorlikni ilhomlantirish va hamkorlikni rivojlantirishga mo'ljallangan.",
+        "title": "Biz haqimizda",
+        "mission": {
+            "title": "KO'DJ",
+            "subSubtitle": "Missiyasi: ",
+            "paragraph1": "KO'DJ'da biz hamkorlik va innovatsiya kuchiga ishonamiz. Bizning tadbirlarimiz oddiy uchrashuvlardan ko'proq; ular transformatsion o'rganish, mazmunli aloqalar va ajoyib g'oyalar uchun platformalardir.",
+            "paragraph2": "KO'DJ tadbirlarida ishtirok etish orqali siz shunchaki tadbirga qatnashayotgansiz emas - balki O'zbekiston texnologiya jamiyatini yangi cho'qqilarga ko'tarish harakatining bir qismi bo'lasiz. Keling, birga yarataylik, o'rganaylik va o'saylik."
+        },
+        "organizers": {
+            "title": "Tadbir",
+            "titleSpan": "Tashkilotchilari:"
+        },
+        "contributors": {
+            "title": "Hissa",
+            "titleSpan": " Qo'shganlar:"
+        }
+    }
+}

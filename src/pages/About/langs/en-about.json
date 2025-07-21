@@ -1,0 +1,20 @@
+{
+    "aboutUs": {
+        "title": "About us",
+        "subtitle": "At KO'DJ, we are passionate about creating a thriving developer community in South Korea. Our events are designed to empower developers, inspire creativity, and foster collaboration.",
+        "mission": {
+            "title": "KO'DJ",
+            "subSubtitle": "Mission: ",
+            "paragraph1": "At KO'DJ, we believe in the power of collaboration and innovation. Our events are more than just meetups; they are platforms for transformative learning, meaningful connections, and groundbreaking ideas.",
+            "paragraph2": "By participating in KO'DJ events, you're not just attending an event—you're becoming part of a movement to elevate Uzbekistan's tech community to new heights. Let's create, learn, and grow together."
+        },
+        "organizers": {
+            "title": "Event",
+            "titleSpan": "Organizers:"
+        },
+        "contributors": {
+            "title": "Project",
+            "titleSpan": "Contributors:"
+        }
+    }
+}
