@@ -577,10 +577,7 @@ export default function NewsList() {
                         )}
                     </>
                 ) : (
-                    // "noNewsTitle": "No news articles found",
-                    // "noNewsDescription": "We couldn't find any articles matching your search criteria. Try adjusting your filters or search terms.",
-                    // "noNewsSubtext": "Check back later for fresh content or explore different categories.",
-                    // "tryAgainButton": "Clear Filters"
+                    
                     <EmptyState
                         title={t('emptyState.noNewsTitle')}
                         description={t('emptyState.noNewsDescription')}
