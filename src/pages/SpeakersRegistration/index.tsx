@@ -193,7 +193,6 @@ const Select = styled.select`
 `;
 
 const TextArea = styled.textarea`
-    // width: 100%;
     border: 1px solid ${themeColors.cardBorder.color};
     background-color: ${themeColors.colors.gray.dark};
     border-radius: 8px;
