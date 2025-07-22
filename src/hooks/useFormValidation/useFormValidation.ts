@@ -175,7 +175,7 @@ export const useFormValidation = () => {
         }
 
         if (username.length > 40) {
-            return { isValid: false, error: 'Username must be less than 20 characters' };
+            return { isValid: false, error: 'Username must be less than 40 characters' };
         }
 
         if (!/^[a-zA-Z\s]+$/.test(username)) {
