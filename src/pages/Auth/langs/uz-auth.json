@@ -1,0 +1,93 @@
+{
+    "login": {
+        "welcomeBack": "Xush kelibsiz",
+        "confirmEmail": "Emailni tasdiqlash",
+        "loginToContinueRegistration": "Ro'yxatdan o'tishni davom ettirish uchun tizimga kiring:",
+        "email": "Email",
+        "password": "Parol",
+        "forgotPassword": "Parolni unutdingizmi?",
+        "loggingIn": "KIRILMOQDA...",
+        "login": "KIRISH",
+        "or": "YOKI",
+        "noAccountYet": "Hali hisobingiz yo'qmi?",
+        "signUpHere": "Ro'yxatdan o'ting",
+        "signinWith": "Google bilan kirish",
+        "messages": {
+            "loggingIn": "Tizimga kirilmoqda...",
+            "otpSentSuccess": "OTP kodingiz emailga yuborildi",
+            "loginFailed": "Tizimga kirishda xatolik. Iltimos, ma'lumotlaringizni tekshiring.",
+            "verifyingOtp": "OTP kodi tekshirilmoqda...",
+            "loginSuccessful": "Muvaffaqiyatli kirildi! Yo'naltirilmoqda...",
+            "invalidOtp": "Noto'g'ri OTP kodi. Iltimos, tekshirib qaytadan urinib ko'ring.",
+            "otpExpired": "OTP kodining muddati tugagan. Iltimos, yangisini so'rang.",
+            "verificationFailed": "Tasdiqlashda xatolik. Iltimos, qaytadan urinib ko'ring.",
+            "noCredentialReceived": "Google'dan hech qanday ma'lumot olinmadi",
+            "authenticatingWithGoogle": "Google bilan autentifikatsiya qilinmoqda...",
+            "googleLoginSuccess": "Google bilan muvaffaqiyatli kirildi",
+            "googleAuthFailed": "Google autentifikatsiyasida xatolik. Iltimos, qaytadan urinib ko'ring.",
+            "googleLoginFailed": "Google orqali kirishda xatolik. Iltimos, qaytadan urinib ko'ring."
+        }
+    },
+    "signup": {
+        "createAccount": "Hisob yaratish",
+        "signupToContinueRegistration": "Ro'yxatdan o'tishni davom ettirish uchun ro'yxatdan o'ting:",
+        "email": "Email",
+        "phoneNumber": "Telefon raqami: 010XXXXXXXX",
+        "continue": "DAVOM ETISH",
+        "signUp": "RO'YXATDAN O'TISH",
+        "or": "YOKI",
+        "signupWith": "Google bilan ro'yxatdan o'tish",
+        "alreadyHaveAccount": "Hisobingiz bormi?",
+        "login": "Kirish",
+        "emailLabel": "Email:",
+        "messages": {
+            "creatingAccount": "Hisob yaratilmoqda...",
+            "accountCreatedSuccess": "Hisob muvaffaqiyatli yaratildi!",
+            "invalidInformation": "Noto'g'ri ma'lumot. Iltimos, ma'lumotlaringizni tekshiring.",
+            "emailAlreadyExists": "Email allaqachon mavjud. Iltimos, boshqa email ishlatimg.",
+            "serverError": "Server xatosi. Iltimos, keyinroq urinib ko'ring.",
+            "registrationFailed": "Ro'yxatdan o'tishda xatolik. Iltimos, qaytadan urinib ko'ring.",
+            "checkInformationAndTryAgain": "Iltimos, ma'lumotlaringizni tekshirib, qaytadan urinib ko'ring"
+        }
+    },
+    "completeAccount": {
+        "completeProfile": "Profilingizni to'ldiring",
+        "subHeading": "Google bilan ro'yxatdan o'tishni yakunlash uchun yana bir necha tafsilotlar",
+        "username": "Foydalanuvchi nomi (faqat harflar)",
+        "phoneNumber": "Telefon raqami: 010XXXXXXXX",
+        "completeRegistration": "Ro'yxatdan o'tishni yakunlash",
+        "completingRegistration": "Ro'yxatdan o'tish yakunlanmoqda...",
+        "messages": {
+            "credentialNotFound": "Google ma'lumotlari topilmadi. Iltimos, qaytadan ro'yxatdan o'tishga harakat qiling.",
+            "completingRegistration": "Ro'yxatdan o'tish yakunlanmoqda...",
+            "registrationComplete": "Ro'yxatdan o'tish yakunlandi!",
+            "invalidInformation": "Noto'g'ri ma'lumot. Iltimos, ma'lumotlaringizni tekshiring.",
+            "usernameOrPhoneExists": "Foydalanuvchi nomi yoki telefon raqami allaqachon mavjud.",
+            "registrationFailed": "Ro'yxatdan o'tishda xatolik. Iltimos, qaytadan urinib ko'ring."
+        }
+    },
+    "otpVerification": {
+        "backToLogin": "Kirishga qaytish",
+        "otpSentTo": "OTP kodi yuborildi:",
+        "verifyOtp": "OTP NI TASDIQLASH",
+        "verifying": "TEKSHIRILMOQDA...",
+        "otpDigitLabel": "OTP raqami"
+    },
+    "loginRoot": {
+        "accountCreatedSuccess": "Hisob muvaffaqiyatli yaratildi! Iltimos, hisobingizga kiring."
+    },
+    "passwordConfirm": {
+        "password": "Parol",
+        "confirmPassword": "Parolni tasdiqlang",
+        "passwordRequirements": "Parol talablari",
+        "requirements": {
+            "minLength": "Kamida 8 ta belgi",
+            "upperCase": "Bitta katta harf",
+            "lowerCase": "Bitta kichik harf",
+            "number": "Bitta raqam",
+            "specialChar": "Bitta maxsus belgi"
+        },
+        "passwordsDoNotMatch": "Parollar mos kelmaydi",
+        "creatingAccount": "Hisob yaratilmoqda..."
+    }
+}

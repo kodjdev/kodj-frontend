@@ -16,6 +16,7 @@ import {
 } from 'react-icons/fa';
 import { message } from 'antd';
 import EmptyState from '@/components/EmptyState';
+import { useTranslation } from 'react-i18next';
 
 type BlogPost = {
     id?: string;
@@ -198,6 +199,7 @@ const ToggleSwitch = styled.div<{ isActive: boolean }>`
  * Editor for creating and editing blog posts
  */
 export default function BlogEditor() {
+    const { t } = useTranslation('mypage');
     const [hasPosts, setHasPosts] = useState(false);
     const [post, setPost] = useState<BlogPost>({
         title: '',
@@ -231,22 +233,23 @@ export default function BlogEditor() {
     };
 
     const handleNewPost = () => {
-        messageApi.info('Not available now, coming soon !');
+        messageApi.info(t('blogEditor.notAvailableMessage'));
         setHasPosts(false);
     };
 
     const savePost = () => {
         console.log('Saving blog post:', { ...post, coverImage });
-        alert('Blog post saved successfully!');
+        alert(t('blogEditor.postSavedSuccess'));
     };
+
     if (!hasPosts) {
         return (
             <>
                 {contextHolder}
                 <EmptyState
-                    title="There are no blog posts written."
-                    description="Start sharing your thoughts with the KO'DJ community."
-                    buttonText="Write Blog"
+                    title={t('blogEditor.noPostsTitle')}
+                    description={t('blogEditor.noPostsDescription')}
+                    buttonText={t('blogEditor.writeButton')}
                     onButtonClick={handleNewPost}
                     style={{ paddingTop: '160px' }}
                     showLogo={true}
@@ -257,7 +260,11 @@ export default function BlogEditor() {
 
     return (
         <EditorContainer>
-            <TitleInput placeholder="Blog title" value={post.title} onChange={handleTitleChange} />
+            <TitleInput
+                placeholder={t('blogEditor.titlePlaceholder')}
+                value={post.title}
+                onChange={handleTitleChange}
+            />
 
             {coverImage ? (
                 <CoverImagePreview>
@@ -267,40 +274,40 @@ export default function BlogEditor() {
             ) : (
                 <UploadCoverButton onClick={handleCoverUpload}>
                     <FaImage />
-                    <span>Upload cover image</span>
+                    <span>{t('blogEditor.uploadCover')}</span>
                 </UploadCoverButton>
             )}
 
             <div>
                 <Toolbar>
-                    <ToolbarButton title="Heading">
+                    <ToolbarButton title={t('blogEditor.toolbar.heading')}>
                         <FaHeading />
                     </ToolbarButton>
-                    <ToolbarButton title="Bold">
+                    <ToolbarButton title={t('blogEditor.toolbar.bold')}>
                         <FaBold />
                     </ToolbarButton>
-                    <ToolbarButton title="Italic">
+                    <ToolbarButton title={t('blogEditor.toolbar.italic')}>
                         <FaItalic />
                     </ToolbarButton>
-                    <ToolbarButton title="Bulleted List">
+                    <ToolbarButton title={t('blogEditor.toolbar.bulletList')}>
                         <FaListUl />
                     </ToolbarButton>
-                    <ToolbarButton title="Numbered List">
+                    <ToolbarButton title={t('blogEditor.toolbar.numberedList')}>
                         <FaListOl />
                     </ToolbarButton>
-                    <ToolbarButton title="Quote">
+                    <ToolbarButton title={t('blogEditor.toolbar.quote')}>
                         <FaQuoteRight />
                     </ToolbarButton>
-                    <ToolbarButton title="Code">
+                    <ToolbarButton title={t('blogEditor.toolbar.code')}>
                         <FaCode />
                     </ToolbarButton>
-                    <ToolbarButton title="Link">
+                    <ToolbarButton title={t('blogEditor.toolbar.link')}>
                         <FaLink />
                     </ToolbarButton>
                 </Toolbar>
 
                 <EditorTextarea
-                    placeholder="Write your blog post here..."
+                    placeholder={t('blogEditor.contentPlaceholder')}
                     value={post.content}
                     onChange={handleContentChange}
                 />
@@ -316,13 +323,13 @@ export default function BlogEditor() {
                             style={{ display: 'none' }}
                         />
                         <ToggleSwitch isActive={post.published} />
-                        <span>{post.published ? 'Published' : 'Draft'}</span>
+                        <span>{post.published ? t('blogEditor.published') : t('blogEditor.draft')}</span>
                     </ToggleLabel>
                 </BlogStatusToggle>
 
                 <Button variant="primary" size="md" onClick={savePost} disabled={!post.title || !post.content}>
                     <FaSave style={{ marginRight: '8px' }} />
-                    Save Post
+                    {t('blogEditor.savePost')}
                 </Button>
             </ButtonsRow>
         </EditorContainer>

@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import styled, { css } from 'styled-components';
-import { Calendar, Bookmark, MessageSquare, ThumbsUp } from 'lucide-react';
+import { Calendar, Bookmark, MessageSquare, ThumbsUp, NotepadText } from 'lucide-react';
 import themeColors from '@/tools/themeColors';
 import Card from '@/components/Card/Card';
 import Input from '@/components/Input/Input';
@@ -14,6 +14,8 @@ import defaultImg from '@/static/icons/default.jpg';
 import PageLoading from '@/components/Loading/LoadingAnimation';
 import { useRecoilValue } from 'recoil';
 import { meetupNewsAtom, newsCacheStatusAtom, socialNewsAtom, techNewsAtom } from '@/atoms/news';
+import EmptyState from '@/components/EmptyState';
+import { useTranslation } from 'react-i18next';
 
 export type TagVariant = 'default' | 'programming' | 'ai' | 'development';
 
@@ -324,6 +326,8 @@ const ReadTimeText = styled.span`
  * @param {string | null} activeTag - The currently selected tag for filtering.
  */
 export default function NewsList() {
+    const { t } = useTranslation('news');
+    const navigate = useNavigate();
     const [activeCategory, setActiveCategory] = useState<FilterTypes>(FilterTypes.TECH);
     const [activeTag, setActiveTag] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
@@ -410,6 +414,12 @@ export default function NewsList() {
         setSearchTerm(e.target.value);
     };
 
+    const translateTag = (tag: string): string => {
+        const tagKey = tag.toLowerCase().replace(/\s+/g, '-');
+        const translatedTag = t(`tags.${tagKey}`, { defaultValue: tag });
+        return translatedTag;
+    };
+
     return (
         <Container>
             <SearchContainer>
@@ -422,7 +432,7 @@ export default function NewsList() {
                         }}
                         size="mini"
                     >
-                        All
+                        {t('filters.all')}
                     </FilterButton>
                     <FilterButton
                         isActive={activeCategory === 'MEETUP' && !activeTag}
@@ -432,7 +442,7 @@ export default function NewsList() {
                         }}
                         size="mini"
                     >
-                        Meetup
+                        {t('filters.meetup')}
                     </FilterButton>
                     <FilterButton
                         isActive={activeCategory === 'SOCIAL' && !activeTag}
@@ -442,7 +452,7 @@ export default function NewsList() {
                         }}
                         size="mini"
                     >
-                        Social
+                        {t('filters.social')}
                     </FilterButton>
                 </CategoryFilters>
                 <SearchBar>
@@ -469,7 +479,7 @@ export default function NewsList() {
 
             <NewsGrid>
                 {loading ? (
-                    <PageLoading message="Loading news articles..." />
+                    <PageLoading message={t('search.loadingMessage')} />
                 ) : filteredNews.length > 0 ? (
                     <>
                         {visibleNews.map((newsItem) => (
@@ -486,13 +496,13 @@ export default function NewsList() {
                                                         key={`${newsItem.id}-tag-${index}`}
                                                         variant={TAG_VARIANT_MAP[tag.toLowerCase()] || 'default'}
                                                     >
-                                                        {tag}
+                                                        {translateTag(tag)}
                                                     </Tag>
                                                 )) || (
                                                     <>
-                                                        <Tag variant="default">JavaScript</Tag>
-                                                        <Tag variant="default">Frontend</Tag>
-                                                        <Tag variant="programming">Programming</Tag>
+                                                        <Tag variant="default">{translateTag('JavaScript')}</Tag>
+                                                        <Tag variant="default">{translateTag('Frontend')}</Tag>
+                                                        <Tag variant="programming">{translateTag('Programming')}</Tag>
                                                     </>
                                                 )}
                                             </TagList>
@@ -509,7 +519,7 @@ export default function NewsList() {
                                                     />
                                                     {formatDate(newsItem.createdAt) || '2025.05.18'}
 
-                                                    <ReadTimeText>3 min read</ReadTimeText>
+                                                    <ReadTimeText>3 {t('readTime')}</ReadTimeText>
                                                 </MetaItem>
                                                 <div style={{ display: 'flex', gap: themeColors.spacing.sm }}>
                                                     <InteractionButton>
@@ -561,13 +571,29 @@ export default function NewsList() {
                                 }}
                             >
                                 <Button size="sm" variant="signOut" fullWidth={false} onClick={handleLoadMore}>
-                                    Load More ...
+                                    {t('loadMore')}
                                 </Button>
                             </div>
                         )}
                     </>
                 ) : (
-                    <div>No news found.</div>
+                    
+                    <EmptyState
+                        title={t('emptyState.noNewsTitle')}
+                        description={t('emptyState.noNewsDescription')}
+                        buttonText={t('emptyState.tryAgainButton')}
+                        buttonVariant="outline"
+                        buttonSize="mini"
+                        onButtonClick={() => {
+                            setSearchTerm('');
+                            setActiveTag(null);
+                            setActiveCategory(FilterTypes.TECH);
+                            navigate('/');
+                        }}
+                        icon={<NotepadText size={48} />}
+                        showLogo={false}
+                        showIcon={true}
+                    />
                 )}
             </NewsGrid>
         </Container>

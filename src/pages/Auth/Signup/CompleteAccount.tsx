@@ -9,6 +9,7 @@ import themeColors from '@/tools/themeColors';
 import useAuth from '@/context/useAuth';
 import { useStatusHandler } from '@/hooks/useStatusHandler/useStatusHandler';
 import { useFieldValidation } from '@/hooks/useFormValidation/useFormValidation';
+import { useTranslation } from 'react-i18next';
 
 const PageContainer = styled.div`
     display: flex;
@@ -56,19 +57,19 @@ export default function CompleteAccount() {
     const navigate = useNavigate();
     const location = useLocation();
     const { signUpWithGoogle } = useAuth();
+    const { t } = useTranslation('auth');
     const [messageApi, contextHolder] = message.useMessage();
     const { loading, handleAsyncOperation } = useStatusHandler(messageApi);
 
     const username = useFieldValidation('username');
     const phone = useFieldValidation('phone', { phoneFormat: 'kr' });
 
-    // we get the google credential from location state
     const googleCredential = location.state?.credential;
 
     useEffect(() => {
-        // we check if credential exists, if not, redirect to signup
+        /* we check if credential exists, if not, redirect to signup page */
         if (!googleCredential) {
-            messageApi.error('Google credential not found. Please try signing up again.');
+            messageApi.error(t('completeAccount.messages.credentialNotFound'));
             navigate('/signup');
         }
     }, [googleCredential, navigate, messageApi]);
@@ -90,16 +91,16 @@ export default function CompleteAccount() {
                     phone: phone.value,
                 }),
             {
-                loadingMessage: 'Completing registration...',
-                successMessage: 'Registration complete!',
+                loadingMessage: t('completeAccount.messages.completingRegistration'),
+                successMessage: t('completeAccount.messages.registrationComplete'),
                 showError: false,
                 onError: (apiError) => {
                     if (apiError.statusCode === 400) {
-                        messageApi.error('Invalid information. Please check your details.');
+                        messageApi.error(t('completeAccount.messages.invalidInformation'));
                     } else if (apiError.statusCode === 409) {
-                        messageApi.error('Username or phone already exists.');
+                        messageApi.error(t('completeAccount.messages.usernameOrPhoneExists'));
                     } else {
-                        messageApi.error('Registration failed. Please try again.');
+                        messageApi.error(t('completeAccount.messages.registrationFailed'));
                     }
                 },
             },
@@ -122,15 +123,15 @@ export default function CompleteAccount() {
         <PageContainer>
             {contextHolder}
             <FormContainer>
-                <Heading>Complete Your Profile</Heading>
-                <SubHeading>Just a few more details to complete your registration with Google</SubHeading>
+                <Heading>{t('completeAccount.completeProfile')}</Heading>
+                <SubHeading>{t('completeAccount.subHeading')}</SubHeading>
 
                 <Form onSubmit={handleSubmit}>
                     <InputGroup>
                         <Input
                             icon={<HiOutlineUser size={20} />}
                             type="text"
-                            placeholder="Username (letters only)"
+                            placeholder={t('completeAccount.username')}
                             value={username.value}
                             onChange={username.onChange}
                             onBlur={username.onBlur}
@@ -146,7 +147,7 @@ export default function CompleteAccount() {
                         <Input
                             icon={<HiOutlinePhone size={20} />}
                             type="tel"
-                            placeholder="Phone Number: 010XXXXXXXX"
+                            placeholder={t('completeAccount.phoneNumber')}
                             value={phone.value}
                             onChange={phone.onChange}
                             onBlur={phone.onBlur}
@@ -168,7 +169,9 @@ export default function CompleteAccount() {
                         htmlType="submit"
                         isDisabled={!isFormValid}
                     >
-                        {loading ? 'Completing Registration...' : 'Complete Registration'}
+                        {loading
+                            ? t('completeAccount.completingRegistration')
+                            : t('completeAccount.completeRegistration')}
                     </Button>
                 </Form>
             </FormContainer>

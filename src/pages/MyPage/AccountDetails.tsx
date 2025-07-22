@@ -6,6 +6,7 @@ import Input from '@/components/Input/Input';
 import { FaSave, FaEdit } from 'react-icons/fa';
 import useApiService from '@/services';
 import { UserDetails } from '@/types/user';
+import { useTranslation } from 'react-i18next';
 
 type FieldConfig = {
     id: string;
@@ -190,6 +191,7 @@ const INITIAL_FIELDS: FieldConfig[] = [
  * Form for viewing and editing account information
  */
 export default function AccountDetails() {
+    const { t } = useTranslation('mypage');
     const userDetailsService = useApiService();
     const [isLoading, setIsLoading] = useState(true);
 
@@ -313,18 +315,18 @@ export default function AccountDetails() {
     const isEditMode = fields.some((field) => field.isEditing);
 
     if (isLoading) {
-        return <div>Loading...</div>;
+        return <div>{t('accountDetails.loading')}</div>;
     }
 
     return (
         <Container>
-            <Header>Personal info</Header>
+            <Header>{t('accountDetails.personalInfo')}</Header>
 
             <ProfileSection>
                 <ProfileImage>👤</ProfileImage>
                 <ProfileButtons>
                     <Button variant="signOut" size="mini">
-                        Upload Photo
+                        {t('accountDetails.uploadPhoto')}
                     </Button>
                     <Button
                         variant="light"
@@ -334,7 +336,7 @@ export default function AccountDetails() {
                             color: themeColors.colors.neutral.black,
                         }}
                     >
-                        Delete
+                        {t('accountDetails.delete')}
                     </Button>
                 </ProfileButtons>
             </ProfileSection>
@@ -357,11 +359,11 @@ export default function AccountDetails() {
                                 setFields((prevFields) => prevFields.map((field) => ({ ...field, isEditing: false })));
                             }}
                         >
-                            Cancel
+                            {t('accountDetails.cancel')}
                         </Button>
                         <Button variant="outline" htmlType="submit" size="sm">
                             <FaSave style={{ marginRight: '8px' }} />
-                            Save Changes
+                            {t('accountDetails.saveChanges')}
                         </Button>
                     </ButtonsContainer>
                 )}

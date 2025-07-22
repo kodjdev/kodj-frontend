@@ -179,7 +179,7 @@ export default function SpeakerRegistrationBanner() {
                 </BannerDescription>
                 <ButtonWrapper>
                     <StyledButton
-                        onClick={() => navigate('/speakerRegister')}
+                        onClick={() => navigate('/speakers/register')}
                         size="sm"
                         variant="light"
                         htmlType="button"

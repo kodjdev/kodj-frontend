@@ -9,6 +9,7 @@ import ConfirmModal from '@/components/Modal/ModalTypes/ConfirmModal';
 import useAuth from '@/context/useAuth';
 import useModal from '@/hooks/useModal';
 import JobPosting from '@/pages/MyPage/JobPosting/index';
+import { useTranslation } from 'react-i18next';
 
 enum PageSection {
     EVENTS = 'events',
@@ -68,10 +69,11 @@ const SectionContainer = styled.div<{ showBorder?: boolean }>`
  */
 export default function MyPage() {
     const [activeSection, setActiveSection] = useState<PageSection>(PageSection.EVENTS);
-    const { isAuthenticated, logout } = useAuth();
-    const { isOpen, openModal, closeModal } = useModal();
     const [isJobPostingFormActive, setIsJobPostingFormActive] = useState(false);
 
+    const { t } = useTranslation('mypage');
+    const { isAuthenticated, logout } = useAuth();
+    const { isOpen, openModal, closeModal } = useModal();
     /* render the content based on active section */
     const renderContent = () => {
         switch (activeSection) {
@@ -123,11 +125,11 @@ export default function MyPage() {
             <ConfirmModal
                 isOpen={isOpen}
                 onClose={closeModal}
-                title={'Confirm Logout'}
-                message={'Are you sure you want to log out?'}
+                title={t('logout.confirmTitle')}
+                message={t('logout.confirmMessage')}
                 onConfirm={handleConfirmedLogout}
-                confirmLabel={'Yes, log out'}
-                cancelLabel={'Cancel'}
+                confirmLabel={t('logout.confirmButton')}
+                cancelLabel={t('logout.cancelButton')}
                 size="sm"
             />
         </>

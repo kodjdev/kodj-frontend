@@ -1,0 +1,93 @@
+{
+    "title": "KO'DJ da spiker bo'ling",
+    "subtitle": "O'z tajribangizni baham ko'ring va Seouldagi dasturchilar jamoasiga ilhom bering",
+    "applyToSpeak": "Spiker bo'lish uchun ariza berish",
+    "formFields": {
+        "email": "Email manzil",
+        "fullName": "To'liq ism",
+        "jobPosition": "Lavozim/Kasb",
+        "phone": "Telefon raqami",
+        "yearsOfExperience": "Ish tajribasi",
+        "expertiseField": "Mutaxassislik sohasi",
+        "topics": "Taqdimot mavzulari",
+        "linkedinUrl": "LinkedIn profil",
+        "githubUrl": "GitHub profil",
+        "portfolioUrl": "Portfolio/Veb-sayt",
+        "submitButton": "Spiker arizasini yuborish"
+    },
+    "placeholders": {
+        "email": "spiker@kompaniya.com",
+        "fullName": "Aliyev Vali",
+        "jobPosition": "Katta dastur muhandisi",
+        "phone": "01012345678",
+        "topics": "Iltimos, uchrashuvlarda ko'rib chiqmoqchi bo'lgan aniq mavzularni tasvirlab bering",
+        "linkedinUrl": "https://linkedin.com/in/sizning-profilingiz",
+        "githubUrl": "https://github.com/sizning-foydalanuvchi-ismingiz",
+        "portfolioUrl": "https://sizning-portfolio.com"
+    },
+    "experienceOptions": {
+        "selectExperience": "Tajriba darajangizni tanlang",
+        "lessThanOneYear": "1 yildan kam",
+        "oneToThreeYears": "1-3 yil",
+        "threeToFiveYears": "3-5 yil",
+        "fiveToTenYears": "5-10 yil",
+        "moreThanTenYears": "10+ yil"
+    },
+    "expertiseOptions": {
+        "selectField": "Mutaxassislik sohasini tanlang",
+        "frontend": "Frontend ishlab chiqish",
+        "backend": "Backend ishlab chiqish",
+        "fullstack": "To'liq stek ishlab chiqish",
+        "mobile": "Mobil ilovalar ishlab chiqish",
+        "devops": "DevOps",
+        "data": "Ma'lumotlar fani/Muhandislik",
+        "ai": "Sun'iy intellekt/Mashinani o'rganish",
+        "blockchain": "Blokcheyn",
+        "security": "Kiberxavfsizlik",
+        "gamedev": "O'yin ishlab chiqish",
+        "other": "Boshqa"
+    },
+    "validation": {
+        "emailRequired": "Email manzil majburiy",
+        "emailFormat": "Iltimos, to'g'ri email manzilini kiriting",
+        "fullNameRequired": "To'liq ism majburiy",
+        "fullNameMinLength": "To'liq ism kamida 2 ta belgidan iborat bo'lishi kerak",
+        "jobPositionRequired": "Lavozim majburiy",
+        "phoneRequired": "Telefon raqami majburiy",
+        "phoneFormat": "Iltimos, to'g'ri telefon raqamini kiriting (01012345678)",
+        "yearsOfExperienceRequired": "Iltimos, ish tajribangizni tanlang",
+        "expertiseFieldRequired": "Iltimos, mutaxassislik sohasini tanlang",
+        "topicsRequired": "Iltimos, taqdimot mavzularingizni tasvirlab bering",
+        "topicsMinLength": "Iltimos, mavzularingiz haqida batafsil ma'lumot bering (kamida 10 ta belgi)",
+        "linkedinUrlRequired": "LinkedIn profil majburiy",
+        "linkedinUrlFormat": "Iltimos, to'g'ri LinkedIn URL manzilini kiriting",
+        "githubUrlRequired": "GitHub profil majburiy",
+        "githubUrlFormat": "Iltimos, to'g'ri GitHub URL manzilini kiriting",
+        "portfolioUrlRequired": "Portfolio/veb-sayt URL manzili majburiy",
+        "portfolioUrlFormat": "Iltimos, to'g'ri veb-sayt URL manzilini kiriting"
+    },
+    "whyBecomeSpeaker": {
+        "title": "Nega spiker bo'lish kerak?",
+        "reasons": [
+            "Bilim va tajribangizni dasturchilar jamoasi bilan baham ko'ring",
+            "Professional tarmog'ingizni kengaytiring va o'xshash fikrli dasturchilar bilan bog'laning",
+            "Ommaviy nutq qilish qobiliyatingizni oshiring va karerangizni rivojlantiring",
+            "Seouldagi texnologiya ekotizimining o'sishiga hissa qo'shing",
+            "O'z sohangizda ko'rinish va tan olinishga erishing",
+            "Boshqa spikerlar va ishtirokchilardan o'rganing",
+            "G'oyalar va loyihalaringiz bo'yicha fikr-mulohaza oling"
+        ],
+        "conclusion": "Spikerlar jamiyatiga qo'shiling va Seouldagi texnologiyaning kelajagini shakllantirishga yordam bering!"
+    },
+    "successModal": {
+        "title": "Ariza muvaffaqiyatli yuborildi!",
+        "message": "Spiker bo'lishga qiziqish bildirganingiz uchun rahmat. Arizangiz yuborildi va jamoamiz uni tez orada ko'rib chiqadi.",
+        "footer": "Biz siz bilan 5-7 ish kuni ichida bog'lanamiz.",
+        "button": "Bosh sahifaga qaytish"
+    },
+    "messages": {
+        "submitting": "Arizangiz yuborilmoqda...",
+        "submitSuccess": "Ariza muvaffaqiyatli yuborildi!",
+        "submitError": "Arizani yuborishda xatolik yuz berdi. Iltimos, qaytadan urinib ko'ring."
+    }
+}

@@ -5,24 +5,36 @@ import { initReactI18next, useTranslation } from 'react-i18next';
 
 import uzHome from '@/pages/Home/langs/uz-home.json';
 import enHome from '@/pages/Home/langs/en-home.json';
+import enAbout from '@/pages/About/langs/en-about.json';
+import uzAbout from '@/pages/About/langs/uz-about.json';
 import uzBenefits from '@/pages/Home/langs/uz-benefits.json';
 import enBenefits from '@/pages/Home/langs/en-benefits.json';
-import enSpeakers from '@/pages/Speakers/langs/en-speakers.json';
-import uzSpeakers from '@/pages/Speakers/langs/uz-speakers.json';
+import enSpeakers from '@/pages/SpeakersRegistration/langs/en-speakers.json';
+import uzSpeakers from '@/pages/SpeakersRegistration/langs/uz-speakers.json';
 import enEvents from '@/pages/Events/langs/en-events.json';
 import uzEvents from '@/pages/Events/langs/uz-events.json';
 import enEventRegister from '@/pages/Events/EventRegister/langs/en-register.json';
 import uzEventRegister from '@/pages/Events/EventRegister/langs/uz-register.json';
+import enAuth from '@/pages/Auth/langs/en-auth.json';
+import uzAuth from '@/pages/Auth/langs/uz-auth.json';
+import enMypage from '@/pages/MyPage/langs/en-mypage.json';
+import uzMypage from '@/pages/MyPage/langs/uz-mypage.json';
+import enNews from '@/pages/News/langs/en-news.json';
+import uzNews from '@/pages/News/langs/uz-news.json';
 
 declare module 'i18next' {
     interface CustomTypeOptions {
         defaultNS: 'about';
         resources: {
             home: typeof enHome;
+            about: typeof enAbout;
+            news: typeof enNews;
             benefits: typeof enBenefits;
             speakers: typeof enSpeakers;
             events: typeof enEvents;
             eventRegister: typeof enEventRegister;
+            auth: typeof enAuth;
+            mypage: typeof enMypage;
         };
     }
 }
@@ -37,24 +49,32 @@ i18n.use(initReactI18next)
         resources: {
             en: {
                 home: enHome,
+                about: enAbout,
+                news: enNews,
                 benefits: enBenefits,
                 speakers: enSpeakers,
                 events: enEvents,
                 eventRegister: enEventRegister,
+                auth: enAuth,
+                mypage: enMypage,
             },
             uz: {
                 home: uzHome,
+                about: uzAbout,
+                news: uzNews,
                 benefits: uzBenefits,
                 speakers: uzSpeakers,
                 events: uzEvents,
                 eventRegister: uzEventRegister,
+                auth: uzAuth,
+                mypage: uzMypage,
             },
         },
         fallbackLng: 'en',
         interpolation: {
             escapeValue: false,
         },
-        ns: ['home', 'benefits', 'speakers', 'events', 'eventRegister'],
+        ns: ['home', 'about', 'news', 'benefits', 'speakers', 'events', 'eventRegister', 'auth', 'mypage'],
         defaultNS: 'about',
         detection: {
             order: ['localStorage', 'navigator'],

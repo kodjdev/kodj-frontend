@@ -4,6 +4,7 @@ import { useLocation } from 'react-router-dom';
 import Signup from '@/pages/Auth/Signup/Signup';
 import Login from '@/pages/Auth/Login/Login';
 import { UserData } from '@/types/user';
+import { useTranslation } from 'react-i18next';
 
 const AuthWrapper = styled.div`
     width: 100%;
@@ -50,6 +51,7 @@ const SuccessMessage = styled.div`
  */
 export default function LoginRoot() {
     const location = useLocation();
+    const { t } = useTranslation('auth');
     const [isSignUp, setIsSignUp] = useState(false);
     const [signupData, setSignupData] = useState<UserData | null>(null);
 
@@ -81,9 +83,7 @@ export default function LoginRoot() {
     return (
         <AuthWrapper>
             <ContentContainer>
-                {signupData && (
-                    <SuccessMessage>Account created successfully! Please login with your credentials.</SuccessMessage>
-                )}
+                {signupData && <SuccessMessage>{t('loginRoot.accountCreatedSuccess')}</SuccessMessage>}
 
                 {isSignUp && !signupData ? (
                     <Signup
