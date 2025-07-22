@@ -14,3 +14,4 @@ export const EventRegister = React.lazy(() => import('@/pages/Events/EventRegist
 export const AboutUs = React.lazy(() => import('@/pages/About'));
 export const News = React.lazy(() => import('@/pages/News/index'));
 export const NewsDetail = React.lazy(() => import('@/pages/News/NewsDetails/NewsDetails'));
+export const SpeakersRegister = React.lazy(() => import('@/pages/SpeakersRegistration/index.tsx'));
