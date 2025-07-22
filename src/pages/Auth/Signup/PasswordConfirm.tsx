@@ -4,6 +4,7 @@ import { HiOutlineLockClosed, HiOutlineEyeOff, HiOutlineEye } from 'react-icons/
 import themeColors from '@/tools/themeColors';
 import Input from '@/components/Input/Input';
 import Button from '@/components/Button/Button';
+import { useTranslation } from 'react-i18next';
 
 export type PasswordRequirements = {
     minLength: boolean;
@@ -117,7 +118,7 @@ const Form = styled.form`
  * and error handling.
  * * @param {PasswordSignupProps} props - The properties for the Password component
  */
-export default function Password({
+export default function PasswordConfirm({
     passwordField,
     confirmPasswordField,
     onSubmit,
@@ -127,6 +128,7 @@ export default function Password({
     showPasswordRequirements = true,
     hideValidationErrors = false,
 }: PasswordSignupProps) {
+    const { t } = useTranslation('auth');
     const [showPassword, setShowPassword] = useState(false);
     const [passwordRequirements, setPasswordRequirements] = useState<PasswordRequirements>({
         minLength: false,
@@ -185,7 +187,6 @@ export default function Password({
             console.log('Form is not valid');
         }
     };
-
     return (
         <Container>
             <Form onSubmit={handleSubmit}>
@@ -193,7 +194,7 @@ export default function Password({
                     <Input
                         icon={<HiOutlineLockClosed size={20} />}
                         type={showPassword ? 'text' : 'password'}
-                        placeholder="Password"
+                        placeholder={t('passwordConfirm.password')}
                         value={passwordField.value}
                         onChange={passwordField.onChange}
                         onBlur={passwordField.onBlur}
@@ -212,20 +213,22 @@ export default function Password({
                     showPasswordRequirements &&
                     !Object.values(passwordRequirements).every(Boolean) && (
                         <PasswordRequirements>
-                            <RequirementsTitle>Password Requirements</RequirementsTitle>
+                            <RequirementsTitle>{t('passwordConfirm.passwordRequirements')}</RequirementsTitle>
                             <RequirementsList>
                                 <RequirementItem met={passwordRequirements.minLength}>
-                                    At least 8 characters
+                                    {t('passwordConfirm.requirements.minLength')}
                                 </RequirementItem>
                                 <RequirementItem met={passwordRequirements.hasUpperCase}>
-                                    One uppercase letter
+                                    {t('passwordConfirm.requirements.upperCase')}
                                 </RequirementItem>
                                 <RequirementItem met={passwordRequirements.hasLowerCase}>
-                                    One lowercase letter
+                                    {t('passwordConfirm.requirements.lowerCase')}
                                 </RequirementItem>
-                                <RequirementItem met={passwordRequirements.hasNumber}>One number</RequirementItem>
+                                <RequirementItem met={passwordRequirements.hasNumber}>
+                                    {t('passwordConfirm.requirements.number')}
+                                </RequirementItem>
                                 <RequirementItem met={passwordRequirements.hasSpecialChar}>
-                                    One special character
+                                    {t('passwordConfirm.requirements.specialChar')}
                                 </RequirementItem>
                             </RequirementsList>
                         </PasswordRequirements>
@@ -235,7 +238,7 @@ export default function Password({
                     <Input
                         icon={<HiOutlineLockClosed size={20} />}
                         type={showPassword ? 'text' : 'password'}
-                        placeholder="Confirm Password"
+                        placeholder={t('passwordConfirm.confirmPassword')}
                         value={confirmPasswordField.value}
                         onChange={handleConfirmPasswordChange}
                         onBlur={confirmPasswordField.onBlur}
@@ -248,7 +251,7 @@ export default function Password({
                 </InputGroup>
 
                 {confirmPasswordField.value && passwordField.value !== confirmPasswordField.value && (
-                    <ErrorMessage>Passwords do not match</ErrorMessage>
+                    <ErrorMessage>{t('passwordConfirm.passwordsDoNotMatch')}</ErrorMessage>
                 )}
 
                 {error && <ErrorMessage>{error}</ErrorMessage>}
@@ -261,7 +264,7 @@ export default function Password({
                     disabled={isLoading || !isFormValid()}
                     isDisabled={!isFormValid()}
                 >
-                    {isLoading ? 'Creating Account...' : submitButtonText}
+                    {isLoading ? t('passwordConfirm.creatingAccount') : submitButtonText}
                 </Button>
             </Form>
         </Container>

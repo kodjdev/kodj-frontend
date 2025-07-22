@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { HiOutlineArrowLeft } from 'react-icons/hi';
 import themeColors from '@/tools/themeColors';
 import Button from '@/components/Button/Button';
+import { useTranslation } from 'react-i18next';
 
 type OtpVerificationProps = {
     email: string;
@@ -110,6 +111,7 @@ export default function OtpVerification({
 }: OtpVerificationProps) {
     const [digits, setDigits] = useState(['', '', '', '', '']);
     const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
+    const { t } = useTranslation('auth');
 
     useEffect(() => {
         const otpValue = digits.join('');
@@ -168,11 +170,11 @@ export default function OtpVerification({
         <Container>
             <BackButton onClick={onBackClick}>
                 <HiOutlineArrowLeft size={16} />
-                Back to login
+                {t('otpVerification.backToLogin')}
             </BackButton>
 
             <EmailInfo>
-                OTP sent to <strong>{email}</strong>
+                {t('otpVerification.otpSentTo')} <strong>{email}</strong>
             </EmailInfo>
 
             <Form onSubmit={handleSubmit}>
@@ -190,7 +192,7 @@ export default function OtpVerification({
                             onKeyDown={(e) => handleKeyDown(index, e)}
                             onPaste={handlePaste}
                             placeholder=""
-                            aria-label={`OTP digit ${index + 1}`}
+                            aria-label={`${t('otpVerification.otpDigitLabel')} ${index + 1}`}
                         />
                     ))}
                 </OtpInputContainer>
@@ -203,7 +205,7 @@ export default function OtpVerification({
                     disabled={isLoading || !isFormValid}
                     isDisabled={!isFormValid}
                 >
-                    {isLoading ? 'VERIFYING...' : 'VERIFY OTP'}
+                    {isLoading ? t('otpVerification.verifying') : t('otpVerification.verifyOtp')}
                 </Button>
             </Form>
         </Container>

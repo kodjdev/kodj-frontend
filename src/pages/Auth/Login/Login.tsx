@@ -11,6 +11,7 @@ import { EventDetails } from '@/types';
 import useAuth from '@/context/useAuth';
 import OtpVerification from './OtpVerification';
 import { useStatusHandler } from '@/hooks/useStatusHandler/useStatusHandler';
+import { useTranslation } from 'react-i18next';
 
 type LoginProps = {
     toggleAuthMode: () => void;
@@ -170,6 +171,7 @@ const GoogleLoginWrapper = styled.div`
 export default function Login({ toggleAuthMode, returnUrl, eventDetails }: LoginProps) {
     const navigate = useNavigate();
     const { user, login, validateOTP, loginWithGoogle } = useAuth();
+    const { t } = useTranslation('auth');
     const [messageApi, contextHolder] = message.useMessage();
     const { loading, execute, handleAsyncOperation } = useStatusHandler(messageApi);
 
@@ -207,9 +209,9 @@ export default function Login({ toggleAuthMode, returnUrl, eventDetails }: Login
         e.preventDefault();
 
         const result = await execute(() => login(email, password), {
-            loading: 'Logging in...',
-            success: 'OTP has been sent to your email',
-            error: 'Login failed. Please check your credentials.',
+            loading: t('login.messages.loggingIn'),
+            success: t('login.messages.otpSentSuccess'),
+            error: t('login.messages.loginFailed'),
         });
 
         if (result) {
@@ -221,16 +223,16 @@ export default function Login({ toggleAuthMode, returnUrl, eventDetails }: Login
         e.preventDefault();
 
         const { error } = await handleAsyncOperation(() => validateOTP(email, otp), {
-            loadingMessage: 'Verifying OTP...',
-            successMessage: 'Login successful! Redirecting...',
+            loadingMessage: t('login.messages.verifyingOtp'),
+            successMessage: t('login.messages.loginSuccessful'),
             showError: false,
             onError: (apiError) => {
                 if (apiError.statusCode === 400) {
-                    messageApi.error('Invalid OTP code. Please check and try again.');
+                    messageApi.error(t('login.messages.invalidOtp'));
                 } else if (apiError.statusCode === 401) {
-                    messageApi.error('OTP has expired. Please request a new one.');
+                    messageApi.error(t('login.messages.otpExpired'));
                 } else {
-                    messageApi.error('Verification failed. Please try again.');
+                    messageApi.error(t('login.messages.verificationFailed'));
                 }
             },
         });
@@ -242,14 +244,14 @@ export default function Login({ toggleAuthMode, returnUrl, eventDetails }: Login
 
     const handleGoogleLogin = async (credentialResponse: CredentialResponse) => {
         if (!credentialResponse.credential) {
-            messageApi.error('No credential received from Google');
+            messageApi.error(t('login.messages.noCredentialReceived'));
             return;
         }
 
         const result = await execute(() => loginWithGoogle(credentialResponse.credential!), {
-            loading: 'Authenticating with Google...',
-            success: 'Successfully logged in with Google',
-            error: 'Google authentication failed. Please try again.',
+            loading: t('login.messages.authenticatingWithGoogle'),
+            success: t('login.messages.googleLoginSuccess'),
+            error: t('login.messages.googleAuthFailed'),
         });
 
         if (result) {
@@ -260,8 +262,8 @@ export default function Login({ toggleAuthMode, returnUrl, eventDetails }: Login
     };
 
     const handleGoogleLoginError = useCallback(() => {
-        messageApi.error('Google login failed. Please try again.');
-    }, [messageApi]);
+        messageApi.error(t('login.messages.googleLoginFailed'));
+    }, [messageApi, t]);
 
     const handleBackToLogin = useCallback(() => {
         setOtpSent(false);
@@ -278,16 +280,15 @@ export default function Login({ toggleAuthMode, returnUrl, eventDetails }: Login
 
     return (
         <>
-            {' '}
             {contextHolder}
             <FormContainer>
                 {returnUrl && (
                     <EventNotification>
-                        Login to continue registration for: <br />
+                        {t('login.loginToContinueRegistration')} <br />
                         <EventTitle>{eventDetails?.title}</EventTitle>
                     </EventNotification>
                 )}
-                <Heading>{!otpSent ? 'Welcome back' : 'Confirm email'}</Heading>
+                <Heading>{!otpSent ? t('login.welcomeBack') : t('login.confirmEmail')}</Heading>
 
                 {!otpSent ? (
                     <Form onSubmit={handleEmailLogin}>
@@ -295,7 +296,7 @@ export default function Login({ toggleAuthMode, returnUrl, eventDetails }: Login
                             <Input
                                 icon={<HiOutlineMail size={20} />}
                                 type="email"
-                                placeholder="Email"
+                                placeholder={t('login.email')}
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 required
@@ -309,7 +310,7 @@ export default function Login({ toggleAuthMode, returnUrl, eventDetails }: Login
                             <Input
                                 icon={<HiOutlineLockClosed size={20} />}
                                 type={showPassword ? 'text' : 'password'}
-                                placeholder="Password"
+                                placeholder={t('login.password')}
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 required
@@ -322,7 +323,9 @@ export default function Login({ toggleAuthMode, returnUrl, eventDetails }: Login
                             </PasswordVisibilityToggle>
                         </InputGroup>
 
-                        <ForgotPasswordLink onClick={navigateToForgotPassword}>Forgot Password</ForgotPasswordLink>
+                        <ForgotPasswordLink onClick={navigateToForgotPassword}>
+                            {t('login.forgotPassword')}
+                        </ForgotPasswordLink>
 
                         <StyledButton
                             color="blue"
@@ -332,7 +335,7 @@ export default function Login({ toggleAuthMode, returnUrl, eventDetails }: Login
                             disabled={loading}
                             type="submit"
                         >
-                            {loading ? 'LOGGING IN...' : 'LOGIN'}
+                            {loading ? t('login.loggingIn') : t('login.login')}
                         </StyledButton>
                     </Form>
                 ) : (
@@ -349,7 +352,7 @@ export default function Login({ toggleAuthMode, returnUrl, eventDetails }: Login
                 {!otpSent && (
                     <>
                         <Divider>
-                            <span>OR</span>
+                            <span>{t('login.or')}</span>
                         </Divider>
                         <GoogleLoginWrapper>
                             <GoogleLogin
@@ -358,12 +361,14 @@ export default function Login({ toggleAuthMode, returnUrl, eventDetails }: Login
                                 text="signin_with"
                                 shape="rectangular"
                                 theme="outline"
+                                auto_select={false}
+                                cancel_on_tap_outside={false}
                             />
                         </GoogleLoginWrapper>
 
                         <AccountPrompt>
-                            <AccountText>No account yet?</AccountText>
-                            <ToggleButton onClick={toggleAuthMode}>Sign up here</ToggleButton>
+                            <AccountText>{t('login.noAccountYet')}</AccountText>
+                            <ToggleButton onClick={toggleAuthMode}>{t('login.signUpHere')}</ToggleButton>
                         </AccountPrompt>
                     </>
                 )}

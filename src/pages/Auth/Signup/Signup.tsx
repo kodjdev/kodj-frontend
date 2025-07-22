@@ -14,8 +14,9 @@ import useAuth from '@/context/useAuth';
 import useGoogleSignupFlow from '@/hooks/useGoogleSignup';
 import { EventDetails } from '@/types';
 import { UserData } from '@/types/user';
-import PasswordSignupComponent from './Password';
 import { useStatusHandler } from '@/hooks/useStatusHandler/useStatusHandler';
+import { useTranslation } from 'react-i18next';
+import PasswordConfirm from '@/pages/Auth/Signup/PasswordConfirm';
 
 type SignupProps = {
     toggleAuthMode: () => void;
@@ -136,6 +137,7 @@ const Form = styled.form`
 export default function Signup({ toggleAuthMode, returnUrl, eventDetails }: SignupProps) {
     const navigate = useNavigate();
     const { user } = useAuth();
+    const { t } = useTranslation('auth');
     const [authError, setAuthError] = useState('');
     const [currentStep, setCurrentStep] = useState<'info' | 'password'>('info');
     const [messageApi, contextHolder] = message.useMessage();
@@ -197,9 +199,10 @@ export default function Signup({ toggleAuthMode, returnUrl, eventDetails }: Sign
             setCurrentStep('password');
         } catch (error) {
             console.error('Validation error:', error);
-            setAuthError('Please check your information and try again');
+            setAuthError(t('signup.messages.checkInformationAndTryAgain'));
         }
     };
+
     const handlePasswordSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
@@ -212,18 +215,18 @@ export default function Signup({ toggleAuthMode, returnUrl, eventDetails }: Sign
         };
 
         const { data } = await handleAsyncOperation(() => register(userData), {
-            loadingMessage: 'Creating account...',
-            successMessage: 'Account created successfully!',
+            loadingMessage: t('signup.messages.creatingAccount'),
+            successMessage: t('signup.messages.accountCreatedSuccess'),
             showError: false,
             onError: (apiError) => {
                 if (apiError.statusCode === 400) {
-                    setAuthError('Invalid information. Please check your details.');
+                    setAuthError(t('signup.messages.invalidInformation'));
                 } else if (apiError.statusCode === 409) {
-                    setAuthError('Email already exists. Please use a different email.');
+                    setAuthError(t('signup.messages.emailAlreadyExists'));
                 } else if (apiError.statusCode === 500) {
-                    setAuthError('Server error. Please try again later.');
+                    setAuthError(t('signup.messages.serverError'));
                 } else {
-                    setAuthError('Registration failed. Please try again.');
+                    setAuthError(t('signup.messages.registrationFailed'));
                 }
             },
         });
@@ -245,11 +248,11 @@ export default function Signup({ toggleAuthMode, returnUrl, eventDetails }: Sign
             {contextHolder}
             {returnUrl && (
                 <EventNotification>
-                    Sign up to continue registration for: <br />
+                    {t('signup.signupToContinueRegistration')} <br />
                     <EventTitle>{eventDetails?.title}</EventTitle>
                 </EventNotification>
             )}
-            <Heading>Create an Account</Heading>
+            <Heading>{t('signup.createAccount')}</Heading>
 
             {currentStep === 'info' && (
                 <>
@@ -258,7 +261,7 @@ export default function Signup({ toggleAuthMode, returnUrl, eventDetails }: Sign
                             <Input
                                 icon={<HiOutlineMail size={20} />}
                                 type="email"
-                                placeholder="Email"
+                                placeholder={t('signup.email')}
                                 value={email.value}
                                 onChange={email.onChange}
                                 onBlur={email.onBlur}
@@ -274,7 +277,7 @@ export default function Signup({ toggleAuthMode, returnUrl, eventDetails }: Sign
                             <Input
                                 icon={<PhoneCall size={20} />}
                                 type="text"
-                                placeholder="Phone Number: 010XXXXXXXX"
+                                placeholder={t('signup.phoneNumber')}
                                 value={phoneNumber.value}
                                 onChange={phoneNumber.onChange}
                                 onBlur={phoneNumber.onBlur}
@@ -301,12 +304,12 @@ export default function Signup({ toggleAuthMode, returnUrl, eventDetails }: Sign
                             type="submit"
                             disabled={!isStep1Valid()}
                         >
-                            CONTINUE
+                            {t('signup.continue')}
                         </StyledButton>
                     </Form>
 
                     <Divider>
-                        <span>OR</span>
+                        <span>{t('signup.or')}</span>
                     </Divider>
 
                     <GoogleLogin
@@ -319,8 +322,8 @@ export default function Signup({ toggleAuthMode, returnUrl, eventDetails }: Sign
                     />
 
                     <AccountPrompt>
-                        <AccountText>Already have an account?</AccountText>
-                        <ToggleButton onClick={toggleAuthMode}>Login</ToggleButton>
+                        <AccountText>{t('signup.alreadyHaveAccount')}</AccountText>
+                        <ToggleButton onClick={toggleAuthMode}>{t('signup.login')}</ToggleButton>
                     </AccountPrompt>
                 </>
             )}
@@ -328,10 +331,10 @@ export default function Signup({ toggleAuthMode, returnUrl, eventDetails }: Sign
             {currentStep === 'password' && (
                 <>
                     <div style={{ marginBottom: '16px', color: themeColors.gray_text, fontSize: '14px' }}>
-                        Email: <strong style={{ color: themeColors.white }}>{email.value}</strong>
+                        {t('signup.emailLabel')} <strong style={{ color: themeColors.white }}>{email.value}</strong>
                     </div>
 
-                    <PasswordSignupComponent
+                    <PasswordConfirm
                         passwordField={{
                             value: password.value,
                             error: password.error,
@@ -346,7 +349,7 @@ export default function Signup({ toggleAuthMode, returnUrl, eventDetails }: Sign
                         }}
                         onSubmit={handlePasswordSubmit}
                         isLoading={loading}
-                        submitButtonText="SIGN UP"
+                        submitButtonText={t('signup.signUp')}
                         error={authError}
                         showPasswordRequirements={true}
                         hideValidationErrors={true}

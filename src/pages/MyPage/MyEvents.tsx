@@ -4,6 +4,7 @@ import themeColors from '@/tools/themeColors';
 import EventCard from '@/components/Card/EventCard';
 import { EventCardProps } from '@/types';
 import EmptyState from '@/components/EmptyState';
+import { useTranslation } from 'react-i18next';
 
 enum TabOption {
     PAST = 'past',
@@ -60,6 +61,7 @@ const EventsGrid = styled.div`
  * Tabbed interface displaying user's past and upcoming events
  */
 export default function MyEvents() {
+    const { t } = useTranslation('mypage');
     const [activeTab, setActiveTab] = useState<TabOption>(TabOption.UPCOMING);
 
     // here i will implement the my registered events api service later
@@ -70,13 +72,11 @@ export default function MyEvents() {
 
     const renderEmptyState = () => (
         <EmptyState
-            title="No events found"
+            title={t('events.noEventsTitle')}
             description={
-                activeTab === TabOption.PAST
-                    ? "You haven't attended any events yet."
-                    : "You don't have any upcoming events."
+                activeTab === TabOption.PAST ? t('events.noPastDescription') : t('events.noUpcomingDescription')
             }
-            buttonText="Browse Events"
+            buttonText={t('events.browseEventsButton')}
             buttonAsLink={true}
             buttonTo="/events"
             showLogo={true}
@@ -88,10 +88,10 @@ export default function MyEvents() {
             <TabsContainer>
                 <TabsHeader>
                     <Tab active={activeTab === TabOption.UPCOMING} onClick={() => setActiveTab(TabOption.UPCOMING)}>
-                        Upcoming Events
+                        {t('events.upcomingEvents')}
                     </Tab>
                     <Tab active={activeTab === TabOption.PAST} onClick={() => setActiveTab(TabOption.PAST)}>
-                        Past Events
+                        {t('events.pastEvents')}
                     </Tab>
                 </TabsHeader>
 
