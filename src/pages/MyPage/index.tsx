@@ -68,13 +68,12 @@ const SectionContainer = styled.div<{ showBorder?: boolean }>`
  * manage blogs, and update account details.
  */
 export default function MyPage() {
-    const { t } = useTranslation('mypage');
-    const { isAuthenticated, logout } = useAuth();
-    const { isOpen, openModal, closeModal } = useModal();
-
     const [activeSection, setActiveSection] = useState<PageSection>(PageSection.EVENTS);
     const [isJobPostingFormActive, setIsJobPostingFormActive] = useState(false);
 
+    const { t } = useTranslation('mypage');
+    const { isAuthenticated, logout } = useAuth();
+    const { isOpen, openModal, closeModal } = useModal();
     /* render the content based on active section */
     const renderContent = () => {
         switch (activeSection) {
