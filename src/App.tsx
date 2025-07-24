@@ -4,7 +4,7 @@ import RouterPage from '@/router/index';
 import { RecoilRoot } from 'recoil';
 import RootLayout from '@/pages/RootLayout';
 import { GoogleOAuthProvider } from '@react-oauth/google';
-import AuthProvider from '@/context/authProvider';
+import AuthProvider from '@/context/AuthProvider';
 import UnderMaintenance from '@/pages/UnderMaintenance';
 
 type AppProps = {
