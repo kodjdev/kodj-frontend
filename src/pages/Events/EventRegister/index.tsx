@@ -449,7 +449,7 @@ export default function EventRegister() {
                     onClose={() => setIsModalOpen(false)}
                     title={t('successModal.title')}
                     message={t('successModal.message', {
-                        title: methods.getValues('eventDetails.title'),
+                        title: title,
                     })}
                     buttonLabel="OK"
                     size="sm"

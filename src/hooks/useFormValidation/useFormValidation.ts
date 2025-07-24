@@ -1,4 +1,4 @@
-import { EMAIL_REGEXES, FREE_EMAIL_DOMAINS, PASSWORD_RULES, PHONE_PATTERNS } from '@/utils/patterns';
+import { EMAIL_REGEXES, FREE_EMAIL_DOMAINS, PASSWORD_RULES, PHONE_PATTERNS } from '@/constant/patterns';
 import { useState, useCallback } from 'react';
 
 type ValidationRules = {

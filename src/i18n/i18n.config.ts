@@ -21,6 +21,8 @@ import enMypage from '@/pages/MyPage/langs/en-mypage.json';
 import uzMypage from '@/pages/MyPage/langs/uz-mypage.json';
 import enNews from '@/pages/News/langs/en-news.json';
 import uzNews from '@/pages/News/langs/uz-news.json';
+import enJobs from '@/pages/Jobs/langs/en-jobs.json';
+import uzJobs from '@/pages/Jobs/langs/uz-jobs.json';
 
 declare module 'i18next' {
     interface CustomTypeOptions {
@@ -35,6 +37,7 @@ declare module 'i18next' {
             eventRegister: typeof enEventRegister;
             auth: typeof enAuth;
             mypage: typeof enMypage;
+            jobs: typeof enJobs;
         };
     }
 }
@@ -57,6 +60,7 @@ i18n.use(initReactI18next)
                 eventRegister: enEventRegister,
                 auth: enAuth,
                 mypage: enMypage,
+                jobs: enJobs,
             },
             uz: {
                 home: uzHome,
@@ -68,13 +72,14 @@ i18n.use(initReactI18next)
                 eventRegister: uzEventRegister,
                 auth: uzAuth,
                 mypage: uzMypage,
+                jobs: uzJobs,
             },
         },
         fallbackLng: 'en',
         interpolation: {
             escapeValue: false,
         },
-        ns: ['home', 'about', 'news', 'benefits', 'speakers', 'events', 'eventRegister', 'auth', 'mypage'],
+        ns: ['home', 'about', 'news', 'benefits', 'speakers', 'events', 'eventRegister', 'auth', 'mypage', 'jobs'],
         defaultNS: 'about',
         detection: {
             order: ['localStorage', 'navigator'],

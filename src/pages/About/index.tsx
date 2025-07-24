@@ -236,7 +236,7 @@ const ContributorCard = styled.div`
     background-color: ${themeColors.colors.gray.light};
     border: 1px solid #333;
     border-radius: 8px;
-    padding: ${themeColors.spacing.lg};
+    padding: ${themeColors.spacing.md};
     display: flex;
     align-items: center;
     gap: ${themeColors.spacing.md};

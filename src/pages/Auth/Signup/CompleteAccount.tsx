@@ -93,16 +93,7 @@ export default function CompleteAccount() {
             {
                 loadingMessage: t('completeAccount.messages.completingRegistration'),
                 successMessage: t('completeAccount.messages.registrationComplete'),
-                showError: false,
-                onError: (apiError) => {
-                    if (apiError.statusCode === 400) {
-                        messageApi.error(t('completeAccount.messages.invalidInformation'));
-                    } else if (apiError.statusCode === 409) {
-                        messageApi.error(t('completeAccount.messages.usernameOrPhoneExists'));
-                    } else {
-                        messageApi.error(t('completeAccount.messages.registrationFailed'));
-                    }
-                },
+                showError: true,
             },
         );
 

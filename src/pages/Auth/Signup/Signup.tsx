@@ -214,21 +214,10 @@ export default function Signup({ toggleAuthMode, returnUrl, eventDetails }: Sign
             phone: phoneNumber.value,
         };
 
-        const { data } = await handleAsyncOperation(() => register(userData), {
+        const { data, error } = await handleAsyncOperation(() => register(userData), {
             loadingMessage: t('signup.messages.creatingAccount'),
             successMessage: t('signup.messages.accountCreatedSuccess'),
-            showError: false,
-            onError: (apiError) => {
-                if (apiError.statusCode === 400) {
-                    setAuthError(t('signup.messages.invalidInformation'));
-                } else if (apiError.statusCode === 409) {
-                    setAuthError(t('signup.messages.emailAlreadyExists'));
-                } else if (apiError.statusCode === 500) {
-                    setAuthError(t('signup.messages.serverError'));
-                } else {
-                    setAuthError(t('signup.messages.registrationFailed'));
-                }
-            },
+            showError: true,
         });
 
         if (data) {
@@ -236,6 +225,9 @@ export default function Signup({ toggleAuthMode, returnUrl, eventDetails }: Sign
             setTimeout(() => {
                 navigate('/');
             }, 2000);
+        }
+        if (error) {
+            setAuthError(error.message);
         }
     };
 
@@ -289,12 +281,6 @@ export default function Signup({ toggleAuthMode, returnUrl, eventDetails }: Sign
                                 transparent={true}
                             />
                         </InputGroup>
-
-                        {authError && (
-                            <div style={{ color: themeColors.red_text, fontSize: '12px', marginBottom: '12px' }}>
-                                {authError}
-                            </div>
-                        )}
 
                         <StyledButton
                             color="blue"
