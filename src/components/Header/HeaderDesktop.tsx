@@ -163,6 +163,19 @@ const UserAvatar = styled.div`
     }
 `;
 
+const BetaBadge = styled.span`
+    background-color: ${themeColors.colors.status.beta.main};
+    color: ${themeColors.colors.neutral.black};
+    font-size: 9px;
+    font-weight: 600;
+    padding: 2px 9px;
+    border-radius: 4px;
+    position: absolute;
+    top: -14px;
+    right: -25px;
+    border: 0.5px solid ${themeColors.colors.status.beta.main};
+`;
+
 /**
  * Desktop Header component
  * @param handleLangChange - Callback function to handle language changes
@@ -194,6 +207,10 @@ export default function HeaderDesktop({
                     <NavLink to="/about">{t('header.nav.aboutUs')}</NavLink>
                     <NavLink to="/news">{t('header.nav.news')}</NavLink>
                     <NavLink to="/events">{t('header.nav.events')}</NavLink>
+                    <NavLink to="/jobs" style={{ position: 'relative' }}>
+                        {t('header.nav.jobs')}
+                        <BetaBadge>NEW</BetaBadge>
+                    </NavLink>
                 </Navigation>
 
                 <AuthButtons>
@@ -227,8 +244,8 @@ export default function HeaderDesktop({
                     {isAuthenticated ? (
                         <Link to={'/mypage'}>
                             <UserAvatar>
-                                {user?.data.imageUrl ? (
-                                    <img src={user.data.imageUrl} alt={`${user.data.firstName || 'User'}'s Avatar`} />
+                                {user?.imageUrl ? (
+                                    <img src={user.imageUrl} alt={`${user.firstName || 'User'}'s Avatar`} />
                                 ) : (
                                     <User2
                                         size={20}

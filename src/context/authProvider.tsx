@@ -51,7 +51,7 @@ export default function AuthProvider({ children }: AuthProviderProps) {
 
             return isValid;
         } catch (error) {
-            console.error('Token validation error:', error);
+            console.error('Error validating token:', error);
             return false;
         }
     }, []);
@@ -67,7 +67,7 @@ export default function AuthProvider({ children }: AuthProviderProps) {
             try {
                 const response = await getUserService.getUserDetails(token);
 
-                if (response.data?.data) {
+                if (response.data) {
                     const userData = response.data;
                     setUser(userData);
                     return userData;
@@ -76,7 +76,7 @@ export default function AuthProvider({ children }: AuthProviderProps) {
                     return null;
                 }
             } catch (error) {
-                console.error('Error loading user data:', error);
+                console.log('Error loading user data:', error);
                 clearTokens();
                 return null;
             } finally {
@@ -109,13 +109,13 @@ export default function AuthProvider({ children }: AuthProviderProps) {
             }
             return false;
         } catch (error) {
-            console.error('Token refresh error:', error);
+            console.error('Error refreshing tokens:', error);
             clearTokens();
             return false;
         }
     }, [fetchData, loadUserData, clearTokens]);
 
-    // we check if user is authenticated on initial load
+    /*  We check if user is authenticated on initial load */
     useEffect(() => {
         let isMounted = true;
 
@@ -129,7 +129,8 @@ export default function AuthProvider({ children }: AuthProviderProps) {
                     const userData = await loadUserData(accessToken);
 
                     if (isMounted && !userData) {
-                        console.log('Failed to load user data with valid token');
+                        console.log('User data not found, clearing tokens');
+                        clearTokens();
                     }
                 } else {
                     const refreshToken = localStorage.getItem('refresh_token');
@@ -137,18 +138,16 @@ export default function AuthProvider({ children }: AuthProviderProps) {
                     if (refreshToken) {
                         const refreshSuccess = await refreshTokens();
                         if (!refreshSuccess && isMounted) {
-                            console.log('Token refresh failed');
                             clearTokens();
                         }
                     } else {
-                        console.log('No refresh token available');
                         if (isMounted) {
                             setUser(null);
                         }
                     }
                 }
             } catch (error) {
-                console.error('Auth initialization error:', error);
+                console.log('Error during authentication initialization:', error);
                 if (isMounted) {
                     clearTokens();
                 }
@@ -166,44 +165,35 @@ export default function AuthProvider({ children }: AuthProviderProps) {
         };
     }, []);
 
-    // for raw login
+    /* For raw login */
     const login = useCallback(
         async (email: string, password: string) => {
-            try {
-                return await fetchData<TokenResponse>({
-                    endpoint: '/auth/login',
-                    method: 'POST',
-                    data: {
-                        email,
-                        password,
-                        ipAddress: window.location.hostname,
-                        deviceType: 'web',
-                    },
-                    skipGlobalErrorHandler: true,
-                });
-            } catch (error) {
-                console.error('Login error:', error);
-                throw error;
-            }
+            const response = await fetchData<TokenResponse>({
+                endpoint: '/auth/login',
+                method: 'POST',
+                data: {
+                    email,
+                    password,
+                    ipAddress: window.location.hostname,
+                    deviceType: 'web',
+                },
+                skipGlobalErrorHandler: true,
+            });
+            return response;
         },
         [fetchData],
     );
 
-    // for raw email registration
+    /* For raw email registration */
     const register = useCallback(
         async (formData: RegisterFormData) => {
-            try {
-                const response = await fetchData<EventRegistrationResponse>({
-                    endpoint: '/auth/register',
-                    method: 'POST',
-                    data: formData,
-                    skipGlobalErrorHandler: true,
-                });
-                return response;
-            } catch (error) {
-                console.error('Registration error:', error);
-                throw error;
-            }
+            const response = await fetchData<EventRegistrationResponse>({
+                endpoint: '/auth/register',
+                method: 'POST',
+                data: formData,
+                skipGlobalErrorHandler: true,
+            });
+            return response;
         },
         [fetchData],
     );
@@ -211,91 +201,75 @@ export default function AuthProvider({ children }: AuthProviderProps) {
     /* OTP validation to complete the login */
     const validateOTP = useCallback(
         async (email: string, otp: string) => {
-            try {
-                const response = await fetchData<TokenResponse>({
-                    endpoint: '/auth/verify-login-otp',
-                    method: 'POST',
-                    data: { email, otp },
-                    skipGlobalErrorHandler: true,
-                });
+            const response = await fetchData<TokenResponse>({
+                endpoint: '/auth/verify-login-otp',
+                method: 'POST',
+                data: { email, otp },
+                skipGlobalErrorHandler: true,
+            });
 
-                if (response.data?.data?.access_token) {
-                    localStorage.setItem('access_token', response.data.data.access_token);
-                    localStorage.setItem('refresh_token', response.data.data.refresh_token);
-                    await loadUserData(response.data.data.access_token);
-                }
-                return response;
-            } catch (error) {
-                console.error('OTP validation error:', error);
-                throw error;
+            if (response.data?.access_token) {
+                localStorage.setItem('access_token', response.data.access_token);
+                localStorage.setItem('refresh_token', response.data.refresh_token);
+                await loadUserData(response.data.access_token);
             }
+            return response;
         },
         [fetchData, loadUserData],
     );
 
     const loginWithGoogle = useCallback(
         async (idToken: string): Promise<ApiResponse<TokenResponse>> => {
-            try {
-                const response = await fetchData<TokenResponse>({
-                    endpoint: '/auth/google/sign-in',
-                    method: 'POST',
-                    data: idToken,
-                    customHeaders: {
-                        'Content-Type': 'text/plain',
-                    },
-                });
+            const response = await fetchData<TokenResponse>({
+                endpoint: '/auth/google/sign-in',
+                method: 'POST',
+                data: idToken,
+                customHeaders: {
+                    'Content-Type': 'text/plain',
+                },
+            });
 
-                if (response.data?.data?.access_token) {
-                    localStorage.setItem('access_token', response.data.data.access_token);
-                    localStorage.setItem('refresh_token', response.data.data.refresh_token);
+            if (response.data?.access_token) {
+                localStorage.setItem('access_token', response.data.access_token);
+                localStorage.setItem('refresh_token', response.data.refresh_token);
 
-                    await loadUserData(response.data.data.access_token);
-                    console.log('User data loaded successfully after Google login');
-                }
-
-                return response;
-            } catch (error) {
-                console.error('Google login error:', error);
-                throw error;
+                await loadUserData(response.data.access_token);
             }
+
+            return response;
         },
         [fetchData, loadUserData, navigate],
     );
 
     const signUpWithGoogle = useCallback(
         async (credential: string, additionalData?: { username: string; phone: string }) => {
-            try {
-                let requestData;
-                let headers;
+            let requestData;
+            let headers;
 
-                if (additionalData) {
-                    requestData = {
-                        credential,
-                        username: additionalData.username,
-                        phone: additionalData.phone,
-                    };
-                    headers = {
-                        'Content-Type': 'application/json',
-                    };
-                } else {
-                    requestData = credential;
-                    headers = {
-                        'Content-Type': 'text/plain',
-                    };
-                }
-
-                const response = await fetchData({
-                    endpoint: '/auth/google/sign-up',
-                    method: 'POST',
-                    data: requestData,
-                    customHeaders: headers,
-                    skipGlobalErrorHandler: true,
-                });
-                return response;
-            } catch (error) {
-                console.error('Google sign up error:', error);
-                throw error;
+            if (additionalData) {
+                requestData = {
+                    credential,
+                    username: additionalData.username,
+                    phone: additionalData.phone,
+                };
+                headers = {
+                    'Content-Type': 'application/json',
+                };
+            } else {
+                requestData = credential;
+                headers = {
+                    'Content-Type': 'text/plain',
+                };
             }
+
+            const response = await fetchData({
+                endpoint: '/auth/google/sign-up',
+                method: 'POST',
+                data: requestData,
+                customHeaders: headers,
+                skipGlobalErrorHandler: true,
+            });
+            return response;
         },
         [fetchData],
     );

@@ -79,7 +79,7 @@ const MobileMenu = styled.div<MobileMenuProps>`
     top: 0;
     right: 0;
     width: 90%;
-    height: 48vh;
+    height: 60vh;
     background-color: ${themeColors.colors.neutral.black};
     display: flex;
     flex-direction: column;
@@ -105,6 +105,9 @@ const MobileNavLink = styled(RouterNavLink)`
     font-size: 18px;
     padding: 12px 0;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    gap: 8px;
 
     &.active {
         color: ${themeColors.colors.primary.main};
@@ -114,6 +117,18 @@ const MobileNavLink = styled(RouterNavLink)`
     &:hover {
         color: ${themeColors.colors.primary.main};
         transition: color 0.2s ease;
+    }
+
+    .beta-badge {
+        background-color: ${themeColors.colors.status.beta.main};
+        color: ${themeColors.colors.neutral.black};
+        font-size: 9px;
+        font-weight: 600;
+        padding: 2px 8px;
+        border-radius: 4px;
+        border: 0.5px solid ${themeColors.colors.status.beta.main};
+        white-space: nowrap;
+        flex-shrink: 0;
     }
 `;
 
@@ -290,6 +305,10 @@ export default function HeaderMobile({
                         <MobileNavLink to="/events" onClick={closeMenu}>
                             {t('header.nav.events')}
                         </MobileNavLink>
+                        <MobileNavLink to="/jobs" onClick={closeMenu}>
+                            {t('header.nav.jobs')}
+                            <span className="beta-badge">NEW</span>
+                        </MobileNavLink>
                     </MobileNavigation>
 
                     <BottomSection>
@@ -321,11 +340,8 @@ export default function HeaderMobile({
                             {isAuthenticated ? (
                                 <Link to={'/mypage'} onClick={closeMenu} style={{ textDecoration: 'none' }}>
                                     <UserAvatar>
-                                        {user?.data.imageUrl ? (
-                                            <img
-                                                src={user.data.imageUrl}
-                                                alt={`${user.data.firstName || 'User'}'s Avatar`}
-                                            />
+                                        {user?.imageUrl ? (
+                                            <img src={user.imageUrl} alt={`${user.firstName || 'User'}'s Avatar`} />
                                         ) : (
                                             <User2 size={28} color={themeColors.colors.neutral.white} />
                                         )}
