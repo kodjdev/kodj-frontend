@@ -317,8 +317,8 @@ export default function NewsComments({ articleId, initialComments = [] }: Commen
             <CommentsHeader>Top comments ({totalComments})</CommentsHeader>
             <CommentInput>
                 <CommentAvatar>
-                    {isAuthenticated && user?.data?.imageUrl ? (
-                        <img src={user.data.imageUrl} alt="Your avatar" />
+                    {isAuthenticated && user?.imageUrl ? (
+                        <img src={user.imageUrl} alt="Your avatar" />
                     ) : (
                         <img src="/api/placeholder/40/40" alt="Default avatar" />
                     )}

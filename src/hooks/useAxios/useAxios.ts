@@ -93,7 +93,7 @@ export default function useAxios() {
 
                 /* format the response to match expected API response structure */
                 const apiResponse: ApiResponse<T> = {
-                    data: response.data?.data as T || null,
+                    data: response.data?.data as T,
                     statusCode: response.status,
                     message: response.data?.message || 'success',
                 };
