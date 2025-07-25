@@ -139,11 +139,7 @@ export default function JobsSidebar({
 
     return (
         <SidebarWrapper>
-            <Card
-                title="Job Information"
-                backgroundColor={themeColors.colors.gray.dark}
-                padding={themeColors.spacing.lg}
-            >
+            <Card title="Job Information" backgroundColor={themeColors.colors.gray.dark} responsivePadding={true}>
                 <JobInfoSection>
                     <InfoRow>
                         <InfoLabel>Company:</InfoLabel>

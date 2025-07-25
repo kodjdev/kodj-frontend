@@ -37,11 +37,20 @@ const CardContainer = styled.div<CardContainerProps>`
     background-color: ${(props) => props.backgroundColor || '#161616'};
     border-radius: 8px;
     border: 1px solid ${themeColors.cardBorder.color};
-    padding: ${(props) => props.padding || '24px'};
+    padding: ${(props) => {
+        if (props.responsivePadding) {
+            return themeColors.spacing.lg;
+        }
+        return props.padding || '24px';
+    }};
     transition:
         transform 0.2s ease,
         box-shadow 0.2s ease;
     height: ${(props) => props.height || 'auto'};
+    width: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
+    word-wrap: break-word;
 
     ${(props) =>
         props.responsivePadding &&

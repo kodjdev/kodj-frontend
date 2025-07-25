@@ -19,6 +19,11 @@ const Container = styled.div`
     margin: 0 auto;
     background-color: ${themeColors.colors.neutral.black};
     min-height: 100vh;
+    padding: 0 ${themeColors.spacing.md};
+
+    @media (max-width: ${themeColors.breakpoints.mobile}) {
+        padding: 0;
+    }
 `;
 
 const BackLink = styled(Link)`
@@ -43,10 +48,17 @@ const ContentWrapper = styled.div`
     grid-template-columns: 2fr 1fr;
     gap: ${themeColors.spacing.lg};
     align-items: start;
+    margin-top: ${themeColors.spacing.lg};
 
     @media (max-width: ${themeColors.breakpoints.tablet}) {
         grid-template-columns: 1fr;
-        gap: ${themeColors.spacing.xl};
+        gap: ${themeColors.spacing.md};
+        margin-top: ${themeColors.spacing.md};
+    }
+
+    @media (max-width: ${themeColors.breakpoints.mobile}) {
+        gap: ${themeColors.spacing.md};
+        margin-top: ${themeColors.spacing.sm};
     }
 `;
 
@@ -54,6 +66,12 @@ const MainContent = styled.div`
     display: flex;
     flex-direction: column;
     gap: ${themeColors.spacing.xl};
+    width: 100%;
+    min-width: 0;
+
+    @media (max-width: ${themeColors.breakpoints.mobile}) {
+        gap: ${themeColors.spacing.md};
+    }
 `;
 
 const JobHeader = styled.div`
@@ -125,10 +143,13 @@ const SectionContent = styled.div`
     color: ${themeColors.colors.gray.text};
     font-size: ${themeColors.typography.body.medium.fontSize}px;
     line-height: 1.6;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 
     p {
         margin-bottom: ${themeColors.spacing.sm};
         white-space: pre-line;
+        word-wrap: break-word;
     }
 
     ul {
@@ -139,6 +160,15 @@ const SectionContent = styled.div`
     li {
         margin-bottom: ${themeColors.spacing.sm};
         color: ${themeColors.colors.gray.text};
+        word-wrap: break-word;
+    }
+
+    @media (max-width: ${themeColors.breakpoints.mobile}) {
+        font-size: ${themeColors.typography.body.small.fontSize}px;
+
+        ul {
+            padding-left: ${themeColors.spacing.md};
+        }
     }
 `;
 
@@ -454,6 +484,7 @@ export default function JobDetailsPage() {
                             <Card
                                 title={t('jobDetails.sections.contactInfo')}
                                 backgroundColor={themeColors.colors.gray.dark}
+                                padding={themeColors.spacing.lg}
                                 responsivePadding={true}
                             >
                                 <SectionContent>

@@ -16,7 +16,7 @@ const Container = styled.div`
     }
 
     @media (max-width: ${themeColors.breakpoints.mobile}) {
-        padding: 0 ${themeColors.spacing.sm};
+        padding: 0;
     }
 `;
 
@@ -38,6 +38,7 @@ const SectionTitle = styled.h2`
         font-size: 28px;
         flex-direction: row;
         text-align: center;
+        margin-top: 0;
     }
 `;
 

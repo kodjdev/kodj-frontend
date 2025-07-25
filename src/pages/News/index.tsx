@@ -36,8 +36,7 @@ const Container = styled.div`
     margin: 0 auto;
 
     @media (max-width: ${themeColors.breakpoints.mobile}) {
-        padding: 0 ${themeColors.spacing.sm};
-        padding-top: ${themeColors.spacing.md};
+        padding-top: 0;
     }
 `;
 
