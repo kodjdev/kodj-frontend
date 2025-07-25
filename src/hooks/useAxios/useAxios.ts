@@ -93,10 +93,13 @@ export default function useAxios() {
 
                 /* format the response to match expected API response structure */
                 const apiResponse: ApiResponse<T> = {
-                    data: response.data.data as T,
+                    data: response.data?.data as T || null,
                     statusCode: response.status,
-                    message: response.data.message || 'success',
+                    message: response.data?.message || 'success',
                 };
+                if (response.data?.data === undefined) {
+                    console.warn('useAxios: Response data structure does not match expected format.');
+                }
 
                 console.log('useAxios: Parsed response data:', apiResponse);
 
