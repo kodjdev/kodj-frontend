@@ -150,6 +150,7 @@ export default function Speakers({ speakers = [] }: SpeakersProps) {
 
                     return (
                         <CustomEventCard
+                            id={speaker.id}
                             key={speaker.id}
                             title={speakerName}
                             description={speakerBio}

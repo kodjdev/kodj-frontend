@@ -191,6 +191,7 @@ export default function EventsList({ onFilterChange, defaultFilter = EventFilter
             state={{ eventData: event, speakers: [], eventSchedule: [] }}
         >
             <EventCard
+                id={Number(event.id)}
                 isFreeEvent={true}
                 title={event.title}
                 description={Array.isArray(event.description) ? event.description.join(' ') : event.description}
@@ -235,12 +236,12 @@ export default function EventsList({ onFilterChange, defaultFilter = EventFilter
                     upcomingEvents && upcomingEvents.length > 0 ? (
                         <>{upcomingEvents.map((event) => renderEventCard(event, true))}</>
                     ) : (
-                        <EventCard isPlaceholder />
+                        <EventCard id={0} isPlaceholder />
                     )
                 ) : pastEvents && pastEvents.length > 0 ? (
                     pastEvents.map((event) => renderEventCard(event, false))
                 ) : (
-                    <EventCard isPlaceholder />
+                    <EventCard id={1} isPlaceholder />
                 )}
             </EventsGrid>
             {activeFilter === EventFilter.ALL && (
@@ -253,7 +254,7 @@ export default function EventsList({ onFilterChange, defaultFilter = EventFilter
                         {pastEvents && pastEvents.length > 0 ? (
                             pastEvents.map((event) => renderEventCard(event, false))
                         ) : (
-                            <EventCard isPlaceholder />
+                            <EventCard id={2} isPlaceholder />
                         )}
                     </EventsGrid>
                 </>
