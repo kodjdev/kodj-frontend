@@ -129,6 +129,11 @@ export default function MyPage() {
     }, [user, messageApi, activeSection, accessToken]);
 
     const handleCancelEvent = async (eventId: number) => {
+        if (!accessToken) {
+            messageApi.error('Access token not found. Please log in again.');
+            return;
+        }
+
         if (!user) return;
 
         try {

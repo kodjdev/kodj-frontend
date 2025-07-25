@@ -166,9 +166,9 @@ const FieldRow = styled.div`
 `;
 
 const Label = styled.label`
-    color: ${themeColors.colors.neutral.white};
-    font-size: ${themeColors.typography.body.medium.fontSize}px;
-    font-weight: 500;
+    color: ${themeColors.colors.gray.label};
+    font-size: ${themeColors.typography.body.xsmall.fontSize}px;
+    font-weight: 700;
 `;
 
 const Select = styled.select`
@@ -176,7 +176,8 @@ const Select = styled.select`
     border: 1px solid ${themeColors.cardBorder.color};
     background-color: ${themeColors.colors.gray.dark};
     border-radius: 8px;
-    padding: ${themeColors.spacing.md};
+    height: 42px;
+    padding: ${themeColors.spacing.sm};
     color: ${themeColors.colors.neutral.white};
     font-size: ${themeColors.typography.body.medium.fontSize}px;
 
@@ -457,16 +458,8 @@ export default function SpeakersRegistration() {
             {
                 loadingMessage: t('messages.submitting'),
                 successMessage: t('messages.submitSuccess'),
-                showError: false,
-                onError: (apiError) => {
-                    if (apiError.statusCode === 400) {
-                        messageApi.error(t('validation.emailFormat'));
-                    } else if (apiError.statusCode === 409) {
-                        messageApi.error('Email already exists. Please use a different email.');
-                    } else {
-                        messageApi.error(t('messages.submitError'));
-                    }
-                },
+                showError: true,
+                errorMessage: t('messages.submitError'),
             },
         );
 
@@ -521,6 +514,7 @@ export default function SpeakersRegistration() {
                             <Input
                                 id="email"
                                 type="email"
+                                size="xs"
                                 placeholder={t('placeholders.email')}
                                 value={email.value}
                                 onChange={email.onChange}
@@ -536,6 +530,7 @@ export default function SpeakersRegistration() {
                             <Input
                                 id="fullName"
                                 type="text"
+                                size="xs"
                                 placeholder={t('placeholders.fullName')}
                                 value={fullName.value}
                                 onChange={fullName.onChange}
@@ -552,6 +547,7 @@ export default function SpeakersRegistration() {
                                 <Input
                                     id="jobPosition"
                                     type="text"
+                                    size="xs"
                                     placeholder={t('placeholders.jobPosition')}
                                     value={jobPosition}
                                     onChange={(e) => setJobPosition(e.target.value)}
@@ -566,6 +562,7 @@ export default function SpeakersRegistration() {
                                 <Input
                                     id="phone"
                                     type="tel"
+                                    size="xs"
                                     placeholder={t('placeholders.phone')}
                                     value={phone.value}
                                     onChange={phone.onChange}
@@ -635,6 +632,7 @@ export default function SpeakersRegistration() {
                             <Input
                                 id="linkedinUrl"
                                 type="url"
+                                size="xs"
                                 placeholder={t('placeholders.linkedinUrl')}
                                 value={linkedinUrl}
                                 onChange={(e) => setLinkedinUrl(e.target.value)}
@@ -650,6 +648,7 @@ export default function SpeakersRegistration() {
                                 <Input
                                     id="githubUrl"
                                     type="url"
+                                    size="xs"
                                     placeholder={t('placeholders.githubUrl')}
                                     value={githubUrl}
                                     onChange={(e) => setGithubUrl(e.target.value)}
@@ -664,6 +663,7 @@ export default function SpeakersRegistration() {
                                 <Input
                                     id="portfolioUrl"
                                     type="url"
+                                    size="xs"
                                     placeholder={t('placeholders.portfolioUrl')}
                                     value={portfolioUrl}
                                     onChange={(e) => setPortfolioUrl(e.target.value)}
@@ -674,7 +674,7 @@ export default function SpeakersRegistration() {
                             </FieldGroup>
                         </FieldRow>
 
-                        <SubmitButton htmlType="submit" variant="primary" size="lg" fullWidth disabled={loading}>
+                        <SubmitButton htmlType="submit" variant="primary" size="md" fullWidth disabled={loading}>
                             {t('formFields.submitButton')}
                         </SubmitButton>
                     </Form>
