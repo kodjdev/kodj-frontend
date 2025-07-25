@@ -10,6 +10,7 @@ type AxiosOptions<T> = {
     method?: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
     data?: Record<string, unknown> | string | null;
     params?: Record<string, string | number | boolean>;
+    signal?: AbortSignal;
     customHeaders?: Record<string, string>;
     onSuccess?: (response: ApiResponse<T>) => void;
     onError?: (error: Error | unknown) => void;
@@ -92,10 +93,13 @@ export default function useAxios() {
 
                 /* format the response to match expected API response structure */
                 const apiResponse: ApiResponse<T> = {
-                    data: response.data,
+                    data: response.data?.data as T || null,
                     statusCode: response.status,
-                    message: response.data.message || 'success',
+                    message: response.data?.message || 'success',
                 };
+                if (response.data?.data === undefined) {
+                    console.warn('useAxios: Response data structure does not match expected format.');
+                }
 
                 console.log('useAxios: Parsed response data:', apiResponse);
 

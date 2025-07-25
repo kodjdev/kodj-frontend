@@ -1,0 +1,70 @@
+{
+    "search": {
+        "title": "Keyingi Imkoniyatingizni Toping",
+        "clearFilters": "Filtrlarni Tozalash",
+        "searchJobs": "Ish Qidirish",
+        "placeholder": "Ish nomi, kompaniya yoki kalit so'zlar...",
+        "location": "Joylashuv",
+        "jobType": "Ish Turi"
+    },
+    "results": {
+        "loadingJobs": "Ishlar yuklanmoqda...",
+        "errorTitle": "Ishlarni Olishda Xato",
+        "goToHomepage": "Bosh Sahifaga O'tish",
+        "searching": "Qidirilmoqda...",
+        "jobsFound": "ta ish topildi",
+        "sortNewest": "Eng Yangi",
+        "sortOldest": "Eng Eski",
+        "sortCompany": "Kompaniya A-Z",
+        "noJobsTitle": "Ish Topilmadi",
+        "noJobsDescription": "Sizning mezonlaringizga mos ish topilmadi. Qidiruv shartlari yoki filtrlarni o'zgartirib ko'ring.",
+        "noJobsAvailable": "Hozircha ish joylari mavjud emas. Keyinroq qaytib ko'ring.",
+        "clearAllFilters": "Filtrlarni Tozalash",
+        "loading": "Yuklanmoqda...",
+        "loadMoreJobs": "Ko'proq Ish Yuklash"
+    },
+    "jobDetails": {
+        "loading": "Ish tafsilotlari yuklanmoqda...",
+        "backToJobs": "Ishlarga Qaytish",
+        "posted": "Joylangan",
+        "postedBy": "Joylashtiruvchi",
+        "unknown": "Noma'lum",
+        "bio": "Biografiya",
+        "error": {
+            "title": "Ish Topilmadi",
+            "description": "Siz qidirayotgan ish mavjud emas yoki o'chirilgan.",
+            "backToJobs": "Ishlarga Qaytish"
+        },
+        "status": {
+            "open": "Ochiq",
+            "closed": "Yopiq",
+            "filled": "To'ldirilgan",
+            "pending": "Kutilmoqda"
+        },
+        "sections": {
+            "jobDescription": "Ish Tavsifi",
+            "requirements": "Talablar va Tajriba",
+            "technologies": "Texnologiyalar va Ko'nikmalar",
+            "benefits": "Imtiyozlar va Nafaqalar",
+            "aboutCompany": "Kompaniya Haqida",
+            "contactInfo": "Aloqa Ma'lumotlari",
+            "companyDescription": "{{company}} va ularning maqsadi haqida ko'proq bilib oling."
+        },
+        "contact": {
+            "phone": "Telefon",
+            "email": "Elektron pochta",
+            "website": "Veb-sayt",
+            "notProvided": "Ko'rsatilmagan"
+        },
+        "modal": {
+            "title": "KO'DJ ni rivojlantirishga yordam bering!",
+            "message": "Agar suhbat olsangiz, iltimos bu ishni KO'DJ da topganingizni aytib o'ting. Bu bizning platformamizni faol va ajoyib imkoniyatlarga to'la bo'lishiga yordam beradi. Rahmat!!",
+            "continue": "Davom etish",
+            "cancel": "Bekor qilish"
+        },
+        "messages": {
+            "noContactInfo": "Kompaniya aloqa ma'lumotlari mavjud emas.",
+            "bookmarkSoon": "Tez orada bu xususiyatni yangilaymiz. Kuting!"
+        }
+    }
+}

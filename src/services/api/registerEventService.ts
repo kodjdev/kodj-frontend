@@ -6,7 +6,7 @@ import {
 } from '@/types/user';
 import useAxios from '@/hooks/useAxios/useAxios';
 import { ApiResponse } from '@/types/fetch';
-import { UserRegisteredEventsResponse } from '@/types/event';
+import { UserRegisteredEventApiResponse, UserRegisteredEventsListResponse } from '@/types/event';
 import { useMemo } from 'react';
 
 /**
@@ -25,14 +25,14 @@ export const useRegisterEventService = () => {
                 meetupId: string,
                 registrationData: EventRegistrationData,
             ): Promise<ApiResponse<EventRegistrationResponse>> => {
-                const access_token = localStorage.getItem('access_token');
+                const accessToken = localStorage.getItem('access_token');
                 return fetchData<EventRegistrationResponse>({
-                    endpoint: `/public/users/meetups/${meetupId}/registration`,
+                    endpoint: `/users/meetups/${meetupId}/registration`,
                     method: 'POST',
                     data: registrationData,
                     customHeaders: {
                         'Content-Type': 'application/json',
-                        Authorization: `Bearer ${access_token}`,
+                        Authorization: `Bearer ${accessToken}`,
                     },
                 });
             },
@@ -50,12 +50,25 @@ export const useRegisterEventService = () => {
                 });
             },
 
-            getUserRegisteredEvents: async (token: string): Promise<ApiResponse<UserRegisteredEventsResponse>> => {
-                return fetchData<UserRegisteredEventsResponse>({
+            getUserRegisteredEvents: async (token: string): Promise<ApiResponse<UserRegisteredEventsListResponse>> => {
+                return fetchData<UserRegisteredEventsListResponse>({
                     endpoint: '/users/meetups',
                     method: 'GET',
                     customHeaders: {
                         Authorization: `Bearer ${token}`,
+                    },
+                });
+            },
+
+            cancelEventRegistration: async (
+                accessToken: string,
+                meetupId: number,
+            ): Promise<ApiResponse<UserRegisteredEventApiResponse>> => {
+                return fetchData<UserRegisteredEventApiResponse>({
+                    endpoint: `/users/meetups/${meetupId}/registration/cancel`,
+                    method: 'POST',
+                    customHeaders: {
+                        Authorization: `Bearer ${accessToken}`,
                     },
                 });
             },

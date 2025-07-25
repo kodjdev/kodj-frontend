@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { AxiosError } from 'axios';
-import { STATUS_MESSAGES } from '@/utils/constant';
+import { STATUS_MESSAGES } from '@/constant/constant';
 
 type MessageType = 'success' | 'error' | 'warning' | 'info' | 'loading';
 

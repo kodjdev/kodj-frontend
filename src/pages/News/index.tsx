@@ -36,8 +36,7 @@ const Container = styled.div`
     margin: 0 auto;
 
     @media (max-width: ${themeColors.breakpoints.mobile}) {
-        padding: 0 ${themeColors.spacing.sm};
-        padding-top: ${themeColors.spacing.md};
+        padding-top: 0;
     }
 `;
 
@@ -95,11 +94,12 @@ const SearchBar = styled.div`
     }
 `;
 
-const NewsGrid = styled.div`
+const NewsGrid = styled.div<{ itemCount: number }>`
     display: flex;
     flex-direction: column;
     gap: ${themeColors.spacing.xl};
     padding-bottom: ${themeColors.spacing.xxl};
+    min-height: ${({ itemCount }) => (itemCount <= 2 ? '70vh' : 'auto')};
 `;
 
 const NewsCard = styled(Card)`
@@ -292,16 +292,20 @@ const NewsCardLink = styled(Link)`
     text-decoration: none;
     color: inherit;
     display: block;
-    flex: 1;
     border-radius: 17px;
     overflow: hidden;
 
     &:hover {
-        background-color: ${themeColors.colors.gray.inputTag};
-        box-shadow: 0 2px 8px ${themeColors.colors.gray.inputTag};
         transform: translateY(-2px);
         transition: all 0.2s ease;
+        background-color: ${themeColors.colors.gray.inputTag};
+        box-shadow: 0 2px 8px ${themeColors.colors.gray.inputTag};
     }
+
+    &:hover ${NewsCard} {
+        box-shadow: 0 2px 10px ${themeColors.colors.gray.inputTag};
+    }
+
     &:active {
         background-color: ${themeColors.colors.gray.inputTag};
         box-shadow: 0 2px 10px ${themeColors.colors.gray.inputTag};
@@ -314,6 +318,14 @@ const ReadTimeText = styled.span`
     color: ${themeColors.colors.gray.main};
     font-size: ${themeColors.typography.body.small.fontSize}px;
     margin-left: ${themeColors.spacing.md};
+`;
+
+const EmptyStateContainer = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    padding: ${themeColors.spacing.xl};
 `;
 
 /**
@@ -477,7 +489,7 @@ export default function NewsList() {
                 </SearchBar>
             </SearchContainer>
 
-            <NewsGrid>
+            <NewsGrid itemCount={visibleNews.length}>
                 {loading ? (
                     <PageLoading message={t('search.loadingMessage')} />
                 ) : filteredNews.length > 0 ? (
@@ -577,23 +589,24 @@ export default function NewsList() {
                         )}
                     </>
                 ) : (
-                    
-                    <EmptyState
-                        title={t('emptyState.noNewsTitle')}
-                        description={t('emptyState.noNewsDescription')}
-                        buttonText={t('emptyState.tryAgainButton')}
-                        buttonVariant="outline"
-                        buttonSize="mini"
-                        onButtonClick={() => {
-                            setSearchTerm('');
-                            setActiveTag(null);
-                            setActiveCategory(FilterTypes.TECH);
-                            navigate('/');
-                        }}
-                        icon={<NotepadText size={48} />}
-                        showLogo={false}
-                        showIcon={true}
-                    />
+                    <EmptyStateContainer>
+                        <EmptyState
+                            title={t('emptyState.noNewsTitle')}
+                            description={t('emptyState.noNewsDescription')}
+                            buttonText={t('emptyState.tryAgainButton')}
+                            buttonVariant="outline"
+                            buttonSize="mini"
+                            onButtonClick={() => {
+                                setSearchTerm('');
+                                setActiveTag(null);
+                                setActiveCategory(FilterTypes.TECH);
+                                navigate('/');
+                            }}
+                            icon={<NotepadText size={48} />}
+                            showLogo={false}
+                            showIcon={true}
+                        />
+                    </EmptyStateContainer>
                 )}
             </NewsGrid>
         </Container>

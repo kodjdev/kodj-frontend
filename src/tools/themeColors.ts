@@ -58,7 +58,6 @@ const colors = {
         background: '#1A1D1E',
     },
 
-    // Status colors
     status: {
         error: {
             text: '#DD616E',
@@ -72,10 +71,15 @@ const colors = {
             background: '#A4C2A5',
         },
         warning: {
-            main: '#F2A024', // Yellow
+            main: '#F2A024',
         },
         info: {
             action: '#3182CE',
+        },
+        beta: {
+            main: '#F2A024',
+            background: '#FDF6E3',
+            text: '#F2A024',
         },
     },
 
@@ -198,6 +202,12 @@ const typography = {
             },
             h4: {
                 fontSize: 20,
+                fontWeight: 500,
+                lineHeight: '130%',
+                letterSpacing: 0.25,
+            },
+            h5: {
+                fontSize: 16,
                 fontWeight: 500,
                 lineHeight: '130%',
                 letterSpacing: 0.25,

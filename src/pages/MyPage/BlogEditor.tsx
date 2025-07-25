@@ -253,6 +253,7 @@ export default function BlogEditor() {
                     onButtonClick={handleNewPost}
                     style={{ paddingTop: '160px' }}
                     showLogo={true}
+                    disabled={true}
                 />
             </>
         );

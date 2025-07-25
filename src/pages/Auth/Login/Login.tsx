@@ -37,8 +37,8 @@ const FormContainer = styled.div`
 `;
 
 const EventNotification = styled.div`
-    margin-bottom: 16px;
-    font-size: 14px;
+    margin-bottom: 15px;
+    font-size: ${themeColors.typography.body.small.fontSize}px;
     color: ${themeColors.gray_text};
     text-align: center;
 `;
@@ -225,16 +225,7 @@ export default function Login({ toggleAuthMode, returnUrl, eventDetails }: Login
         const { error } = await handleAsyncOperation(() => validateOTP(email, otp), {
             loadingMessage: t('login.messages.verifyingOtp'),
             successMessage: t('login.messages.loginSuccessful'),
-            showError: false,
-            onError: (apiError) => {
-                if (apiError.statusCode === 400) {
-                    messageApi.error(t('login.messages.invalidOtp'));
-                } else if (apiError.statusCode === 401) {
-                    messageApi.error(t('login.messages.otpExpired'));
-                } else {
-                    messageApi.error(t('login.messages.verificationFailed'));
-                }
-            },
+            showError: true,
         });
 
         if (error) {
@@ -288,8 +279,7 @@ export default function Login({ toggleAuthMode, returnUrl, eventDetails }: Login
                         <EventTitle>{eventDetails?.title}</EventTitle>
                     </EventNotification>
                 )}
-                <Heading>{!otpSent ? t('login.welcomeBack') : t('login.confirmEmail')}</Heading>
-
+                {!returnUrl && <Heading>{!otpSent ? t('login.welcomeBack') : t('login.confirmEmail')}</Heading>}
                 {!otpSent ? (
                     <Form onSubmit={handleEmailLogin}>
                         <InputGroup>

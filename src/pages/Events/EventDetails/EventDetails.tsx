@@ -20,7 +20,7 @@ const PageContainer = styled.div`
     color: ${themeColors.colors.neutral.white};
 
     @media (max-width: ${themeColors.breakpoints.tablet}) {
-        padding: ${themeColors.spacing.md};
+        padding: 0;
     }
 `;
 
@@ -40,8 +40,18 @@ const LeftPanel = styled.div`
 
 const RightPanel = styled.div`
     width: 350px;
+    position: sticky;
+    top: 100px;
+    height: fit-content;
+    align-self: flex-start;
 
     @media (max-width: ${themeColors.breakpoints.tablet}) {
+        width: 100%;
+        position: static;
+        top: auto;
+    }
+
+    @media (max-width: ${themeColors.breakpoints.mobile}) {
         width: 100%;
     }
 `;
@@ -413,9 +423,14 @@ export default function EventDetails() {
 
                 <RightPanel>
                     <Card
-                        backgroundColor={themeColors.colors.gray.background}
+                        backgroundColor="#1a1a1a;"
                         padding={themeColors.spacing.lg}
-                        style={{ display: 'flex', flexDirection: 'column' }}
+                        style={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            position: 'relative',
+                            zIndex: 1,
+                        }}
                     >
                         <Card.Title>{eventData.title}</Card.Title>
                         <EventInfoContainer>

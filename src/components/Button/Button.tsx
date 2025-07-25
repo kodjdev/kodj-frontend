@@ -64,7 +64,6 @@ const StyledButton = styled('button')<{
         background-color 150ms,
         opacity 150ms;
     width: ${(props) => (props.fullWidth ? '100%' : 'auto')};
-    text-transform: uppercase;
     text-decoration: none;
     box-sizing: border-box;
 
@@ -151,13 +150,13 @@ const StyledButton = styled('button')<{
                     background-color: ${themeColors.colors.ui.transparent};
                     color: ${themeColors.colors.neutral.white};
                     border: 1px solid ${themeColors.cardBorder.color};
-                    border-radius: ${themeColors.radiusSizes.two_xl};
+                    border-radius: ${themeColors.radiusSizes.lg};
 
                     &:hover:not(:disabled) {
                         background-color: ${themeColors.colors.neutral.white};
                         color: ${themeColors.colors.neutral.black};
                         border: 1px solid ${themeColors.cardBorder.color};
-                        border-radius: ${themeColors.radiusSizes.two_xl};
+                        border-radius: ${themeColors.radiusSizes.lg};
                     }
                 `;
             case 'redText':

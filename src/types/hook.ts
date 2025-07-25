@@ -16,9 +16,7 @@ export type MeetupResponse = {
 };
 
 export type PageResponse<T> = {
-    data: {
-        content: T[];
-    };
+    content: T[];
     totalPages: number;
     totalElements: number;
     size: number;

@@ -76,7 +76,6 @@
     "loginRoot": {
         "accountCreatedSuccess": "Account created successfully! Please login with your credentials."
     },
-
     "passwordConfirm": {
         "password": "Password",
         "confirmPassword": "Confirm Password",

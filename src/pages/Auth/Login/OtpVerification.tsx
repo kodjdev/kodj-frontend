@@ -38,6 +38,7 @@ const BackButton = styled.button`
         text-decoration: underline;
     }
 `;
+
 const EmailInfo = styled.div`
     color: ${themeColors.gray_text};
     font-size: 14px;

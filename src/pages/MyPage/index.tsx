@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import themeColors from '@/tools/themeColors';
 import AccountDetails from '@/pages/MyPage/AccountDetails';
@@ -10,6 +10,9 @@ import useAuth from '@/context/useAuth';
 import useModal from '@/hooks/useModal';
 import JobPosting from '@/pages/MyPage/JobPosting/index';
 import { useTranslation } from 'react-i18next';
+import useApiService from '@/services';
+import { message } from 'antd';
+import { EventCardProps } from '@/components/Card/EventCard';
 
 enum PageSection {
     EVENTS = 'events',
@@ -70,23 +73,84 @@ const SectionContainer = styled.div<{ showBorder?: boolean }>`
 export default function MyPage() {
     const [activeSection, setActiveSection] = useState<PageSection>(PageSection.EVENTS);
     const [isJobPostingFormActive, setIsJobPostingFormActive] = useState(false);
+    const [registeredEvents, setRegisteredEvents] = useState<EventCardProps[]>([]);
+    const [eventsLoading, setEventsLoading] = useState(true);
+    const [messageApi, contextHolder] = message.useMessage();
 
     const { t } = useTranslation('mypage');
-    const { isAuthenticated, logout } = useAuth();
+    const { isAuthenticated, logout, user } = useAuth();
     const { isOpen, openModal, closeModal } = useModal();
-    /* render the content based on active section */
-    const renderContent = () => {
-        switch (activeSection) {
-            case PageSection.EVENTS:
-                return <MyEvents />;
-            case PageSection.BLOGS:
-                return <BlogEditor />;
-            case PageSection.JOB_POSTING:
-                return <JobPosting onFormStateChange={setIsJobPostingFormActive} />;
-            case PageSection.ACCOUNT:
-                return <AccountDetails />;
-            default:
-                return <MyEvents />;
+    const apiService = useApiService();
+
+    const accessToken = localStorage.getItem('access_token');
+
+    useEffect(() => {
+        const fetchRegisteredEvents = async () => {
+            if (!accessToken) {
+                messageApi.error('Access token not found. Please log in again.');
+                return;
+            }
+
+            if (!user) return;
+
+            try {
+                setEventsLoading(true);
+
+                const response = await apiService.getUserRegisteredEvents(accessToken);
+
+                if (response.statusCode === 200 && response.data) {
+                    const eventsArray = Array.isArray(response.data) ? response.data : [response.data];
+                    const transformedEvents =
+                        eventsArray.map((event) => ({
+                            id: event.id,
+                            title: event.title,
+                            imageUrl: event.imageURL,
+                            registeredCount: event.maxSeats - event.availableSeats,
+                            maxSeats: event.maxSeats,
+                            date: event.meetupDate,
+                            startTime: event.startTime,
+                            endTime: event.endTime,
+                            cancelled: event.cancelled,
+                            canCancel: !event.cancelled && new Date(event.meetupDate) > new Date(),
+                        })) || [];
+
+                    setRegisteredEvents(transformedEvents);
+                }
+            } catch (apiError) {
+                messageApi.error(apiError instanceof Error ? apiError.message : 'Failed to load registered events');
+            } finally {
+                setEventsLoading(false);
+            }
+        };
+
+        if (activeSection === PageSection.EVENTS) {
+            fetchRegisteredEvents();
+        }
+    }, [user, messageApi, activeSection, accessToken]);
+
+    const handleCancelEvent = async (eventId: number) => {
+        if (!accessToken) {
+            messageApi.error('Access token not found. Please log in again.');
+            return;
+        }
+
+        if (!user) return;
+
+        try {
+            const response = await apiService.cancelEventRegistration(accessToken, eventId);
+
+            if (response.statusCode === 200) {
+                messageApi.success('Event registration cancelled successfully');
+                setRegisteredEvents((prev) =>
+                    prev.map((event) =>
+                        event.id === eventId ? { ...event, cancelled: true, canCancel: false } : event,
+                    ),
+                );
+            } else {
+                messageApi.error('Failed to cancel event registration');
+            }
+        } catch (apiError) {
+            messageApi.error(apiError instanceof Error ? apiError.message : 'Failed to cancel event registration');
         }
     };
 
@@ -108,10 +172,38 @@ export default function MyPage() {
         onLogout: handleLogoutClick,
     };
 
+    const renderContent = () => {
+        switch (activeSection) {
+            case PageSection.EVENTS:
+                return (
+                    <MyEvents
+                        registeredEvents={registeredEvents}
+                        loading={eventsLoading}
+                        onCancelEvent={handleCancelEvent}
+                    />
+                );
+            case PageSection.BLOGS:
+                return <BlogEditor />;
+            case PageSection.JOB_POSTING:
+                return <JobPosting onFormStateChange={setIsJobPostingFormActive} />;
+            case PageSection.ACCOUNT:
+                return <AccountDetails />;
+            default:
+                return (
+                    <MyEvents
+                        registeredEvents={registeredEvents}
+                        loading={eventsLoading}
+                        onCancelEvent={handleCancelEvent}
+                    />
+                );
+        }
+    };
+
     const shouldShowBorder = activeSection === PageSection.JOB_POSTING && isJobPostingFormActive;
 
     return (
         <>
+            {contextHolder}
             <PageContainer>
                 <ContentLayout>
                     <LeftColumn>

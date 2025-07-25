@@ -19,6 +19,7 @@ export const STATUS_MESSAGES = {
     401: { type: 'error' as const, message: 'Authentication required. Please log in again.' },
     403: { type: 'error' as const, message: "Access denied. You don't have permission for this action." },
     404: { type: 'error' as const, message: 'Resource not found. Please try again later.' },
+    409: { type: 'error' as const, message: 'Email already exists. Please use a different email address.' },
     500: { type: 'error' as const, message: 'Server error. Please try again later.' },
     0: { type: 'error' as const, message: 'Network error. Please check your connection.' },
 } as const;

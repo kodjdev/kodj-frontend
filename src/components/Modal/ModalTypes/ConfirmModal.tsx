@@ -31,7 +31,7 @@ const ContentContainer = styled.div`
 const MainMessage = styled.p`
     margin: 0;
     color: ${themeColors.colors.neutral.white};
-    font-size: ${themeColors.typography.body.medium.fontSize}px;
+    font-size: ${themeColors.typography.body.small.fontSize}px;
     line-height: 1.5;
 `;
 

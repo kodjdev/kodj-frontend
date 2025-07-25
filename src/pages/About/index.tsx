@@ -16,7 +16,7 @@ const Container = styled.div`
     }
 
     @media (max-width: ${themeColors.breakpoints.mobile}) {
-        padding: 0 ${themeColors.spacing.sm};
+        padding: 0;
     }
 `;
 
@@ -38,6 +38,7 @@ const SectionTitle = styled.h2`
         font-size: 28px;
         flex-direction: row;
         text-align: center;
+        margin-top: 0;
     }
 `;
 
@@ -236,7 +237,7 @@ const ContributorCard = styled.div`
     background-color: ${themeColors.colors.gray.light};
     border: 1px solid #333;
     border-radius: 8px;
-    padding: ${themeColors.spacing.lg};
+    padding: ${themeColors.spacing.md};
     display: flex;
     align-items: center;
     gap: ${themeColors.spacing.md};

@@ -243,7 +243,7 @@ export default function NewsDetails() {
                 const response = await newsService.getNewsById(id);
 
                 if (response.statusCode === 200 && response.data) {
-                    const newsData = response.data.data;
+                    const newsData = response.data;
                     setNewsItem(newsData);
                     setNewsError(null);
                 } else {
@@ -277,10 +277,8 @@ export default function NewsDetails() {
             const fetchRelatedNews = async () => {
                 try {
                     const response = await newsService.getAllNews(newsItem.type);
-                    if (response.statusCode === 200 && response.data && response.data.data.content) {
-                        const filtered = response.data.data.content
-                            .filter((news) => news.id.toString() !== id)
-                            .slice(0, 5);
+                    if (response.statusCode === 200 && response.data && response.data.content) {
+                        const filtered = response.data.content.filter((news) => news.id.toString() !== id).slice(0, 5);
                         setRelatedNews(filtered);
                     }
                 } catch (error) {

@@ -2,8 +2,10 @@ import styled from 'styled-components';
 import themeColors from '@/tools/themeColors';
 import Card from '@/components/Card/Card';
 import { FaCalendarAlt, FaUser, FaUsers } from 'react-icons/fa';
+import Button from '../Button/Button';
 
 export type EventCardProps = {
+    id: number;
     isFreeEvent?: boolean;
     isPlaceholder?: boolean;
     title?: string;
@@ -17,6 +19,9 @@ export type EventCardProps = {
     availableSeats?: number;
     className?: string;
     children?: React.ReactNode;
+    cancelled?: boolean;
+    canCancel?: boolean;
+    onCancel?: () => void;
 };
 
 const CardImage = styled.img`
@@ -98,6 +103,26 @@ const DefaultUserIcon = styled.div`
     }
 `;
 
+const ResponsiveButton = styled(Button)`
+    width: 100% !important;
+    margin-top: ${themeColors.spacing.sm};
+    font-size: ${themeColors.typography.body.small.fontSize}px;
+    font-weight: 500;
+    padding: ${themeColors.spacing.sm} ${themeColors.spacing.md};
+
+    @media (max-width: ${themeColors.breakpoints.tablet}) {
+        width: 100%;
+        min-width: 100%;
+        margin-top: ${themeColors.spacing.md};
+    }
+
+    @media (max-width: ${themeColors.breakpoints.mobile}) {
+        width: 100%;
+        min-width: 100%;
+        margin-top: ${themeColors.spacing.sm};
+    }
+`;
+
 /**
  * EventCard - Molecule Component
  * @param isPlaceholder - Whether to show placeholder content instead of event details
@@ -122,18 +147,32 @@ export default function EventCard({
     availableSeats,
     className,
     children,
+    cancelled,
+    canCancel,
+    onCancel,
     ...props
 }: EventCardProps) {
     if (isPlaceholder) {
         return (
-            <Card backgroundColor="#161616" hoverEffect={false} className={className} {...props}>
+            <Card
+                backgroundColor="#161616"
+                hoverEffect={false}
+                className={className}
+                {...{ ...props, id: props.id?.toString() }}
+            >
                 <PlaceholderContent>More events coming soon...</PlaceholderContent>
             </Card>
         );
     }
 
     return (
-        <Card padding="0" backgroundColor="transparent" hoverEffect={true} className={className} {...props}>
+        <Card
+            padding="0"
+            backgroundColor="transparent"
+            hoverEffect={true}
+            className={className}
+            {...{ ...props, id: props.id?.toString() }}
+        >
             {imageUrl ? (
                 <CardImage src={imageUrl} alt={title || 'Event'} />
             ) : (
@@ -177,6 +216,17 @@ export default function EventCard({
                     </RegistrationInfo>
                 )}
                 {children}
+                {cancelled && (
+                    <ResponsiveButton variant="redText" size="xs" disabled>
+                        Registration Cancelled
+                    </ResponsiveButton>
+                )}
+
+                {canCancel && !cancelled && (
+                    <ResponsiveButton variant="light" size="xs" onClick={onCancel}>
+                        Cancel Registration
+                    </ResponsiveButton>
+                )}
             </CardContent>
         </Card>
     );

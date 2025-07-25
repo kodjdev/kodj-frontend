@@ -133,17 +133,17 @@ const SignOutButton = styled(Button)`
 export default function Sidebar({ activeSection, onSectionChange, onLogout }: SidebarProps) {
     const { t } = useTranslation('mypage');
     const { formatDate } = useFormatDate();
-
     const { user } = useAuth();
+
     return (
         <SidebarContainer>
             <ProfileSection>
-                <ProfileImage src={user?.data.imageUrl || defaultUserImage} alt="Profile" />
+                <ProfileImage src={user?.imageUrl || defaultUserImage} alt="Profile" />
                 <ProfileInfo>
-                    <ProfileName>{user?.data.username || t('sidebar.anonymous')}</ProfileName>
-                    <ProfileEmail>{user?.data.email || t('sidebar.noEmailGiven')}</ProfileEmail>
+                    <ProfileName>{user?.username || t('sidebar.anonymous')}</ProfileName>
+                    <ProfileEmail>{user?.email || t('sidebar.noEmailGiven')}</ProfileEmail>
                     <ProfileJoined>
-                        {t('sidebar.joined')} {formatDate(user?.data.createdAt)}
+                        {t('sidebar.joined')} {formatDate(user?.createdAt)}
                     </ProfileJoined>
                 </ProfileInfo>
             </ProfileSection>

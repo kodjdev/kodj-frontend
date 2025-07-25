@@ -7,6 +7,7 @@ type CardContainerProps = {
     padding?: string;
     hoverEffect?: boolean;
     height?: string;
+    responsivePadding?: boolean;
 };
 
 type CardDescriptionProps = {
@@ -29,17 +30,35 @@ type CardProps = React.HTMLAttributes<HTMLDivElement> & {
     iconSpacingBottom?: string;
     descriptionColor?: string;
     className?: string;
+    responsivePadding?: boolean;
 };
 
 const CardContainer = styled.div<CardContainerProps>`
     background-color: ${(props) => props.backgroundColor || '#161616'};
     border-radius: 8px;
     border: 1px solid ${themeColors.cardBorder.color};
-    padding: ${(props) => props.padding || '24px'};
+    padding: ${(props) => {
+        if (props.responsivePadding) {
+            return themeColors.spacing.lg;
+        }
+        return props.padding || '24px';
+    }};
     transition:
         transform 0.2s ease,
         box-shadow 0.2s ease;
     height: ${(props) => props.height || 'auto'};
+    width: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
+    word-wrap: break-word;
+
+    ${(props) =>
+        props.responsivePadding &&
+        `
+        @media (max-width: ${themeColors.breakpoints.mobile}) {
+            padding: ${themeColors.spacing.md};
+        }
+    `}
 
     &:hover {
         transform: ${(props) => (props.hoverEffect ? 'translateY(-5px)' : 'none')};
@@ -82,6 +101,7 @@ const CardDescription = styled.p<CardDescriptionProps>`
  * @param height - Custom height value (defaults to auto)
  * @param iconSpacingBottom - Custom bottom margin for icon (defaults to 16px)
  * @param descriptionColor - Custom color for description text
+ * @param responsivePadding - Enable responsive padding for mobile view (defaults to false)
  * @param className - Additional CSS classes
  */
 export default function Card({
@@ -95,6 +115,7 @@ export default function Card({
     height,
     iconSpacingBottom,
     descriptionColor,
+    responsivePadding = false,
     className,
     ...props
 }: CardProps) {
@@ -103,6 +124,7 @@ export default function Card({
             backgroundColor={backgroundColor}
             padding={padding}
             hoverEffect={hoverEffect}
+            responsivePadding={responsivePadding}
             height={height}
             className={className}
             {...props}
