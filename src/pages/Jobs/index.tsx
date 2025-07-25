@@ -279,10 +279,6 @@ export default function JobsList() {
         };
     }, []);
 
-    useEffect(() => {
-        fetchJobs(0, false);
-    }, [fetchJobs]);
-
     const filteredJobs = selectedRegion
         ? jobs.filter((job) => {
               if (selectedRegion === 'remote') return job.isRemote;
