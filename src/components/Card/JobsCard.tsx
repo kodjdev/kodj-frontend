@@ -288,7 +288,6 @@ export default function JobCard({
     isUrgent = false,
     onClick,
     className,
-    ...props
 }: JobCardProps) {
     return (
         <JobCardContainer
@@ -297,7 +296,6 @@ export default function JobCard({
             padding={themeColors.spacing.lg}
             hoverEffect={true}
             className={className}
-            {...props}
         >
             <CardHeader>
                 <CompanyLogo>{companyLogo ? <img src={companyLogo} alt={company} /> : <FaBuilding />}</CompanyLogo>

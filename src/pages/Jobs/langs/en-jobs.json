@@ -1,0 +1,70 @@
+{
+    "search": {
+        "title": "Find Your Next Opportunity",
+        "clearFilters": "Clear Filters",
+        "searchJobs": "Search Jobs",
+        "placeholder": "Job title, company, or keywords...",
+        "location": "Location",
+        "jobType": "Job Type"
+    },
+    "results": {
+        "loadingJobs": "Loading jobs...",
+        "errorTitle": "Error Fetching Jobs",
+        "goToHomepage": "Go to Homepage",
+        "searching": "Searching...",
+        "jobsFound": "jobs found",
+        "sortNewest": "Newest First",
+        "sortOldest": "Oldest First",
+        "sortCompany": "Company A-Z",
+        "noJobsTitle": "No Jobs Found",
+        "noJobsDescription": "We couldn't find any jobs matching your criteria. Try adjusting your search terms or filters.",
+        "noJobsAvailable": "No jobs are currently available. Please check back later.",
+        "clearAllFilters": "Clear All Filters",
+        "loading": "Loading...",
+        "loadMoreJobs": "Load More Jobs"
+    },
+    "jobDetails": {
+        "loading": "Loading job details...",
+        "backToJobs": "Back to Jobs",
+        "posted": "Posted",
+        "postedBy": "Posted by",
+        "unknown": "Unknown",
+        "bio": "Bio",
+        "error": {
+            "title": "Job Not Found",
+            "description": "The job you are looking for does not exist or has been removed.",
+            "backToJobs": "Back to Jobs"
+        },
+        "status": {
+            "open": "Open",
+            "closed": "Closed",
+            "filled": "Filled",
+            "pending": "Pending"
+        },
+        "sections": {
+            "jobDescription": "Job Description",
+            "requirements": "Requirements & Experience",
+            "technologies": "Technologies & Skills",
+            "benefits": "Benefits & Perks",
+            "aboutCompany": "About the Company",
+            "contactInfo": "Contact Information",
+            "companyDescription": "Learn more about {{company}} and their mission."
+        },
+        "contact": {
+            "phone": "Phone",
+            "email": "Email",
+            "website": "Website",
+            "notProvided": "Not provided"
+        },
+        "modal": {
+            "title": "Help KO'DJ to grow!",
+            "message": "If you get an interview, please mention you discovered this job on KO'DJ. This helps our platform stay active, and full of great opportunities. Thanks!!",
+            "continue": "Continue",
+            "cancel": "Cancel"
+        },
+        "messages": {
+            "noContactInfo": "Company contact information is not available.",
+            "bookmarkSoon": "We will soon update this feature. Stay tuned!"
+        }
+    }
+}

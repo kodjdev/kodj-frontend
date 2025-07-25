@@ -3,23 +3,11 @@ import themeColors from '@/tools/themeColors';
 import Card from '@/components/Card/Card';
 import Button from '@/components/Button/Button';
 import { Bookmark, BookMarkedIcon } from 'lucide-react';
+import { JobPost } from '@/services/api/types/jobs';
+import { calculateDeadline, formatDateReadable, formatJobOfferStatus, formatJobType } from '@/utils/jobsHelper';
 
 type JobApplicationSidebarProps = {
-    jobData: {
-        id: string;
-        title: string;
-        company: string;
-        location: string;
-        salary?: string;
-        jobType: string;
-        deadline?: string;
-        isRemote?: boolean;
-        isUrgent?: boolean;
-        postedDate: string;
-        companyPhone?: string;
-        companyEmail?: string;
-        companyUrl?: string;
-    };
+    jobData: JobPost;
     onApply?: () => void;
     onBookmark?: () => void;
     isBookmarked?: boolean;
@@ -144,10 +132,6 @@ export default function JobsSidebar({
     isBookmarked = false,
     isApplied = false,
 }: JobApplicationSidebarProps) {
-    const formatJobType = (type: string) => {
-        return type.replace('-', ' ').replace(/\b\w/g, (l) => l.toUpperCase());
-    };
-
     const formatSalary = (salary?: string) => {
         if (!salary) return 'Not specified';
         return salary.includes('₩') ? salary : `₩${salary}`;
@@ -163,17 +147,17 @@ export default function JobsSidebar({
                 <JobInfoSection>
                     <InfoRow>
                         <InfoLabel>Company:</InfoLabel>
-                        <InfoValue>{jobData.company}</InfoValue>
+                        <InfoValue>{jobData.companyName}</InfoValue>
                     </InfoRow>
 
                     <InfoRow>
                         <InfoLabel>Location:</InfoLabel>
-                        <InfoValue>{jobData.location}</InfoValue>
+                        <InfoValue>{jobData.placeOfWork}</InfoValue>
                     </InfoRow>
 
                     <InfoRow>
                         <InfoLabel>Salary:</InfoLabel>
-                        <InfoValue>{formatSalary(jobData.salary)}</InfoValue>
+                        <InfoValue>{formatSalary(jobData.salaryRange)}</InfoValue>
                     </InfoRow>
 
                     <InfoRow>
@@ -181,23 +165,25 @@ export default function JobsSidebar({
                         <InfoValue>{formatJobType(jobData.jobType)}</InfoValue>
                     </InfoRow>
 
-                    {jobData.deadline && (
+                    {jobData.createdAt && (
                         <InfoRow>
                             <InfoLabel>Deadline:</InfoLabel>
-                            <InfoValue>{jobData.deadline}</InfoValue>
+                            <InfoValue>{calculateDeadline(jobData.createdAt)}</InfoValue>
                         </InfoRow>
                     )}
 
                     <InfoRow>
                         <InfoLabel>Posted:</InfoLabel>
-                        <InfoValue>{jobData.postedDate}</InfoValue>
+                        <InfoValue>{formatDateReadable(jobData.createdAt)}</InfoValue>
                     </InfoRow>
                 </JobInfoSection>
 
                 <TagContainer>
                     <Tag variant="type">{formatJobType(jobData.jobType)}</Tag>
-                    {jobData.isRemote && <Tag variant="remote">Remote</Tag>}
-                    {jobData.isUrgent && <Tag variant="urgent">Urgent</Tag>}
+                    {jobData.remote && <Tag variant="remote">Remote</Tag>}
+                    {jobData.jobOfferStatus === 'OPEN' && (
+                        <Tag variant="urgent">{formatJobOfferStatus(jobData.jobOfferStatus)}</Tag>
+                    )}
                 </TagContainer>
 
                 <ActionButtonsContainer>
