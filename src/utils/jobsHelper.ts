@@ -93,7 +93,7 @@ export const transformJobPostToCardProps = (job: JobPost): JobCardProps => {
     const jobDeadline = job.createdAt ? calculateDeadline(job.createdAt) : 'No deadline set';
 
     return {
-        id: job.id.toString(),
+        id: job.id?.toString() || '0',
         title: job.title || 'Untitled Position',
         company: job.companyName || 'Company Name',
         companyLogo: job.imageURL,
