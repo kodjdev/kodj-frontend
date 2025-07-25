@@ -501,7 +501,7 @@ export default function JobDetailsPage() {
                                     <ContactItem>
                                         <span>{t('jobDetails.contact.email')}: </span>
                                         <ContactValue
-                                            href="mailto:${jobData.companyEmail}"
+                                            href={`mailto:${jobData.contactEmail}`}
                                             rel="noopener noreferrer"
                                             target="_blank"
                                         >
