@@ -93,3 +93,32 @@ export type JobsQueryParams = {
     size?: number;
     sort?: string;
 };
+
+export type JobDetailsData = {
+    id: string;
+    title: string;
+    company: string;
+    location: string;
+    salary?: string;
+    jobType?: string;
+    deadline?: string;
+    isRemote?: boolean;
+    isUrgent?: boolean;
+    postedDate: string;
+    companyPhone?: string;
+    companyEmail?: string;
+    companyUrl?: string;
+    fullDescription: string;
+    requirements?: string[];
+    technologies?: string;
+    benefits?: string[];
+    companyDescription?: string;
+    skills?: string[];
+    companyWebsite?: string;
+    user?: {
+        firstName?: string;
+        lastName?: string;
+        bio?: string;
+        jobOfferStatus?: string;
+    };
+};

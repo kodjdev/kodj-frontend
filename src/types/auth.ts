@@ -3,29 +3,25 @@ import { ApiResponse, RegisterFormData } from './fetch';
 import { EventRegistrationResponse } from './user';
 
 export type User = {
-    data: {
-        id: string;
-        email: string;
-        firstName?: string;
-        lastName?: string;
-        imageUrl?: string;
-        bio?: string;
-        role: 'user' | 'admin' | 'speaker';
-        createdAt: string;
-        username: string;
-        phone?: string;
-        oauthProvider?: string;
-        region?: string;
-        category?: string;
-        provider?: string;
-    };
+    id: string;
+    email: string;
+    firstName?: string;
+    lastName?: string;
+    imageUrl?: string;
+    bio?: string;
+    role: 'user' | 'admin' | 'speaker';
+    createdAt: string;
+    username: string;
+    phone?: string;
+    oauthProvider?: string;
+    region?: string;
+    category?: string;
+    provider?: string;
 };
 
 export type TokenResponse = {
-    data: {
-        access_token: string;
-        refresh_token: string;
-    };
+    access_token: string;
+    refresh_token: string;
 };
 
 export type AuthContextType = {

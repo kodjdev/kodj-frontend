@@ -42,3 +42,24 @@ export type EventDetailsApiWrapper = {
     data: EventDetailsResponse;
     statusCode: number;
 };
+
+export type UserRegisteredEventApiResponse = {
+    id: number;
+    title: string;
+    description: string;
+    parking: boolean;
+    location: string;
+    maxSeats: number;
+    availableSeats: number;
+    provided: string;
+    meetupDate: string;
+    organizerId: number;
+    startTime: string;
+    endTime: string;
+    registrationTime: string;
+    imageName: string;
+    imageURL: string;
+    cancelled: boolean;
+};
+
+export type UserRegisteredEventsListResponse = UserRegisteredEventApiResponse[];
