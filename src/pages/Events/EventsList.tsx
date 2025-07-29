@@ -483,7 +483,7 @@ export default function EventsList({ onFilterChange, defaultFilter = EventFilter
                                         onClick={() => setShowSortDropdown(!showSortDropdown)}
                                         className={showSortDropdown ? 'open' : ''}
                                     >
-                                        <span>{sortOrder === SortOrder.DESC ? 'Newest First' : 'Oldest First'}</span>
+                                        <span>{sortOrder === SortOrder.DESC ? t('events.sections.sortOptions.newestFirst') : t('events.sections.sortOptions.oldestFirst')}</span>
                                         <ChevronDown size={13} />
                                     </Button>
                                 </SortButtonWrapper>
