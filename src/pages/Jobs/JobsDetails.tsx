@@ -415,10 +415,10 @@ export default function JobDetailsPage() {
                                 <SectionContent>
                                     <ul>
                                         {jobData.requiredExperience
-                                            .split('\n')
-                                            .filter(Boolean)
-                                            .map((req: string, index: number) => (
-                                                <li key={index}>{req.trim()}</li>
+                                            .split('.')
+                                            .filter((sentence) => sentence.trim().length > 0)
+                                            .map((sentence: string, index: number) => (
+                                                <li key={index}>{sentence.trim()}.</li>
                                             ))}
                                     </ul>
                                 </SectionContent>
@@ -459,16 +459,28 @@ export default function JobDetailsPage() {
                             responsivePadding={true}
                         >
                             <SectionContent>
-                                <p>
-                                    {jobData.content ||
-                                        t('jobDetails.sections.companyDescription', { company: jobData.companyName })}
-                                </p>
+                                {jobData.content ? (
+                                    <>
+                                        {jobData.content
+                                            .split('.')
+                                            .filter((sentence) => sentence.trim().length > 0)
+                                            .slice(0, 2)
+                                            .map((sentence, index) => (
+                                                <p key={index}>{sentence}.</p>
+                                            ))}
+                                    </>
+                                ) : (
+                                    <p>
+                                        {t('jobDetails.sections.companyDescription', { company: jobData.companyName })}
+                                    </p>
+                                )}
+
                                 {jobData.user && (
                                     <div style={{ marginTop: themeColors.spacing.lg }}>
                                         <p>
                                             <strong>{t('jobDetails.postedBy')}:</strong>
-                                            {jobData.user.firstName
-                                                ? jobData.user.firstName + jobData.user.lastName
+                                            {jobData.companyName
+                                                ? ` ${jobData.companyName}`
                                                 : ` ${t('jobDetails.unknown')}`}
                                         </p>
                                         {jobData.user.bio && (
@@ -511,9 +523,13 @@ export default function JobDetailsPage() {
                                     {jobData.linkedinProfile && (
                                         <ContactItem>
                                             <span>{t('jobDetails.contact.website')}: </span>{' '}
-                                            <a href={jobData.linkedinProfile} target="_blank" rel="noopener noreferrer">
+                                            <ContactValue
+                                                href={jobData.linkedinProfile}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                            >
                                                 {jobData.linkedinProfile}
-                                            </a>
+                                            </ContactValue>
                                         </ContactItem>
                                     )}
                                 </SectionContent>

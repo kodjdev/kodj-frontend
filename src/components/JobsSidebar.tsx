@@ -134,7 +134,12 @@ export default function JobsSidebar({
 }: JobApplicationSidebarProps) {
     const formatSalary = (salary?: string) => {
         if (!salary) return 'Not specified';
-        return salary.includes('₩') ? salary : `₩${salary}`;
+
+        if (salary.includes('$') || salary.includes('₩')) {
+            return salary;
+        }
+
+        return `₩${salary}`;
     };
 
     return (
@@ -176,7 +181,7 @@ export default function JobsSidebar({
 
                 <TagContainer>
                     <Tag variant="type">{formatJobType(jobData.jobType)}</Tag>
-                    {jobData.remote && <Tag variant="remote">Remote</Tag>}
+                    {/* {jobData.remote && <Tag variant="remote">Remote</Tag>} */}
                     {jobData.jobOfferStatus === 'OPEN' && (
                         <Tag variant="urgent">{formatJobOfferStatus(jobData.jobOfferStatus)}</Tag>
                     )}

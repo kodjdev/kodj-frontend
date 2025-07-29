@@ -67,6 +67,9 @@ const CompanyLogo = styled.div`
         height: 100%;
         object-fit: cover;
         border-radius: 6px;
+        display: block;
+        max-width: 100%;
+        max-height: 100%;
     }
 
     svg {
