@@ -6,6 +6,7 @@ import RootLayout from '@/pages/RootLayout';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import AuthProvider from '@/context/authProvider';
 import UnderMaintenance from '@/pages/UnderMaintenance';
+import ScrollToTop from '@/components/ScrollToTop';
 
 type AppProps = {
     isMaintenanceMode?: boolean;
@@ -21,6 +22,7 @@ export default function App({ isMaintenanceMode = false }: AppProps) {
     return (
         <RecoilRoot>
             <BrowserRouter>
+                <ScrollToTop />
                 <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
                     <AuthProvider>
                         <RootLayout>
