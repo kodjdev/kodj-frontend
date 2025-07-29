@@ -56,9 +56,9 @@ const SectionTitle = styled.h2`
 export function EventLocation({ location }: EventLocationProps) {
     const locationData = location
         ? {
-              title: '카카오판교아지트, 4층 스위치온2',
-              address: '경기 성남시 분당구 판교역로 166',
-              directions: 'Metroda keluvchilar Pangyo bekatining 2-chiqishidan chiqib kelishlari mumkin.',
+              title: location,
+              address: location,
+              directions: `For directions, please use a map service like Kakao Maps.`,
           }
         : {
               title: 'Location not specified',

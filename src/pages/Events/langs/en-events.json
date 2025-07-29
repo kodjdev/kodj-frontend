@@ -8,7 +8,12 @@
         "sections": {
             "upcoming": "Upcoming",
             "past": "Past",
-            "events": "Events"
+            "events": "Events",
+            "sortBy": "Sort by",
+            "sortOptions": {
+                "dateAsc": "Newest First",
+                "dateDesc": "Oldest First"
+            }
         }
     }
 }

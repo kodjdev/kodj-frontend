@@ -194,6 +194,7 @@ export default function HeaderDesktop({
     const { t } = useTranslation('home');
 
     const { user } = useAuth();
+
     return (
         <HeaderOuterContainer>
             <HeaderInnerContainer>

@@ -8,7 +8,12 @@
         "sections": {
             "upcoming": "Kelgusi",
             "past": "O'tgan",
-            "events": "Tadbirlar"
+            "events": "Tadbirlar",
+            "sortBy": "Saralash",
+            "sortOptions": {
+                "dateAsc": "Eng yangi",
+                "dateDesc": "Eng eski"
+            }
         }
     }
 }

@@ -2,6 +2,8 @@ import themeColors from '@/tools/themeColors';
 import styled, { keyframes } from 'styled-components';
 import wayuLogo from '@/static/icons/wayu.png';
 import lawLogo from '@/static/icons/law.png';
+import hansengLogo from '@/static/icons/haksenguz.svg';
+import ItParkLogo from '@/static/icons/itpark.svg';
 
 const slideAnimation = keyframes`
   0% {
@@ -91,7 +93,7 @@ const LogoContainer = styled.div`
 `;
 
 const LogoSVG = styled.img`
-    height: 32px;
+    height: 34px;
     width: auto;
     max-width: 120px;
     opacity: 0.6;
@@ -112,9 +114,8 @@ const LogoSVG = styled.img`
 const companies = [
     { name: 'Wayu', logo: wayuLogo },
     { name: '금성', logo: lawLogo },
-    { name: 'Apple', logo: 'https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/apple.svg' },
-    { name: 'GitHub', logo: 'https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/github.svg' },
-    { name: 'X', logo: 'https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/x.svg' },
+    { name: 'HaksengUz', logo: hansengLogo },
+    { name: 'IT Park', logo: ItParkLogo },
 ];
 
 export default function PartnersSlider() {

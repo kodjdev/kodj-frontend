@@ -23,6 +23,7 @@ export const meetupToEvent = (meetup: MeetupResponse): Event => {
         maxSeats: meetup.maxSeats ?? 50,
         availableSeats: meetup.availableSeats ?? 50,
         startTime: meetup.startTime || '',
+        provided: meetup.provided || 'Cached Data',
         endTime: meetup.endTime || '',
         registeredCount: registeredCount,
         imageUrl: meetup.imageURL || '',

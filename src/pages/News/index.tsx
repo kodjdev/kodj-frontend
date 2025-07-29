@@ -76,7 +76,7 @@ const FilterButton = styled(Button)<{ isActive: boolean }>`
 
     @media (max-width: ${themeColors.breakpoints.mobile}) {
         font-size: ${themeColors.typography.body.xsmall.fontSize}px;
-        padding: 3px 6px !important;
+        padding: 6px 10px !important;
     }
 `;
 
@@ -442,7 +442,7 @@ export default function NewsList() {
                             setActiveCategory(FilterTypes.TECH);
                             setActiveTag(null);
                         }}
-                        size="mini"
+                        size="md"
                     >
                         {t('filters.all')}
                     </FilterButton>
