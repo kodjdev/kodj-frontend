@@ -17,6 +17,7 @@ export type Event = {
     imageUrl?: string;
     registeredCount?: number;
     maxSeats?: number;
+    provided?: string;
     startTime?: string;
     endTime?: string;
     availableSeats?: number;
@@ -35,6 +36,7 @@ export type EventDetailsResponse = {
     meetupRegistrations: MeetupRegistration[];
     notes: Note[];
     reviews: Review[];
+    provided?: string;
 };
 
 export type EventDetailsApiWrapper = {
