@@ -415,7 +415,9 @@ export default function EventsList({ onFilterChange, defaultFilter = EventFilter
                                     onClick={() => setShowSortDropdown(!showSortDropdown)}
                                     className={showSortDropdown ? 'open' : ''}
                                 >
-                                    {sortOrder === SortOrder.DESC ? t('events.sections.sortOptions.dateDescButton') : t('events.sections.sortOptions.dateAscButton')}
+                                    {sortOrder === SortOrder.DESC
+                                        ? t('events.sections.sortOptions.dateDesc')
+                                        : t('events.sections.sortOptions.dateAsc')}
                                     <ChevronDown size={13} />
                                 </Button>
                             </SortButtonWrapper>
@@ -483,7 +485,11 @@ export default function EventsList({ onFilterChange, defaultFilter = EventFilter
                                         onClick={() => setShowSortDropdown(!showSortDropdown)}
                                         className={showSortDropdown ? 'open' : ''}
                                     >
-                                        <span>{sortOrder === SortOrder.DESC ? t('events.sections.sortOptions.newestFirst') : t('events.sections.sortOptions.oldestFirst')}</span>
+                                        <span>
+                                            {sortOrder === SortOrder.DESC
+                                                ? t('events.sections.sortOptions.dateDesc')
+                                                : t('events.sections.sortOptions.dateAsc')}
+                                        </span>
                                         <ChevronDown size={13} />
                                     </Button>
                                 </SortButtonWrapper>
