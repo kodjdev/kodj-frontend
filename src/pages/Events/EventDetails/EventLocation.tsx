@@ -58,7 +58,7 @@ export function EventLocation({ location }: EventLocationProps) {
         ? {
               title: location,
               address: location,
-              directions: `For directions, please use a map service Kakao Maps.`,
+              directions: `For directions, please use a map service like Kakao Maps.`,
           }
         : {
               title: 'Location not specified',
