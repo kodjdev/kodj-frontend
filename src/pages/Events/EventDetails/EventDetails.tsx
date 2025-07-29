@@ -289,6 +289,7 @@ export default function EventDetails() {
             location: 'Location not specified',
             speakers: apiResponse.speakers || [],
             eventSchedule: apiResponse.keynoteSessions || [],
+            provided: apiResponse.provided || 'Not specified',
         };
 
         if (apiResponse.keynoteSessions && apiResponse.keynoteSessions.length > 0) {
@@ -450,7 +451,7 @@ export default function EventDetails() {
                             </EventInfoItem>
                             <EventInfoItem>
                                 <Coffee size={16} />
-                                <span>Free coffee</span>
+                                <span>{eventDetails?.data?.provided || 'Not specified'}</span>
                             </EventInfoItem>
                             <EventInfoItem>
                                 <Box size={16} />
