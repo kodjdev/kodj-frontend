@@ -6,6 +6,9 @@ import { TokenResponse, User } from '@/types/auth';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '@/context/AuthContext';
 import useApiService from '@/services';
+import { TokenStorage } from '@/utils/tokenStorage';
+import { useSetRecoilState } from 'recoil';
+import { userAtom } from '@/atoms/user';
 
 type AuthProviderProps = {
     children: ReactNode;
@@ -27,84 +30,64 @@ export default function AuthProvider({ children }: AuthProviderProps) {
     const fetchData = useAxios();
     const navigate = useNavigate();
     const getUserService = useApiService();
-
-    const isLoadingUserRef = useRef(false);
+    const setUserAtom = useSetRecoilState(userAtom);
+    const isMountedRef = useRef(true);
 
     const clearTokens = useCallback(() => {
-        localStorage.removeItem('access_token');
-        localStorage.removeItem('refresh_token');
+        TokenStorage.clearTokens();
         setUser(null);
     }, []);
 
     const isTokenValid = useCallback((token: string): boolean => {
-        if (!token) {
-            return false;
-        }
-
+        if (!token) return false;
         try {
-            const base64Url = token.split('.')[1];
-            const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-            const payload = JSON.parse(window.atob(base64));
-
-            const currentTime = Math.floor(Date.now() / 1000);
-            const isValid = payload.exp > currentTime;
-
-            return isValid;
+            const payload = JSON.parse(atob(token.split('.')[1]));
+            return payload.exp * 1000 > Date.now();
         } catch (error) {
-            console.error('Error validating token:', error);
+            console.error('Token validation failed:', error);
             return false;
         }
     }, []);
 
-    const loadUserData = useCallback(
-        async (token: string): Promise<User | null> => {
-            if (isLoadingUserRef.current) {
-                return null;
+    const loadUserData = useCallback(async (token: string): Promise<User | null> => {
+        try {
+            const response = await getUserService.getUserDetails(token);
+            if (response.data) {
+                const userData = response.data;
+                setUser(userData);
+                setUserAtom({
+                    id: String(userData.id),
+                    username: userData.username ?? '',
+                    firstName: userData.firstName?.trim() ?? '',
+                });
+                return userData;
             }
-
-            isLoadingUserRef.current = true;
-
-            try {
-                const response = await getUserService.getUserDetails(token);
-
-                if (response.data) {
-                    const userData = response.data;
-                    setUser(userData);
-                    return userData;
-                } else {
-                    clearTokens();
-                    return null;
-                }
-            } catch (error) {
-                console.log('Error loading user data:', error);
-                clearTokens();
-                return null;
-            } finally {
-                isLoadingUserRef.current = false;
-            }
-        },
-        [getUserService, clearTokens],
-    );
+            throw new Error('User data not found in response.');
+        } catch (error) {
+            console.error('Failed to load user data.', error);
+            throw error;
+        }
+    }, []);
 
     const refreshTokens = useCallback(async (): Promise<boolean> => {
-        try {
-            const refreshToken = localStorage.getItem('refresh_token');
-            if (!refreshToken) return false;
+        const refreshToken = TokenStorage.getRefreshToken();
+        if (!refreshToken) return false;
 
-            const response = await fetchData<{ accessToken: string; refreshToken: string }>({
+        try {
+            const response = await fetchData<{ access_token: string; refresh_token: string }>({
                 endpoint: '/auth/refresh-token',
                 method: 'GET',
-                customHeaders: {
-                    RefreshToken: refreshToken,
-                },
+                customHeaders: { RefreshToken: refreshToken },
             });
 
-            if (response.data && response.data.accessToken) {
-                localStorage.setItem('access_token', response.data.accessToken);
-                if (response.data.refreshToken) {
-                    localStorage.setItem('refresh_token', response.data.refreshToken);
+            if (response.data?.access_token) {
+                const newAccessToken = response.data.access_token;
+                TokenStorage.setAccessToken(newAccessToken);
+                if (response.data.refresh_token) {
+                    TokenStorage.setRefreshToken(response.data.refresh_token);
                 }
-                await loadUserData(response.data.accessToken);
+                /* here we  load user data with the new, valid token */
+                await loadUserData(newAccessToken);
                 return true;
             }
             return false;
@@ -115,44 +98,30 @@ export default function AuthProvider({ children }: AuthProviderProps) {
         }
     }, [fetchData, loadUserData, clearTokens]);
 
-    /*  We check if user is authenticated on initial load */
+    /* we check if user is authenticated on initial load */
     useEffect(() => {
-        let isMounted = true;
+        isMountedRef.current = true;
 
         const initializeAuth = async () => {
-            setIsLoading(true);
+            const accessToken = TokenStorage.getAccessToken();
+
+            if (!accessToken) {
+                setIsLoading(false);
+                return;
+            }
 
             try {
-                const accessToken = localStorage.getItem('access_token');
-
-                if (accessToken && isTokenValid(accessToken)) {
-                    const userData = await loadUserData(accessToken);
-
-                    if (isMounted && !userData) {
-                        console.log('User data not found, clearing tokens');
-                        clearTokens();
-                    }
+                if (isTokenValid(accessToken)) {
+                    await loadUserData(accessToken);
                 } else {
-                    const refreshToken = localStorage.getItem('refresh_token');
-
-                    if (refreshToken) {
-                        const refreshSuccess = await refreshTokens();
-                        if (!refreshSuccess && isMounted) {
-                            clearTokens();
-                        }
-                    } else {
-                        if (isMounted) {
-                            setUser(null);
-                        }
-                    }
+                    console.log('Access token is invalid, attempting to refresh...');
+                    throw new Error('Invalid token');
                 }
             } catch (error) {
-                console.log('Error during authentication initialization:', error);
-                if (isMounted) {
-                    clearTokens();
-                }
+                console.log('Initial user data load failed. trying to refresh token...', error);
+                await refreshTokens();
             } finally {
-                if (isMounted) {
+                if (isMountedRef.current) {
                     setIsLoading(false);
                 }
             }
@@ -161,9 +130,9 @@ export default function AuthProvider({ children }: AuthProviderProps) {
         initializeAuth();
 
         return () => {
-            isMounted = false;
+            isMountedRef.current = false;
         };
-    }, []);
+    }, [loadUserData, refreshTokens, clearTokens]);
 
     /* For raw login */
     const login = useCallback(
@@ -209,8 +178,8 @@ export default function AuthProvider({ children }: AuthProviderProps) {
             });
 
             if (response.data?.access_token) {
-                localStorage.setItem('access_token', response.data.access_token);
-                localStorage.setItem('refresh_token', response.data.refresh_token);
+                TokenStorage.setAccessToken(response.data.access_token);
+                TokenStorage.setRefreshToken(response.data.refresh_token);
                 await loadUserData(response.data.access_token);
             }
             return response;
@@ -230,9 +199,8 @@ export default function AuthProvider({ children }: AuthProviderProps) {
             });
 
             if (response.data?.access_token) {
-                localStorage.setItem('access_token', response.data.access_token);
-                localStorage.setItem('refresh_token', response.data.refresh_token);
-
+                TokenStorage.setAccessToken(response.data.access_token);
+                TokenStorage.setRefreshToken(response.data.refresh_token);
                 await loadUserData(response.data.access_token);
             }
 
