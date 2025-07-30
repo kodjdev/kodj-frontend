@@ -583,7 +583,7 @@ export default function NewsDetails() {
 
             {relatedNews.length > 0 && (
                 <ReadNextSection>
-                    <ReadNextHeader>Related Articles: </ReadNextHeader>
+                    <ReadNextHeader>Related Articles:</ReadNextHeader>
                     {relatedNews.map((article) => (
                         <NewsCardLink key={article.id} to={`/news/${article.id}`}>
                             <RelatedNewsCard>
