@@ -35,6 +35,8 @@ export const useFetchNewsService = () => {
                 return meetupNews;
             case FilterTypes.SOCIAL:
                 return socialNews;
+            default:
+                return techNews;
         }
     };
 
@@ -50,6 +52,7 @@ export const useFetchNewsService = () => {
                 setSocialNews(data);
                 break;
         }
+        setTechNews(data);
     };
 
     const updateNewCache = (response: ApiResponse<PaginatedResponse<NewsItem>>, type: FilterTypes) => {
@@ -80,7 +83,7 @@ export const useFetchNewsService = () => {
     return useMemo(
         () => ({
             getAllNews: async (newsType?: FilterTypes): Promise<ApiResponse<PaginatedResponse<NewsItem>>> => {
-                const type = newsType || FilterTypes.TECH;
+                const type = FilterTypes.TECH;
                 const cacheInfo = cacheStatus[type];
 
                 if (cacheInfo.loaded && isCacheValid(cacheInfo.lastFetch)) {

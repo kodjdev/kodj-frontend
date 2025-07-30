@@ -5,7 +5,7 @@ import { Calendar, ArrowLeft, Timer, Twitter, LinkedinIcon } from 'lucide-react'
 import themeColors from '@/tools/themeColors';
 import Button from '@/components/Button/Button';
 import Card from '@/components/Card/Card';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import errorAtom from '@/atoms/errors';
 import useFormatDate from '@/hooks/useFormatDate';
 import CopyLink from '@/components/CopyLink/CopyLink';
@@ -13,6 +13,9 @@ import { NewsItem } from '@/types/news';
 import useApiService from '@/services';
 import PageLoading from '@/components/Loading/LoadingAnimation';
 import defaultImg from '@/static/icons/default.jpg';
+import { newsCacheStatusAtom, techNewsAtom } from '@/atoms/news';
+import { AnimatePresence, motion } from 'framer-motion';
+import { FilterTypes } from '..';
 
 const Container = styled.div`
     max-width: ${themeColors.breakpoints.desktop};
@@ -60,6 +63,27 @@ const ArticleTitle = styled.h1`
     font-weight: ${themeColors.typography.headings.desktop.h2.fontWeight};
     margin-bottom: ${themeColors.spacing.md};
     margin-top: 0;
+    line-height: 1.3;
+    width: 100%;
+    max-width: 100%;
+    word-wrap: break-word;
+    hyphens: auto;
+
+    @media (max-width: ${themeColors.breakpoints.mobile}) {
+        font-size: 24px;
+        font-weight: 600;
+        line-height: 1.4;
+        margin-bottom: ${themeColors.spacing.sm};
+        margin-top: 0;
+        padding-right: 0;
+        width: 100%;
+        max-width: 100%;
+    }
+
+    @media (max-width: 480px) {
+        font-size: 22px;
+        line-height: 1.3;
+    }
 `;
 
 const ArticleMeta = styled.div`
@@ -95,6 +119,12 @@ const ArticleImage = styled.div`
     overflow: hidden;
     margin-bottom: ${themeColors.spacing.xl};
     background-color: #111;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+
+    &:hover {
+        transform: scale(1.006);
+    }
 
     img {
         width: 100%;
@@ -188,20 +218,139 @@ const ReadNextHeader = styled.h3`
     margin-bottom: ${themeColors.spacing.lg};
 `;
 
-const RelatedNewsCard = styled(Card)`
-    border-radius: 12px;
-    background-color: #1e1e1e;
-    cursor: pointer;
-
-    &:hover {
-        transform: translateY(-2px);
-        transition: all 0.2s ease;
-    }
-`;
-
 const NewsCardLink = styled(Link)`
     text-decoration: none;
     color: inherit;
+`;
+const RelatedNewsCard = styled(Card)`
+    padding: ${themeColors.spacing.lg};
+    margin-bottom: 1rem;
+    display: flex;
+    gap: ${themeColors.spacing.lg};
+    align-items: flex-start;
+    background-color: #161616;
+    border: 1px solid ${themeColors.cardBorder.color};
+    border-radius: 12px;
+    transition: all 0.2s ease;
+
+    &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    @media (max-width: ${themeColors.breakpoints.mobile}) {
+        flex-direction: column;
+        gap: ${themeColors.spacing.md};
+        padding: ${themeColors.spacing.md};
+    }
+`;
+
+const RelatedNewsContent = styled.div`
+    flex: 1;
+    min-width: 0;
+`;
+
+const RelatedNewsTitle = styled.h3`
+    color: ${themeColors.colors.neutral.white};
+    margin-bottom: ${themeColors.spacing.sm};
+    margin-top: 0;
+    font-size: ${themeColors.typography.headings.desktop.h4.fontSize}px;
+    font-weight: ${themeColors.typography.headings.desktop.h4.fontWeight};
+    line-height: 1.4;
+
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+
+    @media (max-width: ${themeColors.breakpoints.mobile}) {
+        font-size: 18px;
+        -webkit-line-clamp: 3;
+    }
+`;
+
+const RelatedNewsDescription = styled.p`
+    color: ${themeColors.colors.gray.text};
+    margin: 0;
+    font-size: ${themeColors.typography.body.medium.fontSize}px;
+    line-height: 1.5;
+
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+
+    @media (max-width: ${themeColors.breakpoints.mobile}) {
+        font-size: ${themeColors.typography.body.small.fontSize}px;
+        -webkit-line-clamp: 2;
+    }
+`;
+
+const RelatedNewsImage = styled.div`
+    width: 140px;
+    height: 90px;
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: #111;
+    flex-shrink: 0;
+
+    img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        max-width: 100%;
+    }
+
+    @media (max-width: ${themeColors.breakpoints.mobile}) {
+        width: 100%;
+        height: 120px;
+    }
+`;
+
+const ImageModal = styled(motion.div)`
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    padding: ${themeColors.spacing.lg};
+    cursor: pointer;
+`;
+
+const ModalImage = styled(motion.img)`
+    max-width: 90vw;
+    max-height: 90vh;
+    object-fit: contain;
+    border-radius: 8px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+`;
+
+const CloseButton = styled.button`
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: ${themeColors.colors.ui.dimmed};
+    border: none;
+    color: white;
+    font-size: 24px;
+    width: 30px;
+    height: 40px;
+    border-radius: 20%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(10px);
+    transition: background 0.2s ease;
+
+    &:hover {
+        background: rgba(255, 255, 255, 0.2);
+    }
 `;
 
 /**
@@ -211,35 +360,46 @@ const NewsCardLink = styled(Link)`
  * Handles loading states and error cases with Recoil for global error management.
  */
 export default function NewsDetails() {
-    const { id } = useParams<{ id: string }>();
-    const [newsItem, setNewsItem] = useState<NewsItem | null>(null);
-    const [loading, setLoading] = useState(true);
-    const [relatedNews, setRelatedNews] = useState<NewsItem[]>([]);
+    const allNews = useRecoilValue(techNewsAtom);
+    const cacheStatus = useRecoilValue(newsCacheStatusAtom);
+    const [newsError, setNewsError] = useRecoilState(errorAtom);
+    const newsService = useApiService();
+    const { formatDate } = useFormatDate();
 
     const hasFetched = useRef(false);
     const relatedHasFetched = useRef(false);
+    const { id } = useParams<{ id: string }>();
 
-    const [newsError, setNewsError] = useRecoilState(errorAtom);
-    const newsService = useApiService();
-
-    const { formatDate } = useFormatDate();
+    const [newsItem, setNewsItem] = useState<NewsItem | null>(null);
+    const [loading, setLoading] = useState(true);
+    const [relatedNews, setRelatedNews] = useState<NewsItem[]>([]);
+    const [showImageModal, setShowImageModal] = useState(false);
 
     useEffect(() => {
-        if (hasFetched.current) return;
+        hasFetched.current = false;
+        relatedHasFetched.current = false;
+        setLoading(true);
+        setNewsItem(null);
+        setRelatedNews([]);
+        setShowImageModal(false);
+        setNewsError(null);
+    }, [id]);
+
+    useEffect(() => {
+        if (hasFetched.current || !id) return;
         hasFetched.current = true;
 
         const fetchNewsItem = async () => {
-            if (!id) {
-                setNewsError({
-                    title: 'Invalid Article ID',
-                    message: 'The article ID provided is invalid.',
-                    record: null,
-                });
-
-                return;
-            }
-
             try {
+                setLoading(true);
+
+                /* here we first ensure we have all news cached */
+                const techCacheInfo = cacheStatus.TECH;
+                if (!techCacheInfo.loaded && !relatedHasFetched.current) {
+                    await newsService.getAllNews(FilterTypes.TECH);
+                    relatedHasFetched.current = true;
+                }
+
                 const response = await newsService.getNewsById(id);
 
                 if (response.statusCode === 200 && response.data) {
@@ -255,7 +415,6 @@ export default function NewsDetails() {
                 }
             } catch (error) {
                 console.error('Error loading news item:', error);
-
                 setNewsError({
                     title: 'Error Loading Article',
                     message: 'There was a problem loading this article. Please try again.',
@@ -267,32 +426,39 @@ export default function NewsDetails() {
         };
 
         fetchNewsItem();
-    }, [id]);
+    }, [id, cacheStatus, setNewsError]);
 
     useEffect(() => {
-        if (relatedHasFetched.current || !newsItem?.type) return;
-        relatedHasFetched.current = true;
+        const getRelatedNews = () => {
+            if (!newsItem || allNews.length === 0) {
+                setRelatedNews([]);
+                return;
+            }
 
-        if (newsItem && newsItem.type) {
-            const fetchRelatedNews = async () => {
-                try {
-                    const response = await newsService.getAllNews(newsItem.type);
-                    if (response.statusCode === 200 && response.data && response.data.content) {
-                        const filtered = response.data.content.filter((news) => news.id.toString() !== id).slice(0, 5);
-                        setRelatedNews(filtered);
-                    }
-                } catch (error) {
-                    console.error('Error fetching related news:', error);
-                }
-            };
+            const filtered = allNews.filter((news) => news.id !== newsItem.id).slice(0, 5);
+            setRelatedNews(filtered);
+        };
 
-            fetchRelatedNews();
+        getRelatedNews();
+    }, [newsItem, allNews]);
+
+    useEffect(() => {
+        const handleKeyDown = (event: KeyboardEvent) => {
+            if (event.key === 'Escape') {
+                setShowImageModal(false);
+            }
+        };
+
+        if (showImageModal) {
+            document.addEventListener('keydown', handleKeyDown);
+            document.body.style.overflow = 'hidden';
         }
-    }, []);
 
-    useEffect(() => {
-        relatedHasFetched.current = false;
-    }, [newsItem?.id]);
+        return () => {
+            document.removeEventListener('keydown', handleKeyDown);
+            document.body.style.overflow = 'unset';
+        };
+    }, [showImageModal]);
 
     if (loading) {
         return <PageLoading message="Loading details.." />;
@@ -360,7 +526,7 @@ export default function NewsDetails() {
                         </ReadTimeShow>
                     </ArticleMeta>
                 </ArticleHeader>
-                <ArticleImage>
+                <ArticleImage onClick={() => setShowImageModal(true)}>
                     {newsItem.imageURL ? (
                         <img src={newsItem.imageURL} alt={newsItem.title} />
                     ) : (
@@ -417,21 +583,50 @@ export default function NewsDetails() {
 
             {relatedNews.length > 0 && (
                 <ReadNextSection>
-                    <ReadNextHeader>Related Articles</ReadNextHeader>
+                    <ReadNextHeader>Related Articles: </ReadNextHeader>
                     {relatedNews.map((article) => (
                         <NewsCardLink key={article.id} to={`/news/${article.id}`}>
-                            <RelatedNewsCard padding="1rem" style={{ marginBottom: '1rem' }}>
-                                <h3 style={{ color: themeColors.colors.neutral.white, marginBottom: '0.5rem' }}>
-                                    {article.title}
-                                </h3>
-                                <p style={{ color: themeColors.colors.gray.text }}>
-                                    {article.content.substring(0, 150)}...
-                                </p>
+                            <RelatedNewsCard>
+                                <RelatedNewsContent>
+                                    <RelatedNewsTitle>{article.title}</RelatedNewsTitle>
+                                    <RelatedNewsDescription>
+                                        {article.content.substring(0, 150)}...
+                                    </RelatedNewsDescription>
+                                </RelatedNewsContent>
+                                <RelatedNewsImage>
+                                    {article.imageURL ? (
+                                        <img src={article.imageURL} alt={article.title} />
+                                    ) : (
+                                        <img src={defaultImg} alt="KO'DJ" />
+                                    )}
+                                </RelatedNewsImage>
                             </RelatedNewsCard>
                         </NewsCardLink>
                     ))}
                 </ReadNextSection>
             )}
+            <AnimatePresence>
+                {showImageModal && (
+                    <ImageModal
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.3 }}
+                        onClick={() => setShowImageModal(false)}
+                    >
+                        <CloseButton onClick={() => setShowImageModal(false)}>×</CloseButton>
+                        <ModalImage
+                            src={newsItem?.imageURL || defaultImg}
+                            alt={newsItem?.title || 'News image'}
+                            initial={{ scale: 0.8 }}
+                            animate={{ scale: 1 }}
+                            exit={{ scale: 0.8 }}
+                            transition={{ duration: 0.3 }}
+                            onClick={(e) => e.stopPropagation()}
+                        />
+                    </ImageModal>
+                )}
+            </AnimatePresence>
         </Container>
     );
 }

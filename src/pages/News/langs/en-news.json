@@ -1,6 +1,7 @@
 {
     "filters": {
         "all": "All",
+        "tech": "Tech",
         "meetup": "Meetup",
         "social": "Social"
     },

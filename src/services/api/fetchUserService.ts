@@ -15,12 +15,12 @@ export const useUserService = () => {
 
     return useMemo(() => {
         return {
-            getUserDetails: async (token: string): Promise<ApiResponse<UserDetails>> => {
+            getUserDetails: async (accessToken: string): Promise<ApiResponse<UserDetails>> => {
                 return fetchData<UserDetails>({
                     endpoint: '/users/details',
                     method: 'GET',
                     customHeaders: {
-                        Authorization: `Bearer ${token}`,
+                        Authorization: `Bearer ${accessToken}`,
                     },
                 });
             },

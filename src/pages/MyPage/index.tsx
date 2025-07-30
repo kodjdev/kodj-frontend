@@ -13,6 +13,8 @@ import { useTranslation } from 'react-i18next';
 import useApiService from '@/services';
 import { message } from 'antd';
 import { EventCardProps } from '@/components/Card/EventCard';
+import { TokenStorage } from '@/utils/tokenStorage';
+import { ModalLoading } from '@/components/Loading/LoadingAnimation';
 
 enum PageSection {
     EVENTS = 'events',
@@ -78,16 +80,18 @@ export default function MyPage() {
     const [messageApi, contextHolder] = message.useMessage();
 
     const { t } = useTranslation('mypage');
-    const { isAuthenticated, logout, user } = useAuth();
+    const { isAuthenticated, logout, user, isLoading } = useAuth();
     const { isOpen, openModal, closeModal } = useModal();
     const apiService = useApiService();
 
-    const accessToken = localStorage.getItem('access_token');
-
     useEffect(() => {
         const fetchRegisteredEvents = async () => {
+            const accessToken = TokenStorage.getAccessToken();
+
             if (!accessToken) {
-                messageApi.error('Access token not found. Please log in again.');
+                if (isAuthenticated) {
+                    messageApi.error('Access token not found. Please log in again.');
+                }
                 return;
             }
 
@@ -123,14 +127,18 @@ export default function MyPage() {
             }
         };
 
-        if (activeSection === PageSection.EVENTS) {
+        if (activeSection === PageSection.EVENTS && isAuthenticated && !isLoading) {
             fetchRegisteredEvents();
         }
-    }, [user, messageApi, activeSection, accessToken]);
+    }, [user, messageApi, activeSection, isAuthenticated, isLoading]);
 
     const handleCancelEvent = async (eventId: number) => {
+        const accessToken = TokenStorage.getAccessToken();
+
         if (!accessToken) {
-            messageApi.error('Access token not found. Please log in again.');
+            if (isAuthenticated) {
+                messageApi.error('Access token not found. Please log in again.');
+            }
             return;
         }
 
@@ -200,6 +208,14 @@ export default function MyPage() {
     };
 
     const shouldShowBorder = activeSection === PageSection.JOB_POSTING && isJobPostingFormActive;
+
+    if (isLoading) {
+        return (
+            <PageContainer>
+                <ModalLoading message="Loading your page..." />
+            </PageContainer>
+        );
+    }
 
     return (
         <>
