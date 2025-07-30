@@ -17,6 +17,7 @@ import { EventRegistrationData, EventRegistrationResponse } from '@/types/user';
 import ConfirmModal from '@/components/Modal/ModalTypes/ConfirmModal';
 import RightSideDetails from '@/pages/Events/EventRegister/RightsideDetails';
 import InfoModal from '@/components/Modal/ModalTypes/InfoModal';
+import { ModalLoading } from '@/components/Loading/LoadingAnimation';
 
 type FirstStepFields = Pick<
     RegistrationFormData,
@@ -442,6 +443,8 @@ export default function EventRegister() {
                     </div>
                 </PageContainer>
             )}
+
+            {isSubmitting && <ModalLoading message="Submitting your registration..." />}
 
             {isModalOpen && (
                 <InfoModal

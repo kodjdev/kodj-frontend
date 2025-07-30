@@ -8,6 +8,7 @@ import useAxios from '@/hooks/useAxios/useAxios';
 import { ApiResponse } from '@/types/fetch';
 import { UserRegisteredEventApiResponse, UserRegisteredEventsListResponse } from '@/types/event';
 import { useMemo } from 'react';
+import { TokenStorage } from '@/utils/tokenStorage';
 
 /**
  * Register Event Service - Event Management
@@ -25,7 +26,8 @@ export const useRegisterEventService = () => {
                 meetupId: string,
                 registrationData: EventRegistrationData,
             ): Promise<ApiResponse<EventRegistrationResponse>> => {
-                const accessToken = localStorage.getItem('access_token');
+                const accessToken = TokenStorage.getAccessToken();
+
                 return fetchData<EventRegistrationResponse>({
                     endpoint: `/users/meetups/${meetupId}/registration`,
                     method: 'POST',

@@ -13,11 +13,11 @@ import CopyLink from '@/components/CopyLink/CopyLink';
 import defaultImg from '@/static/icons/default.jpg';
 import PageLoading from '@/components/Loading/LoadingAnimation';
 import { useRecoilValue } from 'recoil';
-import { meetupNewsAtom, newsCacheStatusAtom, socialNewsAtom, techNewsAtom } from '@/atoms/news';
+import { newsCacheStatusAtom, techNewsAtom } from '@/atoms/news';
 import EmptyState from '@/components/EmptyState';
 import { useTranslation } from 'react-i18next';
 
-export type TagVariant = 'default' | 'programming' | 'ai' | 'development';
+export type TagVariant = 'default' | 'programming' | 'ai' | 'development' | 'software' | 'frontend' | 'backend';
 
 export enum FilterTypes {
     TECH = 'TECH',
@@ -29,6 +29,17 @@ const TAG_VARIANT_MAP: Record<string, TagVariant> = {
     programming: 'programming',
     ai: 'ai',
     development: 'development',
+    software: 'software',
+    frontend: 'development',
+    backend: 'development',
+    javascript: 'programming',
+    react: 'programming',
+};
+
+const NEWS_TYPE_TAGS = {
+    TECH: ['AI', 'Programming', 'Software', 'Frontend', 'Backend', 'JavaScript', 'React'],
+    SOCIAL: ['Meetup', 'Gathering', 'Social Gathering', 'Sports', 'Community', 'Networking'],
+    MEETUP: ['Event', 'News Update', 'Announcement', 'Workshop', 'Conference', 'Seminar'],
 };
 
 const Container = styled.div`
@@ -163,7 +174,7 @@ const NewsTitle = styled.h2`
     color: ${themeColors.colors.neutral.white};
     font-size: ${themeColors.typography.headings.desktop.h3.fontSize}px;
     font-weight: ${themeColors.typography.headings.desktop.h3.fontWeight};
-    margin-bottom: ${themeColors.spacing.md};
+    margin-bottom: ${themeColors.spacing.sm};
     line-height: 1.4;
     margin-top: 0;
 
@@ -226,7 +237,7 @@ const MetaItem = styled.div`
 const TagList = styled.div`
     display: flex;
     gap: ${themeColors.spacing.xs};
-    margin-bottom: ${themeColors.spacing.md};
+    margin-bottom: 0;
     flex-wrap: wrap;
 `;
 
@@ -349,8 +360,8 @@ export default function NewsList() {
     const hasFetched = useRef(false);
 
     const techNews = useRecoilValue(techNewsAtom);
-    const meetupNews = useRecoilValue(meetupNewsAtom);
-    const socialNews = useRecoilValue(socialNewsAtom);
+    // const meetupNews = useRecoilValue(meetupNewsAtom);
+    // const socialNews = useRecoilValue(socialNewsAtom);
     const cacheStatus = useRecoilValue(newsCacheStatusAtom);
 
     const { formatDate } = useFormatDate();
@@ -359,16 +370,16 @@ export default function NewsList() {
     const getCurrentNews = () => {
         switch (activeCategory) {
             case FilterTypes.TECH:
+                /* this will have the all news from API */
                 return techNews;
             case FilterTypes.MEETUP:
-                return meetupNews;
+                return techNews.filter((news) => news.type === 'MEETUP');
             case FilterTypes.SOCIAL:
-                return socialNews;
+                return techNews.filter((news) => news.type === 'SOCIAL');
             default:
-                return [];
+                return techNews;
         }
     };
-
     const news = getCurrentNews();
 
     const filteredNews = news.filter((newsItem) => {
@@ -388,16 +399,16 @@ export default function NewsList() {
         hasFetched.current = true;
 
         const fetchNews = async () => {
-            const cacheInfo = cacheStatus[activeCategory];
+            const cacheInfo = cacheStatus[FilterTypes.TECH];
 
             if (cacheInfo.loaded) {
-                console.log(`Using cached ${activeCategory} news`);
+                console.log(`Using cached TECH news`);
                 return;
             }
 
             try {
                 setLoading(true);
-                await newsService.getAllNews(activeCategory);
+                await newsService.getAllNews(FilterTypes.TECH);
             } catch (error) {
                 console.error('Error fetching news:', error);
             } finally {
@@ -406,7 +417,7 @@ export default function NewsList() {
         };
 
         fetchNews();
-    }, [activeCategory]);
+    }, []);
 
     useEffect(() => {
         setVisibleCount(3);
@@ -432,12 +443,17 @@ export default function NewsList() {
         return translatedTag;
     };
 
+    const getTagsForNewsType = (type: string, count: number = 3) => {
+        const availableTags = NEWS_TYPE_TAGS[type as keyof typeof NEWS_TYPE_TAGS] || NEWS_TYPE_TAGS.TECH;
+        return availableTags.sort(() => 0.5 - Math.random()).slice(0, count);
+    };
+
     return (
         <Container>
             <SearchContainer>
                 <CategoryFilters>
                     <FilterButton
-                        isActive={activeCategory === 'TECH' && !activeTag}
+                        isActive={activeCategory === FilterTypes.TECH && !activeTag}
                         onClick={() => {
                             setActiveCategory(FilterTypes.TECH);
                             setActiveTag(null);
@@ -447,7 +463,7 @@ export default function NewsList() {
                         {t('filters.all')}
                     </FilterButton>
                     <FilterButton
-                        isActive={activeCategory === 'MEETUP' && !activeTag}
+                        isActive={activeCategory === FilterTypes.MEETUP && !activeTag}
                         onClick={() => {
                             setActiveCategory(FilterTypes.MEETUP);
                             setActiveTag(null);
@@ -457,7 +473,7 @@ export default function NewsList() {
                         {t('filters.meetup')}
                     </FilterButton>
                     <FilterButton
-                        isActive={activeCategory === 'SOCIAL' && !activeTag}
+                        isActive={activeCategory === FilterTypes.SOCIAL && !activeTag}
                         onClick={() => {
                             setActiveCategory(FilterTypes.SOCIAL);
                             setActiveTag(null);
@@ -500,23 +516,38 @@ export default function NewsList() {
                                 <NewsCard key={newsItem.id}>
                                     <NewsCardContent>
                                         <NewsCardMain>
-                                            <NewsTitle>{newsItem.title}</NewsTitle>
+                                            <div>
+                                                <div
+                                                    style={{
+                                                        display: 'flex',
+                                                        alignItems: 'center',
+                                                        gap: themeColors.spacing.xs,
+                                                        marginBottom: themeColors.spacing.sm,
+                                                    }}
+                                                >
+                                                    <Tag variant="ai" style={{ fontSize: '10px', padding: '2px 8px' }}>
+                                                        {newsItem.type}
+                                                    </Tag>
+                                                </div>
+                                                <NewsTitle>{newsItem.title}</NewsTitle>
+                                            </div>
 
                                             <TagList>
-                                                {newsItem.tags?.map((tag, index) => (
-                                                    <Tag
-                                                        key={`${newsItem.id}-tag-${index}`}
-                                                        variant={TAG_VARIANT_MAP[tag.toLowerCase()] || 'default'}
-                                                    >
-                                                        {translateTag(tag)}
-                                                    </Tag>
-                                                )) || (
-                                                    <>
-                                                        <Tag variant="default">{translateTag('JavaScript')}</Tag>
-                                                        <Tag variant="default">{translateTag('Frontend')}</Tag>
-                                                        <Tag variant="programming">{translateTag('Programming')}</Tag>
-                                                    </>
-                                                )}
+                                                {(() => {
+                                                    const tagsToShow =
+                                                        newsItem.tags && newsItem.tags.length > 0
+                                                            ? newsItem.tags
+                                                            : getTagsForNewsType(newsItem.type, 3);
+
+                                                    return tagsToShow.map((tag, index) => (
+                                                        <Tag
+                                                            key={`${newsItem.id}-tag-${index}`}
+                                                            variant={TAG_VARIANT_MAP[tag.toLowerCase()] || 'default'}
+                                                        >
+                                                            {translateTag(tag)}
+                                                        </Tag>
+                                                    ));
+                                                })()}
                                             </TagList>
                                             <NewsDescription>{newsItem.content.substring(0, 70)}...</NewsDescription>
 

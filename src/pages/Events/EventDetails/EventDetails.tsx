@@ -14,6 +14,8 @@ import { ApiResponse } from '@/types/fetch';
 import useApiService from '@/services';
 import useFormatDate from '@/hooks/useFormatDate';
 import PageLoading from '@/components/Loading/LoadingAnimation';
+import { useRecoilValue } from 'recoil';
+import { userAtom } from '@/atoms/user';
 
 const PageContainer = styled.div`
     background-color: ${themeColors.colors.neutral.black};
@@ -205,6 +207,7 @@ const BackLink = styled(Link)`
 export default function EventDetails() {
     const { eventId } = useParams();
     const location = useLocation();
+    const userAtomData = useRecoilValue(userAtom);
     const { eventData: locationEventData } = location.state || {};
 
     const detailsRef = useRef<HTMLDivElement>(null);
@@ -353,6 +356,16 @@ export default function EventDetails() {
         }
     };
 
+    const isUserRegistered = () => {
+        if (!userAtomData?.id || !eventDetails?.data?.meetupRegistrations) {
+            return false;
+        }
+
+        return eventDetails.data.meetupRegistrations.some(
+            (registration) => String(registration.id) === String(userAtomData.id) && !registration.cancelled,
+        );
+    };
+
     const isPastEvent = eventData.date
         ? (typeof eventData.date === 'string' ? new Date(eventData.date) : new Date(eventData.date.seconds * 1000)) <
           new Date()
@@ -471,6 +484,10 @@ export default function EventDetails() {
                         {isPastEvent ? (
                             <Button fullWidth={true} size="md" disabled={true} variant="secondary">
                                 Event has passed
+                            </Button>
+                        ) : isUserRegistered() ? (
+                            <Button fullWidth={true} size="md" disabled={true} variant="secondary">
+                                Already registered
                             </Button>
                         ) : (
                             <Button
