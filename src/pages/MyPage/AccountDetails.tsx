@@ -7,6 +7,7 @@ import { FaSave, FaEdit } from 'react-icons/fa';
 import useApiService from '@/services';
 import { UserDetails } from '@/types/user';
 import { useTranslation } from 'react-i18next';
+import { TokenStorage } from '@/utils/tokenStorage';
 
 type FieldConfig = {
     id: string;
@@ -208,10 +209,14 @@ export default function AccountDetails() {
         const fetchUserData = async () => {
             try {
                 setIsLoading(true);
-                const accessToken = localStorage.getItem('access_token');
+
+                const accessToken = TokenStorage.getAccessToken();
+
                 if (!accessToken) {
+                    console.error('No access token found');
                     return;
                 }
+
                 const response = await userDetailsService.getUserDetails(accessToken);
                 if (response.statusCode === 200) {
                     const userData: UserDetails = response.data;
