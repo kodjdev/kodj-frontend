@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import styled, { css } from 'styled-components';
-import { Calendar, Bookmark, MessageSquare, ThumbsUp, NotepadText } from 'lucide-react';
+import { Calendar, NotepadText } from 'lucide-react';
 import themeColors from '@/tools/themeColors';
 import Card from '@/components/Card/Card';
 import Input from '@/components/Input/Input';
@@ -572,7 +572,7 @@ export default function NewsList() {
                                                             showText={false}
                                                         />
                                                     </InteractionButton>
-                                                    <InteractionButton>
+                                                    {/* <InteractionButton>
                                                         <Bookmark size={16} />
                                                     </InteractionButton>
                                                     <InteractionButton>
@@ -582,7 +582,7 @@ export default function NewsList() {
                                                     <InteractionButton>
                                                         <ThumbsUp size={16} />
                                                         <span>100</span>
-                                                    </InteractionButton>
+                                                    </InteractionButton> */}
                                                 </div>
                                             </NewsCardMeta>
                                         </NewsCardMain>
