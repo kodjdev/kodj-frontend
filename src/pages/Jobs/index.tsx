@@ -21,7 +21,7 @@ const Container = styled.div`
     background-color: ${themeColors.colors.neutral.black};
 
     @media (max-width: ${themeColors.breakpoints.mobile}) {
-        padding: 0;
+        padding-bottom: ${themeColors.spacing.xxxl};
     }
 `;
 
@@ -66,7 +66,7 @@ const SortSelect = styled.select`
     @media (max-width: ${themeColors.breakpoints.mobile}) {
         font-size: ${themeColors.typography.body.small.fontSize}px;
         width: 100%;
-        padding: ${themeColors.spacing.sm} ${themeColors.spacing.sm};
+        padding: 12px;
     }
 `;
 

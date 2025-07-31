@@ -87,9 +87,9 @@ const EventDescription = styled.div`
     }
 
     p {
+        color: ${themeColors.colors.neutral.white};
         font-size: ${themeColors.typography.body.medium.fontSize}px;
         line-height: ${themeColors.typography.body.medium.lineHeight};
-        color: ${themeColors.colors.gray.main};
         margin-bottom: ${themeColors.spacing.md};
     }
 `;
@@ -116,6 +116,7 @@ const TabContainer = styled.div`
 const Tab = styled.button<{ active: boolean }>`
     background: none;
     border: none;
+    outline: none;
     padding: ${themeColors.spacing.md} ${themeColors.spacing.lg};
     color: ${(props) => (props.active ? themeColors.colors.neutral.white : themeColors.colors.gray.main)};
     font-size: ${themeColors.typography.body.medium.fontSize}px;
@@ -123,6 +124,8 @@ const Tab = styled.button<{ active: boolean }>`
     cursor: pointer;
     position: relative;
     flex: 0 0 auto;
+    transition: color 0.2s ease;
+    -webkit-tap-highlight-color: transparent;
 
     &::after {
         content: '';
@@ -141,6 +144,13 @@ const Tab = styled.button<{ active: boolean }>`
     @media (max-width: ${themeColors.breakpoints.mobile}) {
         flex: 1 0 50%;
         text-align: center;
+    }
+    &:focus {
+        outline: none;
+    }
+
+    &:active {
+        outline: none;
     }
 `;
 

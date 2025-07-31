@@ -27,6 +27,11 @@ const Container = styled.div`
     border: 1px solid ${themeColors.cardBorder.color};
     background-color: ${themeColors.colors.gray.dark};
     overflow: hidden;
+
+    @media (max-width: ${themeColors.breakpoints.mobile}) {
+        padding: 16px;
+        text-align: center;
+    }
 `;
 
 const ContentWrapper = styled.div`
@@ -37,9 +42,14 @@ const ContentWrapper = styled.div`
     align-items: center;
     gap: 1rem;
 
-    @media (min-width: ${themeColors.breakpoints.mobile}) {
+    @media (min-width: ${themeColors.breakpoints.tablet}) {
         flex-direction: row;
         gap: 0;
+    }
+
+    @media (max-width: ${themeColors.breakpoints.mobile}) {
+        align-items: center;
+        text-align: center;
     }
 `;
 
@@ -51,8 +61,13 @@ const LeftSection = styled.div`
     width: 100%;
     flex-shrink: 0;
 
-    @media (min-width: ${themeColors.breakpoints.mobile}) {
+    @media (min-width: ${themeColors.breakpoints.tablet}) {
         width: 486px;
+    }
+
+    @media (max-width: ${themeColors.breakpoints.mobile}) {
+        align-items: center;
+        text-align: center;
     }
 `;
 
@@ -60,6 +75,13 @@ const AlertContainer = styled.div`
     display: flex;
     align-items: center;
     gap: 0.75rem;
+
+    @media (max-width: ${themeColors.breakpoints.mobile}) {
+        flex-direction: row;
+        align-items: center;
+        text-align: center;
+        max-width: 100%;
+    }
 `;
 
 const IconWrapper = styled.div`
@@ -73,6 +95,13 @@ const AlertText = styled.p`
     font-size: 18px;
     line-height: 1;
     margin: 0;
+
+    @media (max-width: ${themeColors.breakpoints.mobile}) {
+        font-size: 16px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
 `;
 
 const TimeInfoContainer = styled.div`
@@ -82,10 +111,32 @@ const TimeInfoContainer = styled.div`
     gap: 0.5rem;
     width: 100%;
 
-    @media (min-width: ${themeColors.breakpoints.mobile}) {
+    @media (min-width: ${themeColors.breakpoints.tablet}) {
         flex-direction: row;
         flex-wrap: wrap;
         align-items: baseline;
+
+        /* laptop size: we keep event info on same line */
+        .event-info-wrapper {
+            display: inline-flex;
+            align-items: baseline;
+            gap: 4px;
+            white-space: nowrap;
+        }
+    }
+
+    @media (max-width: ${themeColors.breakpoints.mobile}) {
+        align-items: center;
+        text-align: center;
+        gap: 0.25rem;
+
+        .event-info-wrapper {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 4px;
+        }
     }
 `;
 
@@ -99,6 +150,13 @@ const TimeLeftText = styled.p`
     @media (min-width: ${themeColors.breakpoints.mobile}) {
         font-size: 28px;
     }
+
+    @media (max-width: ${themeColors.breakpoints.mobile}) {
+        margin: 0;
+        font-size: 20px;
+        line-height: 1.2;
+        white-space: nowrap;
+    }
 `;
 
 const UntilNextText = styled.p`
@@ -108,8 +166,17 @@ const UntilNextText = styled.p`
     line-height: 1;
     margin: 0 0.5rem;
 
-    @media (min-width: ${themeColors.breakpoints.mobile}) {
+    @media (min-width: ${themeColors.breakpoints.tablet}) {
         font-size: 28px;
+        display: inline;
+        margin: 0;
+    }
+
+    @media (max-width: ${themeColors.breakpoints.mobile}) {
+        margin: 0;
+        font-size: 18px;
+        white-space: nowrap;
+        display: inline;
     }
 `;
 
@@ -120,8 +187,18 @@ const EventNameText = styled.p`
     line-height: 1;
     margin: 0;
 
-    @media (min-width: ${themeColors.breakpoints.mobile}) {
+    @media (min-width: ${themeColors.breakpoints.tablet}) {
         font-size: 28px;
+        display: inline;
+        margin-left: 4px;
+        white-space: nowrap;
+    }
+
+    @media (max-width: ${themeColors.breakpoints.mobile}) {
+        font-size: 18px;
+        white-space: nowrap;
+        display: inline;
+        margin-left: 4px;
     }
 `;
 
@@ -129,9 +206,9 @@ const TimerContainer = styled.div`
     width: 100%;
     margin-top: 1rem;
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 0.25rem;
-    justify-items: flex-start;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.5rem;
+    justify-items: center;
 
     @media (min-width: ${themeColors.breakpoints.tablet}) {
         display: flex;
@@ -146,10 +223,25 @@ const TimerContainer = styled.div`
     @media (min-width: ${themeColors.breakpoints.laptop}) {
         gap: 2rem;
     }
+
+    @media (max-width: ${themeColors.breakpoints.mobile}) {
+        margin-top: 1.5rem;
+        gap: 0.25rem;
+        justify-items: center;
+        grid-template-columns: 1fr auto 1fr auto 1fr auto 1fr;
+        align-items: center;
+    }
 `;
 
 const TimeUnit = styled.div`
     text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    @media (max-width: ${themeColors.breakpoints.mobile}) {
+        min-width: auto;
+    }
 `;
 
 const TimeValue = styled.p`
@@ -169,6 +261,11 @@ const TimeValue = styled.p`
         font-size: 70px;
         text-transform: uppercase;
     }
+
+    @media (max-width: ${themeColors.breakpoints.mobile}) {
+        font-size: 36px;
+        font-weight: 500;
+    }
 `;
 
 const TimeLabel = styled.p`
@@ -177,6 +274,11 @@ const TimeLabel = styled.p`
     font-weight: ${themeColors.typography.headings.desktop.h4};
     text-transform: uppercase;
     margin: 0;
+
+    @media (max-width: ${themeColors.breakpoints.mobile}) {
+        font-size: 11px;
+        margin-top: 2px;
+    }
 `;
 
 const Separator = styled.span`
@@ -191,6 +293,15 @@ const Separator = styled.span`
     @media (min-width: ${themeColors.breakpoints.mobile}) {
         display: inline-block;
         font-size: 70px;
+    }
+
+    @media (max-width: ${themeColors.breakpoints.mobile}) {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        margin: 0;
+        height: 100%;
     }
 `;
 
@@ -211,6 +322,10 @@ const RegisterButton = styled.button`
         background: transparent;
         transform: scale(1.05);
         min-width: 80px;
+    }
+
+    @media (max-width: ${themeColors.breakpoints.mobile}) {
+        display: none;
     }
 `;
 
@@ -262,6 +377,29 @@ const RegisterText = styled.span`
     ${RegisterButton}:hover & {
         opacity: 1;
         visibility: visible;
+    }
+`;
+
+const MobileRegisterButton = styled.button`
+    display: none;
+
+    @media (max-width: ${themeColors.breakpoints.mobile}) {
+        display: block;
+        width: 100%;
+        background: ${themeColors.colors.neutral.white};
+        color: ${themeColors.colors.neutral.black};
+        border: none;
+        padding: 12px 0;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: 600;
+        margin-top: 1.4rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+
+        &:hover {
+            background: ${themeColors.colors.gray.light};
+        }
     }
 `;
 
@@ -318,75 +456,87 @@ export default function TimeFrame() {
     }
 
     return (
-        <Container>
-            <ContentWrapper>
-                <LeftSection>
-                    <AlertContainer>
-                        <IconWrapper>
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="25"
-                                height="24"
-                                viewBox="0 0 25 24"
-                                fill="none"
+        <>
+            <Container>
+                <ContentWrapper>
+                    <LeftSection>
+                        <AlertContainer>
+                            <IconWrapper>
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="25"
+                                    height="24"
+                                    viewBox="0 0 25 24"
+                                    fill="none"
+                                >
+                                    <path
+                                        d="M12.5 22C6.97715 22 2.5 17.5228 2.5 12C2.5 6.47715 6.97715 2 12.5 2C18.0228 2 22.5 6.47715 22.5 12C22.5 17.5228 18.0228 22 12.5 22ZM11.5 15V17H13.5V15H11.5ZM11.5 7V13H13.5V7H11.5Z"
+                                        fill="#FF0202"
+                                    />
+                                </svg>
+                            </IconWrapper>
+                            <AlertText>{t('timeFrame.alert')}</AlertText>
+                        </AlertContainer>
+
+                        <TimeInfoContainer>
+                            <TimeLeftText>{t('timeFrame.timeLeft')}</TimeLeftText>
+
+                            <div className="event-info-wrapper">
+                                <UntilNextText>{t('timeFrame.event')}</UntilNextText>
+                                <EventNameText>{event?.name || ''}</EventNameText>
+                            </div>
+
+                            <RegisterButton
+                                onClick={() => {
+                                    navigate('/events');
+                                }}
                             >
-                                <path
-                                    d="M12.5 22C6.97715 22 2.5 17.5228 2.5 12C2.5 6.47715 6.97715 2 12.5 2C18.0228 2 22.5 6.47715 22.5 12C22.5 17.5228 18.0228 22 12.5 22ZM11.5 15V17H13.5V15H11.5ZM11.5 7V13H13.5V7H11.5Z"
-                                    fill="#FF0202"
-                                />
-                            </svg>
-                        </IconWrapper>
-                        <AlertText>{t('timeFrame.alert')}</AlertText>
-                    </AlertContainer>
+                                <ButtonContent>
+                                    <ArrowIcon>
+                                        <ArrowUpRight />
+                                    </ArrowIcon>
+                                    <RegisterText>{t('timeFrame.registerButton')}</RegisterText>
+                                </ButtonContent>
+                            </RegisterButton>
+                        </TimeInfoContainer>
+                    </LeftSection>
 
-                    <TimeInfoContainer>
-                        <TimeLeftText>{t('timeFrame.timeLeft')}</TimeLeftText>
-                        <UntilNextText>{t('timeFrame.event')}</UntilNextText>
-                        <EventNameText>{event?.name || ''}</EventNameText>
+                    <TimerContainer>
+                        <TimeUnit>
+                            <TimeValue>{formatTime(timeLeft.days)}</TimeValue>
+                            <TimeLabel>{t('timeFrame.units.day')}</TimeLabel>
+                        </TimeUnit>
 
-                        <RegisterButton
-                            onClick={() => {
-                                navigate('/events');
-                            }}
-                        >
-                            <ButtonContent>
-                                <ArrowIcon>
-                                    <ArrowUpRight />
-                                </ArrowIcon>
-                                <RegisterText>{t('timeFrame.registerButton')}</RegisterText>
-                            </ButtonContent>
-                        </RegisterButton>
-                    </TimeInfoContainer>
-                </LeftSection>
+                        <Separator>·</Separator>
 
-                <TimerContainer>
-                    <TimeUnit>
-                        <TimeValue>{formatTime(timeLeft.days)}</TimeValue>
-                        <TimeLabel>{t('timeFrame.units.day')}</TimeLabel>
-                    </TimeUnit>
+                        <TimeUnit>
+                            <TimeValue>{formatTime(timeLeft.hours)}</TimeValue>
+                            <TimeLabel>{t('timeFrame.units.hour')}</TimeLabel>
+                        </TimeUnit>
 
-                    <Separator>·</Separator>
+                        <Separator>·</Separator>
 
-                    <TimeUnit>
-                        <TimeValue>{formatTime(timeLeft.hours)}</TimeValue>
-                        <TimeLabel>{t('timeFrame.units.hour')}</TimeLabel>
-                    </TimeUnit>
+                        <TimeUnit>
+                            <TimeValue>{formatTime(timeLeft.minutes)}</TimeValue>
+                            <TimeLabel>{t('timeFrame.units.minute')}</TimeLabel>
+                        </TimeUnit>
 
-                    <Separator>·</Separator>
+                        <Separator>·</Separator>
 
-                    <TimeUnit>
-                        <TimeValue>{formatTime(timeLeft.minutes)}</TimeValue>
-                        <TimeLabel>{t('timeFrame.units.minute')}</TimeLabel>
-                    </TimeUnit>
-
-                    <Separator>·</Separator>
-
-                    <TimeUnit>
-                        <TimeValue>{formatTime(timeLeft.seconds)}</TimeValue>
-                        <TimeLabel>{t('timeFrame.units.second')}</TimeLabel>
-                    </TimeUnit>
-                </TimerContainer>
-            </ContentWrapper>
-        </Container>
+                        <TimeUnit>
+                            <TimeValue>{formatTime(timeLeft.seconds)}</TimeValue>
+                            <TimeLabel>{t('timeFrame.units.second')}</TimeLabel>
+                        </TimeUnit>
+                    </TimerContainer>
+                </ContentWrapper>
+            </Container>
+            <MobileRegisterButton
+                onClick={() => {
+                    navigate('/events');
+                }}
+            >
+                {t('timeFrame.registerButton')} →
+            </MobileRegisterButton>
+        </>
     );
 }

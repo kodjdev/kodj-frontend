@@ -42,10 +42,8 @@ const BackLink = styled(Link)`
 `;
 
 const Article = styled.article`
-    background-color: #1e1e1e;
     border-radius: 16px;
-    padding: ${themeColors.spacing.lg};
-    border: 1px solid ${themeColors.cardBorder.color};
+    padding: 0;
     margin-bottom: ${themeColors.spacing.xl};
 
     @media (max-width: ${themeColors.breakpoints.mobile}) {
@@ -121,6 +119,8 @@ const ArticleImage = styled.div`
     background-color: #111;
     cursor: pointer;
     transition: transform 0.2s ease;
+    border-radius: 12px;
+    border: 1px solid ${themeColors.cardBorder.color};
 
     &:hover {
         transform: scale(1.006);

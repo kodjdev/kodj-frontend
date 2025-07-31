@@ -19,7 +19,7 @@ const Container = styled.div`
     margin: 0 auto;
     background-color: ${themeColors.colors.neutral.black};
     min-height: 100vh;
-    padding: 0 ${themeColors.spacing.md};
+    padding: 0;
 
     @media (max-width: ${themeColors.breakpoints.mobile}) {
         padding: 0;
@@ -140,7 +140,7 @@ const SkillTag = styled.span`
 `;
 
 const SectionContent = styled.div`
-    color: ${themeColors.colors.gray.text};
+    color: ${themeColors.colors.neutral.white};
     font-size: ${themeColors.typography.body.medium.fontSize}px;
     line-height: 1.6;
     word-wrap: break-word;
@@ -159,7 +159,8 @@ const SectionContent = styled.div`
 
     li {
         margin-bottom: ${themeColors.spacing.sm};
-        color: ${themeColors.colors.gray.text};
+        color: ${themeColors.colors.neutral.white};
+        font-size: ${themeColors.typography.body.medium.fontSize}px;
         word-wrap: break-word;
     }
 

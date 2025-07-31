@@ -93,7 +93,8 @@ const ButtonWrapper = styled.div`
     align-items: center;
 
     @media (max-width: ${themeColors.breakpoints.tablet}) {
-        justify-content: flex-start;
+        justify-content: center;
+        width: 100%;
     }
 `;
 
@@ -117,7 +118,7 @@ const ImageSection = styled.div`
 const StyledButton = styled(Button)`
     background: ${themeColors.colors.neutral.white} !important;
     font-weight: 600;
-    border-radius: 15px;
+    border-radius: ${themeColors.radiusSizes.md};
     text-transform: none;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     transition: all 0.3s ease;
@@ -130,6 +131,11 @@ const StyledButton = styled(Button)`
 
     &:active {
         transform: translateY(0);
+    }
+
+    @media (max-width: ${themeColors.breakpoints.tablet}) {
+        width: 100% !important;
+        max-width: none !important;
     }
 `;
 
@@ -180,7 +186,7 @@ export default function SpeakerRegistrationBanner() {
                 <ButtonWrapper>
                     <StyledButton
                         onClick={() => navigate('/speakers/register')}
-                        size="sm"
+                        size="md"
                         variant="light"
                         htmlType="button"
                     >

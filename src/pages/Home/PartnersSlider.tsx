@@ -43,23 +43,24 @@ const Container = styled.div`
 
     &::before {
         left: 0;
-        background: linear-gradient(to right, #000000 0%, #000000 60%, transparent 100%);
+        background: linear-gradient(to right, #000000 0%, #000000 40%, transparent 100%);
     }
 
     &::after {
         right: 0;
-        background: linear-gradient(to left, #000000 0%, #000000 60%, transparent 100%);
+        background: linear-gradient(to left, #000000 0%, #000000 40%, transparent 100%);
     }
 `;
 
 const SliderWrapper = styled.div`
     display: flex;
-    animation: ${slideAnimation} 30s linear infinite;
+    animation: ${slideAnimation} 20s linear infinite;
     width: 200%;
     padding: 0 ${themeColors.spacing.xl};
 
     @media (max-width: ${themeColors.breakpoints.tablet}) {
         padding: 0 ${themeColors.spacing.md};
+        animation: ${slideAnimation} 20s linear infinite;
     }
 `;
 
@@ -81,15 +82,26 @@ const LogoItem = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 0 ${themeColors.spacing.lg};
+    padding: 0 ${themeColors.spacing.md};
+
+    @media (max-width: ${themeColors.breakpoints.tablet}) {
+        padding: 0 ${themeColors.spacing.sm};
+        padding-right: ${themeColors.spacing.xs};
+        min-width: 70px;
+    }
 `;
 
 const LogoContainer = styled.div`
     display: flex;
     align-items: center;
-    justify-content: space-around;
+    justify-content: space-evenly;
     width: 50%;
     min-width: 50%;
+
+    @media (max-width: ${themeColors.breakpoints.tablet}) {
+        justify-content: space-between;
+        padding: 0 ${themeColors.spacing.sm};
+    }
 `;
 
 const LogoSVG = styled.img`

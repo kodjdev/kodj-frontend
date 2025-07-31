@@ -70,6 +70,13 @@ const JoinLink = styled.a`
     &:active {
         transform: translateY(0);
     }
+
+    @media (max-width: ${themeColors.breakpoints.mobile}) {
+        font-size: ${themeColors.typography.body.xsmall.fontSize}px;
+        padding: 8px 16px;
+        max-width: 100%;
+        text-align: center;
+    }
 `;
 
 const CardsGrid = styled.div`
