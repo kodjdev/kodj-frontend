@@ -79,23 +79,13 @@ const MissionSection = styled.div`
 const MissionContent = styled.div`
     background-color: #292929;
     border-radius: 12px;
-    padding: ${themeColors.spacing.xl};
+    padding: ${themeColors.spacing.lg};
 
     @media (max-width: ${themeColors.breakpoints.mobile}) {
-        padding: ${themeColors.spacing.lg};
+        padding: ${themeColors.spacing.md};
+        padding-top: 0;
     }
 `;
-
-// const MissionTitle = styled.h3`
-//     color: ${themeColors.colors.neutral.white};
-//     font-size: ${themeColors.typography.headings.desktop.h3.fontSize}px;
-//     font-weight: ${themeColors.typography.headings.desktop.h3.fontWeight};
-//     margin-bottom: ${themeColors.spacing.md};
-
-//     span {
-//         color: ${themeColors.colors.gray.main};
-//     }
-// `;
 
 const MissionText = styled.p`
     color: ${themeColors.colors.neutral.white};
@@ -140,7 +130,7 @@ const TeamTitle = styled.h2`
 
     @media (max-width: ${themeColors.breakpoints.mobile}) {
         font-size: 24px;
-        text-align: center;
+        text-align: left;
         margin-bottom: ${themeColors.spacing.lg};
     }
 `;
@@ -155,16 +145,16 @@ const TeamGrid = styled.div`
         gap: ${themeColors.spacing.md};
     }
 `;
-
 const TeamMemberCard = styled(Card)`
     display: flex;
-    flex-direction: column;
-    align-items: flex-start;
+    flex-direction: row;
+    align-items: center;
     text-align: left;
-    padding: ${themeColors.spacing.lg};
+    padding: ${themeColors.spacing.md};
     transition:
         transform 0.2s ease,
         box-shadow 0.2s ease;
+    gap: ${themeColors.spacing.md};
 
     &:hover {
         transform: translateY(-5px);
@@ -172,22 +162,30 @@ const TeamMemberCard = styled(Card)`
     }
 
     @media (max-width: ${themeColors.breakpoints.mobile}) {
-        padding: ${themeColors.spacing.lg};
+        padding: ${themeColors.spacing.md};
+        gap: ${themeColors.spacing.sm};
     }
 `;
 
 const MemberAvatar = styled.div`
-    width: 80px;
-    height: 80px;
+    width: 50px;
+    height: 50px;
     border-radius: 50%;
     overflow: hidden;
-    margin-bottom: ${themeColors.spacing.md};
-    border: 3px solid ${themeColors.colors.primary.main};
+    margin-bottom: 0;
+    border: 2px solid ${themeColors.colors.primary.main};
+    flex-shrink: 0;
 
     img {
         width: 100%;
         height: 100%;
         object-fit: cover;
+    }
+
+    @media (max-width: ${themeColors.breakpoints.mobile}) {
+        width: 40px;
+        height: 40px;
+        border: 1px solid ${themeColors.colors.primary.main};
     }
 `;
 
@@ -197,19 +195,31 @@ const MemberInfo = styled.div`
     align-items: flex-start;
     text-align: left;
     gap: ${themeColors.spacing.xs};
+    flex: 1;
+    min-width: 0;
 `;
 
 const MemberName = styled.h4`
     color: ${themeColors.colors.neutral.white};
-    font-size: 18px;
+    font-size: 16px;
     font-weight: ${themeColors.typography.headings.desktop.h4.fontWeight};
     margin: 0;
+    line-height: 1.2;
+
+    @media (max-width: ${themeColors.breakpoints.mobile}) {
+        font-size: 14px;
+    }
 `;
 
 const MemberRole = styled.p`
     color: ${themeColors.colors.gray.main};
-    font-size: ${themeColors.typography.body.small.fontSize}px;
+    font-size: 12px;
     margin: 0;
+    line-height: 1.2;
+
+    @media (max-width: ${themeColors.breakpoints.mobile}) {
+        font-size: 11px;
+    }
 `;
 
 const ContributorsSection = styled.div`
@@ -280,6 +290,17 @@ const GitHubLink = styled.a`
     }
 `;
 
+const ForwardLink = styled.a`
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    transition: transform 0.3s ease;
+
+    &:hover {
+        transform: translateY(-1px);
+    }
+`;
+
 /**
  * About Us page component
  * Displays information about the team, mission, and contributors
@@ -320,15 +341,17 @@ export default function AboutUs() {
 
                 <TeamGrid>
                     {organizers.map((member) => (
-                        <TeamMemberCard key={member.id} backgroundColor="#161616">
-                            <MemberAvatar>
-                                <img src={member.image} alt={member.name} />
-                            </MemberAvatar>
-                            <MemberInfo>
-                                <MemberName>{member.name}</MemberName>
-                                <MemberRole>{member.role}</MemberRole>
-                            </MemberInfo>
-                        </TeamMemberCard>
+                        <ForwardLink href={member.linkedinUrl} key={member.id}>
+                            <TeamMemberCard key={member.id} backgroundColor="#161616">
+                                <MemberAvatar>
+                                    <img src={member.image} alt={member.name} />
+                                </MemberAvatar>
+                                <MemberInfo>
+                                    <MemberName>{member.name}</MemberName>
+                                    <MemberRole>{member.role}</MemberRole>
+                                </MemberInfo>
+                            </TeamMemberCard>
+                        </ForwardLink>
                     ))}
                 </TeamGrid>
             </TeamSection>

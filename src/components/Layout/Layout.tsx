@@ -38,8 +38,7 @@ const ContentWrapper = styled.div`
     box-sizing: border-box;
 
     @media (max-width: ${themeColors.breakpoints.mobile}) {
-        padding-left: ${themeColors.spacing.lg || '16px'};
-        padding-right: ${themeColors.spacing.lg || '16px'};
+        padding: ${themeColors.spacing.md || '24px'} ${themeColors.spacing.lg || '16px'};
     }
 `;
 

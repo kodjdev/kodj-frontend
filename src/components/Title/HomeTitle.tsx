@@ -7,7 +7,11 @@ const TitleContainer = styled.div`
     align-items: center;
     margin: 20px 0 24px;
     position: relative;
-    z-index: ${themeColors.zIndex.nav}; // Pre-defined your z-index system
+    z-index: ${themeColors.zIndex.nav};
+
+    @media (max-width: ${themeColors.breakpoints.tablet}) {
+        margin: 15px 0 20px;
+    }
 `;
 
 const MainTitle = styled.h1`
@@ -32,8 +36,9 @@ const MainTitle = styled.h1`
     }
 
     @media (max-width: ${themeColors.breakpoints.mobile}) {
-        font-size: ${themeColors.typography.headings.mobile.h1.fontSize}px;
-        white-space: normal;
+        font-size: 28px;
+        line-height: 1.2;
+        gap: 2px;
     }
 `;
 

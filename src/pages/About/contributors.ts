@@ -8,6 +8,7 @@ type TeamMember = {
     name: string;
     role: string;
     image: string;
+    linkedinUrl: string;
 };
 
 type Contributor = {
@@ -23,24 +24,28 @@ export const organizers: TeamMember[] = [
         name: 'Behzod Halil',
         role: 'Android developer',
         image: behzodImage,
+        linkedinUrl: 'https://www.linkedin.com/in/behzodhalil/',
     },
     {
         id: 'sardor',
         name: 'Sardor Madaminov',
         role: 'Software Developer',
         image: sardorImage,
+        linkedinUrl: 'https://www.linkedin.com/in/sardor-m/',
     },
     {
         id: 'javokhir',
         name: 'Javokhirbek Khakimjonov',
         role: 'Software Developer',
         image: javokhirImage,
+        linkedinUrl: 'https://www.linkedin.com/in/jaykhakim/',
     },
     {
         id: 'oybek',
         name: 'Oybek Kholikov',
         role: 'Product Designer',
         image: oybekImage,
+        linkedinUrl: 'https://www.linkedin.com/in/oybek-kholikov-b354b6258/',
     },
 ];
 
