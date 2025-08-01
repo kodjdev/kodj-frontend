@@ -19,7 +19,7 @@ export type SpeakerRegistrationData = {
     eventId: string;
     presentationUrl?: string;
 };
-
+// i have to check on this types
 export type EventRegistrationResponse = {
     message: string;
     data: string;

@@ -55,12 +55,32 @@ const EventTitle = styled.span`
 `;
 
 const Heading = styled.h2`
-    font-size: 1.875rem;
-    font-weight: 700;
+    font-size: ${themeColors.typography.headings.mobile.h3.fontSize}px;
+    font-weight: ${themeColors.typography.headings.mobile.h3.fontWeight};
     color: ${themeColors.white};
     margin-bottom: 40px;
     text-align: left;
     margin-top: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    @media (max-width: ${themeColors.breakpoints.mobile}) {
+        font-size: ${themeColors.typography.headings.mobile.h3.fontSize}px;
+        margin-bottom: 24px;
+    }
+`;
+
+const AccountText = styled.span`
+    color: ${themeColors.gray_text};
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 150px;
+
+    @media (max-width: ${themeColors.breakpoints.mobile}) {
+        max-width: 110px;
+    }
 `;
 
 const InputGroup = styled.div`
@@ -107,10 +127,6 @@ const AccountPrompt = styled.div`
     justify-content: space-between;
     margin-top: 20px;
     margin-bottom: 0;
-`;
-
-const AccountText = styled.span`
-    color: ${themeColors.gray_text};
 `;
 
 const ToggleButton = styled.button`

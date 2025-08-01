@@ -331,7 +331,7 @@ export default function EventDetails() {
 
         if (apiResponse.meetupRegistrations) {
             const acceptedRegistrations = apiResponse.meetupRegistrations.filter(
-                (reg) => reg.status === MeetupRegistrationStatus.ACCEPTED && !reg.cancelled,
+                (reg) => reg.status === MeetupRegistrationStatus.ACCEPTED,
             );
             event.registeredCount = acceptedRegistrations.length;
             event.maxSeats = 60;
@@ -372,7 +372,7 @@ export default function EventDetails() {
         }
 
         return eventDetails.data.meetupRegistrations.some(
-            (registration) => String(registration.id) === String(userAtomData.id) && !registration.cancelled,
+            (registration) => String(registration.id) === String(userAtomData.id),
         );
     };
 
