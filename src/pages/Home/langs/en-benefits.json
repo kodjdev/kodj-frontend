@@ -46,7 +46,6 @@
     "timeFrame": {
         "alert": "Hurry up, time is running out.",
         "timeLeft": "Time left until the next",
-        "event": "MeetUp.",
         "registerButton": "Register",
         "units": {
             "day": "DAY",

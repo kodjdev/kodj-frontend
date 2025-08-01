@@ -45,7 +45,6 @@
     "timeFrame": {
         "alert": "Shoshiling, vaqt tugab bormoqda.",
         "timeLeft": "Keyingi tadbirga",
-        "event": "Uchrashuv.",
         "registerButton": "Register",
         "units": {
             "day": "KUN",
