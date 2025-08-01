@@ -105,17 +105,10 @@ export type UpcomingEventsRegistration = BaseRegistration & {
     event: Event[];
 };
 
-export type RegistrationFormData = BaseRegistration & {
-    id?: string;
-    jobTitle: string;
-    eventDetails: EventDetails;
-    experience: string;
-    notify: string;
-    consent: boolean;
-    interestedField: string;
-    hopes: string;
-    additionalInfo: string;
-    eventId: string;
+export type RegistrationFormData = {
+    attendanceReason: string;
+    interestField: string;
+    expectation: string;
 };
 
 export type SpeakerRegistration = {
