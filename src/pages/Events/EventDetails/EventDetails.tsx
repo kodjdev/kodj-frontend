@@ -16,6 +16,7 @@ import useFormatDate from '@/hooks/useFormatDate';
 import PageLoading from '@/components/Loading/LoadingAnimation';
 import { useRecoilValue } from 'recoil';
 import { userAtom } from '@/atoms/user';
+import { useAuthState } from '@/hooks/useAuthState';
 
 const PageContainer = styled.div`
     background-color: ${themeColors.colors.neutral.black};
@@ -218,6 +219,8 @@ export default function EventDetails() {
     const { eventId } = useParams();
     const location = useLocation();
     const userAtomData = useRecoilValue(userAtom);
+    const { userId } = useAuthState();
+
     const { eventData: locationEventData } = location.state || {};
 
     const detailsRef = useRef<HTMLDivElement>(null);
@@ -282,6 +285,12 @@ export default function EventDetails() {
 
         fetchEventDetails();
     }, [eventId]);
+
+    useEffect(() => {
+        if (userAtomData?.id) {
+            localStorage.setItem('lastUserId', userAtomData.id);
+        }
+    }, [userAtomData?.id]);
 
     useLayoutEffect(() => {
         window.scrollTo(0, 0);
@@ -367,15 +376,12 @@ export default function EventDetails() {
     };
 
     const isUserRegistered = () => {
-        if (!userAtomData?.id || !eventDetails?.data?.meetupRegistrations) {
+        if (!userId || !eventDetails?.data?.meetupRegistrations) {
             return false;
         }
 
-        return eventDetails.data.meetupRegistrations.some(
-            (registration) => String(registration.id) === String(userAtomData.id),
-        );
+        return eventDetails.data.meetupRegistrations.some((registration) => String(registration.id) === String(userId));
     };
-
     const isPastEvent = eventData.date
         ? (typeof eventData.date === 'string' ? new Date(eventData.date) : new Date(eventData.date.seconds * 1000)) <
           new Date()

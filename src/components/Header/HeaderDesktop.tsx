@@ -8,6 +8,7 @@ import useAuth from '@/context/useAuth';
 import { Globe, User2 } from 'lucide-react';
 import Card from '@/components/Card/Card';
 import { useTranslation } from 'react-i18next';
+import { TokenStorage } from '@/utils/tokenStorage';
 
 type LanguageMenuProps = {
     isOpen: boolean;
@@ -194,6 +195,9 @@ export default function HeaderDesktop({
     const { t } = useTranslation('home');
 
     const { user } = useAuth();
+    const wasAuthenticated = localStorage.getItem('wasAuthenticated') === 'true';
+    const hasValidToken = TokenStorage.getAccessToken();
+    const showAsAuthenticated = isAuthenticated || (wasAuthenticated && hasValidToken);
 
     return (
         <HeaderOuterContainer>
@@ -242,7 +246,7 @@ export default function HeaderDesktop({
                             </LanguageMenu>
                         )}
                     </LanguageToggle>
-                    {isAuthenticated ? (
+                    {showAsAuthenticated ? (
                         <Link to={'/mypage'}>
                             <UserAvatar>
                                 {user?.imageUrl ? (

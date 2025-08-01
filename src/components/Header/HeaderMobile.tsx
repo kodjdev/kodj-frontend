@@ -8,6 +8,7 @@ import kodjLogo from '@/static/icons/kodj_new.jpg';
 import useAuth from '@/context/useAuth';
 import { User2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { TokenStorage } from '@/utils/tokenStorage';
 
 type MobileMenuProps = {
     isOpen: boolean;
@@ -267,6 +268,9 @@ export default function HeaderMobile({
     const { t } = useTranslation('home');
 
     const { user } = useAuth();
+    const wasAuthenticated = localStorage.getItem('wasAuthenticated') === 'true';
+    const hasValidToken = TokenStorage.getAccessToken();
+    const showAsAuthenticated = isAuthenticated || (wasAuthenticated && hasValidToken);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     const toggleMenu = () => {
@@ -337,7 +341,7 @@ export default function HeaderMobile({
                         </LanguageSection>
 
                         <AuthSection>
-                            {isAuthenticated ? (
+                            {showAsAuthenticated ? (
                                 <Link to={'/mypage'} onClick={closeMenu} style={{ textDecoration: 'none' }}>
                                     <UserAvatar>
                                         {user?.imageUrl ? (
