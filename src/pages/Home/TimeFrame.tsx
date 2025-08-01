@@ -5,6 +5,7 @@ import SectionLoading from '@/components/Loading/LoadingAnimation';
 import { ArrowUpRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import useApiService from '@/services';
 
 type TimeLeftType = {
     days: number;
@@ -156,27 +157,6 @@ const TimeLeftText = styled.p`
         font-size: 20px;
         line-height: 1.2;
         white-space: nowrap;
-    }
-`;
-
-const UntilNextText = styled.p`
-    color: ${themeColors.colors.gray.main};
-    font-weight: ${themeColors.typography.headings.desktop.h2};
-    font-size: 20px;
-    line-height: 1;
-    margin: 0 0.5rem;
-
-    @media (min-width: ${themeColors.breakpoints.tablet}) {
-        font-size: 28px;
-        display: inline;
-        margin: 0;
-    }
-
-    @media (max-width: ${themeColors.breakpoints.mobile}) {
-        margin: 0;
-        font-size: 18px;
-        white-space: nowrap;
-        display: inline;
     }
 `;
 
@@ -406,6 +386,7 @@ const MobileRegisterButton = styled.button`
 export default function TimeFrame() {
     const navigate = useNavigate();
     const { t } = useTranslation('benefits');
+    const eventApiService = useApiService();
 
     const [timeLeft, setTimeLeft] = useState<TimeLeftType>({
         days: 0,
@@ -413,17 +394,26 @@ export default function TimeFrame() {
         minutes: 0,
         seconds: 0,
     });
-
-    const [event] = useState<EventType>({
-        name: 'Ai Here',
-        date: new Date(Date.now() + 15 * 24 * 60 * 60 * 1000),
-    });
+    const [event, setEvent] = useState<EventType | null>(null);
 
     const [loading, setLoading] = useState<boolean>(false);
 
     useEffect(() => {
+        (async () => {
+            const response = await eventApiService.getEvents({ type: 'upcoming' });
+            const firstEvent = response.data?.content?.[0];
+            if (firstEvent) {
+                setEvent({
+                    name: firstEvent.title,
+                    date: new Date(firstEvent.startTime),
+                });
+            }
+        })();
+    }, []);
+
+    useEffect(() => {
         setLoading(true);
-        if (!event) return;
+        if (!event?.date) return;
 
         const timer = setInterval(() => {
             const now = new Date().getTime();
@@ -446,6 +436,10 @@ export default function TimeFrame() {
         setLoading(false);
         return () => clearInterval(timer);
     }, [event]);
+
+    if (!event) {
+        return <SectionLoading message="Event not found" />;
+    }
 
     if (loading) {
         return <SectionLoading message="Loading Time Frame..." />;
@@ -482,10 +476,8 @@ export default function TimeFrame() {
                             <TimeLeftText>{t('timeFrame.timeLeft')}</TimeLeftText>
 
                             <div className="event-info-wrapper">
-                                <UntilNextText>{t('timeFrame.event')}</UntilNextText>
                                 <EventNameText>{event?.name || ''}</EventNameText>
                             </div>
-
                             <RegisterButton
                                 onClick={() => {
                                     navigate('/events');
