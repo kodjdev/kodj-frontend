@@ -281,8 +281,11 @@ export default function Login({ toggleAuthMode, returnUrl, eventDetails }: Login
     }, []);
 
     const navigateToForgotPassword = useCallback(() => {
-        navigate('/forgot-password');
-    }, [navigate]);
+        messageApi.info({
+            content: t('login.messages.forgotPasswordInfo'),
+            duration: 3,
+        });
+    }, []);
 
     return (
         <>

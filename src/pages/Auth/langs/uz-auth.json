@@ -25,7 +25,8 @@
             "authenticatingWithGoogle": "Google bilan autentifikatsiya qilinmoqda...",
             "googleLoginSuccess": "Google bilan muvaffaqiyatli kirildi",
             "googleAuthFailed": "Google autentifikatsiyasida xatolik. Iltimos, qaytadan urinib ko'ring.",
-            "googleLoginFailed": "Google orqali kirishda xatolik. Iltimos, qaytadan urinib ko'ring."
+            "googleLoginFailed": "Google orqali kirishda xatolik. Iltimos, qaytadan urinib ko'ring.",
+            "forgotPasswordInfo": "Yaqin orada parolni tiklash imkoniyatini qo'shamiz."
         }
     },
     "signup": {

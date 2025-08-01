@@ -25,7 +25,8 @@
             "authenticatingWithGoogle": "Authenticating with Google...",
             "googleLoginSuccess": "Successfully logged in with Google",
             "googleAuthFailed": "Google authentication failed. Please try again.",
-            "googleLoginFailed": "Google login failed. Please try again."
+            "googleLoginFailed": "Google login failed. Please try again.",
+            "forgotPasswordInfo": "Soon we will add this feature to help you reset your password."
         }
     },
     "signup": {
