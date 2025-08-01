@@ -32,6 +32,8 @@ const CardImage = styled.img`
     object-fit: cover;
     border-radius: 4px 4px 0 0;
     margin-bottom: 0;
+    container: content-box !important;
+    object-position: center;
 `;
 
 const PlaceholderContent = styled.div`

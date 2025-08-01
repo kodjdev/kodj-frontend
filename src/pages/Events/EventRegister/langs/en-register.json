@@ -11,7 +11,8 @@
         "expectation": "What are you looking forward to the most?",
         "expectationPlaceholder": "Please describe what you hope to gain from this event...",
         "register": "Register",
-        "submitting": "Submitting..."
+        "submitting": "Submitting...",
+        "consent": "I agree to the terms and conditions"
     },
     "fieldOptions": {
         "selectReason": "Select your reason",
@@ -29,7 +30,8 @@
         "attendanceReasonRequired": "Please select your reason for attending",
         "interestedFieldRequired": "Please select your field of interest",
         "expectationRequired": "Please describe your expectations",
-        "expectationMinLength": "Please provide at least 10 characters"
+        "expectationMinLength": "Please provide at least 10 characters",
+        "consentRequired": "You must agree to the terms and conditions"
     },
     "successModal": {
         "title": "Registration Successful",

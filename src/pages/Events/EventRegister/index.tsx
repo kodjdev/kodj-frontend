@@ -57,6 +57,7 @@ const ButtonWrapper = styled.div`
     display: flex;
     justify-content: space-between;
     gap: ${themeColors.spacing.sm};
+    width: 100%;
 
     @media (max-width: ${themeColors.breakpoints.mobile}) {
         flex-direction: column;
@@ -85,7 +86,7 @@ const FormContent = styled.div`
     padding: ${themeColors.spacing.sm} ${themeColors.spacing.md};
 
     @media (min-width: ${themeColors.breakpoints.laptop}) {
-        flex-direction: row;
+        flex-direction: column;
 
         gap: ${themeColors.spacing.md};
         padding: 0 ${themeColors.spacing.xl} ${themeColors.spacing.lg};
@@ -173,9 +174,8 @@ export default function EventRegister() {
         | undefined;
 
     const title = state?.title || 'Event';
-    const eventRoom = state?.eventRoom;
     const eventLocation = state?.location || 'Unknown';
-    const imageSource = state?.imageUrl || '/pastEvents/past1.jpeg';
+    const imageSource = state?.imageUrl || 'https://via.placeholder.com/150';
     const organizer = state?.author || "KO'DJ";
 
     const { handleSubmit, reset } = methods;
@@ -202,7 +202,7 @@ export default function EventRegister() {
 
     const createRegistrationData = (data: RegistrationFormData): EventRegistrationData => {
         return {
-            status: 'CONFIRMED',
+            status: 'ACCEPTED',
             cancelled: false,
             attendanceReason: data.attendanceReason,
             expectation: data.expectation,
@@ -304,10 +304,11 @@ export default function EventRegister() {
                                             <ButtonWrapper>
                                                 <Button
                                                     htmlType="submit"
-                                                    size="sm"
+                                                    size="md"
                                                     variant="primary"
                                                     icon={<FaArrowUpRightFromSquare className="text-xs" />}
                                                     disabled={isSubmitting}
+                                                    fullWidth={true}
                                                 >
                                                     {isSubmitting ? 'Submitting' : 'Register'}
                                                 </Button>
@@ -322,7 +323,6 @@ export default function EventRegister() {
                                     formattedDate={formattedDate}
                                     organizer={organizer}
                                     eventLocation={eventLocation}
-                                    eventRoom={eventRoom || 'Unknown'}
                                 />
                             </PageContainer>
                         </form>

@@ -97,7 +97,8 @@ const TextArea = styled.textarea<{ hasError?: boolean }>`
 `;
 
 const ErrorMessage = styled.p`
-    margin-top: ${themeColors.spacing.xs};
+    margin-top: 0;
+    margin-bottom: 0;
     font-size: ${themeColors.font12.fontSize}px;
     color: ${themeColors.red_text};
 
@@ -127,6 +128,59 @@ const SelectIcon = styled(ChevronDown)`
 const SelectWrapper = styled.div`
     position: relative;
     width: 100%;
+`;
+
+const CheckboxContainer = styled.div`
+    background-color: ${themeColors.gray_dark};
+    padding: ${themeColors.spacing.md};
+    border-radius: ${themeColors.radiusSizes.md};
+    border: 1px solid ${themeColors.cardBorder.color};
+`;
+
+const CheckboxLabel = styled.label`
+    display: flex;
+    align-items: flex-start;
+`;
+
+const Checkbox = styled.input`
+    margin-top: 2px;
+    margin-right: ${themeColors.spacing.sm};
+    margin-bottom: 0;
+    height: 12px;
+    width: 12px;
+    color: ${themeColors.blue};
+    border-radius: ${themeColors.radiusSizes.sm};
+    border: 1px solid ${themeColors.gray_text};
+
+    &:focus {
+        box-shadow: 0 0 0 2px ${themeColors.blue};
+    }
+
+    @media (max-width: ${themeColors.breakpoints.mobile}) {
+        height: 14px;
+        width: 14px;
+    }
+`;
+
+const CheckboxText = styled.span`
+    color: ${themeColors.white_dark};
+    font-size: ${themeColors.font12.fontSize}px;
+`;
+
+const CheckboxInfo = styled.p`
+    color: ${themeColors.gray_text};
+    font-size: ${themeColors.font12.fontSize}px;
+    margin-top: ${themeColors.spacing.xs};
+    margin-left: 2px;
+    line-height: 1.4;
+    margin-bottom: ${themeColors.spacing.xs};
+    width: 100%;
+    max-width: 600px;
+
+    @media (max-width: ${themeColors.breakpoints.mobile}) {
+        font-size: ${themeColors.font10.fontSize}px;
+        margin-left: 2px;
+    }
 `;
 
 export default function EventForm() {
@@ -234,6 +288,30 @@ export default function EventForm() {
                 />
                 {errors.expectation && <ErrorMessage>{errors.expectation.message}</ErrorMessage>}
             </FieldGroup>
+            <Controller
+                control={control}
+                name="consent"
+                rules={{ required: t('validation.consentRequired') }}
+                render={({ field: { onChange, value }, fieldState: { error } }) => (
+                    <>
+                        <CheckboxContainer>
+                            <CheckboxLabel htmlFor="consent">
+                                <Checkbox
+                                    id="consent"
+                                    type="checkbox"
+                                    checked={Boolean(value)}
+                                    onChange={(e) => onChange(e.target.checked)}
+                                />
+                                <CheckboxText>{t('formFields.consent')}</CheckboxText>
+                            </CheckboxLabel>
+                            <CheckboxInfo>
+                                Your personal data will only be used for event registration purposes.
+                            </CheckboxInfo>
+                        </CheckboxContainer>
+                        {error && <ErrorMessage>{error.message}</ErrorMessage>}
+                    </>
+                )}
+            />
         </FormContainer>
     );
 }

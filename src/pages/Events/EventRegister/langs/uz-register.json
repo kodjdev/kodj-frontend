@@ -11,7 +11,8 @@
         "expectation": "Eng ko'p nimani kutayapsiz?",
         "expectationPlaceholder": "Iltimos, ushbu tadbirdan nimani kutayotganingizni tasvirlab bering...",
         "register": "Ro'yxatdan o'tish",
-        "submitting": "Yuborilmoqda..."
+        "submitting": "Yuborilmoqda...",
+        "consent": "Shartlarga roziman"
     },
     "fieldOptions": {
         "selectReason": "Sababni tanlang",
@@ -29,7 +30,8 @@
         "attendanceReasonRequired": "Iltimos, qatnashish sababingizni tanlang",
         "interestedFieldRequired": "Iltimos, qiziqish sohangizni tanlang",
         "expectationRequired": "Iltimos, kutganlaringizni tasvirlab bering",
-        "expectationMinLength": "Iltimos, kamida 10 ta belgi kiriting"
+        "expectationMinLength": "Iltimos, kamida 10 ta belgi kiriting",
+        "consentRequired": "Siz shartlarga rozilik bildirishingiz kerak"
     },
     "successModal": {
         "title": "Ro'yxatdan o'tish muvaffaqiyatli",

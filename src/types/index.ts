@@ -109,6 +109,7 @@ export type RegistrationFormData = {
     attendanceReason: string;
     interestField: string;
     expectation: string;
+    consent?: boolean;
 };
 
 export type SpeakerRegistration = {

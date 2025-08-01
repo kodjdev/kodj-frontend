@@ -8,7 +8,7 @@ type RightSideDetailsProps = {
     formattedDate: string;
     organizer: string;
     eventLocation: string;
-    eventRoom: string;
+    eventRoom?: string;
 };
 
 const Container = styled.div`

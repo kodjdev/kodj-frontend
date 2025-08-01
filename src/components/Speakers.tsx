@@ -37,6 +37,7 @@ const CustomEventCard = styled(EventCard)`
         width: 100% !important;
         object-fit: cover !important;
         object-position: center !important;
+        container: content-box !important;
     }
 
     & > div {

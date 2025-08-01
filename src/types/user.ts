@@ -1,6 +1,6 @@
 import { EventDetails } from '.';
 
-type RegistrationStatus = 'CONFIRMED' | 'PENDING' | 'CANCELED';
+type RegistrationStatus = 'CONFIRMED' | 'PENDING' | 'CANCELED' | 'ACCEPTED';
 type SpeakerStatus = 'confirmed' | 'pending';
 
 export type EventRegistrationData = {
