@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import themeColors from '@/tools/themeColors';
 import { KeynoteSession } from '@/types/api';
 import { FaUser } from 'react-icons/fa';
+import defaultImage from '@/static/team/bekhzod.png';
 
 type EventTimelineProps = {
     schedule?: KeynoteSession[];
@@ -122,6 +123,15 @@ const DefaultSpeakerIcon = styled.div`
  * Shows each session with the speaker, time slot, and topic details.
  */
 export function EventTimeline({ schedule = [] }: EventTimelineProps) {
+    const isValidImageUrl = (url: string): boolean => {
+        try {
+            const validUrl = new URL(url);
+            return validUrl.protocol === 'http:' || validUrl.protocol === 'https:';
+        } catch {
+            return false;
+        }
+    };
+
     return (
         <div>
             <SectionTitle>Timeline</SectionTitle>
@@ -145,8 +155,16 @@ export function EventTimeline({ schedule = [] }: EventTimelineProps) {
                                         <>
                                             <SpeakerAvatar>
                                                 <img
-                                                    src={session.speaker.imageURL || '/placeholder-avatar.png'}
+                                                    src={
+                                                        session.speaker.imageURL &&
+                                                        isValidImageUrl(session.speaker.imageURL)
+                                                            ? session.speaker.imageURL
+                                                            : defaultImage
+                                                    }
                                                     alt={`${session.speaker.firstName || 'Speaker'} ${session.speaker.lastName || ''}`}
+                                                    onError={(e) => {
+                                                        e.currentTarget.src = defaultImage;
+                                                    }}
                                                 />
                                             </SpeakerAvatar>
                                             <SpeakerName>{session.speaker.firstName || 'Not given'}</SpeakerName>

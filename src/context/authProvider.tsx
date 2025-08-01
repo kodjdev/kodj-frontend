@@ -6,6 +6,9 @@ import { TokenResponse, User } from '@/types/auth';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '@/context/AuthContext';
 import useApiService from '@/services';
+import { TokenStorage } from '@/utils/tokenStorage';
+import { useSetRecoilState } from 'recoil';
+import { userAtom } from '@/atoms/user';
 
 type AuthProviderProps = {
     children: ReactNode;
@@ -27,133 +30,158 @@ export default function AuthProvider({ children }: AuthProviderProps) {
     const fetchData = useAxios();
     const navigate = useNavigate();
     const getUserService = useApiService();
+    const setUserAtom = useSetRecoilState(userAtom);
+    const isMountedRef = useRef(true);
 
-    const isLoadingUserRef = useRef(false);
+    const [userDataCache, setUserDataCache] = useState<Map<string, User>>(new Map());
+    const [isRefreshing, setIsRefreshing] = useState(false);
 
     const clearTokens = useCallback(() => {
-        localStorage.removeItem('access_token');
-        localStorage.removeItem('refresh_token');
+        TokenStorage.clearTokens();
+        localStorage.removeItem('wasAuthenticated');
+        localStorage.removeItem('lastUserId');
+        setUserDataCache(new Map());
         setUser(null);
-    }, []);
+        setUserAtom({ id: '', username: '', firstName: '' });
+    }, [setUserAtom]);
 
     const isTokenValid = useCallback((token: string): boolean => {
-        if (!token) {
-            return false;
-        }
-
+        if (!token) return false;
         try {
-            const base64Url = token.split('.')[1];
-            const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-            const payload = JSON.parse(window.atob(base64));
-
-            const currentTime = Math.floor(Date.now() / 1000);
-            const isValid = payload.exp > currentTime;
-
-            return isValid;
+            const payload = JSON.parse(atob(token.split('.')[1]));
+            return payload.exp * 1000 > Date.now();
         } catch (error) {
-            console.error('Token validation error:', error);
+            console.error('Token validation failed:', error);
             return false;
         }
     }, []);
 
     const loadUserData = useCallback(
         async (token: string): Promise<User | null> => {
-            if (isLoadingUserRef.current) {
-                return null;
+            /* we first check cache */
+            const tokenKey = token.substring(0, 20);
+            if (userDataCache.has(tokenKey)) {
+                const cachedUser = userDataCache.get(tokenKey)!;
+                setUser(cachedUser);
+                setUserAtom({
+                    id: String(cachedUser.id),
+                    username: cachedUser.username ?? '',
+                    firstName: cachedUser.firstName?.trim() ?? '',
+                });
+                localStorage.setItem('wasAuthenticated', 'true');
+                localStorage.setItem('lastUserId', String(cachedUser.id));
+                return cachedUser;
             }
-
-            isLoadingUserRef.current = true;
 
             try {
                 const response = await getUserService.getUserDetails(token);
-
-                if (response.data?.data) {
+                if (response.data) {
                     const userData = response.data;
+
+                    setUserDataCache((prev) => new Map(prev).set(tokenKey, userData));
+
                     setUser(userData);
+                    setUserAtom({
+                        id: String(userData.id),
+                        username: userData.username ?? '',
+                        firstName: userData.firstName?.trim() ?? '',
+                    });
+                    localStorage.setItem('wasAuthenticated', 'true');
+                    localStorage.setItem('lastUserId', String(userData.id));
                     return userData;
-                } else {
-                    clearTokens();
-                    return null;
                 }
+                throw new Error('User data not found in response.');
             } catch (error) {
-                console.error('Error loading user data:', error);
-                clearTokens();
-                return null;
-            } finally {
-                isLoadingUserRef.current = false;
+                localStorage.removeItem('wasAuthenticated');
+                localStorage.removeItem('lastUserId');
+                console.error('Failed to load user data.', error);
+                throw error;
             }
         },
-        [getUserService, clearTokens],
+        [getUserService, setUserAtom, userDataCache],
     );
 
     const refreshTokens = useCallback(async (): Promise<boolean> => {
-        try {
-            const refreshToken = localStorage.getItem('refresh_token');
-            if (!refreshToken) return false;
+        if (isRefreshing) return false;
 
-            const response = await fetchData<{ accessToken: string; refreshToken: string }>({
+        const refreshToken = TokenStorage.getRefreshToken();
+        if (!refreshToken) return false;
+
+        setIsRefreshing(true);
+        try {
+            const response = await fetchData<{ access_token: string; refresh_token: string }>({
                 endpoint: '/auth/refresh-token',
                 method: 'GET',
-                customHeaders: {
-                    RefreshToken: refreshToken,
-                },
+                customHeaders: { RefreshToken: refreshToken },
             });
 
-            if (response.data && response.data.accessToken) {
-                localStorage.setItem('access_token', response.data.accessToken);
-                if (response.data.refreshToken) {
-                    localStorage.setItem('refresh_token', response.data.refreshToken);
+            if (response.data?.access_token) {
+                const newAccessToken = response.data.access_token;
+                TokenStorage.setAccessToken(newAccessToken);
+                if (response.data.refresh_token) {
+                    TokenStorage.setRefreshToken(response.data.refresh_token);
                 }
-                await loadUserData(response.data.accessToken);
+                await loadUserData(newAccessToken);
                 return true;
             }
             return false;
         } catch (error) {
-            console.error('Token refresh error:', error);
+            console.error('Error refreshing tokens:', error);
             clearTokens();
             return false;
+        } finally {
+            setIsRefreshing(false);
         }
-    }, [fetchData, loadUserData, clearTokens]);
+    }, [fetchData, loadUserData, clearTokens, isRefreshing]);
 
-    // we check if user is authenticated on initial load
+    /* we check if user is authenticated on initial load */
     useEffect(() => {
-        let isMounted = true;
+        isMountedRef.current = true;
 
         const initializeAuth = async () => {
-            setIsLoading(true);
+            const accessToken = TokenStorage.getAccessToken();
+            const wasAuthenticated = localStorage.getItem('wasAuthenticated') === 'true';
+            const lastUserId = localStorage.getItem('lastUserId');
+
+            if (!accessToken) {
+                setIsLoading(false);
+                return;
+            }
+
+            if (wasAuthenticated && lastUserId) {
+                setUserAtom({
+                    id: lastUserId,
+                    username: localStorage.getItem('lastUsername') || '',
+                    firstName: localStorage.getItem('lastFirstName') || '',
+                });
+                setIsLoading(false);
+            }
 
             try {
-                const accessToken = localStorage.getItem('access_token');
-
-                if (accessToken && isTokenValid(accessToken)) {
-                    const userData = await loadUserData(accessToken);
-
-                    if (isMounted && !userData) {
-                        console.log('Failed to load user data with valid token');
+                if (isTokenValid(accessToken)) {
+                    /* we first check cache first before making API call */
+                    const tokenKey = accessToken.substring(0, 20);
+                    if (!userDataCache.has(tokenKey)) {
+                        await loadUserData(accessToken);
+                    } else {
+                        /* this case we use cached data */
+                        const cachedUser = userDataCache.get(tokenKey)!;
+                        setUser(cachedUser);
+                        setUserAtom({
+                            id: String(cachedUser.id),
+                            username: cachedUser.username ?? '',
+                            firstName: cachedUser.firstName?.trim() ?? '',
+                        });
                     }
                 } else {
-                    const refreshToken = localStorage.getItem('refresh_token');
-
-                    if (refreshToken) {
-                        const refreshSuccess = await refreshTokens();
-                        if (!refreshSuccess && isMounted) {
-                            console.log('Token refresh failed');
-                            clearTokens();
-                        }
-                    } else {
-                        console.log('No refresh token available');
-                        if (isMounted) {
-                            setUser(null);
-                        }
-                    }
+                    console.log('Access token is invalid, attempting to refresh...');
+                    await refreshTokens();
                 }
             } catch (error) {
-                console.error('Auth initialization error:', error);
-                if (isMounted) {
-                    clearTokens();
-                }
+                console.log('Initial user data load failed. trying to refresh token...', error);
+                await refreshTokens();
             } finally {
-                if (isMounted) {
+                if (isMountedRef.current) {
                     setIsLoading(false);
                 }
             }
@@ -162,48 +190,39 @@ export default function AuthProvider({ children }: AuthProviderProps) {
         initializeAuth();
 
         return () => {
-            isMounted = false;
+            isMountedRef.current = false;
         };
     }, []);
 
-    // for raw login
+    /* For raw login */
     const login = useCallback(
         async (email: string, password: string) => {
-            try {
-                return await fetchData<TokenResponse>({
-                    endpoint: '/auth/login',
-                    method: 'POST',
-                    data: {
-                        email,
-                        password,
-                        ipAddress: window.location.hostname,
-                        deviceType: 'web',
-                    },
-                    skipGlobalErrorHandler: true,
-                });
-            } catch (error) {
-                console.error('Login error:', error);
-                throw error;
-            }
+            const response = await fetchData<TokenResponse>({
+                endpoint: '/auth/login',
+                method: 'POST',
+                data: {
+                    email,
+                    password,
+                    ipAddress: window.location.hostname,
+                    deviceType: 'web',
+                },
+                skipGlobalErrorHandler: true,
+            });
+            return response;
         },
         [fetchData],
     );
 
-    // for raw email registration
+    /* For raw email registration */
     const register = useCallback(
         async (formData: RegisterFormData) => {
-            try {
-                const response = await fetchData<EventRegistrationResponse>({
-                    endpoint: '/auth/register',
-                    method: 'POST',
-                    data: formData,
-                    skipGlobalErrorHandler: true,
-                });
-                return response;
-            } catch (error) {
-                console.error('Registration error:', error);
-                throw error;
-            }
+            const response = await fetchData<EventRegistrationResponse>({
+                endpoint: '/auth/register',
+                method: 'POST',
+                data: formData,
+                skipGlobalErrorHandler: true,
+            });
+            return response;
         },
         [fetchData],
     );
@@ -211,91 +230,78 @@ export default function AuthProvider({ children }: AuthProviderProps) {
     /* OTP validation to complete the login */
     const validateOTP = useCallback(
         async (email: string, otp: string) => {
-            try {
-                const response = await fetchData<TokenResponse>({
-                    endpoint: '/auth/verify-login-otp',
-                    method: 'POST',
-                    data: { email, otp },
-                    skipGlobalErrorHandler: true,
-                });
+            const response = await fetchData<TokenResponse>({
+                endpoint: '/auth/verify-login-otp',
+                method: 'POST',
+                data: { email, otp },
+                skipGlobalErrorHandler: true,
+            });
 
-                if (response.data?.data?.access_token) {
-                    localStorage.setItem('access_token', response.data.data.access_token);
-                    localStorage.setItem('refresh_token', response.data.data.refresh_token);
-                    await loadUserData(response.data.data.access_token);
-                }
-                return response;
-            } catch (error) {
-                console.error('OTP validation error:', error);
-                throw error;
+            if (response.data?.access_token) {
+                clearTokens();
+                TokenStorage.setAccessToken(response.data.access_token);
+                TokenStorage.setRefreshToken(response.data.refresh_token);
+                await loadUserData(response.data.access_token);
             }
+            return response;
         },
-        [fetchData, loadUserData],
+        [fetchData, loadUserData, clearTokens],
     );
 
     const loginWithGoogle = useCallback(
         async (idToken: string): Promise<ApiResponse<TokenResponse>> => {
-            try {
-                const response = await fetchData<TokenResponse>({
-                    endpoint: '/auth/google/sign-in',
-                    method: 'POST',
-                    data: idToken,
-                    customHeaders: {
-                        'Content-Type': 'text/plain',
-                    },
-                });
+            const response = await fetchData<TokenResponse>({
+                endpoint: '/auth/google/sign-in',
+                method: 'POST',
+                data: idToken,
+                skipGlobalErrorHandler: true,
+                customHeaders: {
+                    'Content-Type': 'text/plain',
+                },
+            });
 
-                if (response.data?.data?.access_token) {
-                    localStorage.setItem('access_token', response.data.data.access_token);
-                    localStorage.setItem('refresh_token', response.data.data.refresh_token);
-
-                    await loadUserData(response.data.data.access_token);
-                    console.log('User data loaded successfully after Google login');
-                }
-
-                return response;
-            } catch (error) {
-                console.error('Google login error:', error);
-                throw error;
+            if (response.data?.access_token) {
+                setUserDataCache(new Map());
+                setUser(null);
+                TokenStorage.setAccessToken(response.data.access_token);
+                TokenStorage.setRefreshToken(response.data.refresh_token);
+                await loadUserData(response.data.access_token);
             }
+
+            return response;
         },
         [fetchData, loadUserData, navigate],
     );
 
     const signUpWithGoogle = useCallback(
         async (credential: string, additionalData?: { username: string; phone: string }) => {
-            try {
-                let requestData;
-                let headers;
+            let requestData;
+            let headers;
 
-                if (additionalData) {
-                    requestData = {
-                        credential,
-                        username: additionalData.username,
-                        phone: additionalData.phone,
-                    };
-                    headers = {
-                        'Content-Type': 'application/json',
-                    };
-                } else {
-                    requestData = credential;
-                    headers = {
-                        'Content-Type': 'text/plain',
-                    };
-                }
-
-                const response = await fetchData({
-                    endpoint: '/auth/google/sign-up',
-                    method: 'POST',
-                    data: requestData,
-                    customHeaders: headers,
-                    skipGlobalErrorHandler: true,
-                });
-                return response;
-            } catch (error) {
-                console.error('Google sign up error:', error);
-                throw error;
+            if (additionalData) {
+                requestData = {
+                    credential,
+                    username: additionalData.username,
+                    phone: additionalData.phone,
+                };
+                headers = {
+                    'Content-Type': 'application/json',
+                };
+            } else {
+                requestData = credential;
+                headers = {
+                    'Content-Type': 'text/plain',
+                };
             }
+
+            const response = await fetchData({
+                endpoint: '/auth/google/sign-up',
+                method: 'POST',
+                data: requestData,
+                customHeaders: headers,
+                skipGlobalErrorHandler: true,
+            });
+            return response;
         },
         [fetchData],
     );

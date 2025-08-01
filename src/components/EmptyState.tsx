@@ -17,6 +17,7 @@ type EmptyStateProps = {
     showLogo?: boolean;
     style?: React.CSSProperties;
     showIcon?: boolean;
+    disabled?: boolean;
 };
 
 const Container = styled.div`
@@ -34,10 +35,11 @@ const Logo = styled.img`
     border-radius: 10%;
 `;
 
-const Title = styled.h3`
-    font-size: ${themeColors.typography.body.large.fontSize}px;
+const Title = styled.h4`
+    font-size: ${themeColors.typography.headings.desktop.h4.fontSize}px;
     margin-bottom: ${themeColors.spacing.md};
     color: ${themeColors.colors.neutral.white};
+    margin-top: 0;
 `;
 
 const Description = styled.p`
@@ -46,7 +48,7 @@ const Description = styled.p`
 `;
 
 const IconContainer = styled.div`
-    margin-bottom: ${themeColors.spacing.lg};
+    margin-bottom: 0;
     font-size: 48px;
     color: ${themeColors.colors.gray.text};
 `;
@@ -98,7 +100,12 @@ export default function EmptyState({
                             {buttonText}
                         </Button>
                     ) : (
-                        <Button variant={buttonVariant} size={buttonSize} onClick={onButtonClick}>
+                        <Button
+                            variant={buttonVariant}
+                            size={buttonSize}
+                            onClick={onButtonClick}
+                            disabled={rest.disabled}
+                        >
                             {buttonText}
                         </Button>
                     )}

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { FormProvider, useForm, SubmitHandler } from 'react-hook-form';
 import { FaArrowUpRightFromSquare } from 'react-icons/fa6';
@@ -9,19 +9,14 @@ import themeColors from '@/tools/themeColors';
 import { RegistrationFormData } from '@/types';
 import Button from '@/components/Button/Button';
 import useAuth from '@/context/useAuth';
-import EventForm from '@/pages/Events/EventRegister/EventForm';
-import Step from '@/components/ProgressBar/Step';
 import useApiService from '@/services';
 import { ApiResponse } from '@/types/fetch';
 import { EventRegistrationData, EventRegistrationResponse } from '@/types/user';
 import ConfirmModal from '@/components/Modal/ModalTypes/ConfirmModal';
-import RightSideDetails from '@/pages/Events/EventRegister/RightSideDetails';
+import RightSideDetails from '@/pages/Events/EventRegister/RightsideDetails';
 import InfoModal from '@/components/Modal/ModalTypes/InfoModal';
-
-type FirstStepFields = Pick<
-    RegistrationFormData,
-    'firstName' | 'lastName' | 'jobTitle' | 'experience' | 'email' | 'phone'
->;
+import { ModalLoading } from '@/components/Loading/LoadingAnimation';
+import EventForm from '@/pages/Events/EventRegister/EventForm/EventForm';
 
 type FormattedDateTime = {
     date: string;
@@ -59,10 +54,10 @@ const FormSection = styled.div`
 `;
 
 const ButtonWrapper = styled.div`
-    margin-top: ${themeColors.spacing.xl};
     display: flex;
     justify-content: space-between;
     gap: ${themeColors.spacing.sm};
+    width: 100%;
 
     @media (max-width: ${themeColors.breakpoints.mobile}) {
         flex-direction: column;
@@ -84,31 +79,6 @@ const FormCard = styled.div`
     }
 `;
 
-const StepperContainer = styled.div`
-    display: flex;
-    justify-content: space-between;
-    border-radius: ${themeColors.radiusSizes.md};
-    padding: ${themeColors.spacing.xl} ${themeColors.spacing.md};
-
-    @media (min-width: ${themeColors.breakpoints.tablet}) {
-        padding: ${themeColors.spacing.xl} ${themeColors.spacing.xl};
-    }
-`;
-
-const StepperWrapper = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-`;
-
-const ProgressLine = styled.div<{ isCompleted: boolean }>`
-    flex: 1;
-    margin: 0 ${themeColors.spacing.sm};
-    height: 4px;
-    background-color: ${({ isCompleted }) => (isCompleted ? themeColors.blue : themeColors.gray_text)};
-`;
-
 const FormContent = styled.div`
     display: flex;
     flex-direction: column;
@@ -116,7 +86,7 @@ const FormContent = styled.div`
     padding: ${themeColors.spacing.sm} ${themeColors.spacing.md};
 
     @media (min-width: ${themeColors.breakpoints.laptop}) {
-        flex-direction: row;
+        flex-direction: column;
 
         gap: ${themeColors.spacing.md};
         padding: 0 ${themeColors.spacing.xl} ${themeColors.spacing.lg};
@@ -167,7 +137,6 @@ const formatDate = (firebaseDate: { seconds: number; nanoseconds: number } | str
 };
 
 export default function EventRegister() {
-    const [step, setStep] = useState(1);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const { eventId } = useParams<{ eventId: string }>();
     const location = useLocation();
@@ -186,24 +155,9 @@ export default function EventRegister() {
         mode: 'onChange',
         reValidateMode: 'onChange',
         defaultValues: {
-            firstName: '',
-            lastName: '',
-            email: '',
-            phone: '',
-            jobTitle: '',
-            experience: '',
-            notify: '',
-            interestedField: '',
-            hopes: '',
-            additionalInfo: '',
-            eventDetails: {
-                title: location.state?.title || 'Event',
-                date: {
-                    seconds: location.state?.date?.seconds || 0,
-                    nanoseconds: location.state?.date?.nanoseconds || 0,
-                },
-                eventLocation: location.state?.location || 'Unknown',
-            },
+            attendanceReason: '',
+            interestField: '',
+            expectation: '',
         },
     });
 
@@ -220,12 +174,11 @@ export default function EventRegister() {
         | undefined;
 
     const title = state?.title || 'Event';
-    const eventRoom = state?.eventRoom;
     const eventLocation = state?.location || 'Unknown';
-    const imageSource = state?.imageUrl || '/pastEvents/past1.jpeg';
+    const imageSource = state?.imageUrl || 'https://via.placeholder.com/150';
     const organizer = state?.author || "KO'DJ";
 
-    const { handleSubmit, trigger, reset } = methods;
+    const { handleSubmit, reset } = methods;
 
     useEffect(() => {
         const pendingRegistration = localStorage.getItem('pendingEventRegistration');
@@ -249,11 +202,11 @@ export default function EventRegister() {
 
     const createRegistrationData = (data: RegistrationFormData): EventRegistrationData => {
         return {
-            status: 'PENDING',
+            status: 'ACCEPTED',
             cancelled: false,
-            attendanceReason: data.hopes || '',
-            expectation: data.additionalInfo || '',
-            interestField: data.interestedField || '',
+            attendanceReason: data.attendanceReason,
+            expectation: data.expectation,
+            interestField: data.interestField,
             registrationDate: new Date().toISOString(),
         };
     };
@@ -301,7 +254,7 @@ export default function EventRegister() {
             const registrationData = createRegistrationData(data);
             const response = await registerEventService.registerEvent(eventId || '', registrationData);
 
-            handleRegistrationResponse(response, setIsModalOpen, reset, setStep);
+            handleRegistrationResponse(response, setIsModalOpen, reset);
         } catch (error: unknown) {
             console.error('Error registering for event:', error);
             messageApi.error(error instanceof Error ? error.message : 'An error occurred. Please try again later.');
@@ -314,49 +267,13 @@ export default function EventRegister() {
         response: ApiResponse<EventRegistrationResponse>,
         setIsModalOpen: (open: boolean) => void,
         reset: () => void,
-        setStep: (step: number) => void,
     ) => {
         if (response.statusCode === 200 || response.statusCode === 201) {
             setIsModalOpen(true);
             reset();
-            setStep(1);
         } else {
             messageApi.error(response.data?.message || response.message || 'Registration failed. Please try again.');
         }
-    };
-
-    const handleBack = (e: React.MouseEvent<HTMLButtonElement>) => {
-        e.preventDefault();
-        if (step > 1) setStep(step - 1);
-    };
-
-    const handleNext = async (e: React.MouseEvent<HTMLButtonElement>) => {
-        e.preventDefault();
-
-        if (step === 1) {
-            const fieldsToValidate: (keyof FirstStepFields)[] = [
-                'firstName',
-                'lastName',
-                'jobTitle',
-                'experience',
-                'email',
-                'phone',
-            ];
-
-            const isStepValid = await trigger(fieldsToValidate, {
-                shouldFocus: true,
-            });
-
-            fieldsToValidate.forEach((field) => {
-                trigger(field);
-            });
-
-            if (!isStepValid) {
-                return;
-            }
-        }
-
-        if (step < 2) setStep(step + 1);
     };
 
     const { date: formattedDate } = formatDate(location.state?.date || 'No Date Found');
@@ -379,45 +296,22 @@ export default function EventRegister() {
                             <PageContainer>
                                 <FormSection>
                                     <FormCard>
-                                        <StepperContainer>
-                                            <StepperWrapper>
-                                                <Step step={1} currentStep={step} />
-                                                <ProgressLine isCompleted={step > 1} />
-                                                <Step step={2} currentStep={step} />
-                                            </StepperWrapper>
-                                        </StepperContainer>
-
                                         <FormContent>
-                                            <EventForm currentStep={step} />
+                                            <EventForm />
                                         </FormContent>
 
                                         <ButtonContainer>
                                             <ButtonWrapper>
                                                 <Button
-                                                    htmlType="reset"
-                                                    size="sm"
-                                                    variant="secondary"
-                                                    onClick={handleBack}
-                                                    disabled={step === 1}
+                                                    htmlType="submit"
+                                                    size="md"
+                                                    variant="primary"
+                                                    icon={<FaArrowUpRightFromSquare className="text-xs" />}
+                                                    disabled={isSubmitting}
+                                                    fullWidth={true}
                                                 >
-                                                    Back
+                                                    {isSubmitting ? 'Submitting' : 'Register'}
                                                 </Button>
-
-                                                {step === 2 ? (
-                                                    <Button
-                                                        htmlType="submit"
-                                                        size="sm"
-                                                        variant="primary"
-                                                        icon={<FaArrowUpRightFromSquare className="text-xs" />}
-                                                        disabled={isSubmitting}
-                                                    >
-                                                        {isSubmitting ? 'Submitting' : 'Register'}
-                                                    </Button>
-                                                ) : (
-                                                    <Button size="sm" variant="primary" onClick={handleNext}>
-                                                        Continue
-                                                    </Button>
-                                                )}
                                             </ButtonWrapper>
                                         </ButtonContainer>
                                     </FormCard>
@@ -429,7 +323,6 @@ export default function EventRegister() {
                                     formattedDate={formattedDate}
                                     organizer={organizer}
                                     eventLocation={eventLocation}
-                                    eventRoom={eventRoom || 'Unknown'}
                                 />
                             </PageContainer>
                         </form>
@@ -443,13 +336,15 @@ export default function EventRegister() {
                 </PageContainer>
             )}
 
+            {isSubmitting && <ModalLoading message="Submitting your registration..." />}
+
             {isModalOpen && (
                 <InfoModal
                     isOpen={isModalOpen}
                     onClose={() => setIsModalOpen(false)}
                     title={t('successModal.title')}
                     message={t('successModal.message', {
-                        title: methods.getValues('eventDetails.title'),
+                        title: title,
                     })}
                     buttonLabel="OK"
                     size="sm"

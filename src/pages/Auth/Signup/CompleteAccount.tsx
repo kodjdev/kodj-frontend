@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { message } from 'antd';
@@ -9,6 +9,7 @@ import themeColors from '@/tools/themeColors';
 import useAuth from '@/context/useAuth';
 import { useStatusHandler } from '@/hooks/useStatusHandler/useStatusHandler';
 import { useFieldValidation } from '@/hooks/useFormValidation/useFormValidation';
+import { useTranslation } from 'react-i18next';
 
 const PageContainer = styled.div`
     display: flex;
@@ -26,20 +27,39 @@ const FormContainer = styled.div`
     box-shadow:
         0 10px 15px -3px rgba(0, 0, 0, 0.1),
         0 4px 6px -2px rgba(0, 0, 0, 0.05);
+
+    @media (max-width: ${themeColors.breakpoints.mobile}) {
+        padding: ${themeColors.spacing.lg};
+        width: 100%;
+        max-width: 100%;
+        margin: 0 ${themeColors.spacing.sm};
+    }
 `;
 
 const Heading = styled.h2`
-    font-size: 1.875rem;
-    font-weight: 700;
+    font-size: ${themeColors.typography.headings.mobile.h4.fontSize}px;
+    font-weight: ${themeColors.typography.headings.mobile.h4.fontWeight};
     color: ${themeColors.white};
     text-align: center;
     margin-top: 10px;
-`;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 
+    @media (max-width: ${themeColors.breakpoints.mobile}) {
+        font-size: ${themeColors.typography.headings.mobile.h4.fontSize}px;
+        margin-top: 0;
+    }
+`;
 const SubHeading = styled.p`
     color: ${themeColors.gray_text};
     text-align: center;
     margin-bottom: 30px;
+
+    @media (max-width: ${themeColors.breakpoints.mobile}) {
+        font-size: ${themeColors.typography.body.small.fontSize}px;
+        margin-bottom: ${themeColors.spacing.md};
+    }
 `;
 
 const Form = styled.form`
@@ -56,23 +76,25 @@ export default function CompleteAccount() {
     const navigate = useNavigate();
     const location = useLocation();
     const { signUpWithGoogle } = useAuth();
+    const { t } = useTranslation('auth');
     const [messageApi, contextHolder] = message.useMessage();
     const { loading, handleAsyncOperation } = useStatusHandler(messageApi);
 
     const username = useFieldValidation('username');
     const phone = useFieldValidation('phone', { phoneFormat: 'kr' });
 
-    // we get the google credential from location state
+    const [retryCount, setRetryCount] = useState(0);
+    const maxRetries = 3;
+
     const googleCredential = location.state?.credential;
 
     useEffect(() => {
-        // we check if credential exists, if not, redirect to signup
+        /* we check if credential exists, if not, redirect to signup page */
         if (!googleCredential) {
-            messageApi.error('Google credential not found. Please try signing up again.');
+            messageApi.error(t('completeAccount.messages.credentialNotFound'));
             navigate('/signup');
         }
     }, [googleCredential, navigate, messageApi]);
-
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
@@ -83,32 +105,34 @@ export default function CompleteAccount() {
             return;
         }
 
-        const { data } = await handleAsyncOperation(
+        const { data, error } = await handleAsyncOperation(
             () =>
                 signUpWithGoogle(googleCredential, {
                     username: username.value,
                     phone: phone.value,
                 }),
             {
-                loadingMessage: 'Completing registration...',
-                successMessage: 'Registration complete!',
-                showError: false,
-                onError: (apiError) => {
-                    if (apiError.statusCode === 400) {
-                        messageApi.error('Invalid information. Please check your details.');
-                    } else if (apiError.statusCode === 409) {
-                        messageApi.error('Username or phone already exists.');
-                    } else {
-                        messageApi.error('Registration failed. Please try again.');
-                    }
-                },
+                loadingMessage: t('completeAccount.messages.completingRegistration'),
+                successMessage: t('completeAccount.messages.registrationComplete'),
+                showError: true,
             },
         );
 
         if (data) {
+            setRetryCount(0);
             setTimeout(() => {
                 navigate('/mypage');
             }, 1500);
+        } else if (error) {
+            const newRetryCount = retryCount + 1;
+            setRetryCount(newRetryCount);
+
+            if (newRetryCount >= maxRetries) {
+                messageApi.error('Server error occurred multiple times. Redirecting to homepage...');
+                setTimeout(() => {
+                    navigate('/');
+                }, 2000);
+            }
         }
     };
 
@@ -122,15 +146,15 @@ export default function CompleteAccount() {
         <PageContainer>
             {contextHolder}
             <FormContainer>
-                <Heading>Complete Your Profile</Heading>
-                <SubHeading>Just a few more details to complete your registration with Google</SubHeading>
+                <Heading>{t('completeAccount.completeProfile')}</Heading>
+                <SubHeading>{t('completeAccount.subHeading')}</SubHeading>
 
                 <Form onSubmit={handleSubmit}>
                     <InputGroup>
                         <Input
                             icon={<HiOutlineUser size={20} />}
                             type="text"
-                            placeholder="Username (letters only)"
+                            placeholder={t('completeAccount.username')}
                             value={username.value}
                             onChange={username.onChange}
                             onBlur={username.onBlur}
@@ -146,7 +170,7 @@ export default function CompleteAccount() {
                         <Input
                             icon={<HiOutlinePhone size={20} />}
                             type="tel"
-                            placeholder="Phone Number: 010XXXXXXXX"
+                            placeholder={t('completeAccount.phoneNumber')}
                             value={phone.value}
                             onChange={phone.onChange}
                             onBlur={phone.onBlur}
@@ -167,8 +191,17 @@ export default function CompleteAccount() {
                         disabled={loading || !isFormValid()}
                         htmlType="submit"
                         isDisabled={!isFormValid}
+                        style={{
+                            width: '100%',
+                            whiteSpace: 'nowrap',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            fontSize: '16px',
+                        }}
                     >
-                        {loading ? 'Completing Registration...' : 'Complete Registration'}
+                        {loading
+                            ? t('completeAccount.completingRegistration')
+                            : t('completeAccount.completeRegistration')}
                     </Button>
                 </Form>
             </FormContainer>

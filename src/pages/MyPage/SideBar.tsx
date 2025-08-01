@@ -5,6 +5,7 @@ import Button from '@/components/Button/Button';
 import useAuth from '@/context/useAuth';
 import defaultUserImage from '@/static/icons/default.jpg';
 import useFormatDate from '@/hooks/useFormatDate';
+import { useTranslation } from 'react-i18next';
 
 enum PageSection {
     EVENTS = 'events',
@@ -130,18 +131,20 @@ const SignOutButton = styled(Button)`
  * switch between different sections and sign out.
  */
 export default function Sidebar({ activeSection, onSectionChange, onLogout }: SidebarProps) {
+    const { t } = useTranslation('mypage');
     const { formatDate } = useFormatDate();
-
     const { user } = useAuth();
 
     return (
         <SidebarContainer>
             <ProfileSection>
-                <ProfileImage src={user?.data.imageUrl || defaultUserImage} alt="Profile" />
+                <ProfileImage src={user?.imageUrl || defaultUserImage} alt="Profile" />
                 <ProfileInfo>
-                    <ProfileName>{user?.data.username || 'Anonymous'}</ProfileName>
-                    <ProfileEmail>{user?.data.email || 'No Email Given'}</ProfileEmail>
-                    <ProfileJoined>Joined: {formatDate(user?.data.createdAt)}</ProfileJoined>
+                    <ProfileName>{user?.username || t('sidebar.anonymous')}</ProfileName>
+                    <ProfileEmail>{user?.email || t('sidebar.noEmailGiven')}</ProfileEmail>
+                    <ProfileJoined>
+                        {t('sidebar.joined')} {formatDate(user?.createdAt)}
+                    </ProfileJoined>
                 </ProfileInfo>
             </ProfileSection>
 
@@ -152,7 +155,7 @@ export default function Sidebar({ activeSection, onSectionChange, onLogout }: Si
                     onClick={() => onSectionChange(PageSection.EVENTS)}
                 >
                     <FaCalendarAlt />
-                    <NavText>Events</NavText>
+                    <NavText>{t('navigation.events')}</NavText>
                 </NavItemButton>
 
                 <NavItemButton
@@ -161,7 +164,7 @@ export default function Sidebar({ activeSection, onSectionChange, onLogout }: Si
                     onClick={() => onSectionChange(PageSection.BLOGS)}
                 >
                     <FaPen />
-                    <NavText>My Blogs</NavText>
+                    <NavText>{t('navigation.blogs')}</NavText>
                 </NavItemButton>
 
                 <NavItemButton
@@ -170,7 +173,7 @@ export default function Sidebar({ activeSection, onSectionChange, onLogout }: Si
                     onClick={() => onSectionChange(PageSection.JOB_POSTING)}
                 >
                     <FaBriefcase />
-                    <NavText>Job posting</NavText>
+                    <NavText>{t('navigation.jobPosting')}</NavText>
                 </NavItemButton>
 
                 <NavItemButton
@@ -179,13 +182,13 @@ export default function Sidebar({ activeSection, onSectionChange, onLogout }: Si
                     onClick={() => onSectionChange(PageSection.ACCOUNT)}
                 >
                     <FaUser />
-                    <NavText>My account</NavText>
+                    <NavText>{t('navigation.account')}</NavText>
                 </NavItemButton>
             </NavSection>
 
             <SignOutButton variant="navItem" fullWidth={true} onClick={onLogout}>
                 <FaSignOutAlt />
-                <NavText>Sign out</NavText>
+                <NavText>{t('sidebar.signOut')}</NavText>
             </SignOutButton>
         </SidebarContainer>
     );

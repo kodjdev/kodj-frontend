@@ -1,0 +1,19 @@
+{
+    "events": {
+        "filters": {
+            "all": "Barchasi",
+            "upcoming": "Kelgusi tadbirlar",
+            "past": "O'tgan tadbirlar"
+        },
+        "sections": {
+            "upcoming": "Kelgusi",
+            "past": "O'tgan",
+            "events": "Tadbirlar",
+            "sortBy": "Saralash",
+            "sortOptions": {
+                "dateAsc": "Eng yangi",
+                "dateDesc": "Eng eski"
+            }
+        }
+    }
+}

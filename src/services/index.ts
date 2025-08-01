@@ -4,6 +4,7 @@ import { useRegisterEventService } from '@/services/api/registerEventService';
 import { useFetchNewsService } from '@/services/api/fetchNewsService';
 import { useFetchCommentsService } from '@/services/api/fetchCommentsService';
 import { useFetchStatsService } from '@/services/api/fetchStatsService';
+import { useFetchJobsService } from '@/services/api/fetchJobsService';
 
 /**
  * API Service - Centralized API Service
@@ -19,6 +20,7 @@ export default function useApiService() {
     const newsFetchService = useFetchNewsService();
     const commentFetchService = useFetchCommentsService();
     const statsFetchService = useFetchStatsService();
+    const jobsFetchService = useFetchJobsService();
 
     return {
         ...userDetailsService,
@@ -27,5 +29,6 @@ export default function useApiService() {
         ...newsFetchService,
         ...commentFetchService,
         ...statsFetchService,
+        ...jobsFetchService,
     };
 }

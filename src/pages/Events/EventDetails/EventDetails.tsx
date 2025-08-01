@@ -14,13 +14,16 @@ import { ApiResponse } from '@/types/fetch';
 import useApiService from '@/services';
 import useFormatDate from '@/hooks/useFormatDate';
 import PageLoading from '@/components/Loading/LoadingAnimation';
+import { useRecoilValue } from 'recoil';
+import { userAtom } from '@/atoms/user';
+import { useAuthState } from '@/hooks/useAuthState';
 
 const PageContainer = styled.div`
     background-color: ${themeColors.colors.neutral.black};
     color: ${themeColors.colors.neutral.white};
 
     @media (max-width: ${themeColors.breakpoints.tablet}) {
-        padding: ${themeColors.spacing.md};
+        padding: 0;
     }
 `;
 
@@ -40,8 +43,18 @@ const LeftPanel = styled.div`
 
 const RightPanel = styled.div`
     width: 350px;
+    position: sticky;
+    top: 100px;
+    height: fit-content;
+    align-self: flex-start;
 
     @media (max-width: ${themeColors.breakpoints.tablet}) {
+        width: 100%;
+        position: static;
+        top: auto;
+    }
+
+    @media (max-width: ${themeColors.breakpoints.mobile}) {
         width: 100%;
     }
 `;
@@ -75,9 +88,9 @@ const EventDescription = styled.div`
     }
 
     p {
+        color: ${themeColors.colors.neutral.white};
         font-size: ${themeColors.typography.body.medium.fontSize}px;
         line-height: ${themeColors.typography.body.medium.lineHeight};
-        color: ${themeColors.colors.gray.main};
         margin-bottom: ${themeColors.spacing.md};
     }
 `;
@@ -104,6 +117,7 @@ const TabContainer = styled.div`
 const Tab = styled.button<{ active: boolean }>`
     background: none;
     border: none;
+    outline: none;
     padding: ${themeColors.spacing.md} ${themeColors.spacing.lg};
     color: ${(props) => (props.active ? themeColors.colors.neutral.white : themeColors.colors.gray.main)};
     font-size: ${themeColors.typography.body.medium.fontSize}px;
@@ -111,6 +125,8 @@ const Tab = styled.button<{ active: boolean }>`
     cursor: pointer;
     position: relative;
     flex: 0 0 auto;
+    transition: color 0.2s ease;
+    -webkit-tap-highlight-color: transparent;
 
     &::after {
         content: '';
@@ -129,6 +145,13 @@ const Tab = styled.button<{ active: boolean }>`
     @media (max-width: ${themeColors.breakpoints.mobile}) {
         flex: 1 0 50%;
         text-align: center;
+    }
+    &:focus {
+        outline: none;
+    }
+
+    &:active {
+        outline: none;
     }
 `;
 
@@ -195,6 +218,9 @@ const BackLink = styled(Link)`
 export default function EventDetails() {
     const { eventId } = useParams();
     const location = useLocation();
+    const userAtomData = useRecoilValue(userAtom);
+    const { userId } = useAuthState();
+
     const { eventData: locationEventData } = location.state || {};
 
     const detailsRef = useRef<HTMLDivElement>(null);
@@ -260,6 +286,12 @@ export default function EventDetails() {
         fetchEventDetails();
     }, [eventId]);
 
+    useEffect(() => {
+        if (userAtomData?.id) {
+            localStorage.setItem('lastUserId', userAtomData.id);
+        }
+    }, [userAtomData?.id]);
+
     useLayoutEffect(() => {
         window.scrollTo(0, 0);
         document.documentElement.scrollTop = 0;
@@ -279,6 +311,7 @@ export default function EventDetails() {
             location: 'Location not specified',
             speakers: apiResponse.speakers || [],
             eventSchedule: apiResponse.keynoteSessions || [],
+            provided: apiResponse.provided || 'Not specified',
         };
 
         if (apiResponse.keynoteSessions && apiResponse.keynoteSessions.length > 0) {
@@ -307,7 +340,7 @@ export default function EventDetails() {
 
         if (apiResponse.meetupRegistrations) {
             const acceptedRegistrations = apiResponse.meetupRegistrations.filter(
-                (reg) => reg.status === MeetupRegistrationStatus.ACCEPTED && !reg.cancelled,
+                (reg) => reg.status === MeetupRegistrationStatus.ACCEPTED,
             );
             event.registeredCount = acceptedRegistrations.length;
             event.maxSeats = 60;
@@ -342,6 +375,13 @@ export default function EventDetails() {
         }
     };
 
+    const isUserRegistered = () => {
+        if (!userId || !eventDetails?.data?.meetupRegistrations) {
+            return false;
+        }
+
+        return eventDetails.data.meetupRegistrations.some((registration) => String(registration.id) === String(userId));
+    };
     const isPastEvent = eventData.date
         ? (typeof eventData.date === 'string' ? new Date(eventData.date) : new Date(eventData.date.seconds * 1000)) <
           new Date()
@@ -413,9 +453,14 @@ export default function EventDetails() {
 
                 <RightPanel>
                     <Card
-                        backgroundColor={themeColors.colors.gray.background}
+                        backgroundColor="#1a1a1a;"
                         padding={themeColors.spacing.lg}
-                        style={{ display: 'flex', flexDirection: 'column' }}
+                        style={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            position: 'relative',
+                            zIndex: 1,
+                        }}
                     >
                         <Card.Title>{eventData.title}</Card.Title>
                         <EventInfoContainer>
@@ -435,7 +480,7 @@ export default function EventDetails() {
                             </EventInfoItem>
                             <EventInfoItem>
                                 <Coffee size={16} />
-                                <span>Free coffee</span>
+                                <span>{eventDetails?.data?.provided || 'Not specified'}</span>
                             </EventInfoItem>
                             <EventInfoItem>
                                 <Box size={16} />
@@ -455,6 +500,10 @@ export default function EventDetails() {
                         {isPastEvent ? (
                             <Button fullWidth={true} size="md" disabled={true} variant="secondary">
                                 Event has passed
+                            </Button>
+                        ) : isUserRegistered() ? (
+                            <Button fullWidth={true} size="md" disabled={true} variant="secondary">
+                                Already registered
                             </Button>
                         ) : (
                             <Button

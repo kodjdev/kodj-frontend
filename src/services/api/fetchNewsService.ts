@@ -35,6 +35,8 @@ export const useFetchNewsService = () => {
                 return meetupNews;
             case FilterTypes.SOCIAL:
                 return socialNews;
+            default:
+                return techNews;
         }
     };
 
@@ -50,16 +52,14 @@ export const useFetchNewsService = () => {
                 setSocialNews(data);
                 break;
         }
+        setTechNews(data);
     };
 
-    const updateNewCache = (
-        response: ApiResponse<{ data: PaginatedResponse<NewsItem>; message: string; statusCode: number }>,
-        type: FilterTypes,
-    ) => {
+    const updateNewCache = (response: ApiResponse<PaginatedResponse<NewsItem>>, type: FilterTypes) => {
         const now = Date.now();
 
-        if (response.statusCode === 200 && response.data?.data?.content) {
-            const newsItems = response.data?.data?.content;
+        if (response.statusCode === 200 && response.data?.content) {
+            const newsItems = response.data?.content;
 
             if (newsItems && Array.isArray(newsItems)) {
                 setNewsAtomByType(type, newsItems);
@@ -69,7 +69,6 @@ export const useFetchNewsService = () => {
                     [type]: { loaded: true, lastFetch: now },
                 }));
 
-                console.log(`${type} news cached successfully`);
                 return;
             } else {
                 setNewsAtomByType(type, []);
@@ -83,14 +82,11 @@ export const useFetchNewsService = () => {
 
     return useMemo(
         () => ({
-            getAllNews: async (
-                newsType?: FilterTypes,
-            ): Promise<ApiResponse<{ data: PaginatedResponse<NewsItem>; message: string; statusCode: number }>> => {
-                const type = newsType || FilterTypes.TECH;
+            getAllNews: async (newsType?: FilterTypes): Promise<ApiResponse<PaginatedResponse<NewsItem>>> => {
+                const type = FilterTypes.TECH;
                 const cacheInfo = cacheStatus[type];
 
                 if (cacheInfo.loaded && isCacheValid(cacheInfo.lastFetch)) {
-                    console.log(`Using cached ${type} news`);
                     const cachedNews = getNewsAtomByType(type);
 
                     const paginationData: PaginatedResponse<NewsItem> = {
@@ -115,28 +111,18 @@ export const useFetchNewsService = () => {
                     };
 
                     return {
-                        data: {
-                            data: paginationData,
-                            message: `success`,
-                            statusCode: 200,
-                        },
+                        data: paginationData,
                         statusCode: 200,
                         message: 'success',
                     };
                 }
-
-                console.log(`Fetching fresh ${type} news from API`);
 
                 const params: Record<string, string> = {};
                 if (newsType) {
                     params.type = newsType;
                 }
 
-                const response = await fetchData<{
-                    data: PaginatedResponse<NewsItem>;
-                    message: string;
-                    statusCode: number;
-                }>({
+                const response = await fetchData<PaginatedResponse<NewsItem>>({
                     endpoint: '/public/news',
                     method: 'GET',
                     params,
@@ -147,30 +133,28 @@ export const useFetchNewsService = () => {
                 return response;
             },
 
-            getNewsById: async (id: string): Promise<ApiResponse<{ data: NewsItem }>> => {
+            getNewsById: async (id: string): Promise<ApiResponse<NewsItem>> => {
                 const cachedDetail = newsDetailsCache[id];
 
                 if (cachedDetail && isCacheValid(cachedDetail.lastFetch)) {
                     return {
-                        data: { data: cachedDetail.data },
+                        data: cachedDetail.data,
                         statusCode: 200,
                         message: 'success',
                     };
                 }
 
-                console.log(`Fetching fresh news details for ID: ${id}`);
-
-                const response = await fetchData<{ data: NewsItem }>({
+                const response = await fetchData<NewsItem>({
                     endpoint: `/public/news/${id}`,
                     method: 'GET',
                 });
 
-                if (response.statusCode === 200 && response.data?.data) {
+                if (response.statusCode === 200 && response.data) {
                     const now = Date.now();
                     setNewsDetailsCache((prev) => ({
                         ...prev,
                         [id]: {
-                            data: response.data.data,
+                            data: response.data,
                             lastFetch: now,
                         },
                     }));
@@ -179,7 +163,6 @@ export const useFetchNewsService = () => {
                 return response;
             },
 
-            // cache management utility
             clearCache: () => {
                 setTechNews([]);
                 setMeetupNews([]);
@@ -206,7 +189,6 @@ export const useFetchNewsService = () => {
                     });
                     setNewsDetailsCache({});
                 }
-                console.log(`Force refresh triggered for: ${type || 'all'}`);
             },
         }),
         [

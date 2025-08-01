@@ -1,21 +1,28 @@
 import styled from 'styled-components';
 import themeColors from '@/tools/themeColors';
 import Card from '@/components/Card/Card';
-import { ChevronRight, Users, Presentation, Laptop, Handshake, LucideIcon } from 'lucide-react';
+import { ChevronRight } from 'lucide-react';
 import rocketImage from '@/static/icons/rocket.jpg';
-import behzodImage from '@/static/team/bekhzod.png';
-import javokhirImage from '@/static/team/javokhir.jpg';
-import oybekImage from '@/static/team/oybek.jpg';
-import sardorImage from '@/static/team/sardor.png';
+import { contributors, organizers } from '@/pages/About/contributors';
+import { FiGithub } from 'react-icons/fi';
+import { useTranslation } from 'react-i18next';
 
 const Container = styled.div`
     max-width: ${themeColors.breakpoints.desktop};
     margin: 0 auto;
+
+    @media (max-width: ${themeColors.breakpoints.tablet}) {
+        padding: 0 ${themeColors.spacing.md};
+    }
+
+    @media (max-width: ${themeColors.breakpoints.mobile}) {
+        padding: 0;
+    }
 `;
 
 const SectionHeader = styled.div`
     margin-bottom: ${themeColors.spacing.xl};
-    text-align: left;
+    text-align: center;
 `;
 
 const SectionTitle = styled.h2`
@@ -26,6 +33,13 @@ const SectionTitle = styled.h2`
     display: flex;
     align-items: center;
     justify-content: center;
+
+    @media (max-width: ${themeColors.breakpoints.mobile}) {
+        font-size: 28px;
+        flex-direction: row;
+        text-align: center;
+        margin-top: 0;
+    }
 `;
 
 const BlueDot = styled.span`
@@ -39,17 +53,14 @@ const SectionSubtitle = styled.p`
     line-height: ${themeColors.typography.body.medium.lineHeight};
     max-width: 800px;
     margin: 0 auto;
+    line-height: 1.6;
     text-align: center;
-`;
+    padding: 0 ${themeColors.spacing.md};
 
-const CardsGrid = styled.div`
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: ${themeColors.spacing.xl};
-    margin-bottom: ${themeColors.spacing.xxl};
-
-    @media (max-width: ${themeColors.breakpoints.tablet}) {
-        grid-template-columns: 1fr;
+    @media (max-width: ${themeColors.breakpoints.mobile}) {
+        font-size: 14px;
+        padding: 0 ${themeColors.spacing.sm};
+        max-width: 100%;
     }
 `;
 
@@ -61,20 +72,19 @@ const MissionSection = styled.div`
 
     @media (max-width: ${themeColors.breakpoints.tablet}) {
         grid-template-columns: 1fr;
+        gap: ${themeColors.spacing.lg};
     }
 `;
 
 const MissionContent = styled.div`
     background-color: #292929;
-    border-radius: 8px;
-    padding: ${themeColors.spacing.xl};
-`;
+    border-radius: 12px;
+    padding: ${themeColors.spacing.lg};
 
-const MissionTitle = styled.h3`
-    color: ${themeColors.colors.gray.main};
-    font-size: ${themeColors.typography.headings.desktop.h3.fontSize}px;
-    font-weight: ${themeColors.typography.headings.desktop.h3.fontWeight};
-    margin-bottom: ${themeColors.spacing.md};
+    @media (max-width: ${themeColors.breakpoints.mobile}) {
+        padding: ${themeColors.spacing.md};
+        padding-top: 0;
+    }
 `;
 
 const MissionText = styled.p`
@@ -82,63 +92,19 @@ const MissionText = styled.p`
     font-size: ${themeColors.typography.body.medium.fontSize}px;
     line-height: 1.6;
     margin-bottom: ${themeColors.spacing.lg};
+
+    &:last-child {
+        margin-bottom: 0;
+    }
 `;
 
 const MissionImage = styled.div`
     background-color: #292929;
-
+    border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
-
-    img {
-        max-width: 100%;
-        height: 100%;
-    }
-`;
-
-const OrganizersSection = styled.div`
-    margin-bottom: ${themeColors.spacing.xxl};
-`;
-
-const OrganizersTitle = styled.h2`
-    color: ${themeColors.colors.neutral.white};
-    font-size: ${themeColors.typography.headings.desktop.h2.fontSize}px;
-    font-weight: ${themeColors.typography.headings.desktop.h2.fontWeight};
-    margin-bottom: ${themeColors.spacing.xl};
-
-    span {
-        color: ${themeColors.colors.gray.main};
-        margin-left: ${themeColors.spacing.sm};
-    }
-`;
-
-const OrganizersGrid = styled.div`
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: ${themeColors.spacing.xl};
-
-    @media (max-width: ${themeColors.breakpoints.laptop}) {
-        grid-template-columns: repeat(2, 1fr);
-    }
-
-    @media (max-width: ${themeColors.breakpoints.mobile}) {
-        grid-template-columns: 1fr;
-    }
-`;
-
-const OrganizerCard = styled(Card)`
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-`;
-
-const OrganizerAvatar = styled.div`
-    width: 70px;
-    height: 70px;
-    border-radius: 50%;
     overflow: hidden;
-    margin-bottom: ${themeColors.spacing.md};
 
     img {
         width: 100%;
@@ -147,182 +113,273 @@ const OrganizerAvatar = styled.div`
     }
 `;
 
-const OrganizerName = styled.h4`
+const TeamSection = styled.div`
+    margin-bottom: ${themeColors.spacing.xxl};
+`;
+
+const TeamTitle = styled.h2`
     color: ${themeColors.colors.neutral.white};
-    font-size: ${themeColors.typography.headings.desktop.h4.fontSize}px;
+    font-size: ${themeColors.typography.headings.desktop.h2.fontSize}px;
+    font-weight: ${themeColors.typography.headings.desktop.h2.fontWeight};
+    margin-bottom: ${themeColors.spacing.xl};
+    text-align: left;
+
+    span {
+        color: ${themeColors.colors.gray.main};
+    }
+
+    @media (max-width: ${themeColors.breakpoints.mobile}) {
+        font-size: 24px;
+        text-align: left;
+        margin-bottom: ${themeColors.spacing.lg};
+    }
+`;
+
+const TeamGrid = styled.div`
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: ${themeColors.spacing.lg};
+
+    @media (max-width: ${themeColors.breakpoints.mobile}) {
+        grid-template-columns: 1fr;
+        gap: ${themeColors.spacing.md};
+    }
+`;
+const TeamMemberCard = styled(Card)`
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    text-align: left;
+    padding: ${themeColors.spacing.md};
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+    gap: ${themeColors.spacing.md};
+
+    &:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    }
+
+    @media (max-width: ${themeColors.breakpoints.mobile}) {
+        padding: ${themeColors.spacing.md};
+        gap: ${themeColors.spacing.sm};
+    }
+`;
+
+const MemberAvatar = styled.div`
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin-bottom: 0;
+    border: 2px solid ${themeColors.colors.primary.main};
+    flex-shrink: 0;
+
+    img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    @media (max-width: ${themeColors.breakpoints.mobile}) {
+        width: 40px;
+        height: 40px;
+        border: 1px solid ${themeColors.colors.primary.main};
+    }
+`;
+
+const MemberInfo = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+    gap: ${themeColors.spacing.xs};
+    flex: 1;
+    min-width: 0;
+`;
+
+const MemberName = styled.h4`
+    color: ${themeColors.colors.neutral.white};
+    font-size: 16px;
     font-weight: ${themeColors.typography.headings.desktop.h4.fontWeight};
-    margin: 0 0 ${themeColors.spacing.xs} 0;
+    margin: 0;
+    line-height: 1.2;
+
+    @media (max-width: ${themeColors.breakpoints.mobile}) {
+        font-size: 14px;
+    }
 `;
 
-const OrganizerRole = styled.p`
+const MemberRole = styled.p`
     color: ${themeColors.colors.gray.main};
-    font-size: ${themeColors.typography.body.small.fontSize}px;
-    margin: 0 0 ${themeColors.spacing.md} 0;
+    font-size: 12px;
+    margin: 0;
+    line-height: 1.2;
+
+    @media (max-width: ${themeColors.breakpoints.mobile}) {
+        font-size: 11px;
+    }
 `;
 
-const OrganizerTitle = styled.h5`
+const ContributorsSection = styled.div`
+    margin-bottom: ${themeColors.spacing.xxl};
+`;
+
+const ContributorsGrid = styled.div`
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: ${themeColors.spacing.md};
+    max-height: none;
+    opacity: 1;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    padding-top: ${themeColors.spacing.xs};
+
+    @media (max-width: ${themeColors.breakpoints.mobile}) {
+        grid-template-columns: 1fr;
+        gap: ${themeColors.spacing.md};
+        padding-top: ${themeColors.spacing.xs};
+    }
+`;
+
+const ContributorCard = styled.div`
+    background-color: ${themeColors.colors.gray.light};
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: ${themeColors.spacing.md};
+    display: flex;
+    align-items: center;
+    gap: ${themeColors.spacing.md};
+    transition: all 0.2s ease;
+    position: relative;
+    z-index: 1;
+
+    &:hover {
+        background-color: ${themeColors.colors.gray.dark};
+        border-color: ${themeColors.colors.primary.main};
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+`;
+
+const ContributorInfo = styled.div`
+    flex: 1;
+`;
+
+const ContributorName = styled.h4`
     color: ${themeColors.colors.neutral.white};
     font-size: ${themeColors.typography.body.medium.fontSize}px;
     font-weight: 600;
     margin: 0 0 ${themeColors.spacing.xs} 0;
 `;
 
-const createIconContainer = (Icon: LucideIcon) => {
-    return (
-        <div
-            style={{
-                backgroundColor: '#161616',
-                borderRadius: '4px',
-                width: '50px',
-                height: '50px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-            }}
-        >
-            <Icon size={18} color="#057CCC" strokeWidth={2} />
-        </div>
-    );
-};
+const ContributorRole = styled.p`
+    color: ${themeColors.colors.gray.main};
+    font-size: ${themeColors.typography.body.small.fontSize}px;
+    margin: 0;
+`;
+
+const GitHubLink = styled.a`
+    color: ${themeColors.colors.primary.main};
+    transition: all 0.2s ease;
+
+    &:hover {
+        color: ${themeColors.colors.primary.light};
+        transform: scale(1.1);
+    }
+`;
+
+const ForwardLink = styled.a`
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    transition: transform 0.3s ease;
+
+    &:hover {
+        transform: translateY(-1px);
+    }
+`;
 
 /**
- * AboutUs Component - Page Component
- * @description Displays information about the KO'DJ organization and its mission.
- * Includes sections for organization description, mission statement, benefits of joining,
- * and information about the organization's team members.
+ * About Us page component
+ * Displays information about the team, mission, and contributors
+ * @returns {JSX.Element} The About-Us page component
  */
 export default function AboutUs() {
+    const { t } = useTranslation('about');
+
     return (
         <Container>
             <SectionHeader>
                 <SectionTitle>
                     <BlueDot>
-                        <ChevronRight size={24} color="#057CCC" />
-                    </BlueDot>{' '}
-                    About us
+                        <ChevronRight size={30} color="#057CCC" />
+                    </BlueDot>
+                    {t('aboutUs.title')}
                 </SectionTitle>
-                <SectionSubtitle>
-                    At KO'DJ, we are passionate about <strong>creating</strong> a thriving developer community in
-                    Uzbekistan. Our events are designed to empower developers, inspire creativity, and foster
-                    collaboration.
-                </SectionSubtitle>
+                <SectionSubtitle>{t('aboutUs.subtitle')}</SectionSubtitle>
             </SectionHeader>
 
+            <TeamTitle>
+                {t('aboutUs.mission.title')} <span>{t('aboutUs.mission.subSubtitle')}</span>
+            </TeamTitle>
             <MissionSection>
                 <MissionContent>
-                    <MissionTitle>KO'DJ Mission</MissionTitle>
-                    <MissionText>
-                        At KO'DJ, we believe in the power of collaboration and innovation. Our events are more than just
-                        meetups; they are platforms for transformative learning, meaningful connections, and
-                        groundbreaking ideas.
-                    </MissionText>
-                    <MissionText>
-                        By participating in KO'DJ events, you're not just attending an event—you're becoming part of a
-                        movement to elevate Uzbekistan's tech community to new heights. Let's create, learn, and grow
-                        together.
-                    </MissionText>
+                    <MissionText>{t('aboutUs.mission.paragraph1')}</MissionText>
+                    <MissionText>{t('aboutUs.mission.paragraph2')}</MissionText>
                 </MissionContent>
                 <MissionImage>
-                    <img src={rocketImage} alt="KO'DJ Mission" />
+                    <img src={rocketImage} alt={t('aboutUs.mission.title')} />
                 </MissionImage>
             </MissionSection>
 
-            <SectionHeader>
-                <OrganizersTitle>
-                    What are the <span> Benefits </span> of joining KO'DJ?
-                </OrganizersTitle>
-            </SectionHeader>
+            <TeamSection>
+                <TeamTitle>
+                    {t('aboutUs.organizers.title')} <span>{t('aboutUs.organizers.titleSpan')}</span>
+                </TeamTitle>
 
-            <CardsGrid>
-                <Card
-                    icon={createIconContainer(Users)}
-                    title="Networking Opportunities"
-                    description="Expand your professional network by connecting with like-minded individuals, industry experts, and potential collaborators."
-                    backgroundColor="#161616"
-                    hoverEffect={true}
-                />
-                <Card
-                    icon={createIconContainer(Presentation)}
-                    title="Expert Talks"
-                    description="Learn directly from tech leaders and innovators as they share insights, practical knowledge and experience in the field."
-                    backgroundColor="#161616"
-                    hoverEffect={true}
-                />
-                <Card
-                    icon={createIconContainer(Laptop)}
-                    title="Hands on Workshop"
-                    description="A platform for discovering and sharing AI and Machine Learning events in Uzbekistan and South Korea."
-                    backgroundColor="#161616"
-                    hoverEffect={true}
-                />
-                <Card
-                    icon={createIconContainer(Handshake)}
-                    title="Collaboration Opportunities"
-                    description="A platform for discovering and sharing AI and Machine Learning events in Uzbekistan and South Korea."
-                    backgroundColor="#161616"
-                    hoverEffect={true}
-                />
-            </CardsGrid>
+                <TeamGrid>
+                    {organizers.map((member) => (
+                        <ForwardLink href={member.linkedinUrl} key={member.id}>
+                            <TeamMemberCard key={member.id} backgroundColor="#161616">
+                                <MemberAvatar>
+                                    <img src={member.image} alt={member.name} />
+                                </MemberAvatar>
+                                <MemberInfo>
+                                    <MemberName>{member.name}</MemberName>
+                                    <MemberRole>{member.role}</MemberRole>
+                                </MemberInfo>
+                            </TeamMemberCard>
+                        </ForwardLink>
+                    ))}
+                </TeamGrid>
+            </TeamSection>
 
-            <OrganizersSection>
-                <OrganizersTitle>
-                    Event <span>Organizers</span>
-                </OrganizersTitle>
+            <ContributorsSection>
+                <TeamTitle>
+                    {t('aboutUs.contributors.title')} <span>{t('aboutUs.contributors.titleSpan')}</span>
+                </TeamTitle>
 
-                <OrganizersGrid>
-                    <OrganizerCard backgroundColor="#161616">
-                        <OrganizerAvatar>
-                            <img src={behzodImage} alt="Behzod Halil" />
-                        </OrganizerAvatar>
-                        <OrganizerName>Behzod Halil</OrganizerName>
-                        <OrganizerRole>Android developer</OrganizerRole>
-                        <OrganizerTitle>Founder & Organiser</OrganizerTitle>
-                        <Card.Description>
-                            Dedicated to fostering a welcoming and inclusive environment for all attendees, speakers,
-                            and sponsors. Building a community of learners and creators.
-                        </Card.Description>
-                    </OrganizerCard>
-
-                    <OrganizerCard backgroundColor="#161616">
-                        <OrganizerAvatar>
-                            <img src={sardorImage} alt="Sardor Madaminov" />
-                        </OrganizerAvatar>
-                        <OrganizerName>Sardor Madaminov</OrganizerName>
-                        <OrganizerRole>Software Developer</OrganizerRole>
-                        <OrganizerTitle>Co-Founder & Organiser</OrganizerTitle>
-                        <Card.Description>
-                            Dedicated to fostering a welcoming and inclusive environment for all attendees, speakers,
-                            and sponsors. Building a community of learners and creators.
-                        </Card.Description>
-                    </OrganizerCard>
-
-                    <OrganizerCard backgroundColor="#161616">
-                        <OrganizerAvatar>
-                            <img src={javokhirImage} alt="Javokhir" />
-                        </OrganizerAvatar>
-                        <OrganizerName>Javokhirbek Khakimjonov</OrganizerName>
-                        <OrganizerRole>Software Developer</OrganizerRole>
-                        <OrganizerTitle>Event Moderator & Software Developer</OrganizerTitle>
-                        <Card.Description>
-                            Dedicated to fostering a welcoming and inclusive environment for all attendees, speakers,
-                            and sponsors. Building a community of learners and creators.
-                        </Card.Description>
-                    </OrganizerCard>
-
-                    <OrganizerCard backgroundColor="#161616">
-                        <OrganizerAvatar>
-                            <img src={oybekImage} alt="Oybek Kholikov" />
-                        </OrganizerAvatar>
-                        <OrganizerName>Oybek Kholikov</OrganizerName>
-                        <OrganizerRole>Product Designer</OrganizerRole>
-                        <OrganizerTitle>UI/UX Designer & Organiser</OrganizerTitle>
-                        <Card.Description>
-                            Dedicated to fostering a welcoming and inclusive environment for all attendees, speakers,
-                            and sponsors. Building a community of learners and creators.
-                        </Card.Description>
-                    </OrganizerCard>
-                </OrganizersGrid>
-            </OrganizersSection>
+                <ContributorsGrid>
+                    {contributors.map((contributor) => (
+                        <ContributorCard key={contributor.id}>
+                            <ContributorInfo>
+                                <ContributorName>{contributor.name}</ContributorName>
+                                <ContributorRole>{contributor.contributions}</ContributorRole>
+                            </ContributorInfo>
+                            <GitHubLink
+                                href={`https://github.com/${contributor.githubUsername}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                aria-label={`${contributor.name}'s GitHub profile`}
+                            >
+                                <FiGithub size={20} />
+                            </GitHubLink>
+                        </ContributorCard>
+                    ))}
+                </ContributorsGrid>
+            </ContributorsSection>
         </Container>
     );
 }

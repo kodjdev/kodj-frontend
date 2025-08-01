@@ -1,0 +1,19 @@
+{
+    "events": {
+        "filters": {
+            "all": "All",
+            "upcoming": "Upcoming Events",
+            "past": "Past Events"
+        },
+        "sections": {
+            "upcoming": "Upcoming",
+            "past": "Past",
+            "events": "Events",
+            "sortBy": "Sort by",
+            "sortOptions": {
+                "dateAsc": "Newest First",
+                "dateDesc": "Oldest First"
+            }
+        }
+    }
+}

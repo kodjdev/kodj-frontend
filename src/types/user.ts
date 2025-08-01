@@ -1,6 +1,6 @@
 import { EventDetails } from '.';
 
-type RegistrationStatus = 'CONFIRMED' | 'PENDING' | 'CANCELED';
+type RegistrationStatus = 'CONFIRMED' | 'PENDING' | 'CANCELED' | 'ACCEPTED';
 type SpeakerStatus = 'confirmed' | 'pending';
 
 export type EventRegistrationData = {
@@ -19,7 +19,7 @@ export type SpeakerRegistrationData = {
     eventId: string;
     presentationUrl?: string;
 };
-
+// i have to check on this types
 export type EventRegistrationResponse = {
     message: string;
     data: string;
@@ -44,27 +44,25 @@ export type UserData = {
 };
 
 export type UserDetails = {
-    data: {
-        id: string;
-        name?: string;
-        email: string;
-        avatar?: string;
-        bio?: string;
-        role: 'user' | 'admin' | 'speaker';
-        createdAt: string;
-        providerId?: string;
-        username: string;
-        phone: string;
-        oauthId?: string;
-        oauthProvider: string;
-        firstName?: string;
-        lastName?: string;
-        imageUrl?: string;
-        imageName?: string;
-        region?: string;
-        provider: string;
-        category: string;
-    };
+    id: string;
+    name?: string;
+    email: string;
+    avatar?: string;
+    bio?: string;
+    role: 'user' | 'admin' | 'speaker';
+    createdAt: string;
+    providerId?: string;
+    username: string;
+    phone: string;
+    oauthId?: string;
+    oauthProvider: string;
+    firstName?: string;
+    lastName?: string;
+    imageUrl?: string;
+    imageName?: string;
+    region?: string;
+    provider: string;
+    category: string;
 };
 
 export type UserCount = {

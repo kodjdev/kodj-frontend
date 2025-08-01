@@ -1,0 +1,65 @@
+{
+    "navigation": {
+        "events": "Events",
+        "jobPosting": "Job posting",
+        "blogs": "My Blogs",
+        "account": "My account"
+    },
+    "sidebar": {
+        "anonymous": "Anonymous",
+        "noEmailGiven": "No Email Given",
+        "joined": "Joined:",
+        "signOut": "Sign out"
+    },
+    "logout": {
+        "confirmTitle": "Confirm Logout",
+        "confirmMessage": "Are you sure you want to log out?",
+        "confirmButton": "Yes, log out",
+        "cancelButton": "Cancel"
+    },
+    "events": {
+        "upcomingEvents": "Upcoming Events",
+        "pastEvents": "Past Events",
+        "noEventsTitle": "No events found",
+        "noUpcomingDescription": "You don't have any upcoming events.",
+        "noPastDescription": "You haven't attended any events yet.",
+        "browseEventsButton": "Browse Events"
+    },
+    "blogEditor": {
+        "noPostsTitle": "There are no blog posts written.",
+        "noPostsDescription": "Start sharing your thoughts with the KO'DJ community.",
+        "writeButton": "Write Blog",
+        "notAvailableMessage": "Not available now, coming soon !",
+        "titlePlaceholder": "Blog title",
+        "contentPlaceholder": "Write your blog post here...",
+        "uploadCover": "Upload cover image",
+        "toolbar": {
+            "heading": "Heading",
+            "bold": "Bold",
+            "italic": "Italic",
+            "bulletList": "Bulleted List",
+            "numberedList": "Numbered List",
+            "quote": "Quote",
+            "code": "Code",
+            "link": "Link"
+        },
+        "published": "Published",
+        "draft": "Draft",
+        "savePost": "Save Post",
+        "postSavedSuccess": "Blog post saved successfully!"
+    },
+    "accountDetails": {
+        "loading": "Loading...",
+        "personalInfo": "Personal info",
+        "uploadPhoto": "Upload Photo",
+        "delete": "Delete",
+        "fields": {
+            "name": "Name",
+            "email": "Email",
+            "phone": "Phone"
+        },
+        "cancel": "Cancel",
+        "saveChanges": "Save Changes",
+        "savingMessage": "Saving account details:"
+    }
+}

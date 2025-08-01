@@ -6,6 +6,8 @@ import Input from '@/components/Input/Input';
 import { FaSave, FaEdit } from 'react-icons/fa';
 import useApiService from '@/services';
 import { UserDetails } from '@/types/user';
+import { useTranslation } from 'react-i18next';
+import { TokenStorage } from '@/utils/tokenStorage';
 
 type FieldConfig = {
     id: string;
@@ -190,6 +192,7 @@ const INITIAL_FIELDS: FieldConfig[] = [
  * Form for viewing and editing account information
  */
 export default function AccountDetails() {
+    const { t } = useTranslation('mypage');
     const userDetailsService = useApiService();
     const [isLoading, setIsLoading] = useState(true);
 
@@ -197,6 +200,7 @@ export default function AccountDetails() {
         name: '',
         email: '',
         phone: '',
+        image: '',
     });
 
     const [fields, setFields] = useState<FieldConfig[]>(INITIAL_FIELDS);
@@ -205,15 +209,17 @@ export default function AccountDetails() {
         const fetchUserData = async () => {
             try {
                 setIsLoading(true);
-                const accessToken = localStorage.getItem('access_token');
+
+                const accessToken = TokenStorage.getAccessToken();
+
                 if (!accessToken) {
                     console.error('No access token found');
                     return;
                 }
+
                 const response = await userDetailsService.getUserDetails(accessToken);
                 if (response.statusCode === 200) {
                     const userData: UserDetails = response.data;
-                    console.log('User data fetched:', userData);
 
                     setFields((prev) =>
                         prev.map((field) => ({
@@ -223,9 +229,10 @@ export default function AccountDetails() {
                     );
 
                     setFormValues({
-                        name: userData.data.username || '',
-                        email: userData.data.email || '',
-                        phone: userData.data.phone || '',
+                        name: userData.username || '',
+                        email: userData.email || '',
+                        phone: userData.phone || '',
+                        image: userData.imageUrl || '',
                     });
                 }
             } catch (error) {
@@ -241,11 +248,11 @@ export default function AccountDetails() {
     const getUserFieldValue = (userData: UserDetails, fieldId: string): string => {
         switch (fieldId) {
             case 'name':
-                return userData.data.username || '';
+                return userData.username || '';
             case 'email':
-                return userData.data.email || '';
+                return userData.email || '';
             case 'phone':
-                return userData.data.phone || '010-1234-5678';
+                return userData.phone || '010-1234-5678';
             default:
                 return '';
         }
@@ -274,7 +281,6 @@ export default function AccountDetails() {
         );
 
         /* later i will add the my page api service */
-        console.log('Saving account details:', formValues);
     };
 
     const renderField = (field: FieldConfig) => {
@@ -313,18 +319,28 @@ export default function AccountDetails() {
     const isEditMode = fields.some((field) => field.isEditing);
 
     if (isLoading) {
-        return <div>Loading...</div>;
+        return <div>{t('accountDetails.loading')}</div>;
     }
 
     return (
         <Container>
-            <Header>Personal info</Header>
+            <Header>{t('accountDetails.personalInfo')}</Header>
 
             <ProfileSection>
-                <ProfileImage>👤</ProfileImage>
+                <ProfileImage>
+                    {formValues.image ? (
+                        <img
+                            src={formValues.image}
+                            alt="Profile"
+                            style={{ width: '100%', height: '100%', borderRadius: '50%' }}
+                        />
+                    ) : (
+                        <span>{formValues.name.charAt(0).toUpperCase()}</span>
+                    )}
+                </ProfileImage>
                 <ProfileButtons>
-                    <Button variant="signOut" size="mini">
-                        Upload Photo
+                    <Button variant="signOut" size="mini" disabled={true}>
+                        {t('accountDetails.uploadPhoto')}
                     </Button>
                     <Button
                         variant="light"
@@ -333,8 +349,9 @@ export default function AccountDetails() {
                             backgroundColor: themeColors.colors.neutral.white,
                             color: themeColors.colors.neutral.black,
                         }}
+                        disabled={!isEditMode}
                     >
-                        Delete
+                        {t('accountDetails.delete')}
                     </Button>
                 </ProfileButtons>
             </ProfileSection>
@@ -353,15 +370,17 @@ export default function AccountDetails() {
                                     name: fields.find((f) => f.id === 'name')?.value || '',
                                     email: fields.find((f) => f.id === 'email')?.value || '',
                                     phone: fields.find((f) => f.id === 'phone')?.value || '',
+                                    image: formValues.image,
                                 });
                                 setFields((prevFields) => prevFields.map((field) => ({ ...field, isEditing: false })));
                             }}
+                            disabled={!isEditMode}
                         >
-                            Cancel
+                            {t('accountDetails.cancel')}
                         </Button>
-                        <Button variant="outline" htmlType="submit" size="sm">
+                        <Button variant="outline" htmlType="submit" size="sm" disabled={!isEditMode}>
                             <FaSave style={{ marginRight: '8px' }} />
-                            Save Changes
+                            {t('accountDetails.saveChanges')}
                         </Button>
                     </ButtonsContainer>
                 )}

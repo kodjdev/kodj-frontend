@@ -19,66 +19,66 @@ type ApiResponse<T> = {
 const mockFeedbackData: FeedbackData[] = [
     {
         id: '1',
-        name: 'Alli',
-        role: 'Java developer',
+        name: 'Alisher Usmanov',
+        role: 'Senior Java Developer at Naver',
         feedback:
-            'I recently attended the IT meet-up, and it was an incredible experience. The sessions were highly informative in AI. The speakers were knowledgeable and provided practical insights that I can apply to my projects.',
+            "The KO'DJ AI & ML meetup was a game-changer for my career. The practical demonstrations of TensorFlow integration with Java backends gave me actionable knowledge I've already implemented at work. Looking forward to the next one!",
         avatar: undefined,
     },
     {
         id: '2',
-        name: 'Alli',
-        role: 'Java developer',
+        name: 'Lee Jiwon',
+        role: 'Full Stack Developer',
         feedback:
-            'I recently attended the IT meet-up, and it was an incredible experience. The sessions were highly informative in AI. The speakers were knowledgeable and provided practical insights that I can apply to my projects.',
+            'As someone new to the Uzbek-Korean tech community, I felt incredibly welcomed. The bilingual format made technical content accessible, and I made valuable connections with developers working on similar cross-platform challenges.',
         avatar: undefined,
     },
     {
         id: '3',
-        name: 'Alli',
-        role: 'Java developer',
+        name: 'Dilfuza Rakhimova',
+        role: 'DevOps Engineer at LG CNS',
         feedback:
-            'I recently attended the IT meet-up, and it was an incredible experience. The sessions were highly informative in AI. The speakers were knowledgeable and provided practical insights that I can apply to my projects.',
+            "The cloud infrastructure workshop hosted by KO'DJ was exactly what our team needed. The hands-on approach to CI/CD pipelines with practical examples solved problems we'd been struggling with for months. Excellent organization!",
         avatar: undefined,
     },
     {
         id: '4',
-        name: 'Alli',
-        role: 'Java developer',
+        name: 'Kim Minho',
+        role: 'Startup Founder',
         feedback:
-            'I recently attended the IT meet-up, and it was an incredible experience. The sessions were highly informative in AI. The speakers were knowledgeable and provided practical insights that I can apply to my projects.',
+            'Attending the startup ecosystem meetup helped me connect with talented Uzbek developers. We ended up collaborating on our fintech project, bringing diverse perspectives that significantly improved our product. These meetups create real opportunities.',
         avatar: undefined,
     },
     {
         id: '5',
-        name: 'Sardor',
-        role: 'Frontend Developer',
+        name: 'Sardor Turakulov',
+        role: 'Frontend Lead at Kakao',
         feedback:
-            'The networking opportunities were fantastic. I connected with like-minded professionals and learned about the latest trends in web development. Highly recommend these meetups!',
+            'The React performance optimization session was outstanding. The speaker shared advanced techniques beyond the typical advice, and the code examples were immediately useful. The Q&A session afterward addressed specific challenges many of us face daily.',
         avatar: undefined,
     },
     {
         id: '6',
-        name: 'Dilshod',
-        role: 'Data Scientist',
+        name: 'Park Jiyoung',
+        role: 'AI Research Scientist',
         feedback:
-            'Amazing event! The machine learning workshop was particularly insightful. The organizers did a great job bringing together experts from different fields.',
+            "KO'DJ's deep learning workshop provided a perfect balance of theory and application. The collaborative atmosphere encouraged cross-cultural exchange of ideas on ethical AI development. I've since joined their Telegram community for ongoing discussions.",
         avatar: undefined,
     },
     {
         id: '7',
-        name: 'Aziz',
-        role: 'Mobile Developer',
+        name: 'Aziz Karimov',
+        role: 'iOS Developer at Coupang',
         feedback:
-            'Great meetup with excellent speakers. I learned new approaches to mobile app development and got inspired by the innovative projects shared during the event.',
+            'The mobile development meetup exceeded my expectations. Learning about Swift UI from experienced developers who shared their production challenges helped me avoid potential pitfalls in my own projects. The networking session afterward was equally valuable.',
         avatar: undefined,
     },
     {
         id: '8',
-        name: 'Nodira',
-        role: 'UX Designer',
+        name: 'Song Minseo',
+        role: 'UX Research Lead',
         feedback:
-            'The design thinking session was eye-opening. It helped me understand how to better collaborate with developers and create more user-centered products.',
+            'The design systems workshop fostered genuine collaboration between designers and developers from both countries. I appreciated how the facilitators addressed cultural differences in user expectations, something often overlooked in international product development.',
         avatar: undefined,
     },
 ];

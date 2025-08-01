@@ -1,0 +1,40 @@
+{
+    "filters": {
+        "all": "Barchasi",
+        "tech": "Texnologiya",
+        "meetup": "Uchrashuv",
+        "social": "Ijtimoiy"
+    },
+    "search": {
+        "placeholder": "Qidirish",
+        "loadingMessage": "Yangiliklar yuklanmoqda..."
+    },
+    "tags": {
+        "javascript": "JavaScript",
+        "frontend": "Frontend",
+        "programming": "Dasturlash",
+        "ai": "Sun'iy intellekt",
+        "development": "Ishlab chiqish",
+        "react": "React",
+        "nodejs": "Node.js",
+        "typescript": "TypeScript",
+        "python": "Python",
+        "backend": "Backend",
+        "fullstack": "To'liq stek",
+        "mobile": "Mobil",
+        "web": "Veb",
+        "data": "Ma'lumotlar fani",
+        "machine-learning": "Mashinani o'rganish",
+        "devops": "DevOps",
+        "cloud": "Bulut",
+        "database": "Ma'lumotlar bazasi"
+    },
+    "readTime": "daqiqa o'qish",
+    "loadMore": "Ko'proq yuklash ...",
+    "emptyState": {
+        "noNewsTitle": "Hech qanday yangilik topilmadi",
+        "noNewsDescription": "Qidiruv mezonlaringizga mos keladigan maqolalar topilmadi.",
+        "noNewsSubtext": "Yangi kontent uchun keyinroq qaytib keling yoki turli toifalarni o'rganing.",
+        "tryAgainButton": "Homepagega qaytish"
+    }
+}

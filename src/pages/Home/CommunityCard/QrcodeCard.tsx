@@ -10,6 +10,15 @@ const CardContainer = styled.div`
     justify-content: center;
     padding-top: 1.25rem;
     width: 100%;
+
+    @media (max-width: ${themeColors.breakpoints.mobile}) {
+        width: 100%;
+    }
+
+    @media (min-width: ${themeColors.breakpoints.tablet}) {
+        width: 100%;
+        padding: ${themeColors.spacing.md};
+    }
 `;
 
 const ImageContainer = styled(motion.div)`
@@ -25,6 +34,11 @@ const QRImage = styled.img`
     object-position: center;
     border-radius: 0.125rem;
     transition: all 0.2s ease;
+
+    @media (max-width: ${themeColors.breakpoints.mobile}) {
+        width: 274px;
+        height: 274px;
+    }
 `;
 
 const ExpandedOverlay = styled(motion.div)`
@@ -40,8 +54,8 @@ const ExpandedOverlay = styled(motion.div)`
 const ExpandedImageContainer = styled(motion.div)`
     position: relative;
     width: 80%;
-    max-width: 500px; // Added max-width
-    max-height: 500px; // Added max-height
+    max-width: 500px;
+    max-height: 500px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -76,7 +90,6 @@ const ExpandedImage = styled.img`
 export default function QrCodeCard() {
     const [isExpanded, setIsExpanded] = useState(false);
 
-    // Toggle expanded view
     const toggleExpandedView = () => {
         setIsExpanded(!isExpanded);
     };

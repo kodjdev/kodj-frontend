@@ -313,6 +313,7 @@ export default function JobPostingBasicInfo({ onNext, onFormStateChange }: JobPo
                     icon={<FaBriefcase />}
                     showIcon={true}
                     showLogo={false}
+                    disabled={true}
                 />
             </>
         );

@@ -1,0 +1,65 @@
+{
+    "navigation": {
+        "events": "Tadbirlar",
+        "jobPosting": "Ish e'lonlari",
+        "blogs": "Mening bloglarim",
+        "account": "Mening hisobim"
+    },
+    "sidebar": {
+        "anonymous": "Anonim",
+        "noEmailGiven": "Email berilmagan",
+        "joined": "Qo'shilgan:",
+        "signOut": "Chiqish"
+    },
+    "logout": {
+        "confirmTitle": "Chiqishni tasdiqlash",
+        "confirmMessage": "Haqiqatan ham tizimdan chiqmoqchimisiz?",
+        "confirmButton": "Ha, chiqish",
+        "cancelButton": "Bekor qilish"
+    },
+    "events": {
+        "upcomingEvents": "Kelayotgan tadbirlar",
+        "pastEvents": "O'tgan tadbirlar",
+        "noEventsTitle": "Hech qanday tadbir topilmadi",
+        "noUpcomingDescription": "Sizda kelayotgan tadbirlar yo'q.",
+        "noPastDescription": "Siz hali hech qanday tadbirda qatnashmadingiz.",
+        "browseEventsButton": "Tadbirlarni ko'rish"
+    },
+    "blogEditor": {
+        "noPostsTitle": "Hech qanday blog yozuvi yo'q.",
+        "noPostsDescription": "KO'DJ jamoasi bilan o'z fikrlaringizni baham ko'rishni boshlang.",
+        "writeButton": "Blog yozish",
+        "notAvailableMessage": "Hozir mavjud emas, tez orada keladi!",
+        "titlePlaceholder": "Blog sarlavhasi",
+        "contentPlaceholder": "Blog yozuvingizni bu yerda yozing...",
+        "uploadCover": "Muqova rasmini yuklash",
+        "toolbar": {
+            "heading": "Sarlavha",
+            "bold": "Qalin",
+            "italic": "Qiyshiq",
+            "bulletList": "Nuqtali ro'yxat",
+            "numberedList": "Raqamli ro'yxat",
+            "quote": "Iqtibos",
+            "code": "Kod",
+            "link": "Havola"
+        },
+        "published": "Nashr qilingan",
+        "draft": "Qoralama",
+        "savePost": "Yozuvni saqlash",
+        "postSavedSuccess": "Blog yozuvi muvaffaqiyatli saqlandi!"
+    },
+    "accountDetails": {
+        "loading": "Yuklanmoqda...",
+        "personalInfo": "Shaxsiy ma'lumotlar",
+        "uploadPhoto": "Rasm yuklash",
+        "delete": "O'chirish",
+        "fields": {
+            "name": "Ism",
+            "email": "Email",
+            "phone": "Telefon"
+        },
+        "cancel": "Bekor qilish",
+        "saveChanges": "O'zgarishlarni saqlash",
+        "savingMessage": "Hisob ma'lumotlari saqlanmoqda:"
+    }
+}

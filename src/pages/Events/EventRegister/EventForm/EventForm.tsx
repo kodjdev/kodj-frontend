@@ -10,6 +10,11 @@ const FormContainer = styled.div`
     display: flex;
     flex-direction: column;
     gap: ${themeColors.spacing.md};
+
+    @media (max-width: ${themeColors.breakpoints.mobile}) {
+        padding-top: ${themeColors.spacing.lg};
+        gap: ${themeColors.spacing.sm};
+    }
 `;
 
 const FieldGroup = styled.div`
@@ -17,6 +22,10 @@ const FieldGroup = styled.div`
     flex-direction: column;
     gap: ${themeColors.spacing.sm};
     width: 100%;
+
+    @media (max-width: ${themeColors.breakpoints.mobile}) {
+        gap: ${themeColors.spacing.xs};
+    }
 `;
 
 const FormLabel = styled.label`
@@ -28,11 +37,10 @@ const FormLabel = styled.label`
         content: ' *';
         color: ${themeColors.red_text};
     }
-`;
 
-const SelectWrapper = styled.div`
-    position: relative;
-    width: 100%;
+    @media (max-width: ${themeColors.breakpoints.mobile}) {
+        font-size: ${themeColors.font10.fontSize}px;
+    }
 `;
 
 const Select = styled.select<{ hasError?: boolean }>`
@@ -55,6 +63,49 @@ const Select = styled.select<{ hasError?: boolean }>`
         background-color: ${themeColors.gray_background};
         color: ${themeColors.white_dark};
     }
+
+    @media (max-width: ${themeColors.breakpoints.mobile}) {
+        padding: 12px 15px;
+        padding-right: 35px;
+        font-size: ${themeColors.font10.fontSize}px;
+    }
+`;
+
+const TextArea = styled.textarea<{ hasError?: boolean }>`
+    padding: ${themeColors.spacing.md} ${themeColors.spacing.lg};
+    border-radius: ${themeColors.radiusSizes.md};
+    border: 1px solid ${({ hasError }) => (hasError ? themeColors.red_text : themeColors.cardBorder.color)};
+    background-color: ${themeColors.gray_background};
+    color: ${themeColors.white_dark};
+    resize: vertical;
+    min-height: 100px;
+
+    &:focus {
+        outline: none;
+        box-shadow: 0 0 0 2px ${themeColors.blue};
+    }
+
+    &::placeholder {
+        color: ${themeColors.gray_text};
+    }
+
+    @media (max-width: ${themeColors.breakpoints.mobile}) {
+        padding: ${themeColors.spacing.sm} ${themeColors.spacing.md};
+        font-size: ${themeColors.font10.fontSize}px;
+        min-height: 80px;
+    }
+`;
+
+const ErrorMessage = styled.p`
+    margin-top: 0;
+    margin-bottom: 0;
+    font-size: ${themeColors.font12.fontSize}px;
+    color: ${themeColors.red_text};
+
+    @media (max-width: ${themeColors.breakpoints.mobile}) {
+        font-size: ${themeColors.font10.fontSize}px;
+        margin-top: 4px;
+    }
 `;
 
 const SelectIcon = styled(ChevronDown)`
@@ -66,35 +117,22 @@ const SelectIcon = styled(ChevronDown)`
     height: 16px;
     color: ${themeColors.gray_text};
     pointer-events: none;
-`;
 
-const TextArea = styled.textarea<{ hasError?: boolean }>`
-    padding: ${themeColors.spacing.md} ${themeColors.spacing.lg};
-    border-radius: ${themeColors.radiusSizes.md};
-    border: 1px solid ${({ hasError }) => (hasError ? themeColors.red_text : themeColors.cardBorder.color)};
-    background-color: ${themeColors.gray_background};
-    color: ${themeColors.white_dark};
-    resize: vertical;
-
-    &:focus {
-        outline: none;
-        box-shadow: 0 0 0 2px ${themeColors.blue};
-    }
-
-    &::placeholder {
-        color: ${themeColors.gray_text};
+    @media (max-width: ${themeColors.breakpoints.mobile}) {
+        right: 10px;
+        width: 14px;
+        height: 14px;
     }
 `;
 
-const ErrorMessage = styled.p`
-    margin-top: ${themeColors.spacing.xs};
-    font-size: ${themeColors.font12.fontSize}px;
-    color: ${themeColors.red_text};
+const SelectWrapper = styled.div`
+    position: relative;
+    width: 100%;
 `;
 
 const CheckboxContainer = styled.div`
     background-color: ${themeColors.gray_dark};
-    padding: ${themeColors.spacing.sm};
+    padding: ${themeColors.spacing.md};
     border-radius: ${themeColors.radiusSizes.md};
     border: 1px solid ${themeColors.cardBorder.color};
 `;
@@ -105,16 +143,22 @@ const CheckboxLabel = styled.label`
 `;
 
 const Checkbox = styled.input`
-    margin-top: ${themeColors.spacing.xs};
+    margin-top: 2px;
     margin-right: ${themeColors.spacing.sm};
-    height: 20px;
-    width: 20px;
+    margin-bottom: 0;
+    height: 12px;
+    width: 12px;
     color: ${themeColors.blue};
     border-radius: ${themeColors.radiusSizes.sm};
     border: 1px solid ${themeColors.gray_text};
 
     &:focus {
         box-shadow: 0 0 0 2px ${themeColors.blue};
+    }
+
+    @media (max-width: ${themeColors.breakpoints.mobile}) {
+        height: 14px;
+        width: 14px;
     }
 `;
 
@@ -123,7 +167,23 @@ const CheckboxText = styled.span`
     font-size: ${themeColors.font12.fontSize}px;
 `;
 
-export default function StepTwoForm() {
+const CheckboxInfo = styled.p`
+    color: ${themeColors.gray_text};
+    font-size: ${themeColors.font12.fontSize}px;
+    margin-top: ${themeColors.spacing.xs};
+    margin-left: 2px;
+    line-height: 1.4;
+    margin-bottom: ${themeColors.spacing.xs};
+    width: 100%;
+    max-width: 600px;
+
+    @media (max-width: ${themeColors.breakpoints.mobile}) {
+        font-size: ${themeColors.font10.fontSize}px;
+        margin-left: 2px;
+    }
+`;
+
+export default function EventForm() {
     const {
         control,
         register,
@@ -132,19 +192,14 @@ export default function StepTwoForm() {
 
     const { t } = useTranslation('eventRegister');
 
-    const validateMinLength = (value: string) => {
-        return value.trim().length >= 15 || t('validation.additionalInfoMinLength');
-    };
-
-    const validateNotJustWhitespace = (value: string) => {
-        return /\S/.test(value) || t('validation.additionalInfoNoEmptySpace');
-    };
-
-    const validateNotRepeatedChars = (value: string) => {
-        const trimmed = value.trim();
-        const uniqueChars = new Set(trimmed.split('')).size;
-        return uniqueChars >= Math.max(3, Math.floor(trimmed.length * 0.3)) || t('validation.additionalInfoMeaningful');
-    };
+    const attendanceOptions = [
+        { value: 'first-time', label: t('formFields.firstTime') },
+        { value: 'several-times', label: t('formFields.severalTimes') },
+        { value: 'networking', label: t('formFields.networking') },
+        { value: 'learning', label: t('formFields.learning') },
+        { value: 'job-opportunities', label: t('formFields.jobOpportunities') },
+        { value: 'others', label: t('formFields.others') },
+    ];
 
     const fieldOptions = [
         { value: 'ai', label: t('fieldOptions.ai') },
@@ -154,39 +209,28 @@ export default function StepTwoForm() {
         { value: 'mobile', label: t('fieldOptions.mobile') },
         { value: 'cloud', label: t('fieldOptions.cloud') },
         { value: 'cyber', label: t('fieldOptions.cyber') },
-        { value: 'block', label: t('fieldOptions.block') },
-        { value: 'game', label: t('fieldOptions.game') },
         { value: 'data', label: t('fieldOptions.data') },
-        { value: 'web', label: t('fieldOptions.web') },
-        { value: 'devops', label: t('fieldOptions.devops') },
-    ];
-
-    const attendanceOptions = [
-        { value: 'first-time', label: t('formFields.firstTime') },
-        { value: 'several-times', label: t('formFields.severalTimes') },
-    ];
-
-    const hopeOptions = [
-        { value: 'networking', label: t('formFields.networking') },
-        { value: 'learning', label: t('formFields.learning') },
-        { value: 'jobOpportunities', label: t('formFields.jobOpportunities') },
-        { value: 'others', label: t('formFields.others') },
     ];
 
     return (
         <FormContainer>
             <Controller
                 control={control}
-                name="notify"
-                rules={{ required: t('validation.notifyRequired') }}
+                name="attendanceReason"
+                rules={{ required: t('validation.attendanceReasonRequired') }}
                 render={({ field, fieldState: { error } }) => (
                     <FieldGroup>
-                        <FormLabel htmlFor="notify" className="required">
-                            {t('formFields.attendedBefore')}
+                        <FormLabel htmlFor="attendanceReason" className="required">
+                            {t('formFields.attendanceReason')}
                         </FormLabel>
                         <SelectWrapper>
-                            <Select id="notify" value={field.value} onChange={field.onChange} hasError={!!error}>
-                                <option value="">{t('fieldOptions.selectField')}</option>
+                            <Select
+                                id="attendanceReason"
+                                value={field.value}
+                                onChange={field.onChange}
+                                hasError={!!error}
+                            >
+                                <option value="">{t('fieldOptions.selectReason')}</option>
                                 {attendanceOptions.map((option) => (
                                     <option key={option.value} value={option.value}>
                                         {option.label}
@@ -199,22 +243,18 @@ export default function StepTwoForm() {
                     </FieldGroup>
                 )}
             />
+
             <Controller
                 control={control}
-                name="interestedField"
+                name="interestField"
                 rules={{ required: t('validation.interestedFieldRequired') }}
                 render={({ field, fieldState: { error } }) => (
                     <FieldGroup>
-                        <FormLabel htmlFor="interestedField" className="required">
+                        <FormLabel htmlFor="interestField" className="required">
                             {t('formFields.interestedField')}
                         </FormLabel>
                         <SelectWrapper>
-                            <Select
-                                id="interestedField"
-                                value={field.value}
-                                onChange={field.onChange}
-                                hasError={!!error}
-                            >
+                            <Select id="interestField" value={field.value} onChange={field.onChange} hasError={!!error}>
                                 <option value="">{t('fieldOptions.selectField')}</option>
                                 {fieldOptions.map((option) => (
                                     <option key={option.value} value={option.value}>
@@ -224,60 +264,33 @@ export default function StepTwoForm() {
                             </Select>
                             <SelectIcon />
                         </SelectWrapper>
-
                         {error && <ErrorMessage>{error.message}</ErrorMessage>}
                     </FieldGroup>
                 )}
             />
-            <Controller
-                control={control}
-                name="hopes"
-                rules={{ required: t('validation.hopesRequired') }}
-                render={({ field, fieldState: { error } }) => (
-                    <FieldGroup>
-                        <FormLabel htmlFor="hopes" className="required">
-                            {t('formFields.hopes')}
-                        </FormLabel>
-                        <SelectWrapper>
-                            <Select id="hopes" value={field.value} onChange={field.onChange} hasError={!!error}>
-                                <option value="">{t('fieldOptions.selectField')}</option>
-                                {hopeOptions.map((option) => (
-                                    <option key={option.value} value={option.value}>
-                                        {option.label}
-                                    </option>
-                                ))}
-                            </Select>
-                            <SelectIcon />
-                        </SelectWrapper>
 
-                        {error && <ErrorMessage>{error.message}</ErrorMessage>}
-                    </FieldGroup>
-                )}
-            />
             <FieldGroup>
-                <FormLabel htmlFor="additionalInfo" className="required">
-                    {t('formFields.additionalInfo')}
+                <FormLabel htmlFor="expectation" className="required">
+                    {t('formFields.expectation')}
                 </FormLabel>
                 <TextArea
-                    id="additionalInfo"
+                    id="expectation"
                     rows={4}
-                    placeholder={t('formFields.additionalInfoPlaceholder')}
-                    hasError={!!errors.additionalInfo}
-                    {...register('additionalInfo', {
-                        required: t('validation.additionalInfoRequired'),
-                        validate: {
-                            minLength: validateMinLength,
-                            notJustWhitespace: validateNotJustWhitespace,
-                            notRepeatedChars: validateNotRepeatedChars,
+                    placeholder={t('formFields.expectationPlaceholder')}
+                    hasError={!!errors.expectation}
+                    {...register('expectation', {
+                        required: t('validation.expectationRequired'),
+                        minLength: {
+                            value: 10,
+                            message: t('validation.expectationMinLength'),
                         },
                     })}
                 />
-                {errors.additionalInfo && <ErrorMessage>{errors.additionalInfo.message}</ErrorMessage>}
+                {errors.expectation && <ErrorMessage>{errors.expectation.message}</ErrorMessage>}
             </FieldGroup>
             <Controller
                 control={control}
                 name="consent"
-                defaultValue={false}
                 rules={{ required: t('validation.consentRequired') }}
                 render={({ field: { onChange, value }, fieldState: { error } }) => (
                     <>
@@ -286,11 +299,14 @@ export default function StepTwoForm() {
                                 <Checkbox
                                     id="consent"
                                     type="checkbox"
-                                    checked={value}
+                                    checked={Boolean(value)}
                                     onChange={(e) => onChange(e.target.checked)}
                                 />
                                 <CheckboxText>{t('formFields.consent')}</CheckboxText>
                             </CheckboxLabel>
+                            <CheckboxInfo>
+                                Your personal data will only be used for event registration purposes.
+                            </CheckboxInfo>
                         </CheckboxContainer>
                         {error && <ErrorMessage>{error.message}</ErrorMessage>}
                     </>

@@ -23,6 +23,7 @@ export const meetupToEvent = (meetup: MeetupResponse): Event => {
         maxSeats: meetup.maxSeats ?? 50,
         availableSeats: meetup.availableSeats ?? 50,
         startTime: meetup.startTime || '',
+        provided: meetup.provided || 'Cached Data',
         endTime: meetup.endTime || '',
         registeredCount: registeredCount,
         imageUrl: meetup.imageURL || '',
@@ -88,7 +89,7 @@ export const useFetchEventService = () => {
         const now = Date.now();
 
         if (response.statusCode === 200) {
-            const contentArray = response.data?.data?.content;
+            const contentArray = response.data?.content;
 
             if (contentArray && Array.isArray(contentArray)) {
                 const convertedEvents = contentArray.map(meetupToEvent);
@@ -104,12 +105,10 @@ export const useFetchEventService = () => {
                     [type]: { loaded: true, lastFetch: now },
                 }));
 
-                console.log(`${type} events cached successfully`);
                 return;
             }
         }
 
-        // Fallback for empty data
         if (type === 'upcoming') {
             setUpcomingEvents([]);
         } else if (type === 'past') {
@@ -130,14 +129,10 @@ export const useFetchEventService = () => {
                 const cacheInfo = cacheStatus[type as 'upcoming' | 'past'];
 
                 if (cacheInfo.loaded && isCacheValid(cacheInfo.lastFetch)) {
-                    console.log(`Using cached ${type} events`);
-
                     const cachedEvents = type === 'upcoming' ? upcomingEvents : pastEvents;
                     return {
                         data: {
-                            data: {
-                                content: cachedEvents.map(eventToMeetup),
-                            },
+                            content: cachedEvents.map(eventToMeetup),
                         } as PageResponse<MeetupResponse>,
                         statusCode: 200,
                         message: 'success',
@@ -163,8 +158,6 @@ export const useFetchEventService = () => {
                 const cachedDetail = eventDetailsCache[eventId];
 
                 if (cachedDetail && isCacheValid(cachedDetail.lastFetch)) {
-                    console.log(`Using cached event details for ID: ${eventId}`);
-
                     return {
                         data: cachedDetail.data,
                         statusCode: 200,
@@ -172,13 +165,13 @@ export const useFetchEventService = () => {
                     };
                 }
 
-                const response = await fetchData<{ data: EventDetailsResponse }>({
+                const response = await fetchData<EventDetailsResponse>({
                     endpoint: `/public/meetups/${meetupId}/details`,
                     method: 'GET',
                 });
 
                 if (response.statusCode === 200 && response.data) {
-                    const eventDetailsData = response.data.data;
+                    const eventDetailsData = response.data;
 
                     setEventDetailsCache((prev) => ({
                         ...prev,
@@ -187,7 +180,6 @@ export const useFetchEventService = () => {
                             lastFetch: Date.now(),
                         },
                     }));
-                    console.log(`Event details cached for ID: ${eventId}`);
 
                     return {
                         data: eventDetailsData,
@@ -220,8 +212,6 @@ export const useFetchEventService = () => {
                 const cachedEvent = allEvents.find((event) => event.id === eventId);
 
                 if (cachedEvent && cacheStatus.upcoming.loaded && cacheStatus.past.loaded) {
-                    console.log(`Using cached event data for ID: ${eventId}`);
-
                     return {
                         data: eventToMeetup(cachedEvent),
                         statusCode: 200,
@@ -246,10 +236,9 @@ export const useFetchEventService = () => {
                     upcoming: { loaded: false, lastFetch: null },
                     past: { loaded: false, lastFetch: null },
                 });
-                console.log('Event cache cleared');
             },
 
-            // here we force refresh ( as we ignore the cache)
+            /* here we force refresh ( as we ignore the cache) */
             forceRefresh: async (type?: 'upcoming' | 'past') => {
                 if (type) {
                     setCacheStatus((prev) => ({
@@ -263,7 +252,6 @@ export const useFetchEventService = () => {
                     });
                     setEventDetailsCache({});
                 }
-                console.log(`Force refresh triggered for: ${type || 'all'}`);
             },
         }),
         [

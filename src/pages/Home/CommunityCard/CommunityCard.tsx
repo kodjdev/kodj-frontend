@@ -17,6 +17,14 @@ const ContentWrapper = styled.div`
     padding: 0 30px;
     position: relative;
     z-index: 10;
+
+    @media (max-width: ${themeColors.breakpoints.tablet}) {
+        padding: 0 20px;
+    }
+
+    @media (max-width: ${themeColors.breakpoints.mobile}) {
+        padding: 0;
+    }
 `;
 
 const Heading = styled.h4`
@@ -28,6 +36,17 @@ const Heading = styled.h4`
     text-align: center;
     letter-spacing: -0.025em;
     color: ${themeColors.colors.gray.main};
+
+    @media (max-width: ${themeColors.breakpoints.tablet}) {
+        font-size: 18px;
+        max-width: 95%;
+    }
+
+    @media (max-width: ${themeColors.breakpoints.mobile}) {
+        font-size: 16px;
+        max-width: 100%;
+        line-height: 1.4;
+    }
 `;
 
 const FeaturesGrid = styled.div`
@@ -203,13 +222,11 @@ export const Globe = () => {
             markerColor: [0.1, 0.8, 1],
             glowColor: [1, 1, 1],
             markers: [
-                // longitude latitude
                 { location: [37.7595, -122.4367], size: 0.1 },
                 { location: [35.9078, 127.7669], size: 0.1 },
                 { location: [41.2995, 69.2401], size: 0.1 },
             ],
             onRender: (state) => {
-                // `state` will be an empty object, return updated params.
                 state.phi = phi;
                 phi += 0.01;
             },

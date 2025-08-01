@@ -1,9 +1,15 @@
 import { useState } from 'react';
 import styled from 'styled-components';
 import themeColors from '@/tools/themeColors';
-import EventCard from '@/components/Card/EventCard';
-import { EventCardProps } from '@/types';
+import EventCard, { EventCardProps } from '@/components/Card/EventCard';
 import EmptyState from '@/components/EmptyState';
+import { useTranslation } from 'react-i18next';
+
+type MyEventsProps = {
+    registeredEvents: EventCardProps[];
+    loading: boolean;
+    onCancelEvent: (eventId: number) => void;
+};
 
 enum TabOption {
     PAST = 'past',
@@ -59,24 +65,23 @@ const EventsGrid = styled.div`
  * EventTabs Component - Sub Organism Component
  * Tabbed interface displaying user's past and upcoming events
  */
-export default function MyEvents() {
+export default function MyEvents({ registeredEvents, loading, onCancelEvent }: MyEventsProps) {
+    const { t } = useTranslation('mypage');
     const [activeTab, setActiveTab] = useState<TabOption>(TabOption.UPCOMING);
 
-    // here i will implement the my registered events api service later
-    const pastEvents: EventCardProps[] = [];
-    const upcomingEvents: EventCardProps[] = [];
+    const now = new Date();
+    const pastEvents = registeredEvents.filter((event) => new Date(event.date || '') < now);
+    const upcomingEvents = registeredEvents.filter((event) => new Date(event.date || '') >= now);
 
     const events = activeTab === TabOption.PAST ? pastEvents : upcomingEvents;
 
     const renderEmptyState = () => (
         <EmptyState
-            title="No events found"
+            title={t('events.noEventsTitle')}
             description={
-                activeTab === TabOption.PAST
-                    ? "You haven't attended any events yet."
-                    : "You don't have any upcoming events."
+                activeTab === TabOption.PAST ? t('events.noPastDescription') : t('events.noUpcomingDescription')
             }
-            buttonText="Browse Events"
+            buttonText={t('events.browseEventsButton')}
             buttonAsLink={true}
             buttonTo="/events"
             showLogo={true}
@@ -84,18 +89,20 @@ export default function MyEvents() {
     );
 
     return (
-        <div>
+        <>
             <TabsContainer>
                 <TabsHeader>
                     <Tab active={activeTab === TabOption.UPCOMING} onClick={() => setActiveTab(TabOption.UPCOMING)}>
-                        Upcoming Events
+                        {t('events.upcomingEvents')}
                     </Tab>
                     <Tab active={activeTab === TabOption.PAST} onClick={() => setActiveTab(TabOption.PAST)}>
-                        Past Events
+                        {t('events.pastEvents')}
                     </Tab>
                 </TabsHeader>
 
-                {events.length > 0 ? (
+                {loading ? (
+                    <div style={{ textAlign: 'center', padding: '2rem' }}>Loading events...</div>
+                ) : events.length > 0 ? (
                     <EventsGrid>
                         {events.map((event) => (
                             <EventCard
@@ -104,7 +111,10 @@ export default function MyEvents() {
                                 imageUrl={event.imageUrl}
                                 registeredCount={event.registeredCount}
                                 maxSeats={event.maxSeats}
-                                // isFreeEvent={event.isFreeEvent}
+                                cancelled={event.cancelled}
+                                canCancel={event.canCancel}
+                                onCancel={() => onCancelEvent(event.id)}
+                                id={event.id}
                             />
                         ))}
                     </EventsGrid>
@@ -112,6 +122,6 @@ export default function MyEvents() {
                     renderEmptyState()
                 )}
             </TabsContainer>
-        </div>
+        </>
     );
 }

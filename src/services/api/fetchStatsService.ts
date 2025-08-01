@@ -3,11 +3,9 @@ import { ApiResponse } from '@/types/fetch';
 import useAxios from '@/hooks/useAxios/useAxios';
 
 export type StatsOverview = {
-    data: {
-        totalSpeakers: number;
-        totalEvents: number;
-        totalUsers: number;
-    };
+    totalSpeakers: number;
+    totalEvents: number;
+    totalUsers: number;
 };
 
 export const useFetchStatsService = () => {

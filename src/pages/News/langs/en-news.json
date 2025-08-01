@@ -1,0 +1,40 @@
+{
+    "filters": {
+        "all": "All",
+        "tech": "Tech",
+        "meetup": "Meetup",
+        "social": "Social"
+    },
+    "search": {
+        "placeholder": "Search",
+        "loadingMessage": "Loading news articles..."
+    },
+    "tags": {
+        "javascript": "JavaScript",
+        "frontend": "Frontend",
+        "programming": "Programming",
+        "ai": "AI",
+        "development": "Development",
+        "react": "React",
+        "nodejs": "Node.js",
+        "typescript": "TypeScript",
+        "python": "Python",
+        "backend": "Backend",
+        "fullstack": "Full Stack",
+        "mobile": "Mobile",
+        "web": "Web",
+        "data": "Data Science",
+        "machine-learning": "Machine Learning",
+        "devops": "DevOps",
+        "cloud": "Cloud",
+        "database": "Database"
+    },
+    "readTime": "min read",
+    "loadMore": "Load More ...",
+    "emptyState": {
+        "noNewsTitle": "No news articles found",
+        "noNewsDescription": "We couldn't find any articles matching your search criteria.",
+        "noNewsSubtext": "Check back later for fresh content or explore different categories.",
+        "tryAgainButton": "Return to Homepage"
+    }
+}

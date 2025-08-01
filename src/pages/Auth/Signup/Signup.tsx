@@ -14,8 +14,9 @@ import useAuth from '@/context/useAuth';
 import useGoogleSignupFlow from '@/hooks/useGoogleSignup';
 import { EventDetails } from '@/types';
 import { UserData } from '@/types/user';
-import PasswordSignupComponent from './Password';
 import { useStatusHandler } from '@/hooks/useStatusHandler/useStatusHandler';
+import { useTranslation } from 'react-i18next';
+import PasswordConfirm from '@/pages/Auth/Signup/PasswordConfirm';
 
 type SignupProps = {
     toggleAuthMode: () => void;
@@ -54,12 +55,32 @@ const EventTitle = styled.span`
 `;
 
 const Heading = styled.h2`
-    font-size: 1.875rem;
-    font-weight: 700;
+    font-size: ${themeColors.typography.headings.mobile.h3.fontSize}px;
+    font-weight: ${themeColors.typography.headings.mobile.h3.fontWeight};
     color: ${themeColors.white};
     margin-bottom: 40px;
     text-align: left;
     margin-top: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    @media (max-width: ${themeColors.breakpoints.mobile}) {
+        font-size: ${themeColors.typography.headings.mobile.h3.fontSize}px;
+        margin-bottom: 24px;
+    }
+`;
+
+const AccountText = styled.span`
+    color: ${themeColors.gray_text};
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 150px;
+
+    @media (max-width: ${themeColors.breakpoints.mobile}) {
+        max-width: 110px;
+    }
 `;
 
 const InputGroup = styled.div`
@@ -108,10 +129,6 @@ const AccountPrompt = styled.div`
     margin-bottom: 0;
 `;
 
-const AccountText = styled.span`
-    color: ${themeColors.gray_text};
-`;
-
 const ToggleButton = styled.button`
     background: none;
     border: none;
@@ -136,6 +153,7 @@ const Form = styled.form`
 export default function Signup({ toggleAuthMode, returnUrl, eventDetails }: SignupProps) {
     const navigate = useNavigate();
     const { user } = useAuth();
+    const { t } = useTranslation('auth');
     const [authError, setAuthError] = useState('');
     const [currentStep, setCurrentStep] = useState<'info' | 'password'>('info');
     const [messageApi, contextHolder] = message.useMessage();
@@ -197,9 +215,10 @@ export default function Signup({ toggleAuthMode, returnUrl, eventDetails }: Sign
             setCurrentStep('password');
         } catch (error) {
             console.error('Validation error:', error);
-            setAuthError('Please check your information and try again');
+            setAuthError(t('signup.messages.checkInformationAndTryAgain'));
         }
     };
+
     const handlePasswordSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
@@ -211,21 +230,10 @@ export default function Signup({ toggleAuthMode, returnUrl, eventDetails }: Sign
             phone: phoneNumber.value,
         };
 
-        const { data } = await handleAsyncOperation(() => register(userData), {
-            loadingMessage: 'Creating account...',
-            successMessage: 'Account created successfully!',
-            showError: false,
-            onError: (apiError) => {
-                if (apiError.statusCode === 400) {
-                    setAuthError('Invalid information. Please check your details.');
-                } else if (apiError.statusCode === 409) {
-                    setAuthError('Email already exists. Please use a different email.');
-                } else if (apiError.statusCode === 500) {
-                    setAuthError('Server error. Please try again later.');
-                } else {
-                    setAuthError('Registration failed. Please try again.');
-                }
-            },
+        const { data, error } = await handleAsyncOperation(() => register(userData), {
+            loadingMessage: t('signup.messages.creatingAccount'),
+            successMessage: t('signup.messages.accountCreatedSuccess'),
+            showError: true,
         });
 
         if (data) {
@@ -233,6 +241,9 @@ export default function Signup({ toggleAuthMode, returnUrl, eventDetails }: Sign
             setTimeout(() => {
                 navigate('/');
             }, 2000);
+        }
+        if (error) {
+            setAuthError(error.message);
         }
     };
 
@@ -245,11 +256,11 @@ export default function Signup({ toggleAuthMode, returnUrl, eventDetails }: Sign
             {contextHolder}
             {returnUrl && (
                 <EventNotification>
-                    Sign up to continue registration for: <br />
+                    {t('signup.signupToContinueRegistration')} <br />
                     <EventTitle>{eventDetails?.title}</EventTitle>
                 </EventNotification>
             )}
-            <Heading>Create an Account</Heading>
+            <Heading>{t('signup.createAccount')}</Heading>
 
             {currentStep === 'info' && (
                 <>
@@ -258,7 +269,7 @@ export default function Signup({ toggleAuthMode, returnUrl, eventDetails }: Sign
                             <Input
                                 icon={<HiOutlineMail size={20} />}
                                 type="email"
-                                placeholder="Email"
+                                placeholder={t('signup.email')}
                                 value={email.value}
                                 onChange={email.onChange}
                                 onBlur={email.onBlur}
@@ -274,7 +285,7 @@ export default function Signup({ toggleAuthMode, returnUrl, eventDetails }: Sign
                             <Input
                                 icon={<PhoneCall size={20} />}
                                 type="text"
-                                placeholder="Phone Number: 010XXXXXXXX"
+                                placeholder={t('signup.phoneNumber')}
                                 value={phoneNumber.value}
                                 onChange={phoneNumber.onChange}
                                 onBlur={phoneNumber.onBlur}
@@ -287,12 +298,6 @@ export default function Signup({ toggleAuthMode, returnUrl, eventDetails }: Sign
                             />
                         </InputGroup>
 
-                        {authError && (
-                            <div style={{ color: themeColors.red_text, fontSize: '12px', marginBottom: '12px' }}>
-                                {authError}
-                            </div>
-                        )}
-
                         <StyledButton
                             color="blue"
                             size="md"
@@ -301,12 +306,12 @@ export default function Signup({ toggleAuthMode, returnUrl, eventDetails }: Sign
                             type="submit"
                             disabled={!isStep1Valid()}
                         >
-                            CONTINUE
+                            {t('signup.continue')}
                         </StyledButton>
                     </Form>
 
                     <Divider>
-                        <span>OR</span>
+                        <span>{t('signup.or')}</span>
                     </Divider>
 
                     <GoogleLogin
@@ -319,8 +324,8 @@ export default function Signup({ toggleAuthMode, returnUrl, eventDetails }: Sign
                     />
 
                     <AccountPrompt>
-                        <AccountText>Already have an account?</AccountText>
-                        <ToggleButton onClick={toggleAuthMode}>Login</ToggleButton>
+                        <AccountText>{t('signup.alreadyHaveAccount')}</AccountText>
+                        <ToggleButton onClick={toggleAuthMode}>{t('signup.login')}</ToggleButton>
                     </AccountPrompt>
                 </>
             )}
@@ -328,10 +333,10 @@ export default function Signup({ toggleAuthMode, returnUrl, eventDetails }: Sign
             {currentStep === 'password' && (
                 <>
                     <div style={{ marginBottom: '16px', color: themeColors.gray_text, fontSize: '14px' }}>
-                        Email: <strong style={{ color: themeColors.white }}>{email.value}</strong>
+                        {t('signup.emailLabel')} <strong style={{ color: themeColors.white }}>{email.value}</strong>
                     </div>
 
-                    <PasswordSignupComponent
+                    <PasswordConfirm
                         passwordField={{
                             value: password.value,
                             error: password.error,
@@ -346,7 +351,7 @@ export default function Signup({ toggleAuthMode, returnUrl, eventDetails }: Sign
                         }}
                         onSubmit={handlePasswordSubmit}
                         isLoading={loading}
-                        submitButtonText="SIGN UP"
+                        submitButtonText={t('signup.signUp')}
                         error={authError}
                         showPasswordRequirements={true}
                         hideValidationErrors={true}

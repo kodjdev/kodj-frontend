@@ -27,12 +27,10 @@ const StatisticsSection = styled.section`
 `;
 
 const StatsContainer = styled(motion.div)`
-    border-radius: 8px 8px 8px 8px;
-    border: 0.5px solid ${themeColors.cardBorder.color};
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: ${themeColors.spacing.xl};
-    padding: ${themeColors.spacing.xl} ${themeColors.spacing.lg};
+    padding-top: ${themeColors.spacing.sm};
 
     @media (max-width: ${themeColors.breakpoints.laptop}) {
         grid-template-columns: repeat(2, 1fr);
@@ -42,7 +40,7 @@ const StatsContainer = styled(motion.div)`
     @media (max-width: ${themeColors.breakpoints.tablet}) {
         grid-template-columns: 1fr;
         gap: ${themeColors.spacing.xl};
-        padding: 1rem;
+        padding: 0;
     }
 `;
 
@@ -53,7 +51,7 @@ const StatCard = styled(motion.div)`
         ${themeColors.colors.black.background} 100%
     );
     backdrop-filter: blur(20px);
-    border-radius: 20px;
+    border-radius: ${themeColors.radiusSizes.xl};
     padding: ${themeColors.spacing.lg};
     border: 1px solid rgba(255, 255, 255, 0.08);
     position: relative;
@@ -274,35 +272,35 @@ export default function Statistics() {
         {
             id: 'speakers',
             title: t('statisticsPage.statisticsBody.users.title'),
-            value: stats?.data.totalSpeakers || 0,
+            value: stats?.totalSpeakers || 0,
             suffix: '+',
             description: t('statisticsPage.statisticsBody.users.description'),
             icon: '👨‍💼',
             badge: t('statisticsPage.statisticsBody.badges.active'),
             badgeClass: 'active',
-            progress: { current: stats?.data.totalSpeakers ?? 0, target: 50 },
+            progress: { current: stats?.totalSpeakers ?? 0, target: 50 },
         },
         {
             id: 'events',
             title: t('statisticsPage.statisticsBody.meetups.title'),
-            value: stats?.data.totalEvents,
+            value: stats?.totalEvents,
             suffix: '+',
             description: t('statisticsPage.statisticsBody.meetups.description'),
             icon: '🎪',
             badge: t('statisticsPage.statisticsBody.badges.growing'),
             badgeClass: 'growing',
-            progress: { current: stats?.data.totalEvents, target: 20 },
+            progress: { current: stats?.totalEvents, target: 20 },
         },
         {
             id: 'members',
             title: t('statisticsPage.statisticsBody.registeredUsers.title'),
-            value: stats?.data.totalUsers || 60,
+            value: stats?.totalUsers || 60,
             suffix: '+',
             description: t('statisticsPage.statisticsBody.registeredUsers.description'),
             icon: '👥',
             badge: t('statisticsPage.statisticsBody.badges.expanding'),
             badgeClass: 'expanding',
-            progress: { current: stats?.data.totalUsers, target: 300 },
+            progress: { current: stats?.totalUsers, target: 300 },
         },
     ];
 

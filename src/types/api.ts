@@ -18,7 +18,7 @@ export type MeetupRegistration = {
     lastName: string;
     avatarURL: string;
     status: MeetupRegistrationStatus;
-    cancelled: boolean;
+    // cancelled: boolean;
     attendanceReason: string;
     expectation: string;
     interestField: string;

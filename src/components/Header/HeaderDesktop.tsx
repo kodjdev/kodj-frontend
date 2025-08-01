@@ -7,6 +7,8 @@ import { HeaderProps } from '@/types';
 import useAuth from '@/context/useAuth';
 import { Globe, User2 } from 'lucide-react';
 import Card from '@/components/Card/Card';
+import { useTranslation } from 'react-i18next';
+import { TokenStorage } from '@/utils/tokenStorage';
 
 type LanguageMenuProps = {
     isOpen: boolean;
@@ -162,6 +164,19 @@ const UserAvatar = styled.div`
     }
 `;
 
+const BetaBadge = styled.span`
+    background-color: ${themeColors.colors.status.beta.main};
+    color: ${themeColors.colors.neutral.black};
+    font-size: 9px;
+    font-weight: 600;
+    padding: 2px 9px;
+    border-radius: 4px;
+    position: absolute;
+    top: -14px;
+    right: -25px;
+    border: 0.5px solid ${themeColors.colors.status.beta.main};
+`;
+
 /**
  * Desktop Header component
  * @param handleLangChange - Callback function to handle language changes
@@ -177,7 +192,12 @@ export default function HeaderDesktop({
     isAuthenticated,
     langMenuRef,
 }: HeaderProps) {
+    const { t } = useTranslation('home');
+
     const { user } = useAuth();
+    const wasAuthenticated = localStorage.getItem('wasAuthenticated') === 'true';
+    const hasValidToken = TokenStorage.getAccessToken();
+    const showAsAuthenticated = isAuthenticated || (wasAuthenticated && hasValidToken);
 
     return (
         <HeaderOuterContainer>
@@ -189,16 +209,20 @@ export default function HeaderDesktop({
                 </LogoContainer>
 
                 <Navigation>
-                    <NavLink to="/about">About Us</NavLink>
-                    <NavLink to="/news">News</NavLink>
-                    <NavLink to="/events">Events</NavLink>
+                    <NavLink to="/about">{t('header.nav.aboutUs')}</NavLink>
+                    <NavLink to="/news">{t('header.nav.news')}</NavLink>
+                    <NavLink to="/events">{t('header.nav.events')}</NavLink>
+                    <NavLink to="/jobs" style={{ position: 'relative' }}>
+                        {t('header.nav.jobs')}
+                        <BetaBadge>NEW</BetaBadge>
+                    </NavLink>
                 </Navigation>
 
                 <AuthButtons>
                     <LanguageToggle ref={langMenuRef}>
                         <LanguageButton variant="text" size="mini" onClick={toggleLangMenu}>
                             <Globe size={16} />
-                            {currentLang === 'en' ? 'English' : 'Uzbek'}
+                            {currentLang === 'en' ? t('header.languages.english') : t('header.languages.uzbek')}
                         </LanguageButton>
 
                         {langMenuOpen && (
@@ -209,7 +233,7 @@ export default function HeaderDesktop({
                                     onClick={() => handleLangChange('en')}
                                     isActive={currentLang === 'en'}
                                 >
-                                    English
+                                    {t('header.languages.english')}
                                 </LanguageOption>
                                 <LanguageOption
                                     variant="text"
@@ -217,30 +241,28 @@ export default function HeaderDesktop({
                                     onClick={() => handleLangChange('uz')}
                                     isActive={currentLang === 'uz'}
                                 >
-                                    Uzbek
+                                    {t('header.languages.uzbek')}
                                 </LanguageOption>
                             </LanguageMenu>
                         )}
                     </LanguageToggle>
-                    {isAuthenticated ? (
+                    {showAsAuthenticated ? (
                         <Link to={'/mypage'}>
                             <UserAvatar>
-                                {user?.data.imageUrl ? (
-                                    <img src={user?.data.imageUrl} alt={`${user.data.firstName || 'User'}'s Avatar`} />
+                                {user?.imageUrl ? (
+                                    <img src={user.imageUrl} alt={`${user.firstName || 'User'}'s Avatar`} />
                                 ) : (
                                     <User2
                                         size={20}
                                         color={themeColors.colors.neutral.white}
-                                        style={{
-                                            padding: '4px',
-                                        }}
+                                        style={{ padding: '4px' }}
                                     />
                                 )}
                             </UserAvatar>
                         </Link>
                     ) : (
                         <Button asLink to="/login" variant="light" size="mini">
-                            login
+                            {t('header.auth.login')}
                         </Button>
                     )}
                 </AuthButtons>

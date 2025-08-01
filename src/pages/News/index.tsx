@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import styled, { css } from 'styled-components';
-import { Calendar, Bookmark, MessageSquare, ThumbsUp } from 'lucide-react';
+import { Calendar, NotepadText } from 'lucide-react';
 import themeColors from '@/tools/themeColors';
 import Card from '@/components/Card/Card';
 import Input from '@/components/Input/Input';
@@ -13,9 +13,11 @@ import CopyLink from '@/components/CopyLink/CopyLink';
 import defaultImg from '@/static/icons/default.jpg';
 import PageLoading from '@/components/Loading/LoadingAnimation';
 import { useRecoilValue } from 'recoil';
-import { meetupNewsAtom, newsCacheStatusAtom, socialNewsAtom, techNewsAtom } from '@/atoms/news';
+import { newsCacheStatusAtom, techNewsAtom } from '@/atoms/news';
+import EmptyState from '@/components/EmptyState';
+import { useTranslation } from 'react-i18next';
 
-export type TagVariant = 'default' | 'programming' | 'ai' | 'development';
+export type TagVariant = 'default' | 'programming' | 'ai' | 'development' | 'software' | 'frontend' | 'backend';
 
 export enum FilterTypes {
     TECH = 'TECH',
@@ -27,6 +29,17 @@ const TAG_VARIANT_MAP: Record<string, TagVariant> = {
     programming: 'programming',
     ai: 'ai',
     development: 'development',
+    software: 'software',
+    frontend: 'development',
+    backend: 'development',
+    javascript: 'programming',
+    react: 'programming',
+};
+
+const NEWS_TYPE_TAGS = {
+    TECH: ['AI', 'Programming', 'Software', 'Frontend', 'Backend', 'JavaScript', 'React'],
+    SOCIAL: ['Meetup', 'Gathering', 'Social Gathering', 'Sports', 'Community', 'Networking'],
+    MEETUP: ['Event', 'News Update', 'Announcement', 'Workshop', 'Conference', 'Seminar'],
 };
 
 const Container = styled.div`
@@ -34,8 +47,7 @@ const Container = styled.div`
     margin: 0 auto;
 
     @media (max-width: ${themeColors.breakpoints.mobile}) {
-        padding: 0 ${themeColors.spacing.sm};
-        padding-top: ${themeColors.spacing.md};
+        padding-top: 0;
     }
 `;
 
@@ -75,7 +87,7 @@ const FilterButton = styled(Button)<{ isActive: boolean }>`
 
     @media (max-width: ${themeColors.breakpoints.mobile}) {
         font-size: ${themeColors.typography.body.xsmall.fontSize}px;
-        padding: 3px 6px !important;
+        padding: 6px 10px !important;
     }
 `;
 
@@ -93,11 +105,12 @@ const SearchBar = styled.div`
     }
 `;
 
-const NewsGrid = styled.div`
+const NewsGrid = styled.div<{ itemCount: number }>`
     display: flex;
     flex-direction: column;
     gap: ${themeColors.spacing.xl};
     padding-bottom: ${themeColors.spacing.xxl};
+    min-height: ${({ itemCount }) => (itemCount <= 2 ? '70vh' : 'auto')};
 `;
 
 const NewsCard = styled(Card)`
@@ -161,7 +174,7 @@ const NewsTitle = styled.h2`
     color: ${themeColors.colors.neutral.white};
     font-size: ${themeColors.typography.headings.desktop.h3.fontSize}px;
     font-weight: ${themeColors.typography.headings.desktop.h3.fontWeight};
-    margin-bottom: ${themeColors.spacing.md};
+    margin-bottom: ${themeColors.spacing.sm};
     line-height: 1.4;
     margin-top: 0;
 
@@ -224,7 +237,7 @@ const MetaItem = styled.div`
 const TagList = styled.div`
     display: flex;
     gap: ${themeColors.spacing.xs};
-    margin-bottom: ${themeColors.spacing.md};
+    margin-bottom: 0;
     flex-wrap: wrap;
 `;
 
@@ -290,16 +303,20 @@ const NewsCardLink = styled(Link)`
     text-decoration: none;
     color: inherit;
     display: block;
-    flex: 1;
     border-radius: 17px;
     overflow: hidden;
 
     &:hover {
-        background-color: ${themeColors.colors.gray.inputTag};
-        box-shadow: 0 2px 8px ${themeColors.colors.gray.inputTag};
         transform: translateY(-2px);
         transition: all 0.2s ease;
+        background-color: ${themeColors.colors.gray.inputTag};
+        box-shadow: 0 2px 8px ${themeColors.colors.gray.inputTag};
     }
+
+    &:hover ${NewsCard} {
+        box-shadow: 0 2px 10px ${themeColors.colors.gray.inputTag};
+    }
+
     &:active {
         background-color: ${themeColors.colors.gray.inputTag};
         box-shadow: 0 2px 10px ${themeColors.colors.gray.inputTag};
@@ -314,6 +331,14 @@ const ReadTimeText = styled.span`
     margin-left: ${themeColors.spacing.md};
 `;
 
+const EmptyStateContainer = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    padding: ${themeColors.spacing.xl};
+`;
+
 /**
  * NewsList Component - Root Page Component
  * This component displays a list of news articles with filtering and search functionality.
@@ -324,6 +349,8 @@ const ReadTimeText = styled.span`
  * @param {string | null} activeTag - The currently selected tag for filtering.
  */
 export default function NewsList() {
+    const { t } = useTranslation('news');
+    const navigate = useNavigate();
     const [activeCategory, setActiveCategory] = useState<FilterTypes>(FilterTypes.TECH);
     const [activeTag, setActiveTag] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
@@ -333,8 +360,8 @@ export default function NewsList() {
     const hasFetched = useRef(false);
 
     const techNews = useRecoilValue(techNewsAtom);
-    const meetupNews = useRecoilValue(meetupNewsAtom);
-    const socialNews = useRecoilValue(socialNewsAtom);
+    // const meetupNews = useRecoilValue(meetupNewsAtom);
+    // const socialNews = useRecoilValue(socialNewsAtom);
     const cacheStatus = useRecoilValue(newsCacheStatusAtom);
 
     const { formatDate } = useFormatDate();
@@ -343,16 +370,16 @@ export default function NewsList() {
     const getCurrentNews = () => {
         switch (activeCategory) {
             case FilterTypes.TECH:
+                /* this will have the all news from API */
                 return techNews;
             case FilterTypes.MEETUP:
-                return meetupNews;
+                return techNews.filter((news) => news.type === 'MEETUP');
             case FilterTypes.SOCIAL:
-                return socialNews;
+                return techNews.filter((news) => news.type === 'SOCIAL');
             default:
-                return [];
+                return techNews;
         }
     };
-
     const news = getCurrentNews();
 
     const filteredNews = news.filter((newsItem) => {
@@ -372,16 +399,16 @@ export default function NewsList() {
         hasFetched.current = true;
 
         const fetchNews = async () => {
-            const cacheInfo = cacheStatus[activeCategory];
+            const cacheInfo = cacheStatus[FilterTypes.TECH];
 
             if (cacheInfo.loaded) {
-                console.log(`Using cached ${activeCategory} news`);
+                console.log(`Using cached TECH news`);
                 return;
             }
 
             try {
                 setLoading(true);
-                await newsService.getAllNews(activeCategory);
+                await newsService.getAllNews(FilterTypes.TECH);
             } catch (error) {
                 console.error('Error fetching news:', error);
             } finally {
@@ -390,7 +417,7 @@ export default function NewsList() {
         };
 
         fetchNews();
-    }, [activeCategory]);
+    }, []);
 
     useEffect(() => {
         setVisibleCount(3);
@@ -410,39 +437,50 @@ export default function NewsList() {
         setSearchTerm(e.target.value);
     };
 
+    const translateTag = (tag: string): string => {
+        const tagKey = tag.toLowerCase().replace(/\s+/g, '-');
+        const translatedTag = t(`tags.${tagKey}`, { defaultValue: tag });
+        return translatedTag;
+    };
+
+    const getTagsForNewsType = (type: string, count: number = 3) => {
+        const availableTags = NEWS_TYPE_TAGS[type as keyof typeof NEWS_TYPE_TAGS] || NEWS_TYPE_TAGS.TECH;
+        return availableTags.sort(() => 0.5 - Math.random()).slice(0, count);
+    };
+
     return (
         <Container>
             <SearchContainer>
                 <CategoryFilters>
                     <FilterButton
-                        isActive={activeCategory === 'TECH' && !activeTag}
+                        isActive={activeCategory === FilterTypes.TECH && !activeTag}
                         onClick={() => {
                             setActiveCategory(FilterTypes.TECH);
                             setActiveTag(null);
                         }}
-                        size="mini"
+                        size="md"
                     >
-                        All
+                        {t('filters.all')}
                     </FilterButton>
                     <FilterButton
-                        isActive={activeCategory === 'MEETUP' && !activeTag}
+                        isActive={activeCategory === FilterTypes.MEETUP && !activeTag}
                         onClick={() => {
                             setActiveCategory(FilterTypes.MEETUP);
                             setActiveTag(null);
                         }}
                         size="mini"
                     >
-                        Meetup
+                        {t('filters.meetup')}
                     </FilterButton>
                     <FilterButton
-                        isActive={activeCategory === 'SOCIAL' && !activeTag}
+                        isActive={activeCategory === FilterTypes.SOCIAL && !activeTag}
                         onClick={() => {
                             setActiveCategory(FilterTypes.SOCIAL);
                             setActiveTag(null);
                         }}
                         size="mini"
                     >
-                        Social
+                        {t('filters.social')}
                     </FilterButton>
                 </CategoryFilters>
                 <SearchBar>
@@ -467,9 +505,9 @@ export default function NewsList() {
                 </SearchBar>
             </SearchContainer>
 
-            <NewsGrid>
+            <NewsGrid itemCount={visibleNews.length}>
                 {loading ? (
-                    <PageLoading message="Loading news articles..." />
+                    <PageLoading message={t('search.loadingMessage')} />
                 ) : filteredNews.length > 0 ? (
                     <>
                         {visibleNews.map((newsItem) => (
@@ -478,23 +516,38 @@ export default function NewsList() {
                                 <NewsCard key={newsItem.id}>
                                     <NewsCardContent>
                                         <NewsCardMain>
-                                            <NewsTitle>{newsItem.title}</NewsTitle>
+                                            <div>
+                                                <div
+                                                    style={{
+                                                        display: 'flex',
+                                                        alignItems: 'center',
+                                                        gap: themeColors.spacing.xs,
+                                                        marginBottom: themeColors.spacing.sm,
+                                                    }}
+                                                >
+                                                    <Tag variant="ai" style={{ fontSize: '10px', padding: '2px 8px' }}>
+                                                        {newsItem.type}
+                                                    </Tag>
+                                                </div>
+                                                <NewsTitle>{newsItem.title}</NewsTitle>
+                                            </div>
 
                                             <TagList>
-                                                {newsItem.tags?.map((tag, index) => (
-                                                    <Tag
-                                                        key={`${newsItem.id}-tag-${index}`}
-                                                        variant={TAG_VARIANT_MAP[tag.toLowerCase()] || 'default'}
-                                                    >
-                                                        {tag}
-                                                    </Tag>
-                                                )) || (
-                                                    <>
-                                                        <Tag variant="default">JavaScript</Tag>
-                                                        <Tag variant="default">Frontend</Tag>
-                                                        <Tag variant="programming">Programming</Tag>
-                                                    </>
-                                                )}
+                                                {(() => {
+                                                    const tagsToShow =
+                                                        newsItem.tags && newsItem.tags.length > 0
+                                                            ? newsItem.tags
+                                                            : getTagsForNewsType(newsItem.type, 3);
+
+                                                    return tagsToShow.map((tag, index) => (
+                                                        <Tag
+                                                            key={`${newsItem.id}-tag-${index}`}
+                                                            variant={TAG_VARIANT_MAP[tag.toLowerCase()] || 'default'}
+                                                        >
+                                                            {translateTag(tag)}
+                                                        </Tag>
+                                                    ));
+                                                })()}
                                             </TagList>
                                             <NewsDescription>{newsItem.content.substring(0, 70)}...</NewsDescription>
 
@@ -509,7 +562,7 @@ export default function NewsList() {
                                                     />
                                                     {formatDate(newsItem.createdAt) || '2025.05.18'}
 
-                                                    <ReadTimeText>3 min read</ReadTimeText>
+                                                    <ReadTimeText>3 {t('readTime')}</ReadTimeText>
                                                 </MetaItem>
                                                 <div style={{ display: 'flex', gap: themeColors.spacing.sm }}>
                                                     <InteractionButton>
@@ -519,7 +572,7 @@ export default function NewsList() {
                                                             showText={false}
                                                         />
                                                     </InteractionButton>
-                                                    <InteractionButton>
+                                                    {/* <InteractionButton>
                                                         <Bookmark size={16} />
                                                     </InteractionButton>
                                                     <InteractionButton>
@@ -529,7 +582,7 @@ export default function NewsList() {
                                                     <InteractionButton>
                                                         <ThumbsUp size={16} />
                                                         <span>100</span>
-                                                    </InteractionButton>
+                                                    </InteractionButton> */}
                                                 </div>
                                             </NewsCardMeta>
                                         </NewsCardMain>
@@ -561,13 +614,30 @@ export default function NewsList() {
                                 }}
                             >
                                 <Button size="sm" variant="signOut" fullWidth={false} onClick={handleLoadMore}>
-                                    Load More ...
+                                    {t('loadMore')}
                                 </Button>
                             </div>
                         )}
                     </>
                 ) : (
-                    <div>No news found.</div>
+                    <EmptyStateContainer>
+                        <EmptyState
+                            title={t('emptyState.noNewsTitle')}
+                            description={t('emptyState.noNewsDescription')}
+                            buttonText={t('emptyState.tryAgainButton')}
+                            buttonVariant="outline"
+                            buttonSize="mini"
+                            onButtonClick={() => {
+                                setSearchTerm('');
+                                setActiveTag(null);
+                                setActiveCategory(FilterTypes.TECH);
+                                navigate('/');
+                            }}
+                            icon={<NotepadText size={48} />}
+                            showLogo={false}
+                            showIcon={true}
+                        />
+                    </EmptyStateContainer>
                 )}
             </NewsGrid>
         </Container>

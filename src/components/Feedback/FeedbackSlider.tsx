@@ -32,36 +32,39 @@ const Container = styled.div`
     padding: 0;
 
     @media (max-width: ${themeColors.breakpoints.tablet}) {
-        padding: 0 ${themeColors.spacing.md};
+        padding: 0;
     }
 `;
 
 const SectionHeader = styled.div`
-    text-align: center;
-    margin-bottom: ${themeColors.spacing.md};
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    margin-top: 30px;
 
-    @media (max-width: ${themeColors.breakpoints.tablet}) {
-        margin-bottom: ${themeColors.spacing.xxl};
+    @media (max-width: ${themeColors.breakpoints.mobile}) {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 20px;
     }
 `;
 
 const SectionTitle = styled(motion.h2)`
-    color: ${themeColors.colors.neutral.white};
     font-size: ${themeColors.typography.headings.desktop.h2.fontSize}px;
     font-weight: ${themeColors.typography.headings.desktop.h2.fontWeight};
-    justify-content: flex-start;
-    display: flex;
     margin: 0;
-    padding-bottom: 0;
-    flex-wrap: wrap;
-    text-align: left;
 
-    @media (max-width: ${themeColors.breakpoints.tablet}) {
-        font-size: ${themeColors.typography.headings.mobile.h3.fontSize}px;
-        text-align: center;
-        line-height: 1.2;
-        flex-direction: column;
-        gap: ${themeColors.spacing.xs};
+    span {
+        color: ${themeColors.colors.neutral.white};
+    }
+
+    span:last-child {
+        color: ${themeColors.colors.gray.main};
+    }
+
+    @media (max-width: ${themeColors.breakpoints.mobile}) {
+        font-size: ${themeColors.typography.headings.mobile.h2.fontSize}px;
     }
 `;
 
@@ -148,8 +151,9 @@ export default function FeedbackSlider({ feedbacks, speed = 30 }: FeedbackSlider
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.8 }}
                         >
-                            <GrayText>Participant's</GrayText>&nbsp;Feedback
-                            <GrayText>&nbsp;about the Meetups</GrayText>
+                            <span>What our </span>
+                            <GrayText>community says</GrayText>
+                            <span> about us</span>
                         </SectionTitle>
                     </SectionHeader>
 

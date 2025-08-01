@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { HiOutlineArrowLeft } from 'react-icons/hi';
 import themeColors from '@/tools/themeColors';
 import Button from '@/components/Button/Button';
+import { useTranslation } from 'react-i18next';
 
 type OtpVerificationProps = {
     email: string;
@@ -20,54 +21,60 @@ const Container = styled.div`
     align-items: flex-start;
     width: 100%;
     max-width: 400px;
-`;
 
-const BackButton = styled.button`
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    background: none;
-    border: none;
-    color: ${themeColors.blue};
-    cursor: pointer;
-    font-size: 14px;
-    padding: 0;
-
-    &:hover {
-        text-decoration: underline;
+    @media (max-width: ${themeColors.breakpoints.mobile}) {
+        gap: 16px;
+        align-items: center;
     }
 `;
+
 const EmailInfo = styled.div`
     color: ${themeColors.gray_text};
     font-size: 14px;
     text-align: left;
+    width: 100%;
 
     strong {
         color: ${themeColors.white};
+    }
+
+    @media (max-width: ${themeColors.breakpoints.mobile}) {
+        text-align: center;
+        font-size: 13px;
     }
 `;
 
 const Form = styled.form`
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 25px;
+    width: 100%;
+
+    @media (max-width: ${themeColors.breakpoints.mobile}) {
+        gap: 16px;
+    }
 `;
 
 const OtpInputContainer = styled.div`
     display: flex;
-    gap: 15px;
+    gap: 24px;
     justify-content: center;
-    margin: 10px;
+    margin: 10px 0;
+
+    @media (max-width: ${themeColors.breakpoints.mobile}) {
+        gap: 8px;
+        margin: 8px 0;
+    }
 `;
 
 const DigitInput = styled.input<{ hasValue: boolean }>`
-    width: 60px;
-    height: 60px;
+    width: 50px;
+    height: 50px;
     border: 0.5px solid ${(props) => (props.hasValue ? themeColors.colors.primary.main : themeColors.colors.gray.line)};
     border-radius: 12px;
     background: ${themeColors.colors.gray.background};
     color: ${themeColors.white};
-    font-size: 24px;
+    font-size: 20px;
     font-weight: 600;
     text-align: center;
     outline: none;
@@ -84,9 +91,39 @@ const DigitInput = styled.input<{ hasValue: boolean }>`
     }
 
     @media (max-width: ${themeColors.breakpoints.mobile}) {
-        width: 45px;
-        height: 45px;
-        font-size: 18px;
+        width: 42px;
+        height: 42px;
+        font-size: 16px;
+        border-radius: 10px;
+    }
+
+    @media (max-width: 360px) {
+        width: 38px;
+        height: 38px;
+        font-size: 14px;
+    }
+`;
+
+const BackButton = styled.button`
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: none;
+    border: none;
+    color: ${themeColors.blue};
+    cursor: pointer;
+    font-size: 14px;
+    padding: 0;
+    align-self: flex-start;
+
+    &:hover {
+        text-decoration: underline;
+    }
+
+    @media (max-width: ${themeColors.breakpoints.mobile}) {
+        font-size: 13px;
+        gap: 6px;
+        align-self: center;
     }
 `;
 
@@ -110,6 +147,7 @@ export default function OtpVerification({
 }: OtpVerificationProps) {
     const [digits, setDigits] = useState(['', '', '', '', '']);
     const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
+    const { t } = useTranslation('auth');
 
     useEffect(() => {
         const otpValue = digits.join('');
@@ -168,11 +206,11 @@ export default function OtpVerification({
         <Container>
             <BackButton onClick={onBackClick}>
                 <HiOutlineArrowLeft size={16} />
-                Back to login
+                {t('otpVerification.backToLogin')}
             </BackButton>
 
             <EmailInfo>
-                OTP sent to <strong>{email}</strong>
+                {t('otpVerification.otpSentTo')} <strong>{email}</strong>
             </EmailInfo>
 
             <Form onSubmit={handleSubmit}>
@@ -190,20 +228,20 @@ export default function OtpVerification({
                             onKeyDown={(e) => handleKeyDown(index, e)}
                             onPaste={handlePaste}
                             placeholder=""
-                            aria-label={`OTP digit ${index + 1}`}
+                            aria-label={`${t('otpVerification.otpDigitLabel')} ${index + 1}`}
                         />
                     ))}
                 </OtpInputContainer>
 
                 <Button
-                    color="blue"
+                    variant="primary"
                     size="md"
                     fullWidth={true}
                     htmlType="submit"
                     disabled={isLoading || !isFormValid}
                     isDisabled={!isFormValid}
                 >
-                    {isLoading ? 'VERIFYING...' : 'VERIFY OTP'}
+                    {isLoading ? t('otpVerification.verifying') : t('otpVerification.verifyOtp')}
                 </Button>
             </Form>
         </Container>

@@ -1,0 +1,93 @@
+{
+    "title": "Become a Speaker at",
+    "subtitle": "Share your expertise and inspire the developer community in Seoul",
+    "applyToSpeak": "Apply to Speak",
+    "formFields": {
+        "email": "Email Address",
+        "fullName": "Full Name",
+        "jobPosition": "Job Title/Position",
+        "phone": "Phone Number",
+        "yearsOfExperience": "Years of Experience",
+        "expertiseField": "Expertise Field",
+        "topics": "Presentation Topics",
+        "linkedinUrl": "LinkedIn Profile",
+        "githubUrl": "GitHub Profile",
+        "portfolioUrl": "Portfolio/Website",
+        "submitButton": "Submit Speaker Application"
+    },
+    "placeholders": {
+        "email": "speaker@company.com",
+        "fullName": "John Doe",
+        "jobPosition": "Senior Software Engineer",
+        "phone": "01012345678",
+        "topics": "Please describe specific themes or topics you would like to cover in our meetups",
+        "linkedinUrl": "https://linkedin.com/in/your-profile",
+        "githubUrl": "https://github.com/your-username",
+        "portfolioUrl": "https://your-portfolio.com"
+    },
+    "experienceOptions": {
+        "selectExperience": "Select your experience level",
+        "lessThanOneYear": "Less than 1 year",
+        "oneToThreeYears": "1-3 years",
+        "threeToFiveYears": "3-5 years",
+        "fiveToTenYears": "5-10 years",
+        "moreThanTenYears": "10+ years"
+    },
+    "expertiseOptions": {
+        "selectField": "Select your expertise field",
+        "frontend": "Frontend Development",
+        "backend": "Backend Development",
+        "fullstack": "Full Stack Development",
+        "mobile": "Mobile Development",
+        "devops": "DevOps",
+        "data": "Data Science/Engineering",
+        "ai": "AI/Machine Learning",
+        "blockchain": "Blockchain",
+        "security": "Cybersecurity",
+        "gamedev": "Game Development",
+        "other": "Other"
+    },
+    "validation": {
+        "emailRequired": "Email address is required",
+        "emailFormat": "Please enter a valid email address",
+        "fullNameRequired": "Full name is required",
+        "fullNameMinLength": "Full name must be at least 2 characters",
+        "jobPositionRequired": "Job position is required",
+        "phoneRequired": "Phone number is required",
+        "phoneFormat": "Please enter a valid phone number (01012345678)",
+        "yearsOfExperienceRequired": "Please select your years of experience",
+        "expertiseFieldRequired": "Please select your expertise field",
+        "topicsRequired": "Please describe your presentation topics",
+        "topicsMinLength": "Please provide more details about your topics (minimum 10 characters)",
+        "linkedinUrlRequired": "LinkedIn profile is required",
+        "linkedinUrlFormat": "Please enter a valid LinkedIn URL",
+        "githubUrlRequired": "GitHub profile is required",
+        "githubUrlFormat": "Please enter a valid GitHub URL",
+        "portfolioUrlRequired": "Portfolio/website URL is required",
+        "portfolioUrlFormat": "Please enter a valid website URL"
+    },
+    "whyBecomeSpeaker": {
+        "title": "Why Become a Speaker?",
+        "reasons": [
+            "Share your knowledge and expertise with the developer community",
+            "Build your professional network and connect with like-minded developers",
+            "Enhance your public speaking skills and boost your career",
+            "Contribute to the growth of the tech ecosystem in Seoul",
+            "Gain visibility and recognition in your field",
+            "Learn from other speakers and attendees",
+            "Get feedback on your ideas and projects"
+        ],
+        "conclusion": "Join our community of speakers and help shape the future of technology in Seoul!"
+    },
+    "successModal": {
+        "title": "Application Submitted Successfully!",
+        "message": "Thank you for your interest in becoming a speaker. Your application has been submitted and our team will review it shortly.",
+        "footer": "We'll contact you within 5-7 business days.",
+        "button": "Back to Home"
+    },
+    "messages": {
+        "submitting": "Submitting your application...",
+        "submitSuccess": "Application submitted successfully!",
+        "submitError": "Failed to submit application. Please try again."
+    }
+}

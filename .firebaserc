@@ -2,6 +2,17 @@
     "projects": {
         "kodj-web": "kodj-web-react"
     },
-    "targets": {},
+    "targets": {
+        "kodj-web-react": {
+            "hosting": {
+                "production": [
+                    "kodj-web-react"
+                ],
+                "staging": [
+                    "kodj-web-react-staging"
+                ]
+            }
+        }
+    },
     "etags": {}
 }

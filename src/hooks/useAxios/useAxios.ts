@@ -1,15 +1,17 @@
-import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
-import { useCallback } from 'react';
-import { NavigateFunction, useNavigate } from 'react-router-dom';
+import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
+import { useCallback, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useSetRecoilState } from 'recoil';
 import errorAtom from '@/atoms/errors';
 import { ApiResponse } from '@/types/fetch';
+import { TokenStorage } from '@/utils/tokenStorage';
 
 type AxiosOptions<T> = {
     endpoint: string;
     method?: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
     data?: Record<string, unknown> | string | null;
     params?: Record<string, string | number | boolean>;
+    signal?: AbortSignal;
     customHeaders?: Record<string, string>;
     onSuccess?: (response: ApiResponse<T>) => void;
     onError?: (error: Error | unknown) => void;
@@ -23,36 +25,34 @@ export default function useAxios() {
     const navigate = useNavigate();
     const setError = useSetRecoilState(errorAtom);
 
-    const axiosInstance = axios.create({
-        baseURL: apiUrl,
-        withCredentials: true,
-        headers: {
-            'Content-Type': 'application/json',
-        },
-    });
+    const axiosInstance = useMemo(() => {
+        const instance = axios.create({
+            baseURL: apiUrl,
+            withCredentials: true,
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
 
-    const setupInterceptors = (axiosInstance: AxiosInstance, navigate: NavigateFunction) => {
-        axiosInstance.interceptors.response.use(
+        instance.interceptors.response.use(
             (response) => response,
             (error) => {
-                /* here we only handle 401 for authentication endpoints, not all 401s */
                 if (
                     error.response?.status === 401 &&
                     !error.config?.url?.includes('verify-login-otp') &&
                     !error.config?.url?.includes('login')
                 ) {
-                    localStorage.removeItem('access_token');
-                    localStorage.removeItem('refresh_token');
+                    TokenStorage.clearTokens();
                     navigate('/login');
                 }
                 return Promise.reject(error);
             },
         );
-    };
 
-    setupInterceptors(axiosInstance, navigate);
+        return instance;
+    }, [navigate]);
 
-    return useCallback(
+    const fetchData = useCallback(
         async <T = unknown>({
             endpoint,
             method = 'GET',
@@ -65,7 +65,6 @@ export default function useAxios() {
             skipGlobalErrorHandler = false,
         }: AxiosOptions<T> & { skipGlobalErrorHandler?: boolean }): Promise<ApiResponse<T>> => {
             const url = endpoint;
-            console.log(`useAxios: Making ${method} request to ${url}`);
 
             try {
                 const config: AxiosRequestConfig = {
@@ -88,16 +87,16 @@ export default function useAxios() {
                 }
 
                 const response: AxiosResponse = await axiosInstance(config);
-                console.log(`useAxios: Received response with status ${response.status}`);
 
                 /* format the response to match expected API response structure */
                 const apiResponse: ApiResponse<T> = {
-                    data: response.data,
+                    data: response.data?.data as T,
                     statusCode: response.status,
-                    message: response.data.message || 'success',
+                    message: response.data?.message || 'success',
                 };
-
-                console.log('useAxios: Parsed response data:', apiResponse);
+                if (response.data?.data === undefined) {
+                    console.warn('useAxios: Response data structure does not match expected format.');
+                }
 
                 if (onSuccess) {
                     onSuccess(apiResponse);
@@ -105,8 +104,6 @@ export default function useAxios() {
 
                 return apiResponse;
             } catch (error: unknown) {
-                console.error(`useAxios error (${method} ${url}):`, error);
-
                 const errorMessage =
                     error instanceof Error
                         ? error.message
@@ -126,6 +123,7 @@ export default function useAxios() {
                 throw error;
             }
         },
-        [setError, axiosInstance],
+        [axiosInstance, setError],
     );
+    return fetchData;
 }

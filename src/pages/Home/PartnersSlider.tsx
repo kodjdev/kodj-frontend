@@ -2,6 +2,8 @@ import themeColors from '@/tools/themeColors';
 import styled, { keyframes } from 'styled-components';
 import wayuLogo from '@/static/icons/wayu.png';
 import lawLogo from '@/static/icons/law.png';
+import hansengLogo from '@/static/icons/haksenguz.svg';
+import ItParkLogo from '@/static/icons/itpark.svg';
 
 const slideAnimation = keyframes`
   0% {
@@ -41,23 +43,24 @@ const Container = styled.div`
 
     &::before {
         left: 0;
-        background: linear-gradient(to right, #000000 0%, #000000 60%, transparent 100%);
+        background: linear-gradient(to right, #000000 0%, #000000 40%, transparent 100%);
     }
 
     &::after {
         right: 0;
-        background: linear-gradient(to left, #000000 0%, #000000 60%, transparent 100%);
+        background: linear-gradient(to left, #000000 0%, #000000 40%, transparent 100%);
     }
 `;
 
 const SliderWrapper = styled.div`
     display: flex;
-    animation: ${slideAnimation} 30s linear infinite;
+    animation: ${slideAnimation} 20s linear infinite;
     width: 200%;
     padding: 0 ${themeColors.spacing.xl};
 
     @media (max-width: ${themeColors.breakpoints.tablet}) {
         padding: 0 ${themeColors.spacing.md};
+        animation: ${slideAnimation} 20s linear infinite;
     }
 `;
 
@@ -79,19 +82,30 @@ const LogoItem = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 0 ${themeColors.spacing.lg};
+    padding: 0 ${themeColors.spacing.md};
+
+    @media (max-width: ${themeColors.breakpoints.tablet}) {
+        padding: 0 ${themeColors.spacing.sm};
+        padding-right: ${themeColors.spacing.xs};
+        min-width: 70px;
+    }
 `;
 
 const LogoContainer = styled.div`
     display: flex;
     align-items: center;
-    justify-content: space-around;
+    justify-content: space-evenly;
     width: 50%;
     min-width: 50%;
+
+    @media (max-width: ${themeColors.breakpoints.tablet}) {
+        justify-content: space-between;
+        padding: 0 ${themeColors.spacing.sm};
+    }
 `;
 
 const LogoSVG = styled.img`
-    height: 32px;
+    height: 34px;
     width: auto;
     max-width: 120px;
     opacity: 0.6;
@@ -112,15 +126,14 @@ const LogoSVG = styled.img`
 const companies = [
     { name: 'Wayu', logo: wayuLogo },
     { name: '금성', logo: lawLogo },
-    { name: 'Apple', logo: 'https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/apple.svg' },
-    { name: 'GitHub', logo: 'https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/github.svg' },
-    { name: 'X', logo: 'https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/x.svg' },
+    { name: 'HaksengUz', logo: hansengLogo },
+    { name: 'IT Park', logo: ItParkLogo },
 ];
 
 export default function PartnersSlider() {
     return (
         <Container>
-            <Title>Trusted by fast-growing companies worldwide</Title>
+            <Title>Our partners and sponsors</Title>
             <SliderWrapper>
                 <LogoContainer>
                     {companies.map((company, index) => (

@@ -1,0 +1,94 @@
+{
+    "login": {
+        "welcomeBack": "Welcome back",
+        "confirmEmail": "Confirm email",
+        "loginToContinueRegistration": "Login to continue registration for:",
+        "email": "Email",
+        "password": "Password",
+        "forgotPassword": "Forgot Password",
+        "loggingIn": "LOGGING IN...",
+        "login": "LOGIN",
+        "or": "OR",
+        "noAccountYet": "No account yet?",
+        "signUpHere": "Sign up here",
+        "signinWith": "Sign in with Google",
+        "messages": {
+            "loggingIn": "Logging in...",
+            "otpSentSuccess": "OTP has been sent to your email",
+            "loginFailed": "Login failed. Please check your credentials.",
+            "verifyingOtp": "Verifying OTP...",
+            "loginSuccessful": "Login successful! Redirecting...",
+            "invalidOtp": "Invalid OTP code. Please check and try again.",
+            "otpExpired": "OTP has expired. Please request a new one.",
+            "verificationFailed": "Verification failed. Please try again.",
+            "noCredentialReceived": "No credential received from Google",
+            "authenticatingWithGoogle": "Authenticating with Google...",
+            "googleLoginSuccess": "Successfully logged in with Google",
+            "googleAuthFailed": "Google authentication failed. Please try again.",
+            "googleLoginFailed": "Google login failed. Please try again.",
+            "forgotPasswordInfo": "Soon we will add this feature to help you reset your password."
+        }
+    },
+    "signup": {
+        "createAccount": "Create an Account",
+        "signupToContinueRegistration": "Sign up to continue registration for:",
+        "email": "Email",
+        "phoneNumber": "Phone Number: 010XXXXXXXX",
+        "continue": "CONTINUE",
+        "signUp": "SIGN UP",
+        "or": "OR",
+        "signupWith": "Sign up with Google",
+        "alreadyHaveAccount": "Already have an account?",
+        "login": "Login",
+        "emailLabel": "Email:",
+        "messages": {
+            "creatingAccount": "Creating account...",
+            "accountCreatedSuccess": "Account created successfully!",
+            "invalidInformation": "Invalid information. Please check your details.",
+            "emailAlreadyExists": "Email already exists. Please use a different email.",
+            "serverError": "Server error. Please try again later.",
+            "registrationFailed": "Registration failed. Please try again.",
+            "checkInformationAndTryAgain": "Please check your information and try again"
+        }
+    },
+    "completeAccount": {
+        "completeProfile": "Complete Your Profile",
+        "subHeading": "Just a few more details to complete your registration with Google",
+        "username": "Username (letters only)",
+        "phoneNumber": "Phone Number: 010XXXXXXXX",
+        "completeRegistration": "Complete Registration",
+        "completingRegistration": "Completing Registration...",
+        "messages": {
+            "credentialNotFound": "Google credential not found. Please try signing up again.",
+            "completingRegistration": "Completing registration...",
+            "registrationComplete": "Registration complete!",
+            "invalidInformation": "Invalid information. Please check your details.",
+            "usernameOrPhoneExists": "Username or phone already exists.",
+            "registrationFailed": "Registration failed. Please try again."
+        }
+    },
+    "otpVerification": {
+        "backToLogin": "Back to login",
+        "otpSentTo": "OTP sent to",
+        "verifyOtp": "VERIFY OTP",
+        "verifying": "VERIFYING...",
+        "otpDigitLabel": "OTP digit"
+    },
+    "loginRoot": {
+        "accountCreatedSuccess": "Account created successfully! Please login with your credentials."
+    },
+    "passwordConfirm": {
+        "password": "Password",
+        "confirmPassword": "Confirm Password",
+        "passwordRequirements": "Password Requirements",
+        "requirements": {
+            "minLength": "At least 8 characters",
+            "upperCase": "One uppercase letter",
+            "lowerCase": "One lowercase letter",
+            "number": "One number",
+            "specialChar": "One special character"
+        },
+        "passwordsDoNotMatch": "Passwords do not match",
+        "creatingAccount": "Creating Account..."
+    }
+}

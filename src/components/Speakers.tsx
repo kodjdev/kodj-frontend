@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import themeColors from '@/tools/themeColors';
-import { FaLinkedin, FaGithub, FaTwitter, FaGlobe, FaUser } from 'react-icons/fa';
+import { FaLinkedin, FaGithub, FaTwitter, FaGlobe } from 'react-icons/fa';
 import { Speaker } from '@/types/speakers';
 import EventCard from '@/components/Card/EventCard';
 
@@ -37,6 +37,7 @@ const CustomEventCard = styled(EventCard)`
         width: 100% !important;
         object-fit: cover !important;
         object-position: center !important;
+        container: content-box !important;
     }
 
     & > div {
@@ -59,21 +60,6 @@ const CustomEventCard = styled(EventCard)`
         margin-bottom: 8px;
         flex-grow: 0;
         flex-shrink: 0;
-    }
-`;
-
-const DefaultUserIcon = styled.div`
-    width: 100%;
-    height: 120px;
-    background-color: #2a2a2a;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 8px 8px 0 0;
-
-    svg {
-        font-size: 48px;
-        color: #666;
     }
 `;
 
@@ -144,22 +130,20 @@ export default function Speakers({ speakers = [] }: SpeakersProps) {
             <SectionTitle>Speakers</SectionTitle>
             <SpeakersGrid>
                 {speakers.map((speaker) => {
-                    const speakerName = speaker.firstName || speaker.username || 'Not given';
+                    const speakerName =
+                        speaker.firstName && speaker.lastName
+                            ? `${speaker.firstName} ${speaker.lastName}`
+                            : speaker.firstName || speaker.lastName || speaker.username || 'Not given';
                     const speakerBio = speaker.bio || speaker.shortDescription || speaker.topic || 'Not given';
-                    const speakerImage = speaker.imageURL;
 
                     return (
                         <CustomEventCard
+                            id={speaker.id}
                             key={speaker.id}
                             title={speakerName}
                             description={speakerBio}
-                            imageUrl={speakerImage}
+                            imageUrl={speaker.imageURL}
                         >
-                            {!speakerImage && (
-                                <DefaultUserIcon>
-                                    <FaUser />
-                                </DefaultUserIcon>
-                            )}
                             {renderSocialIcons(speaker)}
                         </CustomEventCard>
                     );

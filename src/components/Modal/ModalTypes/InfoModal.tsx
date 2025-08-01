@@ -78,7 +78,7 @@ export default function InfoModal({
         }
     };
     const footer = (
-        <div style={{ marginBottom: themeColors.spacing.lg, display: 'flex', justifyContent: 'center', width: '100%' }}>
+        <div style={{ marginBottom: themeColors.spacing.sm, display: 'flex', justifyContent: 'center', width: '100%' }}>
             <Button fullWidth={true} variant="primary" onClick={handleConfirm} size="md">
                 {buttonLabel}
             </Button>

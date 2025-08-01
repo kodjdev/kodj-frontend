@@ -29,6 +29,9 @@ export type RegisterFormData = {
     username: string;
     name: string;
     phone: string;
+    role?: string;
+    firstName?: string;
+    lastName?: string;
 };
 
 export type PaginatedResponse<T> = {

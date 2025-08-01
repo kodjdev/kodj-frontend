@@ -27,11 +27,13 @@
         ]
     },
     "dependencies": {
+        "@emailjs/browser": "^4.4.1",
         "@types/react-responsive": "^8.0.8",
         "@types/react-virtualized": "^9.22.2",
         "antd": "^5.22.2",
         "axios": "^1.8.4",
         "cobe": "^0.6.3",
+        "emailjs": "^4.0.3",
         "firebase": "^11.0.2",
         "firebase-admin": "^13.0.1",
         "framer-motion": "^11.12.0",

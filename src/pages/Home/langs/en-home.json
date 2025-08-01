@@ -10,14 +10,6 @@
             "description": "We connect developers from both countries and serve the best 🤝 of both worlds."
         }
     },
-    "header": {
-        "aboutUs": "About Us",
-        "news": "News",
-        "events": "Events",
-        "speakers": "Speakers",
-        "myPage": "My Page",
-        "login": "Login"
-    },
     "statisticsPage": {
         "statisticsHeader": "Statistics",
         "statisticsHeaderGray": "of KO'DJ",
@@ -84,6 +76,29 @@
             "project6": {
                 "title": "Startup Grind",
                 "description": "A global community of entrepreneurs, hosting events and programs to help startups grow and succeed."
+            }
+        }
+    },
+    "header": {
+        "nav": {
+            "aboutUs": "About Us",
+            "news": "News",
+            "events": "Events",
+            "myPage": "My Page",
+            "jobs": "Jobs"
+        },
+        "languages": {
+            "english": "English",
+            "uzbek": "Uzbek",
+            "title": "Language"
+        },
+        "auth": {
+            "login": "Login",
+            "logout": {
+                "confirmTitle": "Confirm Logout",
+                "confirmMessage": "Are you sure you want to log out?",
+                "confirm": "Yes, log out",
+                "cancel": "Cancel"
             }
         }
     }

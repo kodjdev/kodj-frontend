@@ -4,6 +4,7 @@ import themeColors from '@/tools/themeColors';
 import speakerImage from '@/static/icons/rocket.jpg';
 import Button from '@/components/Button/Button';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 const BannerContainer = styled(motion.div)`
     background-color: ${themeColors.colors.gray.dark};
@@ -92,7 +93,8 @@ const ButtonWrapper = styled.div`
     align-items: center;
 
     @media (max-width: ${themeColors.breakpoints.tablet}) {
-        justify-content: flex-start;
+        justify-content: center;
+        width: 100%;
     }
 `;
 
@@ -116,7 +118,7 @@ const ImageSection = styled.div`
 const StyledButton = styled(Button)`
     background: ${themeColors.colors.neutral.white} !important;
     font-weight: 600;
-    border-radius: 15px;
+    border-radius: ${themeColors.radiusSizes.md};
     text-transform: none;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     transition: all 0.3s ease;
@@ -129,6 +131,11 @@ const StyledButton = styled(Button)`
 
     &:active {
         transform: translateY(0);
+    }
+
+    @media (max-width: ${themeColors.breakpoints.tablet}) {
+        width: 100% !important;
+        max-width: none !important;
     }
 `;
 
@@ -162,27 +169,28 @@ const ImageFallback = styled.div`
 `;
 
 export default function SpeakerRegistrationBanner() {
+    const { t } = useTranslation('benefits');
     const navigate = useNavigate();
 
     return (
         <BannerContainer initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
             <ContentSection>
                 <BannerTitle>
-                    KO'DJda <HighlightText>SPIKER</HighlightText> bo'ling 🚀
+                    {t('speakerBanner.titleBefore')} <HighlightText>{t('speakerBanner.titleHighlight')}</HighlightText>{' '}
+                    {t('speakerBanner.titleAfter')}
                 </BannerTitle>
                 <BannerDescription>
-                    <span>Koreyadagi O'zbek Dasturchilar Jamiyati</span> har oy{' '}
-                    <strong>texnologiya va dasturlash</strong> sohasida tajribali mutahasislar kelajakdagi
-                    uchrashuvimizda spiker bo'lish uchun bu yerda ro'yhatdan o'ting:
+                    <span>{t('speakerBanner.communityName')}</span> {t('speakerBanner.inviteText')}{' '}
+                    <strong>{t('speakerBanner.fieldText')}</strong> {t('speakerBanner.registerText')}
                 </BannerDescription>
                 <ButtonWrapper>
                     <StyledButton
-                        onClick={() => navigate('/speakerRegister')}
-                        size="sm"
+                        onClick={() => navigate('/speakers/register')}
+                        size="md"
                         variant="light"
                         htmlType="button"
                     >
-                        Apply here
+                        {t('speakerBanner.applyButton')}
                     </StyledButton>
                 </ButtonWrapper>
             </ContentSection>

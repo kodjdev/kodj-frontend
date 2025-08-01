@@ -1,4 +1,4 @@
-import { EMAIL_REGEXES, FREE_EMAIL_DOMAINS, PASSWORD_RULES, PHONE_PATTERNS } from '@/utils/patterns';
+import { EMAIL_REGEXES, FREE_EMAIL_DOMAINS, PASSWORD_RULES, PHONE_PATTERNS } from '@/constant/patterns';
 import { useState, useCallback } from 'react';
 
 type ValidationRules = {
@@ -174,8 +174,8 @@ export const useFormValidation = () => {
             return { isValid: false, error: 'Username must be at least 3 characters' };
         }
 
-        if (username.length > 20) {
-            return { isValid: false, error: 'Username must be less than 20 characters' };
+        if (username.length > 40) {
+            return { isValid: false, error: 'Username must be less than 40 characters' };
         }
 
         if (!/^[a-zA-Z\s]+$/.test(username)) {

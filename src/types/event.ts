@@ -17,6 +17,7 @@ export type Event = {
     imageUrl?: string;
     registeredCount?: number;
     maxSeats?: number;
+    provided?: string;
     startTime?: string;
     endTime?: string;
     availableSeats?: number;
@@ -35,6 +36,7 @@ export type EventDetailsResponse = {
     meetupRegistrations: MeetupRegistration[];
     notes: Note[];
     reviews: Review[];
+    provided?: string;
 };
 
 export type EventDetailsApiWrapper = {
@@ -42,3 +44,24 @@ export type EventDetailsApiWrapper = {
     data: EventDetailsResponse;
     statusCode: number;
 };
+
+export type UserRegisteredEventApiResponse = {
+    id: number;
+    title: string;
+    description: string;
+    parking: boolean;
+    location: string;
+    maxSeats: number;
+    availableSeats: number;
+    provided: string;
+    meetupDate: string;
+    organizerId: number;
+    startTime: string;
+    endTime: string;
+    registrationTime: string;
+    imageName: string;
+    imageURL: string;
+    cancelled: boolean;
+};
+
+export type UserRegisteredEventsListResponse = UserRegisteredEventApiResponse[];

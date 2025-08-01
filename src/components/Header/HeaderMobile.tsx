@@ -7,6 +7,8 @@ import { HeaderProps } from '@/types';
 import kodjLogo from '@/static/icons/kodj_new.jpg';
 import useAuth from '@/context/useAuth';
 import { User2 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import { TokenStorage } from '@/utils/tokenStorage';
 
 type MobileMenuProps = {
     isOpen: boolean;
@@ -78,7 +80,7 @@ const MobileMenu = styled.div<MobileMenuProps>`
     top: 0;
     right: 0;
     width: 90%;
-    height: 48vh;
+    height: 60vh;
     background-color: ${themeColors.colors.neutral.black};
     display: flex;
     flex-direction: column;
@@ -104,6 +106,9 @@ const MobileNavLink = styled(RouterNavLink)`
     font-size: 18px;
     padding: 12px 0;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    gap: 8px;
 
     &.active {
         color: ${themeColors.colors.primary.main};
@@ -113,6 +118,18 @@ const MobileNavLink = styled(RouterNavLink)`
     &:hover {
         color: ${themeColors.colors.primary.main};
         transition: color 0.2s ease;
+    }
+
+    .beta-badge {
+        background-color: ${themeColors.colors.status.beta.main};
+        color: ${themeColors.colors.neutral.black};
+        font-size: 9px;
+        font-weight: 600;
+        padding: 2px 8px;
+        border-radius: 4px;
+        border: 0.5px solid ${themeColors.colors.status.beta.main};
+        white-space: nowrap;
+        flex-shrink: 0;
     }
 `;
 
@@ -248,7 +265,12 @@ export default function HeaderMobile({
     langMenuOpen,
     toggleLangMenu,
 }: HeaderProps) {
+    const { t } = useTranslation('home');
+
     const { user } = useAuth();
+    const wasAuthenticated = localStorage.getItem('wasAuthenticated') === 'true';
+    const hasValidToken = TokenStorage.getAccessToken();
+    const showAsAuthenticated = isAuthenticated || (wasAuthenticated && hasValidToken);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     const toggleMenu = () => {
@@ -279,22 +301,26 @@ export default function HeaderMobile({
                 <MobileMenu isOpen={isMenuOpen}>
                     <MobileNavigation>
                         <MobileNavLink to="/about" onClick={closeMenu}>
-                            About Us
+                            {t('header.nav.aboutUs')}
                         </MobileNavLink>
                         <MobileNavLink to="/news" onClick={closeMenu}>
-                            News
+                            {t('header.nav.news')}
                         </MobileNavLink>
                         <MobileNavLink to="/events" onClick={closeMenu}>
-                            Events
+                            {t('header.nav.events')}
+                        </MobileNavLink>
+                        <MobileNavLink to="/jobs" onClick={closeMenu}>
+                            {t('header.nav.jobs')}
+                            <span className="beta-badge">NEW</span>
                         </MobileNavLink>
                     </MobileNavigation>
 
                     <BottomSection>
                         <LanguageSection>
-                            <LanguageTitle>Language</LanguageTitle>
+                            <LanguageTitle>{t('header.languages.title')}</LanguageTitle>
                             <LanguageToggle ref={langMenuRef}>
                                 <LanguageButton onClick={toggleLangMenu}>
-                                    {currentLang === 'en' ? 'English' : 'Uzbek'}
+                                    {currentLang === 'en' ? t('header.languages.english') : t('header.languages.uzbek')}
                                 </LanguageButton>
 
                                 <LanguageDropdown isOpen={langMenuOpen}>
@@ -302,27 +328,24 @@ export default function HeaderMobile({
                                         isActive={currentLang === 'en'}
                                         onClick={() => handleLanguageSelect('en')}
                                     >
-                                        English
+                                        {t('header.languages.english')}
                                     </LanguageOption>
                                     <LanguageOption
                                         isActive={currentLang === 'uz'}
                                         onClick={() => handleLanguageSelect('uz')}
                                     >
-                                        Uzbek
+                                        {t('header.languages.uzbek')}
                                     </LanguageOption>
                                 </LanguageDropdown>
                             </LanguageToggle>
                         </LanguageSection>
 
                         <AuthSection>
-                            {isAuthenticated ? (
+                            {showAsAuthenticated ? (
                                 <Link to={'/mypage'} onClick={closeMenu} style={{ textDecoration: 'none' }}>
                                     <UserAvatar>
-                                        {user?.data.imageUrl ? (
-                                            <img
-                                                src={user?.data.imageUrl}
-                                                alt={`${user.data.firstName || 'User'}'s Avatar`}
-                                            />
+                                        {user?.imageUrl ? (
+                                            <img src={user.imageUrl} alt={`${user.firstName || 'User'}'s Avatar`} />
                                         ) : (
                                             <User2 size={28} color={themeColors.colors.neutral.white} />
                                         )}
@@ -330,7 +353,7 @@ export default function HeaderMobile({
                                 </Link>
                             ) : (
                                 <StyledLoginButton asLink to="/login" variant="light" size="sm" onClick={closeMenu}>
-                                    Login
+                                    {t('header.auth.login')}
                                 </StyledLoginButton>
                             )}
                         </AuthSection>
