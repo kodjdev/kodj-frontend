@@ -13,7 +13,8 @@ type ButtonVariant =
     | 'outline'
     | 'navItem'
     | 'navItemActive'
-    | 'signOut';
+    | 'signOut'
+    | 'share';
 
 type BaseButtonProps = {
     variant?: ButtonVariant;
@@ -186,6 +187,7 @@ const StyledButton = styled('button')<{
 
                     &:hover:not(:disabled) {
                         background-color: ${themeColors.colors.gray.light};
+                        text-decoration: none;
                     }
 
                     svg {
@@ -227,6 +229,47 @@ const StyledButton = styled('button')<{
                     svg {
                         color: ${themeColors.colors.status.error.text};
                         margin-right: ${themeColors.spacing.md};
+                    }
+                `;
+            case 'share':
+                return css`
+                    background-color: ${themeColors.colors.ui.transparent};
+                    color: ${themeColors.colors.neutral.white};
+                    border: 1px solid ${themeColors.cardBorder.color};
+                    border-radius: ${themeColors.radiusSizes.xl};
+                    padding: 6px 12px;
+                    transition: all 0.2s ease;
+
+                    &:hover:not(:disabled) {
+                        background-color: ${themeColors.colors.ui.transparent};
+                        color: ${themeColors.colors.primary.main};
+                        border: 1px solid ${themeColors.cardBorder.color};
+                    }
+
+                    &:active:not(:disabled) {
+                        background-color: ${themeColors.colors.gray.dark};
+                    }
+
+                    svg {
+                        stroke-width: 1.5px;
+                    }
+
+                    @media (max-width: ${themeColors.breakpoints.mobile}) {
+                        background-color: ${themeColors.colors.neutral.white};
+                        color: ${themeColors.colors.neutral.black};
+                        border: 1px solid ${themeColors.colors.neutral.white};
+
+                        &:hover:not(:disabled) {
+                            background-color: ${themeColors.colors.gray.light};
+                            color: ${themeColors.colors.neutral.black};
+                            transform: translateY(-1px);
+                            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                        }
+
+                        &:active:not(:disabled) {
+                            transform: translateY(0);
+                            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+                        }
                     }
                 `;
             default:

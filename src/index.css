@@ -67,6 +67,11 @@ button:focus-visible {
     outline: 4px auto -webkit-focus-ring-color;
 }
 
+body.auth-page {
+    overflow: hidden;
+    height: 100vh;
+}
+
 @media (prefers-color-scheme: light) {
     :root {
         color: #213547;

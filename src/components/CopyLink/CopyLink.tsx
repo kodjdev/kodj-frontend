@@ -2,29 +2,16 @@ import { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Link2, CheckCircle } from 'lucide-react';
 import themeColors from '@/tools/themeColors';
+import Button from '@/components/Button/Button';
 
 type CopyLinkProps = {
     url?: string;
     iconSize?: number;
     showText?: boolean;
     className?: string;
+    variant?: 'inline' | 'standalone';
+    size?: 'sm' | 'md' | 'lg' | 'mini' | 'xs';
 };
-
-const LinkButton = styled.button`
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    font-size: ${themeColors.typography.body.small.fontSize}px;
-    display: flex;
-    align-items: center;
-    gap: ${themeColors.spacing.xs};
-    padding: 0;
-    transition: color 0.2s ease;
-
-    &:hover {
-        color: ${themeColors.colors.primary.main};
-    }
-`;
 
 const CopyNotification = styled.div`
     position: fixed;
@@ -76,7 +63,14 @@ const CopyNotification = styled.div`
  * @param {boolean} showText - Whether to show the text next to the icon.
  * @param {string} className - Additional class names for styling.
  */
-export default function CopyLink({ url, iconSize = 16, showText = true, className }: CopyLinkProps) {
+export default function CopyLink({
+    url,
+    iconSize = 16,
+    showText = true,
+    className,
+    variant = 'standalone',
+    size = 'sm',
+}: CopyLinkProps) {
     const [showNotification, setShowNotification] = useState(false);
 
     useEffect(() => {
@@ -94,12 +88,20 @@ export default function CopyLink({ url, iconSize = 16, showText = true, classNam
         setTimeout(() => setShowNotification(false), 2000);
     };
 
+    const shouldBeFullWidth = variant === 'standalone' && window.innerWidth <= 768;
+
     return (
         <>
-            <LinkButton onClick={handleCopy} className={className}>
+            <Button
+                variant="share"
+                size={size}
+                onClick={handleCopy}
+                className={className}
+                fullWidth={shouldBeFullWidth}
+            >
                 <Link2 size={iconSize} />
                 {showText && 'Copy Link'}
-            </LinkButton>
+            </Button>
 
             {showNotification && (
                 <CopyNotification>
