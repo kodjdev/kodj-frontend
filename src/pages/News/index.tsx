@@ -135,6 +135,7 @@ const NewsCardContent = styled.div`
     @media (max-width: ${themeColors.breakpoints.mobile}) {
         padding: ${themeColors.spacing.md};
         flex-direction: column-reverse;
+        gap: 0;
     }
 `;
 
@@ -201,6 +202,12 @@ const NewsDescription = styled.p`
     font-size: ${themeColors.typography.body.medium.fontSize}px;
     margin-bottom: ${themeColors.spacing.sm};
     line-height: 1.6;
+
+    @media (max-width: ${themeColors.breakpoints.mobile}) {
+        font-size: ${themeColors.typography.body.xsmall.fontSize}px;
+        margin-bottom: ${themeColors.spacing.sm};
+        padding: 0;
+    }
 `;
 
 const NewsCardMeta = styled.div`
@@ -284,21 +291,6 @@ const Tag = styled.span<{
     }
 `;
 
-const InteractionButton = styled.button`
-    background: transparent;
-    border: none;
-    color: ${themeColors.colors.gray.main};
-    display: flex;
-    align-items: center;
-    gap: ${themeColors.spacing.xs};
-    cursor: pointer;
-    font-size: ${themeColors.typography.body.small.fontSize}px;
-
-    &:hover {
-        color: ${themeColors.colors.primary.main};
-    }
-`;
-
 const NewsCardLink = styled(Link)`
     text-decoration: none;
     color: inherit;
@@ -339,6 +331,19 @@ const EmptyStateContainer = styled.div`
     padding: ${themeColors.spacing.xl};
 `;
 
+const CopyLinkContainer = styled.div`
+    display: flex;
+    align-items: center;
+    gap: ${themeColors.spacing.xs};
+    margin-left: auto;
+    flex-shrink: 0;
+
+    @media (max-width: ${themeColors.breakpoints.mobile}) {
+        margin-left: 0;
+        width: 100%;
+        justify-content: center;
+    }
+`;
 /**
  * NewsList Component - Root Page Component
  * This component displays a list of news articles with filtering and search functionality.
@@ -564,26 +569,14 @@ export default function NewsList() {
 
                                                     <ReadTimeText>3 {t('readTime')}</ReadTimeText>
                                                 </MetaItem>
-                                                <div style={{ display: 'flex', gap: themeColors.spacing.sm }}>
-                                                    <InteractionButton>
-                                                        <CopyLink
-                                                            url={window.location.href}
-                                                            iconSize={16}
-                                                            showText={false}
-                                                        />
-                                                    </InteractionButton>
-                                                    {/* <InteractionButton>
-                                                        <Bookmark size={16} />
-                                                    </InteractionButton>
-                                                    <InteractionButton>
-                                                        <MessageSquare size={16} />
-                                                        <span>5</span>
-                                                    </InteractionButton>
-                                                    <InteractionButton>
-                                                        <ThumbsUp size={16} />
-                                                        <span>100</span>
-                                                    </InteractionButton> */}
-                                                </div>
+                                                <CopyLinkContainer>
+                                                    <CopyLink
+                                                        url={window.location.href}
+                                                        iconSize={16}
+                                                        showText={false}
+                                                        variant="standalone"
+                                                    />
+                                                </CopyLinkContainer>
                                             </NewsCardMeta>
                                         </NewsCardMain>
 

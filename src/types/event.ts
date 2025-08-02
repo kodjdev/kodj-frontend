@@ -37,6 +37,16 @@ export type EventDetailsResponse = {
     notes: Note[];
     reviews: Review[];
     provided?: string;
+    title: string;
+    location: string;
+    description: string;
+    parking: boolean;
+    maxSeats: number;
+    startTime: string;
+    endTime: string;
+    imageName: string;
+    imageURL: string;
+    meetupDate: string;
 };
 
 export type EventDetailsApiWrapper = {

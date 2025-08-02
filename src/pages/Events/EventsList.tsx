@@ -357,11 +357,7 @@ export default function EventsList({ onFilterChange, defaultFilter = EventFilter
     };
 
     const renderEventCard = (event: Event, isUpcoming: boolean) => (
-        <StyledLink
-            to={`/events/${isUpcoming ? 'upcoming' : 'past'}/details/${event.id}`}
-            key={event.id}
-            state={{ eventData: event, speakers: [], eventSchedule: [] }}
-        >
+        <StyledLink to={`/events/${isUpcoming ? 'upcoming' : 'past'}/details/${event.id}`} key={event.id}>
             <EventCard
                 id={Number(event.id)}
                 isFreeEvent={true}

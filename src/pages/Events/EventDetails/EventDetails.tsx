@@ -49,13 +49,20 @@ const RightPanel = styled.div`
     align-self: flex-start;
 
     @media (max-width: ${themeColors.breakpoints.tablet}) {
-        width: 100%;
-        position: static;
-        top: auto;
+        display: none;
     }
 
     @media (max-width: ${themeColors.breakpoints.mobile}) {
-        width: 100%;
+        display: none;
+    }
+`;
+
+const MobileRightPanel = styled.div`
+    display: none;
+    margin-bottom: ${themeColors.spacing.lg};
+
+    @media (max-width: ${themeColors.breakpoints.tablet}) {
+        display: block;
     }
 `;
 
@@ -221,8 +228,6 @@ export default function EventDetails() {
     const userAtomData = useRecoilValue(userAtom);
     const { userId } = useAuthState();
 
-    const { eventData: locationEventData } = location.state || {};
-
     const detailsRef = useRef<HTMLDivElement>(null);
     const scheduleRef = useRef<HTMLDivElement>(null);
     const speakersRef = useRef<HTMLDivElement>(null);
@@ -232,15 +237,15 @@ export default function EventDetails() {
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<Error | null>(null);
     const [eventDetails, setEventDetails] = useState<ApiResponse<EventDetailsResponse> | null>(null);
-    const [eventData, setEventData] = useState<Event>(
-        locationEventData || {
-            id: '',
-            title: 'Event Not Found',
-            description: ['No description available.'],
-            date: null,
-            startTime: null,
-        },
-    );
+    const [eventData, setEventData] = useState<Event>({
+        id: '',
+        title: 'Loading...',
+        description: ['Loading event details...'],
+        date: null,
+        startTime: undefined,
+        location: 'Loading...',
+        imageUrl: undefined,
+    });
     const [activeTab, setActiveTab] = useState<'details' | 'schedule' | 'speakers' | 'location'>('details');
 
     const { formatDate, formatTime } = useFormatDate();
@@ -263,11 +268,8 @@ export default function EventDetails() {
 
                 if (response?.statusCode && response.statusCode >= 200 && response.statusCode < 300) {
                     setEventDetails(response);
-
-                    if (!locationEventData) {
-                        const mappedEvent = mapApiResponseToEvent(eventId, response.data);
-                        setEventData(mappedEvent);
-                    }
+                    const mappedEvent = mapApiResponseToEvent(eventId, response.data);
+                    setEventData(mappedEvent);
                 } else {
                     throw new Error(response.message || 'Failed to fetch event details');
                 }
@@ -278,10 +280,6 @@ export default function EventDetails() {
                 setLoading(false);
             }
         };
-
-        if (locationEventData) {
-            setEventData(locationEventData);
-        }
 
         fetchEventDetails();
     }, [eventId]);
@@ -305,52 +303,28 @@ export default function EventDetails() {
     const mapApiResponseToEvent = (eventId: string, apiResponse: EventDetailsResponse): Event => {
         const event: Event = {
             id: eventId,
-            title: 'Meetup Event',
-            description: ['No description available.'],
-            date: null,
-            location: 'Location not specified',
+            title: apiResponse.title || 'Meetup Event',
+            description: apiResponse.description ? [apiResponse.description] : ['No description available.'],
+            date: apiResponse.meetupDate || null,
+            location: apiResponse.location || 'Location not specified',
             speakers: apiResponse.speakers || [],
             eventSchedule: apiResponse.keynoteSessions || [],
             provided: apiResponse.provided || 'Not specified',
+            startTime: apiResponse.startTime || undefined,
+            endTime: apiResponse.endTime || undefined,
+            imageUrl: apiResponse.imageURL || undefined,
         };
-
-        if (apiResponse.keynoteSessions && apiResponse.keynoteSessions.length > 0) {
-            const firstSession = apiResponse.keynoteSessions[0];
-
-            event.title = firstSession.subject || event.title;
-
-            if (firstSession.startTime && firstSession.endTime) {
-                const startDate = new Date(firstSession.startTime);
-                const endDate = new Date(firstSession.endTime);
-
-                event.date = firstSession.startTime;
-                event.time = `${startDate.toLocaleTimeString()} - ${endDate.toLocaleTimeString()}`;
-            }
-        }
-
-        if (apiResponse.notes && apiResponse.notes.length > 0) {
-            const descriptions = apiResponse.notes
-                .filter((note) => note.status === 'ACTIVE')
-                .map((note) => note.description);
-
-            if (descriptions.length > 0) {
-                event.description = descriptions;
-            }
-        }
 
         if (apiResponse.meetupRegistrations) {
             const acceptedRegistrations = apiResponse.meetupRegistrations.filter(
                 (reg) => reg.status === MeetupRegistrationStatus.ACCEPTED,
             );
             event.registeredCount = acceptedRegistrations.length;
-            event.maxSeats = 60;
+            event.maxSeats = apiResponse.maxSeats || 60;
+            event.availableSeats = apiResponse.availableSeats;
         }
 
         event.isFreeEvent = true;
-
-        if (apiResponse.keynoteSessions?.[0]?.imageURL) {
-            event.imageUrl = apiResponse.keynoteSessions[0].imageURL;
-        }
 
         return event;
     };
@@ -393,11 +367,11 @@ export default function EventDetails() {
           ? [eventData.description]
           : ['No description available.'];
 
-    if (loading && !locationEventData) {
+    if (loading) {
         return <PageLoading message="Loading Event Details ..." />;
     }
 
-    if (error && !locationEventData) {
+    if (error) {
         return (
             <PageContainer>
                 <ErrorContainer>
@@ -418,6 +392,86 @@ export default function EventDetails() {
                     <EventBanner>
                         {eventData.imageUrl && <img src={eventData.imageUrl} alt={eventData.title} />}
                     </EventBanner>
+
+                    {/* Mobile Right Panel - Shows after image on mobile */}
+                    <MobileRightPanel>
+                        <Card
+                            backgroundColor="#1a1a1a;"
+                            padding={themeColors.spacing.lg}
+                            style={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                position: 'relative',
+                                zIndex: 1,
+                            }}
+                        >
+                            <Card.Title>{eventData.title}</Card.Title>
+                            <EventInfoContainer>
+                                <EventInfoItem>
+                                    <Calendar size={16} />
+                                    <span>{eventData.date ? formatDate(eventData.date) : 'Date not specified'}</span>
+                                </EventInfoItem>
+                                <EventInfoItem>
+                                    <Clock size={16} />
+                                    <span>
+                                        {eventData.startTime ? formatTime(eventData.startTime) : 'Time not specified'}
+                                    </span>
+                                </EventInfoItem>
+                                <EventInfoItem>
+                                    <MapPin size={16} />
+                                    <span>{eventData.location}</span>
+                                </EventInfoItem>
+                                <EventInfoItem>
+                                    <Coffee size={16} />
+                                    <span>{eventDetails?.data?.provided || 'Not specified'}</span>
+                                </EventInfoItem>
+                                <EventInfoItem>
+                                    <Box size={16} />
+                                    <span>
+                                        {eventData.registeredCount !== undefined && eventData.maxSeats !== undefined
+                                            ? `${eventData.registeredCount}/${eventData.maxSeats} Registered`
+                                            : eventDetails?.data.availableSeats !== undefined
+                                              ? `${eventDetails.data.availableSeats} seats available`
+                                              : 'Available'}
+                                    </span>
+                                </EventInfoItem>
+                                <EventInfoItem>
+                                    <Play size={16} />
+                                    <span>{eventData.isFreeEvent ? 'Free' : 'Paid'}</span>
+                                </EventInfoItem>
+                            </EventInfoContainer>
+                            {isPastEvent ? (
+                                <Button fullWidth={true} size="md" disabled={true} variant="secondary">
+                                    Event has passed
+                                </Button>
+                            ) : isUserRegistered() ? (
+                                <Button fullWidth={true} size="md" disabled={true} variant="secondary">
+                                    Already registered
+                                </Button>
+                            ) : (
+                                <Button
+                                    asLink={true}
+                                    to={`/events/upcoming/register/${eventId}`}
+                                    state={{
+                                        title: eventData.title,
+                                        date: eventData.date,
+                                        location: eventData.location,
+                                        imageUrl: eventData.imageUrl,
+                                        author: eventData.author,
+                                        eventRoom: eventData.eventRoom,
+                                        registeredCount: eventData.registeredCount,
+                                        maxSeats: eventData.maxSeats,
+                                    }}
+                                    fullWidth={true}
+                                    size="md"
+                                    variant="primary"
+                                >
+                                    Register for Event
+                                </Button>
+                            )}
+                        </Card>
+                    </MobileRightPanel>
+
                     <TabContainer>
                         <Tab active={activeTab === 'details'} onClick={() => handleTabClicks('details')}>
                             Event Details
@@ -432,6 +486,7 @@ export default function EventDetails() {
                             Location
                         </Tab>
                     </TabContainer>
+
                     <div ref={detailsRef} id="details-ref">
                         <SectionTitle>Event Details</SectionTitle>
                         <EventDescription>
@@ -440,17 +495,21 @@ export default function EventDetails() {
                             ))}
                         </EventDescription>
                     </div>
+
                     <div ref={scheduleRef} id="schedule-section">
                         <EventTimeline schedule={eventDetails?.data?.keynoteSessions} />
                     </div>
+
                     <div ref={speakersRef} id="speakers-section">
                         <Speakers speakers={eventDetails?.data?.speakers} />
                     </div>
+
                     <div ref={locationRef} id="location-section">
                         <EventLocation location={eventData.location} />
                     </div>
                 </LeftPanel>
 
+                {/* Desktop Right Panel - Hidden on mobile */}
                 <RightPanel>
                     <Card
                         backgroundColor="#1a1a1a;"
