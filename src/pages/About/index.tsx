@@ -197,6 +197,12 @@ const MemberInfo = styled.div`
     gap: ${themeColors.spacing.xs};
     flex: 1;
     min-width: 0;
+
+    @media (max-width: ${themeColors.breakpoints.mobile}) {
+        text-align: center;
+        gap: ${themeColors.spacing.sm};
+        min-width: 0;
+    }
 `;
 
 const MemberName = styled.h4`

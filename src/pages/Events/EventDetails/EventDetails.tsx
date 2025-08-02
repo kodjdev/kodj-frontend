@@ -105,10 +105,13 @@ const EventDescription = styled.div`
 const TabContainer = styled.div`
     display: flex;
     margin-bottom: ${themeColors.spacing.lg};
-    border-bottom: 1px solid ${themeColors.cardBorder.color};
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
+    scrollbar-width: thin;
 
     @media (max-width: ${themeColors.breakpoints.mobile}) {
-        flex-wrap: wrap;
+        flex-wrap: nowrap;
     }
 
     &::-webkit-scrollbar {
@@ -118,6 +121,10 @@ const TabContainer = styled.div`
     &::-webkit-scrollbar-thumb {
         background: ${themeColors.colors.gray.main};
         border-radius: 4px;
+    }
+
+    &::-webkit-scrollbar-track {
+        background: transparent;
     }
 `;
 
@@ -134,6 +141,8 @@ const Tab = styled.button<{ active: boolean }>`
     flex: 0 0 auto;
     transition: color 0.2s ease;
     -webkit-tap-highlight-color: transparent;
+    white-space: nowrap;
+    min-width: fit-content;
 
     &::after {
         content: '';
@@ -150,8 +159,9 @@ const Tab = styled.button<{ active: boolean }>`
     }
 
     @media (max-width: ${themeColors.breakpoints.mobile}) {
-        flex: 1 0 50%;
+        flex: 0 0 auto;
         text-align: center;
+        min-width: 120px;
     }
     &:focus {
         outline: none;
@@ -397,7 +407,7 @@ export default function EventDetails() {
                     <MobileRightPanel>
                         <Card
                             backgroundColor="#1a1a1a;"
-                            padding={themeColors.spacing.lg}
+                            padding={themeColors.spacing.md}
                             style={{
                                 display: 'flex',
                                 flexDirection: 'column',

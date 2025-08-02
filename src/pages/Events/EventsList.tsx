@@ -150,8 +150,8 @@ const SortButtonWrapper = styled.div`
         padding: 8px 16px !important;
 
         @media (max-width: ${themeColors.breakpoints.mobile}) {
-            padding: 6px 12px !important;
-            height: 32px !important;
+            padding: 10px 12px;
+            height: 40px;
             font-size: ${themeColors.typography.body.xsmall.fontSize}px !important;
         }
 
@@ -211,8 +211,8 @@ const SortOption = styled.div`
 
         @media (max-width: ${themeColors.breakpoints.mobile}) {
             font-size: ${themeColors.typography.body.xsmall.fontSize}px !important;
-            padding: 8px 12px !important;
-            height: auto !important;
+            padding: 10px 12px;
+            height: 40px;
             white-space: nowrap;
         }
 
