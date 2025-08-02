@@ -47,7 +47,6 @@ const Article = styled.article`
     margin-bottom: ${themeColors.spacing.xl};
 
     @media (max-width: ${themeColors.breakpoints.mobile}) {
-        padding: ${themeColors.spacing.md};
         margin-bottom: ${themeColors.spacing.lg};
 `;
 
@@ -183,31 +182,9 @@ const ShareButtons = styled.div`
     @media (max-width: ${themeColors.breakpoints.mobile}) {
         width: 100%;
         justify-content: flex-start;
+        gap: ${themeColors.spacing.sm};
     }
 `;
-
-const ShareButton = styled(Button)`
-    display: flex;
-    align-items: center;
-    gap: ${themeColors.spacing.xs};
-    padding: 6px 12px;
-    border-radius: 4px;
-    background-color: transparent !important;
-    border: none;
-    transition: color 0.2s ease;
-    border: 1px solid ${themeColors.cardBorder.color};
-    border-radius: ${themeColors.radiusSizes.xl};
-
-    &:hover {
-        background-color: transparent !important;
-        color: ${themeColors.colors.primary.main} !important;
-    }
-
-    svg {
-        stroke-width: 1.5px;
-    }
-`;
-
 const ReadNextSection = styled.div`
     margin-top: ${themeColors.spacing.xl};
 `;
@@ -216,6 +193,11 @@ const ReadNextHeader = styled.h3`
     color: ${themeColors.colors.neutral.white};
     font-size: ${themeColors.typography.headings.desktop.h3.fontSize}px;
     margin-bottom: ${themeColors.spacing.lg};
+
+    @media (max-width: ${themeColors.breakpoints.mobile}) {
+        font-size: ${themeColors.typography.headings.mobile.h3.fontSize}px;
+        margin-bottom: ${themeColors.spacing.md};
+    }
 `;
 
 const NewsCardLink = styled(Link)`
@@ -248,6 +230,10 @@ const RelatedNewsCard = styled(Card)`
 const RelatedNewsContent = styled.div`
     flex: 1;
     min-width: 0;
+
+    @media (max-width: ${themeColors.breakpoints.mobile}) {
+        width: 100%;
+    }
 `;
 
 const RelatedNewsTitle = styled.h3`
@@ -264,7 +250,7 @@ const RelatedNewsTitle = styled.h3`
     overflow: hidden;
 
     @media (max-width: ${themeColors.breakpoints.mobile}) {
-        font-size: 18px;
+        font-size: ${themeColors.typography.headings.mobile.h4.fontSize}px;
         -webkit-line-clamp: 3;
     }
 `;
@@ -566,15 +552,19 @@ export default function NewsDetails() {
                 </ArticleContent>
                 <ShareSection>
                     <ShareButtons>
-                        <ShareButton variant="text" size="sm">
-                            <CopyLink url={window.location.href} iconSize={19} showText={false} />
-                        </ShareButton>
-                        <ShareButton variant="text" size="sm" onClick={shareOnTwitter}>
+                        <CopyLink
+                            url={window.location.href}
+                            iconSize={19}
+                            showText={false}
+                            variant="inline"
+                            size="sm"
+                        />
+                        <Button variant="share" size="sm" onClick={shareOnTwitter}>
                             <Twitter size={19} />
-                        </ShareButton>
-                        <ShareButton variant="text" size="sm" onClick={shareOnLinkedIn}>
+                        </Button>
+                        <Button variant="share" size="sm" onClick={shareOnLinkedIn}>
                             <LinkedinIcon size={19} />
-                        </ShareButton>
+                        </Button>
                     </ShareButtons>
                 </ShareSection>
             </Article>

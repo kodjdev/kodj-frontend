@@ -5,13 +5,24 @@ import Signup from '@/pages/Auth/Signup/Signup';
 import Login from '@/pages/Auth/Login/Login';
 import { UserData } from '@/types/user';
 import { useTranslation } from 'react-i18next';
+import themeColors from '@/tools/themeColors';
 
 const AuthWrapper = styled.div`
-    width: 100%;
-    min-height: 100vh;
-    background-position: center;
+    width: 100vw;
+    height: calc(100vh - 80px);
     display: flex;
     flex-direction: column;
+    background-color: ${themeColors.colors.neutral.black};
+    overflow: hidden;
+    position: fixed;
+    top: 80px;
+    left: 0;
+
+    @media (max-width: ${themeColors.breakpoints.mobile}) {
+        height: calc(100vh - 70px);
+        top: 70px;
+        overflow: hidden;
+    }
 `;
 
 const ContentContainer = styled.div`
@@ -20,8 +31,13 @@ const ContentContainer = styled.div`
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    margin-top: -100px;
     padding: 16px;
+
+    @media (max-width: ${themeColors.breakpoints.mobile}) {
+        padding: 12px;
+        justify-content: center;
+        height: 100%;
+    }
 `;
 
 const SuccessMessage = styled.div`
@@ -71,6 +87,14 @@ export default function LoginRoot() {
             setIsSignUp(false);
         }
     }, [location.search]);
+
+    useEffect(() => {
+        document.body.classList.add('auth-page');
+
+        return () => {
+            document.body.classList.remove('auth-page');
+        };
+    }, []);
 
     const toggleAuthMode = () => {
         setIsSignUp(!isSignUp);
