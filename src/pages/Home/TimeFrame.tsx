@@ -438,7 +438,71 @@ export default function TimeFrame() {
     }, [event]);
 
     if (!event) {
-        return <SectionLoading message="Event not found" />;
+        const defaultTimeLeft = { days: 0, hours: 0, minutes: 0, seconds: 0 };
+        const defaultEvent = { name: 'No upcoming events', date: null };
+
+        return (
+            <>
+                <Container>
+                    <ContentWrapper>
+                        <LeftSection>
+                            <AlertContainer>
+                                <IconWrapper>
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        width="25"
+                                        height="24"
+                                        viewBox="0 0 25 24"
+                                        fill="none"
+                                    >
+                                        <path
+                                            d="M12.5 22C6.97715 22 2.5 17.5228 2.5 12C2.5 6.47715 6.97715 2 12.5 2C18.0228 2 22.5 6.47715 22.5 12C22.5 17.5228 18.0228 22 12.5 22ZM11.5 15V17H13.5V15H11.5ZM11.5 7V13H13.5V7H11.5Z"
+                                            fill="#FF0202"
+                                        />
+                                    </svg>
+                                </IconWrapper>
+                                <AlertText>{t('timeFrame.alert')}</AlertText>
+                            </AlertContainer>
+
+                            <TimeInfoContainer>
+                                <TimeLeftText>{t('timeFrame.timeLeft')}</TimeLeftText>
+                                <div className="event-info-wrapper">
+                                    <EventNameText>{defaultEvent.name}</EventNameText>
+                                </div>
+                            </TimeInfoContainer>
+                        </LeftSection>
+
+                        <TimerContainer>
+                            <TimeUnit>
+                                <TimeValue>{formatTime(defaultTimeLeft.days)}</TimeValue>
+                                <TimeLabel>{t('timeFrame.units.day')}</TimeLabel>
+                            </TimeUnit>
+
+                            <Separator>·</Separator>
+
+                            <TimeUnit>
+                                <TimeValue>{formatTime(defaultTimeLeft.hours)}</TimeValue>
+                                <TimeLabel>{t('timeFrame.units.hour')}</TimeLabel>
+                            </TimeUnit>
+
+                            <Separator>·</Separator>
+
+                            <TimeUnit>
+                                <TimeValue>{formatTime(defaultTimeLeft.minutes)}</TimeValue>
+                                <TimeLabel>{t('timeFrame.units.minute')}</TimeLabel>
+                            </TimeUnit>
+
+                            <Separator>·</Separator>
+
+                            <TimeUnit>
+                                <TimeValue>{formatTime(defaultTimeLeft.seconds)}</TimeValue>
+                                <TimeLabel>{t('timeFrame.units.second')}</TimeLabel>
+                            </TimeUnit>
+                        </TimerContainer>
+                    </ContentWrapper>
+                </Container>
+            </>
+        );
     }
 
     if (loading) {
