@@ -19,7 +19,12 @@ html {
     padding: 0;
     height: 100%;
     overflow-x: hidden;
-    overflow-y: scroll;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+html::-webkit-scrollbar {
+    display: none;
 }
 
 body {
@@ -30,7 +35,22 @@ body {
     padding: 0;
     height: 100%;
     overflow-x: hidden;
-    overflow-y: scroll;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+body::-webkit-scrollbar {
+    display: none;
+}
+
+/* Global scrollbar hiding for all elements */
+* {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+*::-webkit-scrollbar {
+    display: none;
 }
 
 .container {

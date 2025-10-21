@@ -108,23 +108,9 @@ const TabContainer = styled.div`
     overflow-x: auto;
     overflow-y: hidden;
     white-space: nowrap;
-    scrollbar-width: thin;
 
     @media (max-width: ${themeColors.breakpoints.mobile}) {
         flex-wrap: nowrap;
-    }
-
-    &::-webkit-scrollbar {
-        height: 4px;
-    }
-
-    &::-webkit-scrollbar-thumb {
-        background: ${themeColors.colors.gray.main};
-        border-radius: 4px;
-    }
-
-    &::-webkit-scrollbar-track {
-        background: transparent;
     }
 `;
 
